@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Wanderlog launcher foreground: a travel arc with a destination pin and an airplane.
+  Authored in the original 512x512 artwork space; the outer group scales it down and
+  centers it so the whole design stays inside the adaptive-icon safe zone (no mask clipping).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:translateX="-23.2"
+        android:translateY="-3.2">
+
+        <!-- Travel arc (dashed in the source SVG; solid here — dashes are invisible at icon size) -->
+        <path
+            android:fillColor="#00000000"
+            android:pathData="M105,370 Q180,190 320,230 Q410,258 460,170"
+            android:strokeAlpha="0.45"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round"
+            android:strokeWidth="4" />
+
+        <!-- Destination pin: outer ring + center dot -->
+        <path
+            android:fillColor="#00000000"
+            android:pathData="M446,156 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0"
+            android:strokeAlpha="0.6"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.5" />
+        <path
+            android:fillAlpha="0.6"
+            android:fillColor="#FFFFFF"
+            android:pathData="M454.5,156 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0" />
+
+        <!-- Origin dot -->
+        <path
+            android:fillAlpha="0.5"
+            android:fillColor="#FFFFFF"
+            android:pathData="M97,370 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0" />
+
+        <!-- Airplane: translate(278,278) rotate(-38) from the source SVG -->
+        <group
+            android:rotation="-38"
+            android:translateX="278"
+            android:translateY="278">
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M-58,0 a58,15 0 1,0 116,0 a58,15 0 1,0 -116,0" />
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M42,0 a16,9.5 0 1,0 32,0 a16,9.5 0 1,0 -32,0" />
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M6,-14 L-24,-58 L-38,-58 L-14,-14 Z" />
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M6,14 L-24,58 L-38,58 L-14,14 Z" />
+            <path
+                android:fillAlpha="0.85"
+                android:fillColor="#FFFFFF"
+                android:pathData="M-44,-13 L-64,-38 L-59,-38 L-41,-13 Z" />
+            <path
+                android:fillAlpha="0.7"
+                android:fillColor="#FFFFFF"
+                android:pathData="M-41,-11 L-62,-26 L-64,-22 L-41,-8 Z" />
+            <path
+                android:fillAlpha="0.7"
+                android:fillColor="#FFFFFF"
+                android:pathData="M-41,11 L-62,26 L-64,22 L-41,8 Z" />
+            <path
+                android:fillAlpha="0.5"
+                android:fillColor="#2E7D7D"
+                android:pathData="M23.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
+            <path
+                android:fillAlpha="0.5"
+                android:fillColor="#2E7D7D"
+                android:pathData="M7.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
+            <path
+                android:fillAlpha="0.5"
+                android:fillColor="#2E7D7D"
+                android:pathData="M-8.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
+        </group>
+    </group>
+</vector>
