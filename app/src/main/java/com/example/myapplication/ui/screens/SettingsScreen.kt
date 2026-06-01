@@ -288,7 +288,12 @@ fun SettingsScreen(
             Spacer(Modifier.height(4.dp))
             SettingsSectionHeader("About")
 
-            SettingsInfoRow(icon = Icons.Filled.Info, title = "Version", value = "Wanderlog 1.0")
+            val versionName = remember {
+                runCatching {
+                    context.packageManager.getPackageInfo(context.packageName, 0).versionName
+                }.getOrNull().orEmpty()
+            }
+            SettingsInfoRow(icon = Icons.Filled.Info, title = "Version", value = "Wanderlog $versionName")
 
             Spacer(Modifier.height(16.dp))
         }
