@@ -11,6 +11,7 @@ import com.example.myapplication.data.billing.BillingManager
 import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.data.model.UserProfile
 import com.example.myapplication.data.storage.CloudEntrySync
+import com.example.myapplication.data.storage.LegacyEntryMigration
 import com.example.myapplication.ui.theme.AppTheme
 import com.example.myapplication.util.ImageStorage
 import kotlinx.coroutines.flow.map
@@ -49,6 +50,16 @@ class JournalViewModel(
 
     val themeImageUri: StateFlow<String?> = preferencesManager.themeImageUri
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    init {
+        // Once a user is signed in, import any leftover entries from the legacy on-device store
+        // into their cloud account (one-time; the migration renames the file when done).
+        viewModelScope.launch {
+            authRepository.currentUser.collect { user ->
+                if (user != null) LegacyEntryMigration.run(appContext, cloudEntrySync)
+            }
+        }
+    }
 
     fun saveEntry(entry: TravelEntry) {
         viewModelScope.launch {
