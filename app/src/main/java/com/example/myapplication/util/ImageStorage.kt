@@ -1,16 +1,25 @@
 package com.example.myapplication.util
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import java.io.File
 
 /**
- * Copies images picked via the Android Photo Picker into app-internal storage.
+ * Persists images picked via the Android Photo Picker.
  *
- * The Photo Picker (and SAF) only grant *temporary* read access to a `content://` URI — the
- * grant is revoked when the process restarts, so a persisted picker URI becomes unreadable on
- * the next launch. To keep an image around we copy its bytes into our own `filesDir` and store a
- * `file://` URI that we own permanently and Coil can always load.
+ * The Photo Picker (and SAF) only grant *temporary* read access to a `content://` URI — the grant
+ * is revoked when the process restarts, so a persisted picker URI becomes unreadable on the next
+ * launch. We copy the bytes somewhere we can reliably reload:
+ *
+ *  - [persist] copies into the app's `filesDir` and returns a `file://` URI. Used for local-only
+ *    personalization (profile photo, theme background) that doesn't need to outlive the app.
+ *  - [persistToGallery] copies into the shared **Pictures/Wanderlog** collection via MediaStore and
+ *    returns a `content://` URI. Used for entry photos: shared media is NOT deleted on uninstall, so
+ *    after a reinstall (and re-login) the cloud-synced entries can show their photos again — as long
+ *    as the app has been granted media-read permission.
  */
 object ImageStorage {
 
@@ -35,21 +44,62 @@ object ImageStorage {
         Uri.fromFile(dest).toString()
     }.getOrNull()
 
+    /**
+     * Copies [source] into the device's shared Pictures/Wanderlog collection and returns the
+     * resulting `content://` URI string, or null on failure. The file lives outside app storage, so
+     * it survives an uninstall (reading it again later requires media-read permission).
+     */
+    fun persistToGallery(context: Context, source: Uri): String? = runCatching {
+        val resolver = context.contentResolver
+        val name = "wanderlog_${System.currentTimeMillis()}_${source.hashCode().toUInt()}.jpg"
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, name)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Wanderlog")
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
+        }
+        val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        } else {
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+        val uri = resolver.insert(collection, values) ?: return null
+        val ok = resolver.openOutputStream(uri)?.use { output ->
+            resolver.openInputStream(source)?.use { input -> input.copyTo(output); true } ?: false
+        } ?: false
+        if (!ok) {
+            runCatching { resolver.delete(uri, null, null) }
+            return null
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.clear()
+            values.put(MediaStore.Images.Media.IS_PENDING, 0)
+            resolver.update(uri, values, null, null)
+        }
+        uri.toString()
+    }.getOrNull()
+
     /** Deletes everything stored under `filesDir/[subDir]`. */
     fun clear(context: Context, subDir: String) {
         runCatching { File(context.filesDir, subDir).listFiles()?.forEach { it.delete() } }
     }
 
     /**
-     * Deletes the backing file for each `file://` URI in [uris] (those we copied into internal
-     * storage). Legacy `content://` picker URIs and any other schemes are ignored, since we don't
-     * own those files. Safe to call with URIs that are already gone.
+     * Deletes the backing storage for each URI we own: `file://` URIs (copied into internal storage)
+     * are removed from disk; `content://` URIs (our MediaStore entry photos) are removed via the
+     * resolver. Other schemes are ignored. Best-effort — failures (e.g. media we no longer own after
+     * a reinstall, which raises a RecoverableSecurityException) are swallowed.
      */
-    fun delete(uris: Collection<String>) {
+    fun delete(context: Context, uris: Collection<String>) {
         uris.forEach { uriString ->
             runCatching {
                 val uri = Uri.parse(uriString)
-                if (uri.scheme == "file") uri.path?.let { File(it).delete() }
+                when (uri.scheme) {
+                    "file" -> uri.path?.let { File(it).delete() }
+                    "content" -> context.contentResolver.delete(uri, null, null)
+                }
             }
         }
     }

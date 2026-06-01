@@ -9,6 +9,11 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <!-- Needed only on API <= 28 to write entry photos into the shared Pictures collection
+         (so they survive an uninstall). On API 29+ MediaStore writes need no permission. -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:name=".TravelJournalApp"

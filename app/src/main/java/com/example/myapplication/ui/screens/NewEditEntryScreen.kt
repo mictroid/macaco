@@ -102,16 +102,16 @@ fun NewEditEntryScreen(
     val photoPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris ->
-        // Copy each picked image into our own storage so they survive relaunches (the Photo
-        // Picker grant is temporary). See ImageStorage.
-        val stored = uris.mapNotNull { ImageStorage.persist(context, it, ImageStorage.ENTRY_PHOTOS) }
+        // Copy each picked image into the shared Pictures collection so it survives both relaunches
+        // (the Photo Picker grant is temporary) and uninstalls. See ImageStorage.persistToGallery.
+        val stored = uris.mapNotNull { ImageStorage.persistToGallery(context, it) }
         sessionAdded = sessionAdded + stored
         photoUris = (photoUris + stored).distinct()
     }
 
     // Dismissing without Save: drop any files added this session, since they were never committed.
     val cancel = {
-        ImageStorage.delete(sessionAdded)
+        ImageStorage.delete(context, sessionAdded)
         onBack()
     }
     BackHandler(onBack = cancel)
@@ -243,7 +243,7 @@ fun NewEditEntryScreen(
                                         // delete its file now. Pre-existing photos are left to the
                                         // ViewModel to clean up only once the removal is saved.
                                         if (uri in sessionAdded) {
-                                            ImageStorage.delete(listOf(uri))
+                                            ImageStorage.delete(context, listOf(uri))
                                             sessionAdded = sessionAdded - uri
                                         }
                                     },

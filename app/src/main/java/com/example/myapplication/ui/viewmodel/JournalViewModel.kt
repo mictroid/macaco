@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class JournalViewModel(
+    private val appContext: Context,
     private val cloudEntrySync: CloudEntrySync,
     private val preferencesManager: PreferencesManager,
     private val authRepository: AuthRepository,
@@ -53,7 +54,7 @@ class JournalViewModel(
         viewModelScope.launch {
             // On edit, free the files for any photos the user dropped from the entry.
             entries.value.find { it.id == entry.id }?.let { old ->
-                ImageStorage.delete(old.photoUris - entry.photoUris.toSet())
+                ImageStorage.delete(appContext, old.photoUris - entry.photoUris.toSet())
             }
             cloudEntrySync.save(entry)
         }
@@ -61,7 +62,7 @@ class JournalViewModel(
 
     fun deleteEntry(id: String) {
         viewModelScope.launch {
-            entries.value.find { it.id == id }?.let { ImageStorage.delete(it.photoUris) }
+            entries.value.find { it.id == id }?.let { ImageStorage.delete(appContext, it.photoUris) }
             cloudEntrySync.delete(id)
         }
     }
@@ -111,6 +112,7 @@ class JournalViewModel(
     }
 
     class Factory(
+        private val appContext: Context,
         private val cloudEntrySync: CloudEntrySync,
         private val preferencesManager: PreferencesManager,
         private val authRepository: AuthRepository,
@@ -118,6 +120,6 @@ class JournalViewModel(
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            JournalViewModel(cloudEntrySync, preferencesManager, authRepository, billingManager) as T
+            JournalViewModel(appContext, cloudEntrySync, preferencesManager, authRepository, billingManager) as T
     }
 }
