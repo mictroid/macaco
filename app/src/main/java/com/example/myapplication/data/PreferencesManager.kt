@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -21,6 +22,12 @@ class PreferencesManager(private val context: Context) {
     private val KEY_PROFILE_PHOTO = stringPreferencesKey("profile_photo_uri")
     private val KEY_APP_THEME = stringPreferencesKey("app_theme")
     private val KEY_THEME_IMAGE = stringPreferencesKey("theme_image_uri")
+    private val KEY_REMINDERS_ENABLED = booleanPreferencesKey("reminders_enabled")
+    private val KEY_REMINDER_INTERVAL = intPreferencesKey("reminder_interval_days")
+
+    companion object {
+        const val DEFAULT_REMINDER_INTERVAL_DAYS = 4
+    }
 
     // Emits null until DataStore first loads, then false/true (never null after first load)
     val isPurchased: Flow<Boolean> = context.dataStore.data
@@ -72,5 +79,21 @@ class PreferencesManager(private val context: Context) {
             if (uri != null) prefs[KEY_THEME_IMAGE] = uri
             else prefs.remove(KEY_THEME_IMAGE)
         }
+    }
+
+    val remindersEnabled: Flow<Boolean> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_REMINDERS_ENABLED] ?: false }
+
+    val reminderIntervalDays: Flow<Int> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_REMINDER_INTERVAL] ?: DEFAULT_REMINDER_INTERVAL_DAYS }
+
+    suspend fun setRemindersEnabled(value: Boolean) {
+        context.dataStore.edit { it[KEY_REMINDERS_ENABLED] = value }
+    }
+
+    suspend fun setReminderIntervalDays(days: Int) {
+        context.dataStore.edit { it[KEY_REMINDER_INTERVAL] = days }
     }
 }

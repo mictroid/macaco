@@ -14,6 +14,7 @@ import com.example.myapplication.data.storage.CloudEntrySync
 import com.example.myapplication.data.storage.LegacyEntryMigration
 import com.example.myapplication.ui.theme.AppTheme
 import com.example.myapplication.util.ImageStorage
+import com.example.myapplication.util.ReminderScheduler
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -50,6 +51,12 @@ class JournalViewModel(
 
     val themeImageUri: StateFlow<String?> = preferencesManager.themeImageUri
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val remindersEnabled: StateFlow<Boolean> = preferencesManager.remindersEnabled
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val reminderIntervalDays: StateFlow<Int> = preferencesManager.reminderIntervalDays
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PreferencesManager.DEFAULT_REMINDER_INTERVAL_DAYS)
 
     init {
         // Once a user is signed in, import any leftover entries from the legacy on-device store
@@ -116,6 +123,21 @@ class JournalViewModel(
 
     fun setThemeImage(uri: String?) {
         viewModelScope.launch { preferencesManager.setThemeImageUri(uri) }
+    }
+
+    fun setRemindersEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            preferencesManager.setRemindersEnabled(enabled)
+            if (enabled) ReminderScheduler.schedule(appContext, reminderIntervalDays.value)
+            else ReminderScheduler.cancel(appContext)
+        }
+    }
+
+    fun setReminderIntervalDays(days: Int) {
+        viewModelScope.launch {
+            preferencesManager.setReminderIntervalDays(days)
+            if (remindersEnabled.value) ReminderScheduler.schedule(appContext, days)
+        }
     }
 
     fun signOut() {

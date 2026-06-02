@@ -1,5 +1,8 @@
 package com.example.myapplication.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,6 +38,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +60,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.content.ContextCompat
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,8 +79,24 @@ fun SettingsScreen(
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val appTheme by viewModel.appTheme.collectAsState()
     val themeImageUri by viewModel.themeImageUri.collectAsState()
-    var notificationsEnabled by remember { mutableStateOf(false) }
+    val remindersEnabled by viewModel.remindersEnabled.collectAsState()
+    val reminderIntervalDays by viewModel.reminderIntervalDays.collectAsState()
     val context = LocalContext.current
+
+    // Enabling reminders needs the POST_NOTIFICATIONS runtime grant on Android 13+.
+    val notifPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted -> if (granted) viewModel.setRemindersEnabled(true) }
+    fun enableReminders() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            notifPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            viewModel.setRemindersEnabled(true)
+        }
+    }
 
     val imagePicker = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
@@ -285,10 +306,23 @@ fun SettingsScreen(
             SettingsToggleRow(
                 icon = Icons.Filled.Notifications,
                 title = "Travel Reminders",
-                subtitle = "Remind you to log your adventures",
-                checked = notificationsEnabled,
-                onCheckedChange = { notificationsEnabled = it }
+                subtitle = if (remindersEnabled) {
+                    "Every $reminderIntervalDays ${if (reminderIntervalDays == 1) "day" else "days"} · nudge to log a memory"
+                } else {
+                    "Remind you to log your adventures"
+                },
+                checked = remindersEnabled,
+                onCheckedChange = { checked ->
+                    if (checked) enableReminders() else viewModel.setRemindersEnabled(false)
+                }
             )
+            if (remindersEnabled) {
+                Spacer(Modifier.height(8.dp))
+                ReminderCadenceCard(
+                    selectedDays = reminderIntervalDays,
+                    onSelect = { viewModel.setReminderIntervalDays(it) }
+                )
+            }
 
             // ── About ─────────────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
@@ -369,6 +403,39 @@ private fun SettingsToggleRow(
                 Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Switch(checked = checked, onCheckedChange = onCheckedChange)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReminderCadenceCard(selectedDays: Int, onSelect: (Int) -> Unit) {
+    val options = listOf(1, 3, 4, 7, 14)
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+            Text(
+                "Remind me every",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                options.forEach { d ->
+                    FilterChip(
+                        selected = d == selectedDays,
+                        onClick = { onSelect(d) },
+                        label = { Text(if (d == 1) "1 day" else "$d days") }
+                    )
+                }
+            }
         }
     }
 }
