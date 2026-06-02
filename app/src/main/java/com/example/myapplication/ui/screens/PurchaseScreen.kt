@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 
 @Composable
@@ -52,18 +53,20 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
+    val light = isLightTheme()
     Box(modifier = Modifier.fillMaxSize()) {
-        // Gradient header band
+        // Gradient header band. Light mode: vibrant accent fading to background; dark unchanged.
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(320.dp)
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            MaterialTheme.colorScheme.background
-                        )
+                        colors = if (light) {
+                            listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.background)
+                        } else {
+                            listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.background)
+                        }
                     )
                 )
         )
@@ -81,7 +84,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 modifier = Modifier
                     .size(96.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.primary),
+                    .background(if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
                 Text("✈️", fontSize = 48.sp)

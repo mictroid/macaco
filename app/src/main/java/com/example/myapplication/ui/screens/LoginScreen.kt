@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.data.auth.FirebaseConfig
 import com.example.myapplication.ui.viewmodel.JournalViewModel
+import com.example.myapplication.ui.theme.isLightTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -134,19 +135,19 @@ fun LoginScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(padding)
         ) {
-            // Hero header
+            // Hero header. Light mode: vibrant accent band with light content; dark mode unchanged.
+            val light = isLightTheme()
+            val heroColors = if (light) {
+                listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
+            } else {
+                listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.background)
+            }
+            val onHero = if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primaryContainer,
-                                MaterialTheme.colorScheme.background
-                            )
-                        )
-                    ),
+                    .background(Brush.verticalGradient(heroColors)),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -154,7 +155,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .size(72.dp)
                             .clip(RoundedCornerShape(18.dp))
-                            .background(MaterialTheme.colorScheme.primary),
+                            .background(if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("✈️", fontSize = 36.sp)
@@ -163,12 +164,13 @@ fun LoginScreen(
                     Text(
                         "Wanderlog",
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = onHero
                     )
                     Text(
                         if (isCreatingAccount) "Create your account" else "Sign in to sync your memories",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (light) onHero.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

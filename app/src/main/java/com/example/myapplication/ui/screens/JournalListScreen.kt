@@ -55,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -62,6 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.data.model.TravelEntry
+import com.example.myapplication.ui.theme.heroGradientColors
+import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -91,13 +94,17 @@ fun JournalListScreen(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                // Header
+                // Header. Light mode: vibrant accent band with light text; dark mode unchanged.
+                val light = isLightTheme()
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
                             Brush.verticalGradient(
-                                colors = listOf(
+                                colors = if (light) listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.primaryContainer
+                                ) else listOf(
                                     MaterialTheme.colorScheme.primaryContainer,
                                     MaterialTheme.colorScheme.surface
                                 )
@@ -121,14 +128,14 @@ fun JournalListScreen(
                                 modifier = Modifier
                                     .size(52.dp)
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary),
+                                    .background(if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     currentUser!!.displayName.take(1).uppercase(),
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimary
+                                    color = if (light) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
                                 )
                             }
                         } else {
@@ -136,7 +143,7 @@ fun JournalListScreen(
                                 modifier = Modifier
                                     .size(52.dp)
                                     .clip(RoundedCornerShape(13.dp))
-                                    .background(MaterialTheme.colorScheme.primary),
+                                    .background(if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text("✈️", fontSize = 26.sp)
@@ -147,19 +154,22 @@ fun JournalListScreen(
                             Text(
                                 "Wanderlog",
                                 style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = if (light) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                             )
+                            val subColor = if (light) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
+                                           else MaterialTheme.colorScheme.onSurfaceVariant
                             if (currentUser != null) {
                                 Text(
                                     currentUser!!.displayName,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = subColor
                                 )
                             } else {
                                 Text(
                                     "Not signed in",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = subColor
                                 )
                             }
                         }
@@ -397,14 +407,7 @@ private fun EntryCard(entry: TravelEntry, onClick: () -> Unit) {
                         .fillMaxWidth()
                         .height(110.dp)
                         .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    MaterialTheme.colorScheme.secondaryContainer
-                                )
-                            )
-                        ),
+                        .background(Brush.horizontalGradient(heroGradientColors())),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(entry.mood.ifBlank { "🗺️" }, fontSize = 44.sp)

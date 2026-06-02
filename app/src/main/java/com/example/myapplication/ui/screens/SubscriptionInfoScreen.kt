@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.ui.theme.isLightTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,19 +66,20 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
         ) {
             Spacer(Modifier.height(24.dp))
 
-            // Premium status card
+            // Premium status card. Light mode: vibrant accent band with light text. Dark mode:
+            // the original rich container band (unchanged).
+            val light = isLightTheme()
+            val bandColors = if (light) {
+                listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
+            } else {
+                listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.tertiaryContainer)
+            }
+            val onBand = if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primaryContainer,
-                                MaterialTheme.colorScheme.tertiaryContainer
-                            )
-                        )
-                    )
+                    .background(Brush.horizontalGradient(bandColors))
                     .padding(28.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -86,13 +88,14 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
                 Text(
                     "Wanderlog Premium",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = onBand
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     "ACTIVE",
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = if (light) onBand else MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = androidx.compose.ui.unit.TextUnit(2f, androidx.compose.ui.unit.TextUnitType.Sp)
                 )
@@ -100,7 +103,7 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
                 Text(
                     "One-time purchase · Lifetime access",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (light) onBand.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             }

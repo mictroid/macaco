@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.data.model.TravelEntry
+import com.example.myapplication.ui.theme.heroGradientColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -165,14 +166,7 @@ fun EntryDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(180.dp)
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(
-                                        MaterialTheme.colorScheme.primaryContainer,
-                                        MaterialTheme.colorScheme.secondaryContainer
-                                    )
-                                )
-                            ),
+                            .background(Brush.verticalGradient(heroGradientColors())),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(entry.mood.ifBlank { "🗺️" }, fontSize = 72.sp)
