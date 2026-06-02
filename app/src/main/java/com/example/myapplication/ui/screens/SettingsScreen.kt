@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.ui.theme.AppTheme
+import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 import com.example.myapplication.util.ImageStorage
 
@@ -220,13 +221,18 @@ fun SettingsScreen(
                         Spacer(Modifier.height(12.dp))
                     }
 
-                    // Pick / Change button
+                    // Pick / Change button. Light mode: vibrant accent; dark mode: container (as-is).
+                    val pickerLight = isLightTheme()
+                    val pickerBg = if (pickerLight) MaterialTheme.colorScheme.primary
+                                   else MaterialTheme.colorScheme.primaryContainer
+                    val pickerFg = if (pickerLight) MaterialTheme.colorScheme.onPrimary
+                                   else MaterialTheme.colorScheme.onPrimaryContainer
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(if (themeImageUri == null) 80.dp else 44.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .background(pickerBg)
                             .clickable {
                                 imagePicker.launch(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -239,21 +245,21 @@ fun SettingsScreen(
                                 Icon(
                                     Icons.Filled.Add,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    tint = pickerFg,
                                     modifier = Modifier.size(28.dp)
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
                                     "Pick background image",
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    color = pickerFg
                                 )
                             }
                         } else {
                             Text(
                                 "Change image",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                color = pickerFg,
                                 fontWeight = FontWeight.Medium
                             )
                         }
