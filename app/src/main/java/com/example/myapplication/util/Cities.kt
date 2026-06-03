@@ -1,10 +1,13 @@
 package com.example.myapplication.util
 
 import android.content.Context
+import java.util.zip.GZIPInputStream
 
 /**
- * Offline city lookup for the location autocomplete. Reads a bundled `assets/cities.txt`
- * ("City, Country" per line) once, caches it in memory, and matches by prefix.
+ * Offline city lookup for the location autocomplete. Reads a bundled, gzipped
+ * `assets/cities.txt.gz` ("City, Country" per line) once, caches it in memory, and matches by
+ * prefix. The list is gzipped (~1.6 MB vs ~4.2 MB raw) to keep the APK smaller and decompressed
+ * on first load.
  *
  * Offline by design — no network or API key needed. Swap [search] for a geocoding API call if
  * full worldwide coverage is ever required.
@@ -17,9 +20,10 @@ object Cities {
         cache?.let { return it }
         return synchronized(this) {
             cache ?: runCatching {
-                context.applicationContext.assets.open("cities.txt").bufferedReader().useLines { lines ->
-                    lines.map { it.trim() }.filter { it.isNotEmpty() }.toList()
-                }
+                GZIPInputStream(context.applicationContext.assets.open("cities.txt.gz"))
+                    .bufferedReader().useLines { lines ->
+                        lines.map { it.trim() }.filter { it.isNotEmpty() }.toList()
+                    }
             }.getOrDefault(emptyList()).also { cache = it }
         }
     }
