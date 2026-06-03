@@ -19,9 +19,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import java.io.File
 import androidx.compose.material.icons.Icons
@@ -294,22 +296,43 @@ private fun shareEntry(context: Context, entry: TravelEntry) {
         }
     )
 
-    val intent = if (shareUris.isNotEmpty()) {
-        Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-            type = "image/*"
-            putParcelableArrayListExtra(Intent.EXTRA_STREAM, shareUris)
-            putExtra(Intent.EXTRA_TEXT, shareText)
-            // A ClipData listing every URI is what propagates the read grant to all of them,
-            // so the whole entry is shared as one multi-photo post (not one per image).
-            clipData = ClipData.newUri(context.contentResolver, "Wanderlog photos", shareUris[0]).apply {
-                for (i in 1 until shareUris.size) addItem(ClipData.Item(shareUris[i]))
-            }
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-    } else {
-        Intent(Intent.ACTION_SEND).apply {
+    val intent = when {
+        // No photos — plain text share.
+        shareUris.isEmpty() -> Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareText)
+        }
+
+        // Single photo — image + caption together (one image never gets split).
+        shareUris.size == 1 -> Intent(Intent.ACTION_SEND).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_STREAM, shareUris[0])
+            putExtra(Intent.EXTRA_TEXT, shareText)
+            clipData = ClipData.newUri(context.contentResolver, "Wanderlog photo", shareUris[0])
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        // Multiple photos — omit EXTRA_TEXT so targets like WhatsApp group them into a single
+        // album instead of one message per photo (a caption alongside multiple images pushes
+        // WhatsApp onto its split-per-image path). The caption can't ride along in that case, so
+        // copy it to the clipboard for the user to paste into the album caption field.
+        else -> {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboard.setPrimaryClip(ClipData.newPlainText("Wanderlog entry", shareText))
+            Toast.makeText(
+                context,
+                "Caption copied — paste it into the photo caption",
+                Toast.LENGTH_LONG
+            ).show()
+            Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                type = "image/*"
+                putParcelableArrayListExtra(Intent.EXTRA_STREAM, shareUris)
+                // A ClipData listing every URI is what propagates the read grant to all of them.
+                clipData = ClipData.newUri(context.contentResolver, "Wanderlog photos", shareUris[0]).apply {
+                    for (i in 1 until shareUris.size) addItem(ClipData.Item(shareUris[i]))
+                }
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
         }
     }
     context.startActivity(Intent.createChooser(intent, "Share your memory"))
