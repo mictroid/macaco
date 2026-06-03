@@ -59,15 +59,17 @@ NavGraph (Compose Navigation)
 ## Data Layer
 
 - **`TravelEntry`** (`data/model/`) — `@Serializable` data class, UUID id, immutable. Fields:
-  `title`, `location`, `dateMillis`, `description`, `mood`, `photoUris`, `createdAt`.
+  `title`, `location`, `dateMillis`, `description`, `mood`, `photoUris`, `tags`, `createdAt`.
 - **`CloudEntrySync`** (`data/storage/`) — the active entry store. Listens to
   `users/{uid}/entries` in Firestore (ordered by `createdAt` desc) and exposes
   `StateFlow<List<TravelEntry>>`. Re-subscribes on auth change; clears to empty list when signed
   out. `save`/`delete` write to the signed-in user's subcollection. Snapshot errors are swallowed
   (no error UI). **Photos are stored as local content URIs**, so images are only visible on the
   device they were added from.
-- **`EntryStorage`** (`data/storage/`) — legacy local `filesDir/entries.json` store, kept in the
-  tree but **no longer wired** into the app. `CloudEntrySync` replaced it.
+- **`LegacyEntryMigration`** (`data/storage/`) — one-time import of entries from the legacy local
+  `filesDir/entries.json` (written by older on-device app versions) into the signed-in user's cloud
+  account, then renames the file to `.imported` so it never runs again. The old `EntryStorage`
+  class that wrote that file has been removed.
 - **`PreferencesManager`** (`data/`) — DataStore. Keys: `is_purchased` (local billing fallback),
   `dark_mode`, `profile_photo_uri`, `app_theme`, `theme_image_uri`.
 
@@ -134,7 +136,7 @@ machine, add the debug SHA-1 to the Firebase console:
 | Async | Kotlin Coroutines + coroutines-play-services |
 
 - **Min SDK:** 24 · **Target/Compile SDK:** 36
-- **No Room/SQLite** — Firestore is the cloud database; the legacy local JSON store
-  (`EntryStorage`) is unused.
+- **No Room/SQLite** — Firestore is the cloud database; the only remaining local-file logic is the
+  one-time `LegacyEntryMigration` import of the old `entries.json`.
 </content>
 </invoke>

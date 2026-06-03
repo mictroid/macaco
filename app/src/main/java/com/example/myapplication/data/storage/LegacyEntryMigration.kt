@@ -9,8 +9,8 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 /**
- * One-time import of entries from the legacy local store (`files/entries.json`, written by the
- * retired [EntryStorage]) into the cloud ([CloudEntrySync] / Firestore).
+ * One-time import of entries from the legacy local store (`files/entries.json`, written by older
+ * on-device app versions) into the cloud ([CloudEntrySync] / Firestore).
  *
  * Older app versions kept entries only on-device, so upgrading to the cloud version made them
  * "disappear" (and a reinstall wiped the file). This carries any leftover local entries into the
