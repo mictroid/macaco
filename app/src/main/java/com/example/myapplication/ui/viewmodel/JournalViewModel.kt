@@ -16,8 +16,10 @@ import com.example.myapplication.ui.theme.AppTheme
 import com.example.myapplication.util.ImageStorage
 import com.example.myapplication.util.ReminderScheduler
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -30,6 +32,11 @@ class JournalViewModel(
 ) : ViewModel() {
 
     val entries: StateFlow<List<TravelEntry>> = cloudEntrySync.entries
+
+    // Tags currently filtering the journal list (empty = show all). Lifted here so the entry
+    // detail screen can set it (tap a tag → list filtered by that tag).
+    private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
+    val selectedTags: StateFlow<Set<String>> = _selectedTags.asStateFlow()
 
     // null = loading, false = not purchased, true = purchased (sourced from RevenueCat)
     val isPurchased: StateFlow<Boolean?> = billingManager.isPremium
@@ -138,6 +145,20 @@ class JournalViewModel(
             preferencesManager.setReminderIntervalDays(days)
             if (remindersEnabled.value) ReminderScheduler.schedule(appContext, days)
         }
+    }
+
+    /** Toggle a tag in the list filter. */
+    fun toggleTagFilter(tag: String) {
+        _selectedTags.value = _selectedTags.value.let { if (tag in it) it - tag else it + tag }
+    }
+
+    /** Replace the list filter with a single tag (used when tapping a tag on an entry). */
+    fun setTagFilter(tag: String) {
+        _selectedTags.value = setOf(tag)
+    }
+
+    fun clearTagFilter() {
+        _selectedTags.value = emptySet()
     }
 
     fun signOut() {

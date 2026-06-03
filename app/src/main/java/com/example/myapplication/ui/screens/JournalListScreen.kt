@@ -54,10 +54,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -97,7 +95,8 @@ fun JournalListScreen(
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
 
     // Tag filter: tapping chips narrows the list to entries carrying any of the selected tags (OR).
-    var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    // State lives in the ViewModel so the detail screen can set it too.
+    val selectedTags by viewModel.selectedTags.collectAsState()
     val allTags = remember(entries) { entries.tagsByFrequency() }
     val visibleEntries = remember(entries, selectedTags) {
         if (selectedTags.isEmpty()) entries
@@ -364,11 +363,8 @@ fun JournalListScreen(
                     TagFilterRow(
                         tags = allTags,
                         selected = selectedTags,
-                        onToggle = { tag ->
-                            selectedTags =
-                                if (tag in selectedTags) selectedTags - tag else selectedTags + tag
-                        },
-                        onClear = { selectedTags = emptySet() }
+                        onToggle = { viewModel.toggleTagFilter(it) },
+                        onClear = { viewModel.clearTagFilter() }
                     )
                 }
                 when {

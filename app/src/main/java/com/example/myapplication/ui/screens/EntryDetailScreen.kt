@@ -69,7 +69,8 @@ fun EntryDetailScreen(
     entry: TravelEntry,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onTagClick: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -242,7 +243,7 @@ fun EntryDetailScreen(
                         ) {
                             entry.tags.forEach { tag ->
                                 AssistChip(
-                                    onClick = {},
+                                    onClick = { onTagClick(tag) },
                                     label = { Text("#$tag") },
                                     colors = AssistChipDefaults.assistChipColors(
                                         labelColor = MaterialTheme.colorScheme.primary

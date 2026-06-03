@@ -113,7 +113,11 @@ fun NavGraph(viewModel: JournalViewModel) {
                             viewModel.deleteEntry(id)
                             navController.popBackStack()
                         },
-                        onBack = { navController.popBackStack() }
+                        onBack = { navController.popBackStack() },
+                        onTagClick = { tag ->
+                            viewModel.setTagFilter(tag)
+                            navController.popBackStack(Screen.JournalList.route, inclusive = false)
+                        }
                     )
                 }
 
