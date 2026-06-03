@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.data.model.TravelEntry
+import com.example.myapplication.data.model.tagsByFrequency
 import com.example.myapplication.ui.screens.EntryDetailScreen
 import com.example.myapplication.ui.screens.JournalListScreen
 import com.example.myapplication.ui.screens.LoginScreen
@@ -30,15 +31,6 @@ private fun List<TravelEntry>.toLocationSuggestions(): List<String> =
     mapNotNull { it.location.trim().ifBlank { null } }
         .distinct()
         .sorted()
-
-/** Tags used across existing entries, most-used first, for the tag suggestions. */
-private fun List<TravelEntry>.toTagSuggestions(): List<String> =
-    flatMap { it.tags }
-        .groupingBy { it }
-        .eachCount()
-        .entries
-        .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
-        .map { it.key }
 
 @Composable
 fun NavGraph(viewModel: JournalViewModel) {
@@ -99,7 +91,7 @@ fun NavGraph(viewModel: JournalViewModel) {
                         },
                         onBack = { navController.popBackStack() },
                         locationSuggestions = entries.toLocationSuggestions(),
-                        tagSuggestions = entries.toTagSuggestions()
+                        tagSuggestions = entries.tagsByFrequency()
                     )
                 }
 
@@ -140,7 +132,7 @@ fun NavGraph(viewModel: JournalViewModel) {
                         },
                         onBack = { navController.popBackStack() },
                         locationSuggestions = entries.toLocationSuggestions(),
-                        tagSuggestions = entries.toTagSuggestions()
+                        tagSuggestions = entries.tagsByFrequency()
                     )
                 }
 

@@ -2,6 +2,8 @@ package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LightMode
@@ -35,6 +38,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,7 +54,10 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +71,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.data.model.TravelEntry
+import com.example.myapplication.data.model.tagsByFrequency
 import com.example.myapplication.ui.theme.heroGradientColors
 import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
@@ -87,6 +95,14 @@ fun JournalListScreen(
     val currentUser by viewModel.currentUser.collectAsState()
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
+
+    // Tag filter: tapping chips narrows the list to entries carrying any of the selected tags (OR).
+    var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    val allTags = remember(entries) { entries.tagsByFrequency() }
+    val visibleEntries = remember(entries, selectedTags) {
+        if (selectedTags.isEmpty()) entries
+        else entries.filter { entry -> entry.tags.any { it in selectedTags } }
+    }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -274,8 +290,10 @@ fun JournalListScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             if (entries.isNotEmpty()) {
+                                val count = visibleEntries.size
                                 Text(
-                                    "${entries.size} ${if (entries.size == 1) "memory" else "memories"}",
+                                    "$count ${if (count == 1) "memory" else "memories"}" +
+                                        if (selectedTags.isNotEmpty()) " · filtered" else "",
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -337,22 +355,95 @@ fun JournalListScreen(
             },
             containerColor = MaterialTheme.colorScheme.background
         ) { padding ->
-            if (entries.isEmpty()) {
-                EmptyState(modifier = Modifier.padding(padding))
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(entries, key = { it.id }) { entry ->
-                        EntryCard(entry = entry, onClick = { onEntryClick(entry.id) })
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                if (allTags.isNotEmpty()) {
+                    TagFilterRow(
+                        tags = allTags,
+                        selected = selectedTags,
+                        onToggle = { tag ->
+                            selectedTags =
+                                if (tag in selectedTags) selectedTags - tag else selectedTags + tag
+                        },
+                        onClear = { selectedTags = emptySet() }
+                    )
+                }
+                when {
+                    entries.isEmpty() -> EmptyState(modifier = Modifier.fillMaxSize())
+                    visibleEntries.isEmpty() -> NoMatchState(modifier = Modifier.fillMaxSize())
+                    else -> LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(visibleEntries, key = { it.id }) { entry ->
+                            EntryCard(entry = entry, onClick = { onEntryClick(entry.id) })
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TagFilterRow(
+    tags: List<String>,
+    selected: Set<String>,
+    onToggle: (String) -> Unit,
+    onClear: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (selected.isNotEmpty()) {
+            FilterChip(
+                selected = false,
+                onClick = onClear,
+                label = { Text("Clear") },
+                leadingIcon = {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            )
+        }
+        tags.forEach { tag ->
+            FilterChip(
+                selected = tag in selected,
+                onClick = { onToggle(tag) },
+                label = { Text("#$tag") }
+            )
+        }
+    }
+}
+
+@Composable
+private fun NoMatchState(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("🔍", fontSize = 48.sp)
+        Spacer(Modifier.height(12.dp))
+        Text(
+            "No memories with those tags",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
