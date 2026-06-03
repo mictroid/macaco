@@ -57,6 +57,8 @@ class CloudEntrySync(
                             // Photos stored as local URIs — visible on the device they were added from
                             photoUris = (doc.get("photoUris") as? List<*>)
                                 ?.filterIsInstance<String>() ?: emptyList(),
+                            tags = (doc.get("tags") as? List<*>)
+                                ?.filterIsInstance<String>() ?: emptyList(),
                             createdAt = doc.getLong("createdAt") ?: 0L
                         )
                     }.getOrNull()
@@ -87,6 +89,7 @@ class CloudEntrySync(
         "description" to description,
         "mood" to mood,
         "photoUris" to photoUris,
+        "tags" to tags,
         "createdAt" to createdAt
     )
 }
