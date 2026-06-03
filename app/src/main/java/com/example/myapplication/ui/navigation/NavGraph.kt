@@ -31,6 +31,15 @@ private fun List<TravelEntry>.toLocationSuggestions(): List<String> =
         .distinct()
         .sorted()
 
+/** Tags used across existing entries, most-used first, for the tag suggestions. */
+private fun List<TravelEntry>.toTagSuggestions(): List<String> =
+    flatMap { it.tags }
+        .groupingBy { it }
+        .eachCount()
+        .entries
+        .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
+        .map { it.key }
+
 @Composable
 fun NavGraph(viewModel: JournalViewModel) {
     val isPurchased by viewModel.isPurchased.collectAsState()
@@ -89,7 +98,8 @@ fun NavGraph(viewModel: JournalViewModel) {
                             navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() },
-                        locationSuggestions = entries.toLocationSuggestions()
+                        locationSuggestions = entries.toLocationSuggestions(),
+                        tagSuggestions = entries.toTagSuggestions()
                     )
                 }
 
@@ -129,7 +139,8 @@ fun NavGraph(viewModel: JournalViewModel) {
                             navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() },
-                        locationSuggestions = entries.toLocationSuggestions()
+                        locationSuggestions = entries.toLocationSuggestions(),
+                        tagSuggestions = entries.toTagSuggestions()
                     )
                 }
 

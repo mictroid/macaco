@@ -10,6 +10,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,11 +40,13 @@ import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -62,6 +66,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -80,7 +87,8 @@ fun NewEditEntryScreen(
     existingEntry: TravelEntry?,
     onSave: (TravelEntry) -> Unit,
     onBack: () -> Unit,
-    locationSuggestions: List<String> = emptyList()
+    locationSuggestions: List<String> = emptyList(),
+    tagSuggestions: List<String> = emptyList()
 ) {
     val context = LocalContext.current
 
@@ -90,6 +98,7 @@ fun NewEditEntryScreen(
     var mood by remember { mutableStateOf(existingEntry?.mood ?: "") }
     var description by remember { mutableStateOf(existingEntry?.description ?: "") }
     var photoUris by remember { mutableStateOf(existingEntry?.photoUris ?: emptyList()) }
+    var tags by remember { mutableStateOf(existingEntry?.tags ?: emptyList()) }
     var titleError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     // Files we copied into storage this session. Any that aren't committed via Save (removed again,
@@ -162,6 +171,7 @@ fun NewEditEntryScreen(
                                         description = description.trim(),
                                         mood = mood,
                                         photoUris = photoUris,
+                                        tags = tags,
                                         createdAt = existingEntry?.createdAt ?: System.currentTimeMillis()
                                     )
                                 )
@@ -352,7 +362,111 @@ fun NewEditEntryScreen(
                 )
             }
 
+            // Tags
+            item {
+                SectionLabel("Tags")
+                Spacer(Modifier.height(8.dp))
+                TagsField(
+                    tags = tags,
+                    onTagsChange = { tags = it },
+                    suggestions = tagSuggestions
+                )
+            }
+
             item { Spacer(Modifier.height(24.dp)) }
+        }
+    }
+}
+
+/**
+ * Normalize raw tag text into an Instagram-style hashtag body: drop a leading '#', lowercase, and
+ * keep only letters/digits/underscore. Returns "" if nothing usable remains.
+ */
+internal fun normalizeTag(raw: String): String =
+    raw.trim().removePrefix("#").lowercase()
+        .filter { it.isLetterOrDigit() || it == '_' }
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun TagsField(
+    tags: List<String>,
+    onTagsChange: (List<String>) -> Unit,
+    suggestions: List<String>
+) {
+    var input by remember { mutableStateOf("") }
+
+    fun commit(raw: String) {
+        val tag = normalizeTag(raw)
+        if (tag.isNotEmpty() && tag !in tags) onTagsChange(tags + tag)
+        input = ""
+    }
+
+    // When the field is empty, surface previously used tags; once typing, filter them by prefix.
+    // Either way, hide tags already on this entry.
+    val matches = remember(input, tags, suggestions) {
+        val q = normalizeTag(input)
+        val unused = suggestions.filterNot { it in tags }
+        if (q.isEmpty()) unused.take(8)
+        else unused.filter { it.startsWith(q) }.take(8)
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedTextField(
+            value = input,
+            onValueChange = {
+                // A space or comma ends a tag, mirroring how hashtags are typed.
+                if (it.endsWith(" ") || it.endsWith(",")) commit(it) else input = it
+            },
+            label = { Text("Add a tag") },
+            placeholder = { Text("museum, architecture, vacation") },
+            leadingIcon = { Text("#", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
+            trailingIcon = {
+                if (input.isNotBlank()) {
+                    IconButton(onClick = { commit(input) }) {
+                        Icon(Icons.Filled.Add, contentDescription = "Add tag")
+                    }
+                }
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { commit(input) }),
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary
+            )
+        )
+
+        // Chosen tags, each removable by tapping its ✕.
+        if (tags.isNotEmpty()) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                tags.forEach { tag ->
+                    InputChip(
+                        selected = true,
+                        onClick = { onTagsChange(tags - tag) },
+                        label = { Text("#$tag") },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Filled.Close,
+                                contentDescription = "Remove tag",
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    )
+                }
+            }
+        }
+
+        // Suggestions drawn from tags used on other entries; tap to add.
+        if (matches.isNotEmpty()) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                matches.forEach { suggestion ->
+                    SuggestionChip(
+                        onClick = { commit(suggestion) },
+                        label = { Text("#$suggestion") }
+                    )
+                }
+            }
         }
     }
 }

@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,7 +63,7 @@ import coil.compose.AsyncImage
 import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.ui.theme.heroGradientColors
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun EntryDetailScreen(
     entry: TravelEntry,
@@ -233,6 +235,23 @@ fun EntryDetailScreen(
                         )
                     }
 
+                    if (entry.tags.isNotEmpty()) {
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            entry.tags.forEach { tag ->
+                                AssistChip(
+                                    onClick = {},
+                                    label = { Text("#$tag") },
+                                    colors = AssistChipDefaults.assistChipColors(
+                                        labelColor = MaterialTheme.colorScheme.primary
+                                    )
+                                )
+                            }
+                        }
+                    }
+
                     Spacer(Modifier.height(32.dp))
                 }
             }
@@ -250,6 +269,10 @@ private fun shareEntry(context: Context, entry: TravelEntry) {
         if (entry.description.isNotBlank()) {
             appendLine()
             appendLine(entry.description)
+        }
+        if (entry.tags.isNotEmpty()) {
+            appendLine()
+            appendLine(entry.tags.joinToString(" ") { "#$it" })
         }
         appendLine()
         append("— Shared from Wanderlog")

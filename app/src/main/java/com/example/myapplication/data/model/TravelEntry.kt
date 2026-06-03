@@ -12,5 +12,6 @@ data class TravelEntry(
     val description: String,
     val mood: String,
     val photoUris: List<String> = emptyList(),
+    val tags: List<String> = emptyList(),
     val createdAt: Long = System.currentTimeMillis()
 )
