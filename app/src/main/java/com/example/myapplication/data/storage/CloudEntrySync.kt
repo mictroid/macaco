@@ -8,9 +8,12 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -22,6 +25,11 @@ class CloudEntrySync(
 
     private val _entries = MutableStateFlow<List<TravelEntry>>(emptyList())
     val entries: StateFlow<List<TravelEntry>> = _entries.asStateFlow()
+
+    // One-shot, user-facing error messages for the UI to surface (e.g. a snackbar). Buffered so an
+    // error emitted during a screen transition isn't lost before a collector attaches.
+    private val _errors = Channel<String>(Channel.BUFFERED)
+    val errors: Flow<String> = _errors.receiveAsFlow()
 
     private var listenerRegistration: ListenerRegistration? = null
 
@@ -44,7 +52,11 @@ class CloudEntrySync(
             .collection("users").document(uid).collection("entries")
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null || snapshot == null) return@addSnapshotListener
+                if (error != null) {
+                    _errors.trySend("Couldn't sync your entries. Changes are saved and will catch up when you're back online.")
+                    return@addSnapshotListener
+                }
+                if (snapshot == null) return@addSnapshotListener
                 _entries.value = snapshot.documents.mapNotNull { doc ->
                     runCatching {
                         TravelEntry(
@@ -68,17 +80,21 @@ class CloudEntrySync(
 
     suspend fun save(entry: TravelEntry) {
         val uid = authRepository.currentUser.value?.uid ?: return
-        firestore.collection("users").document(uid)
-            .collection("entries").document(entry.id)
-            .set(entry.toMap())
-            .await()
+        runCatching {
+            firestore.collection("users").document(uid)
+                .collection("entries").document(entry.id)
+                .set(entry.toMap())
+                .await()
+        }.onFailure { _errors.trySend("Couldn't save your entry. Please try again.") }
     }
 
     suspend fun delete(id: String) {
         val uid = authRepository.currentUser.value?.uid ?: return
-        firestore.collection("users").document(uid)
-            .collection("entries").document(id)
-            .delete().await()
+        runCatching {
+            firestore.collection("users").document(uid)
+                .collection("entries").document(id)
+                .delete().await()
+        }.onFailure { _errors.trySend("Couldn't delete the entry. Please try again.") }
     }
 
     private fun TravelEntry.toMap(): Map<String, Any?> = mapOf(

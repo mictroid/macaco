@@ -15,6 +15,7 @@ import com.example.myapplication.data.storage.LegacyEntryMigration
 import com.example.myapplication.ui.theme.AppTheme
 import com.example.myapplication.util.ImageStorage
 import com.example.myapplication.util.ReminderScheduler
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +33,9 @@ class JournalViewModel(
 ) : ViewModel() {
 
     val entries: StateFlow<List<TravelEntry>> = cloudEntrySync.entries
+
+    /** One-shot sync error messages (snapshot/save/delete failures) for the UI to show. */
+    val syncErrors: Flow<String> = cloudEntrySync.errors
 
     // Tags currently filtering the journal list (empty = show all). Lifted here so the entry
     // detail screen can set it (tap a tag → list filtered by that tag).
