@@ -410,11 +410,21 @@ fun SettingsScreen(
             Spacer(Modifier.height(4.dp))
             SettingsSectionHeader(stringResource(R.string.settings_drive_backup))
 
+            val connectedEmail = if (driveConnected) {
+                GoogleSignIn.getLastSignedInAccount(context)?.email
+            } else null
+
             DriveBackupCard(
                 connected = driveConnected,
+                connectedEmail = connectedEmail,
                 syncState = driveSyncState,
                 onConnect = { driveSignInLauncher.launch(driveSignInClient.signInIntent) },
-                onSyncNow = { viewModel.syncPhotosToGoogleDrive() }
+                onSyncNow = { viewModel.syncPhotosToGoogleDrive() },
+                onDisconnect = {
+                    driveSignInClient.signOut().addOnCompleteListener {
+                        driveConnected = false
+                    }
+                }
             )
 
             // ── About ─────────────────────────────────────────────────────────
@@ -461,9 +471,11 @@ private fun ThemeSwatch(theme: AppTheme, selected: Boolean, onClick: () -> Unit)
 @Composable
 private fun DriveBackupCard(
     connected: Boolean,
+    connectedEmail: String?,
     syncState: DrivePhotoSyncState,
     onConnect: () -> Unit,
-    onSyncNow: () -> Unit
+    onSyncNow: () -> Unit,
+    onDisconnect: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -482,13 +494,18 @@ private fun DriveBackupCard(
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        if (connected) stringResource(R.string.settings_drive_connected) else stringResource(R.string.settings_drive_not_connected),
+                        if (connected) stringResource(R.string.settings_drive_connected)
+                        else stringResource(R.string.settings_drive_not_connected),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        if (connected) stringResource(R.string.settings_drive_connected_subtitle)
-                        else stringResource(R.string.settings_drive_not_connected_subtitle),
+                        if (connected && connectedEmail != null)
+                            stringResource(R.string.settings_drive_connected_as, connectedEmail)
+                        else if (connected)
+                            stringResource(R.string.settings_drive_connected_subtitle)
+                        else
+                            stringResource(R.string.settings_drive_not_connected_subtitle),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -544,14 +561,26 @@ private fun DriveBackupCard(
                     Text(stringResource(R.string.settings_drive_connect))
                 }
             } else if (syncState !is DrivePhotoSyncState.Syncing) {
-                OutlinedButton(
-                    onClick = onSyncNow,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Icon(Icons.Filled.Sync, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.settings_drive_sync_now))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = onSyncNow,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Icon(Icons.Filled.Sync, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(R.string.settings_drive_sync_now))
+                    }
+                    OutlinedButton(
+                        onClick = onDisconnect,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text(stringResource(R.string.settings_drive_disconnect))
+                    }
                 }
             }
         }

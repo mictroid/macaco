@@ -104,6 +104,8 @@
     <string name="settings_drive_all_synced">Alle Fotos gesichert</string>
     <string name="settings_drive_connect">Google Drive verbinden</string>
     <string name="settings_drive_sync_now">Jetzt synchronisieren</string>
+    <string name="settings_drive_connected_as">Verbunden als %s</string>
+    <string name="settings_drive_disconnect">Trennen</string>
     <string name="settings_about">Über</string>
     <string name="settings_version_value">Wanderlog %s</string>
 

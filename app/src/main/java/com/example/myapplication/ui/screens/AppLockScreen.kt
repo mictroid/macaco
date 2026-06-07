@@ -3,6 +3,7 @@ package com.example.myapplication.ui.screens
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import android.content.ContextWrapper
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -72,7 +73,7 @@ fun AppLockScreen(onUnlocked: () -> Unit) {
 }
 
 fun showBiometricPrompt(context: android.content.Context, onSuccess: () -> Unit) {
-    val activity = context as? FragmentActivity ?: return
+    val activity = context.findFragmentActivity() ?: return
     val executor = ContextCompat.getMainExecutor(context)
     val callback = object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
@@ -92,3 +93,13 @@ fun showBiometricPrompt(context: android.content.Context, onSuccess: () -> Unit)
 fun isBiometricAvailable(context: android.content.Context): Boolean =
     BiometricManager.from(context)
         .canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL) == BiometricManager.BIOMETRIC_SUCCESS
+
+/** Unwraps a Compose ContextWrapper chain to find the underlying FragmentActivity. */
+private fun android.content.Context.findFragmentActivity(): FragmentActivity? {
+    var ctx = this
+    while (ctx is ContextWrapper) {
+        if (ctx is FragmentActivity) return ctx
+        ctx = ctx.baseContext
+    }
+    return null
+}
