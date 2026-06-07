@@ -24,6 +24,7 @@ class PreferencesManager(private val context: Context) {
     private val KEY_THEME_IMAGE = stringPreferencesKey("theme_image_uri")
     private val KEY_REMINDERS_ENABLED = booleanPreferencesKey("reminders_enabled")
     private val KEY_REMINDER_INTERVAL = intPreferencesKey("reminder_interval_days")
+    private val KEY_APP_LOCK = booleanPreferencesKey("app_lock_enabled")
 
     companion object {
         const val DEFAULT_REMINDER_INTERVAL_DAYS = 4
@@ -95,5 +96,13 @@ class PreferencesManager(private val context: Context) {
 
     suspend fun setReminderIntervalDays(days: Int) {
         context.dataStore.edit { it[KEY_REMINDER_INTERVAL] = days }
+    }
+
+    val appLockEnabled: Flow<Boolean> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_APP_LOCK] ?: false }
+
+    suspend fun setAppLockEnabled(value: Boolean) {
+        context.dataStore.edit { it[KEY_APP_LOCK] = value }
     }
 }

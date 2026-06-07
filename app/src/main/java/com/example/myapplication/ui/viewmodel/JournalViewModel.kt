@@ -12,6 +12,8 @@ import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.data.model.UserProfile
 import com.example.myapplication.data.storage.CloudEntrySync
 import com.example.myapplication.data.storage.LegacyEntryMigration
+import com.example.myapplication.data.sync.DrivePhotoSync
+import com.example.myapplication.data.sync.DrivePhotoSyncState
 import com.example.myapplication.ui.theme.AppTheme
 import com.example.myapplication.util.ImageStorage
 import com.example.myapplication.util.ReminderScheduler
@@ -29,13 +31,17 @@ class JournalViewModel(
     private val cloudEntrySync: CloudEntrySync,
     private val preferencesManager: PreferencesManager,
     private val authRepository: AuthRepository,
-    private val billingManager: BillingManager
+    private val billingManager: BillingManager,
+    private val drivePhotoSync: DrivePhotoSync
 ) : ViewModel() {
 
     val entries: StateFlow<List<TravelEntry>> = cloudEntrySync.entries
 
     /** One-shot sync error messages (snapshot/save/delete failures) for the UI to show. */
     val syncErrors: Flow<String> = cloudEntrySync.errors
+
+    val driveSyncState: StateFlow<DrivePhotoSyncState> = drivePhotoSync.syncState
+    val cachedDrivePhotos: StateFlow<Map<String, String>> = drivePhotoSync.cachedPhotoUris
 
     // Tags currently filtering the journal list (empty = show all). Lifted here so the entry
     // detail screen can set it (tap a tag → list filtered by that tag).
@@ -69,12 +75,27 @@ class JournalViewModel(
     val reminderIntervalDays: StateFlow<Int> = preferencesManager.reminderIntervalDays
         .stateIn(viewModelScope, SharingStarted.Eagerly, PreferencesManager.DEFAULT_REMINDER_INTERVAL_DAYS)
 
+    val appLockEnabled: StateFlow<Boolean> = preferencesManager.appLockEnabled
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    private val _isAppLocked = MutableStateFlow(false)
+    val isAppLocked: StateFlow<Boolean> = _isAppLocked.asStateFlow()
+
+    fun lock() { _isAppLocked.value = true }
+    fun unlock() { _isAppLocked.value = false }
+
     init {
         // Once a user is signed in, import any leftover entries from the legacy on-device store
         // into their cloud account (one-time; the migration renames the file when done).
         viewModelScope.launch {
             authRepository.currentUser.collect { user ->
                 if (user != null) LegacyEntryMigration.run(appContext, cloudEntrySync)
+            }
+        }
+        // When the entry list changes, download any Drive photos missing on this device.
+        viewModelScope.launch {
+            cloudEntrySync.entries.collect { entryList ->
+                drivePhotoSync.downloadMissingPhotos(entryList)
             }
         }
     }
@@ -86,6 +107,15 @@ class JournalViewModel(
                 ImageStorage.delete(appContext, old.photoUris - entry.photoUris.toSet())
             }
             cloudEntrySync.save(entry)
+            // Upload new photos to Drive in the background; persist updated IDs when done.
+            if (entry.photoUris.isNotEmpty()) {
+                launch {
+                    val updatedIds = drivePhotoSync.uploadEntryPhotos(entry)
+                    if (updatedIds != entry.driveFileIds) {
+                        cloudEntrySync.save(entry.copy(driveFileIds = updatedIds))
+                    }
+                }
+            }
         }
     }
 
@@ -151,6 +181,10 @@ class JournalViewModel(
         }
     }
 
+    fun setAppLockEnabled(value: Boolean) {
+        viewModelScope.launch { preferencesManager.setAppLockEnabled(value) }
+    }
+
     /** Toggle a tag in the list filter. */
     fun toggleTagFilter(tag: String) {
         _selectedTags.value = _selectedTags.value.let { if (tag in it) it - tag else it + tag }
@@ -169,15 +203,28 @@ class JournalViewModel(
         viewModelScope.launch { authRepository.signOut() }
     }
 
+    fun isDriveConnected(): Boolean = drivePhotoSync.isDriveConnected()
+
+    fun syncPhotosToGoogleDrive() {
+        drivePhotoSync.syncAll(entries.value) { updated ->
+            cloudEntrySync.save(updated)
+        }
+    }
+
+    fun refreshDriveDownloads() {
+        drivePhotoSync.downloadMissingPhotos(entries.value)
+    }
+
     class Factory(
         private val appContext: Context,
         private val cloudEntrySync: CloudEntrySync,
         private val preferencesManager: PreferencesManager,
         private val authRepository: AuthRepository,
-        private val billingManager: BillingManager
+        private val billingManager: BillingManager,
+        private val drivePhotoSync: DrivePhotoSync
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            JournalViewModel(appContext, cloudEntrySync, preferencesManager, authRepository, billingManager) as T
+            JournalViewModel(appContext, cloudEntrySync, preferencesManager, authRepository, billingManager, drivePhotoSync) as T
     }
 }

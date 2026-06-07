@@ -71,7 +71,9 @@ class CloudEntrySync(
                                 ?.filterIsInstance<String>() ?: emptyList(),
                             tags = (doc.get("tags") as? List<*>)
                                 ?.filterIsInstance<String>() ?: emptyList(),
-                            createdAt = doc.getLong("createdAt") ?: 0L
+                            createdAt = doc.getLong("createdAt") ?: 0L,
+                            driveFileIds = (doc.get("driveFileIds") as? List<*>)
+                                ?.filterIsInstance<String>() ?: emptyList()
                         )
                     }.getOrNull()
                 }
@@ -106,6 +108,7 @@ class CloudEntrySync(
         "mood" to mood,
         "photoUris" to photoUris,
         "tags" to tags,
-        "createdAt" to createdAt
+        "createdAt" to createdAt,
+        "driveFileIds" to driveFileIds
     )
 }

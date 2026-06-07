@@ -72,7 +72,8 @@ fun EntryDetailScreen(
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onBack: () -> Unit,
-    onTagClick: (String) -> Unit = {}
+    onTagClick: (String) -> Unit = {},
+    cachedDrivePhotos: Map<String, String> = emptyMap()
 ) {
     val context = LocalContext.current
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -132,12 +133,19 @@ fun EntryDetailScreen(
                 .padding(padding)
         ) {
             item {
-                if (entry.photoUris.isNotEmpty()) {
-                    val pagerState = rememberPagerState(pageCount = { entry.photoUris.size })
+                val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
+                if (photoCount > 0) {
+                    val pagerState = rememberPagerState(pageCount = { photoCount })
                     Box {
                         HorizontalPager(state = pagerState) { page ->
+                            // Prefer cached Drive photo (downloaded on this device); fall back to
+                            // local URI (may fail on a device that didn't add the photo).
+                            val displayUri = entry.driveFileIds.getOrNull(page)
+                                ?.takeIf { it.isNotEmpty() }
+                                ?.let { cachedDrivePhotos[it] }
+                                ?: entry.photoUris.getOrNull(page)
                             AsyncImage(
-                                model = entry.photoUris[page],
+                                model = displayUri,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -145,14 +153,14 @@ fun EntryDetailScreen(
                                 contentScale = ContentScale.Crop
                             )
                         }
-                        if (entry.photoUris.size > 1) {
+                        if (photoCount > 1) {
                             Row(
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(bottom = 10.dp),
                                 horizontalArrangement = Arrangement.spacedBy(5.dp)
                             ) {
-                                repeat(entry.photoUris.size) { index ->
+                                repeat(photoCount) { index ->
                                     Box(
                                         modifier = Modifier
                                             .size(if (pagerState.currentPage == index) 8.dp else 6.dp)

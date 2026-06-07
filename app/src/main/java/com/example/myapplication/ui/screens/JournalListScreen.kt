@@ -57,8 +57,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.data.model.TravelEntry
+import com.example.myapplication.data.model.onThisDayEntries
 import com.example.myapplication.data.model.tagsByFrequency
 import com.example.myapplication.ui.theme.heroGradientColors
 import com.example.myapplication.ui.theme.isLightTheme
@@ -96,6 +99,7 @@ fun JournalListScreen(
     val currentUser by viewModel.currentUser.collectAsState()
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
+    val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
 
     // Tag filter: tapping chips narrows the list to entries carrying any of the selected tags (OR).
     // State lives in the ViewModel so the detail screen can set it too.
@@ -105,6 +109,10 @@ fun JournalListScreen(
         if (selectedTags.isEmpty()) entries
         else entries.filter { entry -> entry.tags.any { it in selectedTags } }
     }
+
+    // "On This Day" — entries from the same month+day in prior years.
+    val onThisDayEntries = remember(entries) { entries.onThisDayEntries() }
+    var onThisDayDismissed by remember { mutableStateOf(false) }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -369,6 +377,14 @@ fun JournalListScreen(
                     .fillMaxSize()
                     .padding(padding)
             ) {
+                if (onThisDayEntries.isNotEmpty() && !onThisDayDismissed) {
+                    OnThisDayBanner(
+                        entries = onThisDayEntries,
+                        cachedDrivePhotos = cachedDrivePhotos,
+                        onEntryClick = onEntryClick,
+                        onDismiss = { onThisDayDismissed = true }
+                    )
+                }
                 if (allTags.isNotEmpty()) {
                     TagFilterRow(
                         tags = allTags,
@@ -386,7 +402,7 @@ fun JournalListScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(visibleEntries, key = { it.id }) { entry ->
-                            EntryCard(entry = entry, onClick = { onEntryClick(entry.id) })
+                            EntryCard(entry = entry, cachedDrivePhotos = cachedDrivePhotos, onClick = { onEntryClick(entry.id) })
                         }
                     }
                 }
@@ -478,9 +494,111 @@ private fun EmptyState(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+private fun EntryPhotoArea(
+    displayUris: List<String>,
+    totalCount: Int,
+    mood: String
+) {
+    val topCorners = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+    if (displayUris.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .clip(topCorners)
+                .background(Brush.horizontalGradient(heroGradientColors())),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(mood.ifBlank { "🗺️" }, fontSize = 44.sp)
+        }
+        return
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+            .clip(topCorners)
+    ) {
+        when (displayUris.size) {
+            1 -> AsyncImage(
+                model = displayUris[0],
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            2 -> Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                displayUris.forEach { uri ->
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = null,
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+            else -> Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                // Larger left photo
+                AsyncImage(
+                    model = displayUris[0],
+                    contentDescription = null,
+                    modifier = Modifier.weight(0.6f).fillMaxHeight(),
+                    contentScale = ContentScale.Crop
+                )
+                // Two stacked on the right
+                Column(
+                    modifier = Modifier.weight(0.4f).fillMaxHeight(),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    AsyncImage(
+                        model = displayUris[1],
+                        contentDescription = null,
+                        modifier = Modifier.weight(1f).fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        AsyncImage(
+                            model = displayUris[2],
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        // "+N more" overlay when there are photos beyond the 3 shown
+                        if (totalCount > 3) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.45f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "+${totalCount - 3}",
+                                    color = androidx.compose.ui.graphics.Color.White,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EntryCard(entry: TravelEntry, onClick: () -> Unit) {
+private fun EntryCard(
+    entry: TravelEntry,
+    cachedDrivePhotos: Map<String, String>,
+    onClick: () -> Unit
+) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -489,28 +607,18 @@ private fun EntryCard(entry: TravelEntry, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column {
-            if (entry.photoUris.isNotEmpty()) {
-                AsyncImage(
-                    model = entry.photoUris.first(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(110.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                        .background(Brush.horizontalGradient(heroGradientColors())),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(entry.mood.ifBlank { "🗺️" }, fontSize = 44.sp)
-                }
+            // Build display URIs for up to 3 photos, preferring Drive cache over local URIs.
+            val totalPhotoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
+            val displayUris = (0 until minOf(totalPhotoCount, 3)).mapNotNull { i ->
+                entry.driveFileIds.getOrNull(i)?.takeIf { it.isNotEmpty() }
+                    ?.let { cachedDrivePhotos[it] }
+                    ?: entry.photoUris.getOrNull(i)
             }
+            EntryPhotoArea(
+                displayUris = displayUris,
+                totalCount = totalPhotoCount,
+                mood = entry.mood
+            )
 
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -570,6 +678,143 @@ private fun EntryCard(entry: TravelEntry, onClick: () -> Unit) {
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OnThisDayBanner(
+    entries: List<TravelEntry>,
+    cachedDrivePhotos: Map<String, String>,
+    onEntryClick: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("🗓️", fontSize = 16.sp)
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "On This Day",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.weight(1f)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = onDismiss),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = "Dismiss",
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                entries.forEach { entry ->
+                    OnThisDayEntryChip(
+                        entry = entry,
+                        cachedDrivePhotos = cachedDrivePhotos,
+                        onClick = { onEntryClick(entry.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OnThisDayEntryChip(
+    entry: TravelEntry,
+    cachedDrivePhotos: Map<String, String>,
+    onClick: () -> Unit
+) {
+    val thumbnailUri = entry.driveFileIds.firstOrNull()
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { cachedDrivePhotos[it] }
+        ?: entry.photoUris.firstOrNull()
+
+    val yearsAgo = run {
+        val entryYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(Date(entry.dateMillis)).toIntOrNull() ?: return@run ""
+        val thisYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(Date()).toIntOrNull() ?: return@run ""
+        val diff = thisYear - entryYear
+        if (diff == 1) "1 year ago" else "$diff years ago"
+    }
+
+    Card(
+        onClick = onClick,
+        modifier = Modifier.width(140.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column {
+            if (thumbnailUri != null) {
+                AsyncImage(
+                    model = thumbnailUri,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                        .background(Brush.horizontalGradient(heroGradientColors())),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(entry.mood.ifBlank { "🗺️" }, fontSize = 28.sp)
+                }
+            }
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    yearsAgo,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    entry.title,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (entry.location.isNotBlank()) {
+                    Text(
+                        entry.location,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

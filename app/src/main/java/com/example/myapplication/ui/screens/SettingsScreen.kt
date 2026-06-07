@@ -30,18 +30,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -65,10 +75,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.myapplication.data.auth.FirebaseConfig
+import com.example.myapplication.data.sync.DrivePhotoSyncState
+import com.example.myapplication.ui.screens.isBiometricAvailable
+import com.example.myapplication.ui.screens.showBiometricPrompt
 import com.example.myapplication.ui.theme.AppTheme
 import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 import com.example.myapplication.util.ImageStorage
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.drive.DriveScopes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +99,30 @@ fun SettingsScreen(
     val themeImageUri by viewModel.themeImageUri.collectAsState()
     val remindersEnabled by viewModel.remindersEnabled.collectAsState()
     val reminderIntervalDays by viewModel.reminderIntervalDays.collectAsState()
+    val driveSyncState by viewModel.driveSyncState.collectAsState()
+    val appLockEnabled by viewModel.appLockEnabled.collectAsState()
     val context = LocalContext.current
+    var lockErrorMessage by remember { mutableStateOf<String?>(null) }
+
+    // Drive sign-in with DRIVE_FILE scope — used to connect Drive for photo backup.
+    var driveConnected by remember { mutableStateOf(viewModel.isDriveConnected()) }
+    val driveSignInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        driveConnected = viewModel.isDriveConnected()
+        if (driveConnected) {
+            viewModel.refreshDriveDownloads()
+            viewModel.syncPhotosToGoogleDrive()
+        }
+    }
+    val driveSignInClient = remember {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(FirebaseConfig.GOOGLE_WEB_CLIENT_ID)
+            .requestEmail()
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+            .build()
+        GoogleSignIn.getClient(context, gso)
+    }
 
     // Enabling reminders needs the POST_NOTIFICATIONS runtime grant on Android 13+.
     val notifPermissionLauncher = rememberLauncherForActivityResult(
@@ -324,6 +365,55 @@ fun SettingsScreen(
                 )
             }
 
+            // ── Privacy ───────────────────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+            SettingsSectionHeader("Privacy")
+
+            SettingsToggleRow(
+                icon = Icons.Filled.Lock,
+                title = "App Lock",
+                subtitle = if (appLockEnabled) "Biometric / screen lock required to open"
+                           else "Lock journal with biometric or screen lock",
+                checked = appLockEnabled,
+                onCheckedChange = { checked ->
+                    if (checked) {
+                        if (!isBiometricAvailable(context)) {
+                            lockErrorMessage = "No screen lock set up. Add a PIN, pattern, or biometric in your device settings first."
+                            return@SettingsToggleRow
+                        }
+                        // Verify auth works before enabling — prevents lockout on unsupported devices.
+                        showBiometricPrompt(context) { viewModel.setAppLockEnabled(true) }
+                    } else {
+                        viewModel.setAppLockEnabled(false)
+                    }
+                }
+            )
+            if (lockErrorMessage != null) {
+                androidx.compose.material3.Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+                    color = MaterialTheme.colorScheme.errorContainer
+                ) {
+                    Text(
+                        lockErrorMessage!!,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+
+            // ── Google Drive Backup ───────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+            SettingsSectionHeader("Google Drive Backup")
+
+            DriveBackupCard(
+                connected = driveConnected,
+                syncState = driveSyncState,
+                onConnect = { driveSignInLauncher.launch(driveSignInClient.signInIntent) },
+                onSyncNow = { viewModel.syncPhotosToGoogleDrive() }
+            )
+
             // ── About ─────────────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
             SettingsSectionHeader("About")
@@ -361,6 +451,106 @@ private fun ThemeSwatch(theme: AppTheme, selected: Boolean, onClick: () -> Unit)
                 tint = androidx.compose.ui.graphics.Color.White,
                 modifier = Modifier.size(22.dp)
             )
+        }
+    }
+}
+
+@Composable
+private fun DriveBackupCard(
+    connected: Boolean,
+    syncState: DrivePhotoSyncState,
+    onConnect: () -> Unit,
+    onSyncNow: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = if (connected) Icons.Filled.CloudUpload else Icons.Filled.CloudOff,
+                    contentDescription = null,
+                    tint = if (connected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        if (connected) "Connected to Google Drive" else "Not connected",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        if (connected) "Photos are backed up to Drive / Wanderlog"
+                        else "Connect to back up entry photos across devices",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            when (syncState) {
+                is DrivePhotoSyncState.Syncing -> {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(
+                            progress = { syncState.done.toFloat() / syncState.total.coerceAtLeast(1) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(
+                            "Uploading ${syncState.done} / ${syncState.total} photos…",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                is DrivePhotoSyncState.Synced -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Filled.CheckCircle,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "All photos backed up",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                is DrivePhotoSyncState.Error -> {
+                    Text(
+                        syncState.message,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+                else -> {}
+            }
+
+            if (!connected) {
+                Button(
+                    onClick = onConnect,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Text("Connect Google Drive")
+                }
+            } else if (syncState !is DrivePhotoSyncState.Syncing) {
+                OutlinedButton(
+                    onClick = onSyncNow,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Icon(Icons.Filled.Sync, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text("Sync Now")
+                }
+            }
         }
     }
 }

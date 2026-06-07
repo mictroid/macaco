@@ -65,6 +65,8 @@ import com.example.myapplication.ui.theme.isLightTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
+import com.google.api.services.drive.DriveScopes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,11 +84,13 @@ fun LoginScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Standard Google Sign-In via intent — avoids Credential Manager cancellation issues
+    // Standard Google Sign-In via intent — avoids Credential Manager cancellation issues.
+    // DRIVE_FILE scope is requested here so photo sync is authorized on first sign-in.
     val googleSignInClient = remember {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(FirebaseConfig.GOOGLE_WEB_CLIENT_ID)
             .requestEmail()
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
             .build()
         GoogleSignIn.getClient(context, gso)
     }

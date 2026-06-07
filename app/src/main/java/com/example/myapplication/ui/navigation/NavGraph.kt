@@ -5,10 +5,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.data.model.tagsByFrequency
+import com.example.myapplication.ui.screens.AppLockScreen
 import com.example.myapplication.ui.screens.EntryDetailScreen
 import com.example.myapplication.ui.screens.JournalListScreen
 import com.example.myapplication.ui.screens.LoginScreen
@@ -32,10 +38,41 @@ private fun List<TravelEntry>.toLocationSuggestions(): List<String> =
         .distinct()
         .sorted()
 
+// Re-lock after this many ms in the background.
+private const val LOCK_TIMEOUT_MS = 30_000L
+
 @Composable
 fun NavGraph(viewModel: JournalViewModel) {
     val isPurchased by viewModel.isPurchased.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
+    val appLockEnabled by viewModel.appLockEnabled.collectAsState()
+    val isAppLocked by viewModel.isAppLocked.collectAsState()
+
+    // Re-lock when the app returns from background after LOCK_TIMEOUT_MS.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val pauseTime = remember { longArrayOf(0L) }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> pauseTime[0] = System.currentTimeMillis()
+                Lifecycle.Event.ON_RESUME -> {
+                    val elapsed = System.currentTimeMillis() - pauseTime[0]
+                    if (pauseTime[0] > 0 && elapsed > LOCK_TIMEOUT_MS && appLockEnabled) {
+                        viewModel.lock()
+                    }
+                }
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // Show the lock screen over everything when the journal is locked (only after login+purchase).
+    if (appLockEnabled && isAppLocked && currentUser != null && isPurchased == true) {
+        AppLockScreen(onUnlocked = { viewModel.unlock() })
+        return
+    }
 
     when {
         // DataStore still loading — blank splash to avoid flicker
@@ -101,6 +138,7 @@ fun NavGraph(viewModel: JournalViewModel) {
                 ) { backStackEntry ->
                     val id = backStackEntry.arguments?.getString("entryId") ?: return@composable
                     val entries by viewModel.entries.collectAsState()
+                    val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
                     val entry = entries.find { it.id == id }
                     if (entry == null) {
                         LaunchedEffect(Unit) { navController.popBackStack() }
@@ -117,7 +155,8 @@ fun NavGraph(viewModel: JournalViewModel) {
                         onTagClick = { tag ->
                             viewModel.setTagFilter(tag)
                             navController.popBackStack(Screen.JournalList.route, inclusive = false)
-                        }
+                        },
+                        cachedDrivePhotos = cachedDrivePhotos
                     )
                 }
 

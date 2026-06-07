@@ -1,6 +1,7 @@
 package com.example.myapplication.data.model
 
 import kotlinx.serialization.Serializable
+import java.util.Calendar
 import java.util.UUID
 
 @Serializable
@@ -13,8 +14,27 @@ data class TravelEntry(
     val mood: String,
     val photoUris: List<String> = emptyList(),
     val tags: List<String> = emptyList(),
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    // Drive file IDs parallel to photoUris — "" means not yet uploaded.
+    val driveFileIds: List<String> = emptyList()
 )
+
+/**
+ * Entries whose trip date (dateMillis) falls on today's month and day but in a prior year,
+ * sorted most-recent first. Used for the "On This Day" banner.
+ */
+fun List<TravelEntry>.onThisDayEntries(): List<TravelEntry> {
+    val today = Calendar.getInstance()
+    val todayMonth = today.get(Calendar.MONTH)
+    val todayDay = today.get(Calendar.DAY_OF_MONTH)
+    val todayYear = today.get(Calendar.YEAR)
+    return filter { entry ->
+        val cal = Calendar.getInstance().apply { timeInMillis = entry.dateMillis }
+        cal.get(Calendar.MONTH) == todayMonth &&
+            cal.get(Calendar.DAY_OF_MONTH) == todayDay &&
+            cal.get(Calendar.YEAR) != todayYear
+    }.sortedByDescending { it.dateMillis }
+}
 
 /** Distinct tags across the given entries, most-used first then alphabetical. */
 fun List<TravelEntry>.tagsByFrequency(): List<String> =
