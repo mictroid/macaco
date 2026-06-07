@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wanderlog</string>
+    <!-- Common -->
+    <string name="common_save">保存</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_ok">确定</string>
+    <string name="common_delete">删除</string>
+    <string name="common_back">返回</string>
+    <string name="common_close">关闭</string>
+    <string name="common_dismiss">忽略</string>
+    <string name="common_sign_in">登录</string>
+    <string name="common_sign_out">退出登录</string>
+    <string name="common_profile">个人资料</string>
+    <string name="common_settings">设置</string>
+    <string name="common_new_entry">新建日记</string>
+    <string name="common_edit_entry">编辑日记</string>
+    <string name="common_subscription">订阅</string>
+    <string name="common_or">或</string>
+    <string name="common_version">版本</string>
+
+    <plurals name="journal_list_memories">
+        <item quantity="other">%d 条回忆</item>
+    </plurals>
+    <string name="journal_list_filtered">已筛选</string>
+    <string name="journal_list_menu_cd">菜单</string>
+    <string name="journal_list_switch_to_dark">切换至深色模式</string>
+    <string name="journal_list_switch_to_light">切换至浅色模式</string>
+    <string name="journal_list_empty_title">您的旅程从这里开始</string>
+    <string name="journal_list_empty_subtitle">点击下方按钮，\n记录您的第一段旅行回忆</string>
+    <string name="journal_list_no_match">没有符合这些标签的回忆</string>
+    <string name="journal_list_on_this_day">往日今天</string>
+    <plurals name="journal_list_years_ago">
+        <item quantity="other">%d 年前</item>
+    </plurals>
+    <string name="journal_list_filter_clear">清除</string>
+
+    <string name="new_entry_photos_label">照片</string>
+    <string name="new_entry_add_photo">添加</string>
+    <string name="new_entry_add_photo_cd">添加照片</string>
+    <string name="new_entry_remove_photo_cd">移除照片</string>
+    <string name="new_entry_title_label">标题 *</string>
+    <string name="new_entry_title_placeholder">我的巴黎之旅</string>
+    <string name="new_entry_title_required">标题不能为空</string>
+    <string name="new_entry_location_label">地点</string>
+    <string name="new_entry_location_placeholder">法国，巴黎</string>
+    <string name="new_entry_date_label">日期</string>
+    <string name="new_entry_mood_label">心情</string>
+    <string name="new_entry_description_label">我的故事</string>
+    <string name="new_entry_description_placeholder">写下您的旅行经历，那些美丽的风景、动人的声音和难忘的感受……</string>
+    <string name="new_entry_dictate_cd">语音输入</string>
+    <string name="new_entry_dictate_prompt">说说您的旅行回忆……</string>
+    <string name="new_entry_tags_label">标签</string>
+    <string name="new_entry_add_tag_label">添加标签</string>
+    <string name="new_entry_add_tag_placeholder">博物馆, 建筑, 度假</string>
+    <string name="new_entry_add_tag_cd">添加标签</string>
+    <string name="new_entry_remove_tag_cd">移除标签</string>
+
+    <string name="entry_detail_share_cd">分享</string>
+    <string name="entry_detail_edit_cd">编辑</string>
+    <string name="entry_detail_delete_cd">删除</string>
+    <string name="entry_detail_delete_title">删除日记</string>
+    <string name="entry_detail_delete_message">删除 &quot;%s&quot;？此操作无法撤销。</string>
+
+    <string name="settings_appearance">外观</string>
+    <string name="settings_dark_mode">深色模式</string>
+    <string name="settings_dark_mode_on">深色主题已启用</string>
+    <string name="settings_dark_mode_off">浅色主题已启用</string>
+    <string name="settings_theme_color">主题颜色</string>
+    <string name="settings_background_image">背景图片</string>
+    <string name="settings_custom_bg_active">自定义背景已启用</string>
+    <string name="settings_custom_bg_tap_change">点击更换</string>
+    <string name="settings_pick_bg">选择背景图片</string>
+    <string name="settings_change_image">更换图片</string>
+    <string name="settings_bg_hint">作为淡淡的水印显示在应用背景中</string>
+    <string name="settings_remove_image_cd">移除图片</string>
+    <string name="settings_notifications">通知</string>
+    <string name="settings_reminders">旅行提醒</string>
+    <plurals name="settings_reminder_interval">
+        <item quantity="other">每 %d 天 · 提醒记录一段回忆</item>
+    </plurals>
+    <string name="settings_reminders_off">提醒您记录旅行故事</string>
+    <string name="settings_remind_every">提醒我，每</string>
+    <string name="settings_reminder_one_day">1 天</string>
+    <string name="settings_reminder_days">%d 天</string>
+    <string name="settings_privacy">隐私</string>
+    <string name="settings_app_lock">应用锁</string>
+    <string name="settings_app_lock_on">需要生物识别或屏幕锁才能打开</string>
+    <string name="settings_app_lock_off">使用生物识别或屏幕锁保护日记</string>
+    <string name="settings_app_lock_unavailable">未设置屏幕锁。请先在设备设置中添加 PIN、图案或生物识别。</string>
+    <string name="settings_drive_backup">Google Drive 备份</string>
+    <string name="settings_drive_connected">已连接至 Google Drive</string>
+    <string name="settings_drive_not_connected">未连接</string>
+    <string name="settings_drive_connected_subtitle">照片已备份至 Drive / Wanderlog</string>
+    <string name="settings_drive_not_connected_subtitle">连接后可将日记照片备份至其他设备</string>
+    <string name="settings_drive_uploading">正在上传 %1$d / %2$d 张照片……</string>
+    <string name="settings_drive_all_synced">所有照片已备份</string>
+    <string name="settings_drive_connect">连接 Google Drive</string>
+    <string name="settings_drive_sync_now">立即同步</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_version_value">Wanderlog %s</string>
+
+    <string name="login_sign_in_subtitle">登录以同步您的回忆</string>
+    <string name="login_create_account_subtitle">创建您的账号</string>
+    <string name="login_google">G  使用 Google 继续</string>
+    <string name="login_apple">  使用 Apple 继续</string>
+    <string name="login_full_name">全名</string>
+    <string name="login_email">电子邮箱</string>
+    <string name="login_password">密码</string>
+    <string name="login_show_password_cd">显示密码</string>
+    <string name="login_hide_password_cd">隐藏密码</string>
+    <string name="login_create_account">创建账号</string>
+    <string name="login_already_have_account">已有账号？立即登录</string>
+    <string name="login_no_account">没有账号？立即注册</string>
+    <string name="login_fill_fields">请填写所有字段</string>
+    <string name="login_google_error_no_token">Google 登录失败：未返回 ID 令牌</string>
+    <string name="login_google_error_network">Google 登录失败，请检查您的网络连接。</string>
+    <string name="login_google_error_sha1">Google 登录未配置，请在 Firebase 中验证 SHA-1 指纹。</string>
+    <string name="login_google_error_code">Google 登录失败（%s）</string>
+
+    <string name="profile_photo_cd">个人头像</string>
+    <string name="profile_change_photo_cd">更换头像</string>
+    <string name="profile_sign_out_message">您的回忆将保留在此设备上。随时重新登录即可访问您的账号。</string>
+    <string name="profile_google_account">Google 账号</string>
+    <string name="profile_apple_account">Apple 账号</string>
+    <string name="profile_email_account">邮箱账号</string>
+    <string name="profile_guest">访客</string>
+    <string name="profile_memories">回忆</string>
+    <string name="profile_locations">地点</string>
+    <string name="profile_photos">照片</string>
+    <string name="profile_no_account_title">未连接账号</string>
+    <string name="profile_no_account_subtitle">登录后可跨设备同步回忆，并安全保存至云端。</string>
+
+    <string name="purchase_tagline">您的私人旅行日记</string>
+    <string name="purchase_feature_unlimited">无限量日记条目</string>
+    <string name="purchase_feature_photos">为每段回忆附上照片</string>
+    <string name="purchase_feature_sync">在所有设备间同步</string>
+    <string name="purchase_feature_no_ads">零广告，绝无例外</string>
+    <string name="purchase_feature_no_sub">一次购买，无需订阅</string>
+    <string name="purchase_unable_checkout">无法启动结账流程。</string>
+    <string name="purchase_unlock_for">%s 即可解锁</string>
+    <string name="purchase_one_time">一次性购买 · 无需订阅 · 无隐藏费用</string>
+    <string name="purchase_restore">恢复购买</string>
+    <string name="purchase_no_previous">未找到可恢复的购买记录。</string>
+
+    <string name="subscription_premium">Wanderlog 高级版</string>
+    <string name="subscription_active">已激活</string>
+    <string name="subscription_lifetime">一次性购买 · 永久使用</string>
+    <string name="subscription_whats_included">包含内容</string>
+    <string name="subscription_feature_unlimited">无限量日记条目</string>
+    <string name="subscription_feature_photos">为每段回忆附上照片</string>
+    <string name="subscription_feature_no_ads">永久零广告</string>
+    <string name="subscription_feature_local">数据保存在您的设备上</string>
+    <string name="subscription_feature_offline">完全支持离线使用</string>
+    <string name="subscription_feature_no_sub">无订阅，无循环费用</string>
+    <string name="subscription_feature_updates">包含未来更新</string>
+    <string name="subscription_thank_you">感谢您支持 Wanderlog！🙏\n您的购买让这款应用保持独立运营，永无广告。</string>
+
+    <string name="app_lock_locked">您的日记已锁定</string>
+    <string name="app_lock_unlock">解锁</string>
+    <string name="app_lock_biometric_title">解锁 Wanderlog</string>
+    <string name="app_lock_biometric_subtitle">验证身份以访问您的日记</string>
+</resources>

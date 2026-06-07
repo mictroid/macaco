@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wanderlog</string>
+    <!-- Common -->
+    <string name="common_save">保存</string>
+    <string name="common_cancel">キャンセル</string>
+    <string name="common_ok">OK</string>
+    <string name="common_delete">削除</string>
+    <string name="common_back">戻る</string>
+    <string name="common_close">閉じる</string>
+    <string name="common_dismiss">閉じる</string>
+    <string name="common_sign_in">サインイン</string>
+    <string name="common_sign_out">サインアウト</string>
+    <string name="common_profile">プロフィール</string>
+    <string name="common_settings">設定</string>
+    <string name="common_new_entry">新しい記録</string>
+    <string name="common_edit_entry">記録を編集</string>
+    <string name="common_subscription">サブスクリプション</string>
+    <string name="common_or">または</string>
+    <string name="common_version">バージョン</string>
+
+    <plurals name="journal_list_memories">
+        <item quantity="other">%d 件の思い出</item>
+    </plurals>
+    <string name="journal_list_filtered">フィルター中</string>
+    <string name="journal_list_menu_cd">メニュー</string>
+    <string name="journal_list_switch_to_dark">ダークモードに切り替え</string>
+    <string name="journal_list_switch_to_light">ライトモードに切り替え</string>
+    <string name="journal_list_empty_title">旅の記録を始めましょう</string>
+    <string name="journal_list_empty_subtitle">下のボタンをタップして\n最初の旅の思い出を追加しよう</string>
+    <string name="journal_list_no_match">そのタグに一致する思い出はありません</string>
+    <string name="journal_list_on_this_day">今日の出来事</string>
+    <plurals name="journal_list_years_ago">
+        <item quantity="other">%d 年前</item>
+    </plurals>
+    <string name="journal_list_filter_clear">クリア</string>
+
+    <string name="new_entry_photos_label">写真</string>
+    <string name="new_entry_add_photo">追加</string>
+    <string name="new_entry_add_photo_cd">写真を追加</string>
+    <string name="new_entry_remove_photo_cd">写真を削除</string>
+    <string name="new_entry_title_label">タイトル *</string>
+    <string name="new_entry_title_placeholder">パリの素敵な旅</string>
+    <string name="new_entry_title_required">タイトルは必須です</string>
+    <string name="new_entry_location_label">場所</string>
+    <string name="new_entry_location_placeholder">パリ、フランス</string>
+    <string name="new_entry_date_label">日付</string>
+    <string name="new_entry_mood_label">気分</string>
+    <string name="new_entry_description_label">旅の記録</string>
+    <string name="new_entry_description_placeholder">体験したこと、見たもの、聞いたこと、感じたことを書いてみよう…</string>
+    <string name="new_entry_dictate_cd">音声入力</string>
+    <string name="new_entry_dictate_prompt">旅の思い出を話してください…</string>
+    <string name="new_entry_tags_label">タグ</string>
+    <string name="new_entry_add_tag_label">タグを追加</string>
+    <string name="new_entry_add_tag_placeholder">博物館、建築、バケーション</string>
+    <string name="new_entry_add_tag_cd">タグを追加</string>
+    <string name="new_entry_remove_tag_cd">タグを削除</string>
+
+    <string name="entry_detail_share_cd">共有</string>
+    <string name="entry_detail_edit_cd">編集</string>
+    <string name="entry_detail_delete_cd">削除</string>
+    <string name="entry_detail_delete_title">記録を削除</string>
+    <string name="entry_detail_delete_message">&quot;%s&quot; を削除しますか？この操作は取り消せません。</string>
+
+    <string name="settings_appearance">外観</string>
+    <string name="settings_dark_mode">ダークモード</string>
+    <string name="settings_dark_mode_on">ダークテーマ有効</string>
+    <string name="settings_dark_mode_off">ライトテーマ有効</string>
+    <string name="settings_theme_color">テーマカラー</string>
+    <string name="settings_background_image">背景画像</string>
+    <string name="settings_custom_bg_active">カスタム背景が有効です</string>
+    <string name="settings_custom_bg_tap_change">タップして変更</string>
+    <string name="settings_pick_bg">背景画像を選択</string>
+    <string name="settings_change_image">画像を変更</string>
+    <string name="settings_bg_hint">アプリの背景に薄く表示されます</string>
+    <string name="settings_remove_image_cd">画像を削除</string>
+    <string name="settings_notifications">通知</string>
+    <string name="settings_reminders">旅の記録リマインダー</string>
+    <plurals name="settings_reminder_interval">
+        <item quantity="other">%d 日ごとに · 思い出を記録するよう促します</item>
+    </plurals>
+    <string name="settings_reminders_off">冒険を記録するよう通知します</string>
+    <string name="settings_remind_every">リマインドする頻度</string>
+    <string name="settings_reminder_one_day">1 日</string>
+    <string name="settings_reminder_days">%d 日</string>
+    <string name="settings_privacy">プライバシー</string>
+    <string name="settings_app_lock">アプリロック</string>
+    <string name="settings_app_lock_on">生体認証 / 画面ロックが必要です</string>
+    <string name="settings_app_lock_off">生体認証または画面ロックで日記を保護</string>
+    <string name="settings_app_lock_unavailable">画面ロックが設定されていません。先にデバイス設定でPIN、パターン、または生体認証を追加してください。</string>
+    <string name="settings_drive_backup">Google Drive バックアップ</string>
+    <string name="settings_drive_connected">Google Drive に接続済み</string>
+    <string name="settings_drive_not_connected">未接続</string>
+    <string name="settings_drive_connected_subtitle">写真は Drive / Wanderlog にバックアップされます</string>
+    <string name="settings_drive_not_connected_subtitle">接続してデバイス間で写真をバックアップ</string>
+    <string name="settings_drive_uploading">%1$d / %2$d 枚の写真をアップロード中…</string>
+    <string name="settings_drive_all_synced">すべての写真がバックアップ済み</string>
+    <string name="settings_drive_connect">Google Drive に接続</string>
+    <string name="settings_drive_sync_now">今すぐ同期</string>
+    <string name="settings_about">このアプリについて</string>
+    <string name="settings_version_value">Wanderlog %s</string>
+
+    <string name="login_sign_in_subtitle">サインインして思い出を同期しよう</string>
+    <string name="login_create_account_subtitle">アカウントを作成</string>
+    <string name="login_google">G  Google で続ける</string>
+    <string name="login_apple">  Apple で続ける</string>
+    <string name="login_full_name">フルネーム</string>
+    <string name="login_email">メールアドレス</string>
+    <string name="login_password">パスワード</string>
+    <string name="login_show_password_cd">パスワードを表示</string>
+    <string name="login_hide_password_cd">パスワードを非表示</string>
+    <string name="login_create_account">アカウントを作成</string>
+    <string name="login_already_have_account">すでにアカウントをお持ちの方はこちら</string>
+    <string name="login_no_account">アカウントをお持ちでない方は新規登録</string>
+    <string name="login_fill_fields">すべての項目を入力してください</string>
+    <string name="login_google_error_no_token">Google サインインに失敗しました：IDトークンが返されませんでした</string>
+    <string name="login_google_error_network">Google サインインに失敗しました。インターネット接続を確認してください。</string>
+    <string name="login_google_error_sha1">Google サインインが設定されていません。Firebase の SHA-1 フィンガープリントを確認してください。</string>
+    <string name="login_google_error_code">Google サインインに失敗しました (%s)</string>
+
+    <string name="profile_photo_cd">プロフィール写真</string>
+    <string name="profile_change_photo_cd">写真を変更</string>
+    <string name="profile_sign_out_message">思い出はこのデバイスに保存されます。いつでもサインインしてアカウントにアクセスできます。</string>
+    <string name="profile_google_account">Google アカウント</string>
+    <string name="profile_apple_account">Apple アカウント</string>
+    <string name="profile_email_account">メールアカウント</string>
+    <string name="profile_guest">ゲスト</string>
+    <string name="profile_memories">思い出</string>
+    <string name="profile_locations">場所</string>
+    <string name="profile_photos">写真</string>
+    <string name="profile_no_account_title">アカウントが未接続です</string>
+    <string name="profile_no_account_subtitle">サインインしてデバイス間で思い出を同期し、クラウドに安全に保存しましょう。</string>
+
+    <string name="purchase_tagline">あなただけの旅日記</string>
+    <string name="purchase_feature_unlimited">無制限の日記エントリー</string>
+    <string name="purchase_feature_photos">すべての思い出に写真を添付</string>
+    <string name="purchase_feature_sync">すべてのデバイスで同期</string>
+    <string name="purchase_feature_no_ads">広告ゼロ — 本当に一切なし</string>
+    <string name="purchase_feature_no_sub">サブスクリプション不要</string>
+    <string name="purchase_unable_checkout">チェックアウトを開始できません。</string>
+    <string name="purchase_unlock_for">%s でアンロック</string>
+    <string name="purchase_one_time">買い切り · サブスクなし · 隠れた費用なし</string>
+    <string name="purchase_restore">購入を復元</string>
+    <string name="purchase_no_previous">復元できる購入履歴が見つかりませんでした。</string>
+
+    <string name="subscription_premium">Wanderlog プレミアム</string>
+    <string name="subscription_active">有効</string>
+    <string name="subscription_lifetime">買い切り · 永久アクセス</string>
+    <string name="subscription_whats_included">含まれる機能</string>
+    <string name="subscription_feature_unlimited">無制限の日記エントリー</string>
+    <string name="subscription_feature_photos">すべての思い出に写真を添付</string>
+    <string name="subscription_feature_no_ads">広告ゼロ — 永久に</string>
+    <string name="subscription_feature_local">データはデバイスに保存</string>
+    <string name="subscription_feature_offline">完全オフライン対応</string>
+    <string name="subscription_feature_no_sub">サブスクなし、定期費用なし</string>
+    <string name="subscription_feature_updates">将来のアップデートも含む</string>
+    <string name="subscription_thank_you">Wanderlog をご支援いただきありがとうございます！ 🙏\nあなたの購入がアプリの独立性と広告フリーを支えています。</string>
+
+    <string name="app_lock_locked">日記はロックされています</string>
+    <string name="app_lock_unlock">ロック解除</string>
+    <string name="app_lock_biometric_title">Wanderlog をアンロック</string>
+    <string name="app_lock_biometric_subtitle">日記にアクセスするには本人確認が必要です</string>
+</resources>

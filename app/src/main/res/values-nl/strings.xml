@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wanderlog</string>
+    <!-- Common -->
+    <string name="common_save">Opslaan</string>
+    <string name="common_cancel">Annuleren</string>
+    <string name="common_ok">OK</string>
+    <string name="common_delete">Verwijderen</string>
+    <string name="common_back">Terug</string>
+    <string name="common_close">Sluiten</string>
+    <string name="common_dismiss">Sluiten</string>
+    <string name="common_sign_in">Inloggen</string>
+    <string name="common_sign_out">Uitloggen</string>
+    <string name="common_profile">Profiel</string>
+    <string name="common_settings">Instellingen</string>
+    <string name="common_new_entry">Nieuwe herinnering</string>
+    <string name="common_edit_entry">Herinnering bewerken</string>
+    <string name="common_subscription">Abonnement</string>
+    <string name="common_or">of</string>
+    <string name="common_version">Versie</string>
+
+    <plurals name="journal_list_memories">
+        <item quantity="one">%d herinnering</item>
+        <item quantity="other">%d herinneringen</item>
+    </plurals>
+    <string name="journal_list_filtered">gefilterd</string>
+    <string name="journal_list_menu_cd">Menu</string>
+    <string name="journal_list_switch_to_dark">Naar donkere modus</string>
+    <string name="journal_list_switch_to_light">Naar lichte modus</string>
+    <string name="journal_list_empty_title">Jouw reis begint hier</string>
+    <string name="journal_list_empty_subtitle">Tik op de knop hieronder om\njouw eerste reisherinnering toe te voegen</string>
+    <string name="journal_list_no_match">Geen herinneringen met deze tags</string>
+    <string name="journal_list_on_this_day">Op deze dag</string>
+    <plurals name="journal_list_years_ago">
+        <item quantity="one">1 jaar geleden</item>
+        <item quantity="other">%d jaar geleden</item>
+    </plurals>
+    <string name="journal_list_filter_clear">Wissen</string>
+
+    <string name="new_entry_photos_label">Foto\'s</string>
+    <string name="new_entry_add_photo">Toevoegen</string>
+    <string name="new_entry_add_photo_cd">Foto toevoegen</string>
+    <string name="new_entry_remove_photo_cd">Foto verwijderen</string>
+    <string name="new_entry_title_label">Titel *</string>
+    <string name="new_entry_title_placeholder">Mijn Amsterdamse avontuur</string>
+    <string name="new_entry_title_required">Titel is verplicht</string>
+    <string name="new_entry_location_label">Locatie</string>
+    <string name="new_entry_location_placeholder">Amsterdam, Nederland</string>
+    <string name="new_entry_date_label">Datum</string>
+    <string name="new_entry_mood_label">Stemming</string>
+    <string name="new_entry_description_label">Jouw verhaal</string>
+    <string name="new_entry_description_placeholder">Schrijf over je beleving, de bezienswaardigheden, geluiden en gevoelens…</string>
+    <string name="new_entry_dictate_cd">Dicteren</string>
+    <string name="new_entry_dictate_prompt">Vertel me over jouw reisherinnering…</string>
+    <string name="new_entry_tags_label">Tags</string>
+    <string name="new_entry_add_tag_label">Tag toevoegen</string>
+    <string name="new_entry_add_tag_placeholder">museum, architectuur, vakantie</string>
+    <string name="new_entry_add_tag_cd">Tag toevoegen</string>
+    <string name="new_entry_remove_tag_cd">Tag verwijderen</string>
+
+    <string name="entry_detail_share_cd">Delen</string>
+    <string name="entry_detail_edit_cd">Bewerken</string>
+    <string name="entry_detail_delete_cd">Verwijderen</string>
+    <string name="entry_detail_delete_title">Herinnering verwijderen</string>
+    <string name="entry_detail_delete_message">&quot;%s&quot; verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
+
+    <string name="settings_appearance">Weergave</string>
+    <string name="settings_dark_mode">Donkere modus</string>
+    <string name="settings_dark_mode_on">Donker thema actief</string>
+    <string name="settings_dark_mode_off">Licht thema actief</string>
+    <string name="settings_theme_color">Themakleur</string>
+    <string name="settings_background_image">Achtergrondafbeelding</string>
+    <string name="settings_custom_bg_active">Aangepaste achtergrond actief</string>
+    <string name="settings_custom_bg_tap_change">Tik om te wijzigen</string>
+    <string name="settings_pick_bg">Achtergrondafbeelding kiezen</string>
+    <string name="settings_change_image">Afbeelding wijzigen</string>
+    <string name="settings_bg_hint">Weergegeven als subtiel watermerk achter de app</string>
+    <string name="settings_remove_image_cd">Afbeelding verwijderen</string>
+    <string name="settings_notifications">Meldingen</string>
+    <string name="settings_reminders">Reisherinneringen</string>
+    <plurals name="settings_reminder_interval">
+        <item quantity="one">Elke 1 dag · herinnering om een geheugen te bewaren</item>
+        <item quantity="other">Elke %d dagen · herinnering om een geheugen te bewaren</item>
+    </plurals>
+    <string name="settings_reminders_off">Herinner je aan het bijhouden van je avonturen</string>
+    <string name="settings_remind_every">Herinner mij elke</string>
+    <string name="settings_reminder_one_day">1 dag</string>
+    <string name="settings_reminder_days">%d dagen</string>
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_app_lock">App-vergrendeling</string>
+    <string name="settings_app_lock_on">Biometrische of schermvergrendeling vereist om te openen</string>
+    <string name="settings_app_lock_off">Dagboek vergrendelen met biometrie of schermvergrendeling</string>
+    <string name="settings_app_lock_unavailable">Geen schermvergrendeling ingesteld. Voeg eerst een pincode, patroon of biometrie toe in je apparaatinstellingen.</string>
+    <string name="settings_drive_backup">Google Drive Back-up</string>
+    <string name="settings_drive_connected">Verbonden met Google Drive</string>
+    <string name="settings_drive_not_connected">Niet verbonden</string>
+    <string name="settings_drive_connected_subtitle">Foto\'s worden geback-upt naar Drive / Wanderlog</string>
+    <string name="settings_drive_not_connected_subtitle">Verbind om foto\'s van entries op al je apparaten te back-uppen</string>
+    <string name="settings_drive_uploading">%1$d / %2$d foto\'s uploaden…</string>
+    <string name="settings_drive_all_synced">Alle foto\'s geback-upt</string>
+    <string name="settings_drive_connect">Google Drive verbinden</string>
+    <string name="settings_drive_sync_now">Nu synchroniseren</string>
+    <string name="settings_about">Over</string>
+    <string name="settings_version_value">Wanderlog %s</string>
+
+    <string name="login_sign_in_subtitle">Log in om je herinneringen te synchroniseren</string>
+    <string name="login_create_account_subtitle">Maak je account aan</string>
+    <string name="login_google">G  Doorgaan met Google</string>
+    <string name="login_apple">  Doorgaan met Apple</string>
+    <string name="login_full_name">Volledige naam</string>
+    <string name="login_email">E-mailadres</string>
+    <string name="login_password">Wachtwoord</string>
+    <string name="login_show_password_cd">Wachtwoord weergeven</string>
+    <string name="login_hide_password_cd">Wachtwoord verbergen</string>
+    <string name="login_create_account">Account aanmaken</string>
+    <string name="login_already_have_account">Al een account? Inloggen</string>
+    <string name="login_no_account">Nog geen account? Maak er een aan</string>
+    <string name="login_fill_fields">Vul alle velden in</string>
+    <string name="login_google_error_no_token">Google-inloggen mislukt: geen ID-token ontvangen</string>
+    <string name="login_google_error_network">Google-inloggen mislukt. Controleer je internetverbinding.</string>
+    <string name="login_google_error_sha1">Google-inloggen niet geconfigureerd. Controleer de SHA-1-vingerafdruk in Firebase.</string>
+    <string name="login_google_error_code">Google-inloggen mislukt (%s)</string>
+
+    <string name="profile_photo_cd">Profielfoto</string>
+    <string name="profile_change_photo_cd">Foto wijzigen</string>
+    <string name="profile_sign_out_message">Je herinneringen blijven op dit apparaat. Log op elk moment in om je account te openen.</string>
+    <string name="profile_google_account">Google-account</string>
+    <string name="profile_apple_account">Apple-account</string>
+    <string name="profile_email_account">E-mailaccount</string>
+    <string name="profile_guest">Gast</string>
+    <string name="profile_memories">Herinneringen</string>
+    <string name="profile_locations">Locaties</string>
+    <string name="profile_photos">Foto\'s</string>
+    <string name="profile_no_account_title">Geen account gekoppeld</string>
+    <string name="profile_no_account_subtitle">Log in om je herinneringen op al je apparaten te synchroniseren en veilig in de cloud te bewaren.</string>
+
+    <string name="purchase_tagline">Jouw persoonlijk reisdagboek</string>
+    <string name="purchase_feature_unlimited">Onbeperkte dagboekvermeldingen</string>
+    <string name="purchase_feature_photos">Voeg foto\'s toe aan elke herinnering</string>
+    <string name="purchase_feature_sync">Synchroniseer op al je apparaten</string>
+    <string name="purchase_feature_no_ads">Geen advertenties — serieus, geen enkele</string>
+    <string name="purchase_feature_no_sub">Geen abonnement, nooit</string>
+    <string name="purchase_unable_checkout">Afrekenen kon niet worden gestart.</string>
+    <string name="purchase_unlock_for">Ontgrendelen voor %s</string>
+    <string name="purchase_one_time">Eenmalige aankoop · Geen abonnement · Geen verborgen kosten</string>
+    <string name="purchase_restore">Aankoop herstellen</string>
+    <string name="purchase_no_previous">Geen eerdere aankoop gevonden om te herstellen.</string>
+
+    <string name="subscription_premium">Wanderlog Premium</string>
+    <string name="subscription_active">ACTIEF</string>
+    <string name="subscription_lifetime">Eenmalige aankoop · Levenslange toegang</string>
+    <string name="subscription_whats_included">Wat is inbegrepen</string>
+    <string name="subscription_feature_unlimited">Onbeperkte dagboekvermeldingen</string>
+    <string name="subscription_feature_photos">Voeg foto\'s toe aan elke herinnering</string>
+    <string name="subscription_feature_no_ads">Geen advertenties — ooit</string>
+    <string name="subscription_feature_local">Je gegevens blijven op je apparaat</string>
+    <string name="subscription_feature_offline">Werkt volledig offline</string>
+    <string name="subscription_feature_no_sub">Geen abonnement, geen terugkerende kosten</string>
+    <string name="subscription_feature_updates">Toekomstige updates inbegrepen</string>
+    <string name="subscription_thank_you">Bedankt voor je steun aan Wanderlog! 🙏\nJouw aankoop houdt de app onafhankelijk en advertentievrij.</string>
+
+    <string name="app_lock_locked">Je dagboek is vergrendeld</string>
+    <string name="app_lock_unlock">Ontgrendelen</string>
+    <string name="app_lock_biometric_title">Wanderlog ontgrendelen</string>
+    <string name="app_lock_biometric_subtitle">Verifieer je identiteit om je dagboek te openen</string>
+</resources>

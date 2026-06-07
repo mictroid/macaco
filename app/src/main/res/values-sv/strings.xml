@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wanderlog</string>
+    <!-- Common -->
+    <string name="common_save">Spara</string>
+    <string name="common_cancel">Avbryt</string>
+    <string name="common_ok">OK</string>
+    <string name="common_delete">Radera</string>
+    <string name="common_back">Tillbaka</string>
+    <string name="common_close">Stäng</string>
+    <string name="common_dismiss">Avfärda</string>
+    <string name="common_sign_in">Logga in</string>
+    <string name="common_sign_out">Logga ut</string>
+    <string name="common_profile">Profil</string>
+    <string name="common_settings">Inställningar</string>
+    <string name="common_new_entry">Ny anteckning</string>
+    <string name="common_edit_entry">Redigera anteckning</string>
+    <string name="common_subscription">Prenumeration</string>
+    <string name="common_or">eller</string>
+    <string name="common_version">Version</string>
+
+    <plurals name="journal_list_memories">
+        <item quantity="one">%d minne</item>
+        <item quantity="other">%d minnen</item>
+    </plurals>
+    <string name="journal_list_filtered">filtrerat</string>
+    <string name="journal_list_menu_cd">Meny</string>
+    <string name="journal_list_switch_to_dark">Byt till mörkt läge</string>
+    <string name="journal_list_switch_to_light">Byt till ljust läge</string>
+    <string name="journal_list_empty_title">Din resa börjar här</string>
+    <string name="journal_list_empty_subtitle">Tryck på knappen nedan för att lägga till\nditt första reseminne</string>
+    <string name="journal_list_no_match">Inga minnen med de taggarna</string>
+    <string name="journal_list_on_this_day">Den här dagen</string>
+    <plurals name="journal_list_years_ago">
+        <item quantity="one">1 år sedan</item>
+        <item quantity="other">%d år sedan</item>
+    </plurals>
+    <string name="journal_list_filter_clear">Rensa</string>
+
+    <string name="new_entry_photos_label">Foton</string>
+    <string name="new_entry_add_photo">Lägg till</string>
+    <string name="new_entry_add_photo_cd">Lägg till foto</string>
+    <string name="new_entry_remove_photo_cd">Ta bort foto</string>
+    <string name="new_entry_title_label">Titel *</string>
+    <string name="new_entry_title_placeholder">Min romerska äventyrsvecka</string>
+    <string name="new_entry_title_required">Titel krävs</string>
+    <string name="new_entry_location_label">Plats</string>
+    <string name="new_entry_location_placeholder">Rom, Italien</string>
+    <string name="new_entry_date_label">Datum</string>
+    <string name="new_entry_mood_label">Stämning</string>
+    <string name="new_entry_description_label">Din berättelse</string>
+    <string name="new_entry_description_placeholder">Berätta om din upplevelse, vyerna, ljuden och känslorna…</string>
+    <string name="new_entry_dictate_cd">Diktera</string>
+    <string name="new_entry_dictate_prompt">Berätta om ditt reseminne…</string>
+    <string name="new_entry_tags_label">Taggar</string>
+    <string name="new_entry_add_tag_label">Lägg till en tagg</string>
+    <string name="new_entry_add_tag_placeholder">museum, arkitektur, semester</string>
+    <string name="new_entry_add_tag_cd">Lägg till tagg</string>
+    <string name="new_entry_remove_tag_cd">Ta bort tagg</string>
+
+    <string name="entry_detail_share_cd">Dela</string>
+    <string name="entry_detail_edit_cd">Redigera</string>
+    <string name="entry_detail_delete_cd">Radera</string>
+    <string name="entry_detail_delete_title">Radera anteckning</string>
+    <string name="entry_detail_delete_message">Radera &quot;%s&quot;? Detta kan inte ångras.</string>
+
+    <string name="settings_appearance">Utseende</string>
+    <string name="settings_dark_mode">Mörkt läge</string>
+    <string name="settings_dark_mode_on">Mörkt tema aktivt</string>
+    <string name="settings_dark_mode_off">Ljust tema aktivt</string>
+    <string name="settings_theme_color">Temafärg</string>
+    <string name="settings_background_image">Bakgrundsbild</string>
+    <string name="settings_custom_bg_active">Anpassad bakgrund aktiv</string>
+    <string name="settings_custom_bg_tap_change">Tryck för att byta</string>
+    <string name="settings_pick_bg">Välj bakgrundsbild</string>
+    <string name="settings_change_image">Byt bild</string>
+    <string name="settings_bg_hint">Visas som ett diskret vattenmärke bakom appen</string>
+    <string name="settings_remove_image_cd">Ta bort bild</string>
+    <string name="settings_notifications">Aviseringar</string>
+    <string name="settings_reminders">Resepåminnelser</string>
+    <plurals name="settings_reminder_interval">
+        <item quantity="one">Var 1 dag · påminnelse om att logga ett minne</item>
+        <item quantity="other">Var %d dag · påminnelse om att logga ett minne</item>
+    </plurals>
+    <string name="settings_reminders_off">Påminn dig om att logga dina äventyr</string>
+    <string name="settings_remind_every">Påminn mig var</string>
+    <string name="settings_reminder_one_day">1 dag</string>
+    <string name="settings_reminder_days">%d dagar</string>
+    <string name="settings_privacy">Integritet</string>
+    <string name="settings_app_lock">Applås</string>
+    <string name="settings_app_lock_on">Biometri / skärmlås krävs för att öppna</string>
+    <string name="settings_app_lock_off">Lås dagboken med biometri eller skärmlås</string>
+    <string name="settings_app_lock_unavailable">Inget skärmlås konfigurerat. Lägg till en PIN-kod, ett mönster eller biometri i din enhets inställningar först.</string>
+    <string name="settings_drive_backup">Google Drive-säkerhetskopiering</string>
+    <string name="settings_drive_connected">Ansluten till Google Drive</string>
+    <string name="settings_drive_not_connected">Inte ansluten</string>
+    <string name="settings_drive_connected_subtitle">Foton säkerhetskopieras till Drive / Wanderlog</string>
+    <string name="settings_drive_not_connected_subtitle">Anslut för att säkerhetskopiera foton från dina anteckningar på alla enheter</string>
+    <string name="settings_drive_uploading">Laddar upp %1$d / %2$d foton…</string>
+    <string name="settings_drive_all_synced">Alla foton säkerhetskopierade</string>
+    <string name="settings_drive_connect">Anslut Google Drive</string>
+    <string name="settings_drive_sync_now">Synka nu</string>
+    <string name="settings_about">Om appen</string>
+    <string name="settings_version_value">Wanderlog %s</string>
+
+    <string name="login_sign_in_subtitle">Logga in för att synka dina minnen</string>
+    <string name="login_create_account_subtitle">Skapa ditt konto</string>
+    <string name="login_google">G  Fortsätt med Google</string>
+    <string name="login_apple">  Fortsätt med Apple</string>
+    <string name="login_full_name">Fullständigt namn</string>
+    <string name="login_email">E-post</string>
+    <string name="login_password">Lösenord</string>
+    <string name="login_show_password_cd">Visa lösenord</string>
+    <string name="login_hide_password_cd">Dölj lösenord</string>
+    <string name="login_create_account">Skapa konto</string>
+    <string name="login_already_have_account">Har du redan ett konto? Logga in</string>
+    <string name="login_no_account">Har du inget konto? Skapa ett</string>
+    <string name="login_fill_fields">Vänligen fyll i alla fält</string>
+    <string name="login_google_error_no_token">Google-inloggning misslyckades: inget ID-token returnerades</string>
+    <string name="login_google_error_network">Google-inloggning misslyckades. Kontrollera din internetanslutning.</string>
+    <string name="login_google_error_sha1">Google-inloggning är inte konfigurerad. Verifiera SHA-1-fingeravtrycket i Firebase.</string>
+    <string name="login_google_error_code">Google-inloggning misslyckades (%s)</string>
+
+    <string name="profile_photo_cd">Profilfoto</string>
+    <string name="profile_change_photo_cd">Byt foto</string>
+    <string name="profile_sign_out_message">Dina minnen finns kvar på den här enheten. Logga in igen när som helst för att komma åt ditt konto.</string>
+    <string name="profile_google_account">Google-konto</string>
+    <string name="profile_apple_account">Apple-konto</string>
+    <string name="profile_email_account">E-postkonto</string>
+    <string name="profile_guest">Gäst</string>
+    <string name="profile_memories">Minnen</string>
+    <string name="profile_locations">Platser</string>
+    <string name="profile_photos">Foton</string>
+    <string name="profile_no_account_title">Inget konto anslutet</string>
+    <string name="profile_no_account_subtitle">Logga in för att synka dina minnen mellan enheter och hålla dem säkra i molnet.</string>
+
+    <string name="purchase_tagline">Din personliga resedagbok</string>
+    <string name="purchase_feature_unlimited">Obegränsat antal dagboksanteckningar</string>
+    <string name="purchase_feature_photos">Bifoga foton till varje minne</string>
+    <string name="purchase_feature_sync">Synka på alla dina enheter</string>
+    <string name="purchase_feature_no_ads">Noll annonser — på riktigt</string>
+    <string name="purchase_feature_no_sub">Ingen prenumeration, någonsin</string>
+    <string name="purchase_unable_checkout">Det gick inte att starta kassan.</string>
+    <string name="purchase_unlock_for">Lås upp för %s</string>
+    <string name="purchase_one_time">Engångsköp · Ingen prenumeration · Inga dolda avgifter</string>
+    <string name="purchase_restore">Återställ köp</string>
+    <string name="purchase_no_previous">Inget tidigare köp hittades att återställa.</string>
+
+    <string name="subscription_premium">Wanderlog Premium</string>
+    <string name="subscription_active">AKTIV</string>
+    <string name="subscription_lifetime">Engångsköp · Livstidsåtkomst</string>
+    <string name="subscription_whats_included">Vad som ingår</string>
+    <string name="subscription_feature_unlimited">Obegränsat antal dagboksanteckningar</string>
+    <string name="subscription_feature_photos">Bifoga foton till varje minne</string>
+    <string name="subscription_feature_no_ads">Noll annonser — för alltid</string>
+    <string name="subscription_feature_local">Din data stannar på din enhet</string>
+    <string name="subscription_feature_offline">Fungerar helt offline</string>
+    <string name="subscription_feature_no_sub">Ingen prenumeration, inga återkommande avgifter</string>
+    <string name="subscription_feature_updates">Framtida uppdateringar ingår</string>
+    <string name="subscription_thank_you">Tack för att du stödjer Wanderlog! 🙏\nDitt köp håller appen oberoende och reklamfri.</string>
+
+    <string name="app_lock_locked">Din dagbok är låst</string>
+    <string name="app_lock_unlock">Lås upp</string>
+    <string name="app_lock_biometric_title">Lås upp Wanderlog</string>
+    <string name="app_lock_biometric_subtitle">Verifiera din identitet för att komma åt din dagbok</string>
+</resources>

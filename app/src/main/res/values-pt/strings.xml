@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wanderlog</string>
+    <!-- Common -->
+    <string name="common_save">Salvar</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_ok">OK</string>
+    <string name="common_delete">Excluir</string>
+    <string name="common_back">Voltar</string>
+    <string name="common_close">Fechar</string>
+    <string name="common_dismiss">Dispensar</string>
+    <string name="common_sign_in">Entrar</string>
+    <string name="common_sign_out">Sair</string>
+    <string name="common_profile">Perfil</string>
+    <string name="common_settings">Configurações</string>
+    <string name="common_new_entry">Nova Entrada</string>
+    <string name="common_edit_entry">Editar Entrada</string>
+    <string name="common_subscription">Assinatura</string>
+    <string name="common_or">ou</string>
+    <string name="common_version">Versão</string>
+
+    <plurals name="journal_list_memories">
+        <item quantity="one">%d lembrança</item>
+        <item quantity="other">%d lembranças</item>
+    </plurals>
+    <string name="journal_list_filtered">filtrado</string>
+    <string name="journal_list_menu_cd">Menu</string>
+    <string name="journal_list_switch_to_dark">Mudar para Modo Escuro</string>
+    <string name="journal_list_switch_to_light">Mudar para Modo Claro</string>
+    <string name="journal_list_empty_title">Sua jornada começa aqui</string>
+    <string name="journal_list_empty_subtitle">Toque no botão abaixo para adicionar\nsua primeira lembrança de viagem</string>
+    <string name="journal_list_no_match">Nenhuma lembrança com essas tags</string>
+    <string name="journal_list_on_this_day">Neste Dia</string>
+    <plurals name="journal_list_years_ago">
+        <item quantity="one">1 ano atrás</item>
+        <item quantity="other">%d anos atrás</item>
+    </plurals>
+    <string name="journal_list_filter_clear">Limpar</string>
+
+    <string name="new_entry_photos_label">Fotos</string>
+    <string name="new_entry_add_photo">Adicionar</string>
+    <string name="new_entry_add_photo_cd">Adicionar foto</string>
+    <string name="new_entry_remove_photo_cd">Remover foto</string>
+    <string name="new_entry_title_label">Título *</string>
+    <string name="new_entry_title_placeholder">Minha Aventura em Fernando de Noronha</string>
+    <string name="new_entry_title_required">O título é obrigatório</string>
+    <string name="new_entry_location_label">Local</string>
+    <string name="new_entry_location_placeholder">Rio de Janeiro, Brasil</string>
+    <string name="new_entry_date_label">Data</string>
+    <string name="new_entry_mood_label">Humor</string>
+    <string name="new_entry_description_label">Sua história</string>
+    <string name="new_entry_description_placeholder">Escreva sobre sua experiência, os lugares, sons e sentimentos…</string>
+    <string name="new_entry_dictate_cd">Ditar</string>
+    <string name="new_entry_dictate_prompt">Fale sobre sua lembrança de viagem…</string>
+    <string name="new_entry_tags_label">Tags</string>
+    <string name="new_entry_add_tag_label">Adicionar uma tag</string>
+    <string name="new_entry_add_tag_placeholder">museu, arquitetura, férias</string>
+    <string name="new_entry_add_tag_cd">Adicionar tag</string>
+    <string name="new_entry_remove_tag_cd">Remover tag</string>
+
+    <string name="entry_detail_share_cd">Compartilhar</string>
+    <string name="entry_detail_edit_cd">Editar</string>
+    <string name="entry_detail_delete_cd">Excluir</string>
+    <string name="entry_detail_delete_title">Excluir Entrada</string>
+    <string name="entry_detail_delete_message">Excluir &quot;%s&quot;? Essa ação não pode ser desfeita.</string>
+
+    <string name="settings_appearance">Aparência</string>
+    <string name="settings_dark_mode">Modo Escuro</string>
+    <string name="settings_dark_mode_on">Tema escuro ativado</string>
+    <string name="settings_dark_mode_off">Tema claro ativado</string>
+    <string name="settings_theme_color">Cor do Tema</string>
+    <string name="settings_background_image">Imagem de Fundo</string>
+    <string name="settings_custom_bg_active">Fundo personalizado ativo</string>
+    <string name="settings_custom_bg_tap_change">Toque para alterar</string>
+    <string name="settings_pick_bg">Escolher imagem de fundo</string>
+    <string name="settings_change_image">Alterar imagem</string>
+    <string name="settings_bg_hint">Exibida como uma marca d\'água sutil por trás do app</string>
+    <string name="settings_remove_image_cd">Remover imagem</string>
+    <string name="settings_notifications">Notificações</string>
+    <string name="settings_reminders">Lembretes de Viagem</string>
+    <plurals name="settings_reminder_interval">
+        <item quantity="one">A cada 1 dia · lembrete para registrar uma memória</item>
+        <item quantity="other">A cada %d dias · lembrete para registrar uma memória</item>
+    </plurals>
+    <string name="settings_reminders_off">Lembrar de registrar suas aventuras</string>
+    <string name="settings_remind_every">Lembrar a cada</string>
+    <string name="settings_reminder_one_day">1 dia</string>
+    <string name="settings_reminder_days">%d dias</string>
+    <string name="settings_privacy">Privacidade</string>
+    <string name="settings_app_lock">Bloqueio do App</string>
+    <string name="settings_app_lock_on">Biometria / bloqueio de tela necessário para abrir</string>
+    <string name="settings_app_lock_off">Bloquear diário com biometria ou bloqueio de tela</string>
+    <string name="settings_app_lock_unavailable">Nenhum bloqueio de tela configurado. Adicione um PIN, padrão ou biometria nas configurações do dispositivo primeiro.</string>
+    <string name="settings_drive_backup">Backup no Google Drive</string>
+    <string name="settings_drive_connected">Conectado ao Google Drive</string>
+    <string name="settings_drive_not_connected">Não conectado</string>
+    <string name="settings_drive_connected_subtitle">As fotos são salvas no Drive / Wanderlog</string>
+    <string name="settings_drive_not_connected_subtitle">Conecte para fazer backup das fotos entre dispositivos</string>
+    <string name="settings_drive_uploading">Enviando %1$d / %2$d fotos…</string>
+    <string name="settings_drive_all_synced">Todas as fotos salvas no backup</string>
+    <string name="settings_drive_connect">Conectar Google Drive</string>
+    <string name="settings_drive_sync_now">Sincronizar Agora</string>
+    <string name="settings_about">Sobre</string>
+    <string name="settings_version_value">Wanderlog %s</string>
+
+    <string name="login_sign_in_subtitle">Entre para sincronizar suas lembranças</string>
+    <string name="login_create_account_subtitle">Crie sua conta</string>
+    <string name="login_google">G  Continuar com Google</string>
+    <string name="login_apple">  Continuar com Apple</string>
+    <string name="login_full_name">Nome completo</string>
+    <string name="login_email">E-mail</string>
+    <string name="login_password">Senha</string>
+    <string name="login_show_password_cd">Mostrar senha</string>
+    <string name="login_hide_password_cd">Ocultar senha</string>
+    <string name="login_create_account">Criar Conta</string>
+    <string name="login_already_have_account">Já tem uma conta? Entre</string>
+    <string name="login_no_account">Não tem uma conta? Crie uma</string>
+    <string name="login_fill_fields">Por favor, preencha todos os campos</string>
+    <string name="login_google_error_no_token">Falha no login com Google: nenhum token de ID retornado</string>
+    <string name="login_google_error_network">Falha no login com Google. Verifique sua conexão com a internet.</string>
+    <string name="login_google_error_sha1">Login com Google não configurado. Verifique a impressão digital SHA-1 no Firebase.</string>
+    <string name="login_google_error_code">Falha no login com Google (%s)</string>
+
+    <string name="profile_photo_cd">Foto do perfil</string>
+    <string name="profile_change_photo_cd">Alterar foto</string>
+    <string name="profile_sign_out_message">Suas lembranças permanecerão neste dispositivo. Entre novamente a qualquer momento para acessar sua conta.</string>
+    <string name="profile_google_account">Conta Google</string>
+    <string name="profile_apple_account">Conta Apple</string>
+    <string name="profile_email_account">Conta de E-mail</string>
+    <string name="profile_guest">Visitante</string>
+    <string name="profile_memories">Lembranças</string>
+    <string name="profile_locations">Locais</string>
+    <string name="profile_photos">Fotos</string>
+    <string name="profile_no_account_title">Nenhuma conta conectada</string>
+    <string name="profile_no_account_subtitle">Entre para sincronizar suas lembranças entre dispositivos e mantê-las seguras na nuvem.</string>
+
+    <string name="purchase_tagline">Seu diário de viagem pessoal</string>
+    <string name="purchase_feature_unlimited">Entradas ilimitadas no diário</string>
+    <string name="purchase_feature_photos">Anexe fotos a cada memória</string>
+    <string name="purchase_feature_sync">Sincronize em todos os seus dispositivos</string>
+    <string name="purchase_feature_no_ads">Zero anúncios — de verdade, nenhum</string>
+    <string name="purchase_feature_no_sub">Sem assinatura, nunca</string>
+    <string name="purchase_unable_checkout">Não foi possível iniciar o pagamento.</string>
+    <string name="purchase_unlock_for">Desbloquear por %s</string>
+    <string name="purchase_one_time">Compra única · Sem assinatura · Sem taxas ocultas</string>
+    <string name="purchase_restore">Restaurar Compra</string>
+    <string name="purchase_no_previous">Nenhuma compra anterior encontrada para restaurar.</string>
+
+    <string name="subscription_premium">Wanderlog Premium</string>
+    <string name="subscription_active">ATIVO</string>
+    <string name="subscription_lifetime">Compra única · Acesso vitalício</string>
+    <string name="subscription_whats_included">O que está incluído</string>
+    <string name="subscription_feature_unlimited">Entradas ilimitadas no diário</string>
+    <string name="subscription_feature_photos">Anexe fotos a cada memória</string>
+    <string name="subscription_feature_no_ads">Zero anúncios — para sempre</string>
+    <string name="subscription_feature_local">Seus dados ficam no seu dispositivo</string>
+    <string name="subscription_feature_offline">Funciona totalmente offline</string>
+    <string name="subscription_feature_no_sub">Sem assinatura, sem cobranças recorrentes</string>
+    <string name="subscription_feature_updates">Atualizações futuras incluídas</string>
+    <string name="subscription_thank_you">Obrigado por apoiar o Wanderlog! 🙏\nSua compra mantém o app independente e sem anúncios.</string>
+
+    <string name="app_lock_locked">Seu diário está bloqueado</string>
+    <string name="app_lock_unlock">Desbloquear</string>
+    <string name="app_lock_biometric_title">Desbloquear Wanderlog</string>
+    <string name="app_lock_biometric_subtitle">Verifique sua identidade para acessar seu diário</string>
+</resources>
