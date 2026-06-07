@@ -21,6 +21,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.example.myapplication.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,13 +50,13 @@ fun AppLockScreen(onUnlocked: () -> Unit) {
         Text("🔒", fontSize = 72.sp)
         Spacer(Modifier.height(24.dp))
         Text(
-            "Wanderlog",
+            stringResource(R.string.app_name),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            "Your journal is locked",
+            stringResource(R.string.app_lock_locked),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -64,7 +66,7 @@ fun AppLockScreen(onUnlocked: () -> Unit) {
             onClick = { showBiometricPrompt(context, onUnlocked) },
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Unlock", modifier = Modifier.padding(horizontal = 16.dp))
+            Text(stringResource(R.string.app_lock_unlock), modifier = Modifier.padding(horizontal = 16.dp))
         }
     }
 }
@@ -79,8 +81,8 @@ fun showBiometricPrompt(context: android.content.Context, onSuccess: () -> Unit)
     }
     val prompt = BiometricPrompt(activity, executor, callback)
     val info = BiometricPrompt.PromptInfo.Builder()
-        .setTitle("Unlock Wanderlog")
-        .setSubtitle("Verify your identity to access your journal")
+        .setTitle(context.getString(R.string.app_lock_biometric_title))
+        .setSubtitle(context.getString(R.string.app_lock_biometric_subtitle))
         .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
         .build()
     prompt.authenticate(info)

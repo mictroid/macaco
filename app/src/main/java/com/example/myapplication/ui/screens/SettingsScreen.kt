@@ -69,6 +69,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.content.ContextCompat
 import androidx.compose.ui.text.style.TextAlign
@@ -153,10 +155,10 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.common_settings)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -175,19 +177,19 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // ── Appearance ────────────────────────────────────────────────────
-            SettingsSectionHeader("Appearance")
+            SettingsSectionHeader(stringResource(R.string.settings_appearance))
 
             SettingsToggleRow(
                 icon = if (isDarkMode) Icons.Filled.DarkMode else Icons.Filled.LightMode,
-                title = "Dark Mode",
-                subtitle = if (isDarkMode) "Dark theme active" else "Light theme active",
+                title = stringResource(R.string.settings_dark_mode),
+                subtitle = if (isDarkMode) stringResource(R.string.settings_dark_mode_on) else stringResource(R.string.settings_dark_mode_off),
                 checked = isDarkMode,
                 onCheckedChange = { viewModel.toggleDarkMode() }
             )
 
             // ── Theme Color ───────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader("Theme Color")
+            SettingsSectionHeader(stringResource(R.string.settings_theme_color))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -222,7 +224,7 @@ fun SettingsScreen(
 
             // ── Background Image ──────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader("Background Image")
+            SettingsSectionHeader(stringResource(R.string.settings_background_image))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -241,7 +243,7 @@ fun SettingsScreen(
                             Box(modifier = Modifier.size(72.dp)) {
                                 AsyncImage(
                                     model = themeImageUri,
-                                    contentDescription = "Background image",
+                                    contentDescription = stringResource(R.string.settings_background_image),
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .clip(RoundedCornerShape(10.dp)),
@@ -250,12 +252,12 @@ fun SettingsScreen(
                             }
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    "Custom background active",
+                                    stringResource(R.string.settings_custom_bg_active),
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Medium
                                 )
                                 Text(
-                                    "Tap to change",
+                                    stringResource(R.string.settings_custom_bg_tap_change),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -274,7 +276,7 @@ fun SettingsScreen(
                             ) {
                                 Icon(
                                     Icons.Filled.Close,
-                                    contentDescription = "Remove image",
+                                    contentDescription = stringResource(R.string.settings_remove_image_cd),
                                     tint = MaterialTheme.colorScheme.onErrorContainer,
                                     modifier = Modifier.size(16.dp)
                                 )
@@ -312,14 +314,14 @@ fun SettingsScreen(
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    "Pick background image",
+                                    stringResource(R.string.settings_pick_bg),
                                     style = MaterialTheme.typography.labelLarge,
                                     color = pickerFg
                                 )
                             }
                         } else {
                             Text(
-                                "Change image",
+                                stringResource(R.string.settings_change_image),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = pickerFg,
                                 fontWeight = FontWeight.Medium
@@ -330,7 +332,7 @@ fun SettingsScreen(
                     if (themeImageUri == null) {
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            "Shown as a subtle watermark behind the app",
+                            stringResource(R.string.settings_bg_hint),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
@@ -342,15 +344,15 @@ fun SettingsScreen(
 
             // ── Notifications ─────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader("Notifications")
+            SettingsSectionHeader(stringResource(R.string.settings_notifications))
 
             SettingsToggleRow(
                 icon = Icons.Filled.Notifications,
-                title = "Travel Reminders",
+                title = stringResource(R.string.settings_reminders),
                 subtitle = if (remindersEnabled) {
-                    "Every $reminderIntervalDays ${if (reminderIntervalDays == 1) "day" else "days"} · nudge to log a memory"
+                    pluralStringResource(R.plurals.settings_reminder_interval, reminderIntervalDays, reminderIntervalDays)
                 } else {
-                    "Remind you to log your adventures"
+                    stringResource(R.string.settings_reminders_off)
                 },
                 checked = remindersEnabled,
                 onCheckedChange = { checked ->
@@ -367,18 +369,18 @@ fun SettingsScreen(
 
             // ── Privacy ───────────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader("Privacy")
+            SettingsSectionHeader(stringResource(R.string.settings_privacy))
 
             SettingsToggleRow(
                 icon = Icons.Filled.Lock,
-                title = "App Lock",
-                subtitle = if (appLockEnabled) "Biometric / screen lock required to open"
-                           else "Lock journal with biometric or screen lock",
+                title = stringResource(R.string.settings_app_lock),
+                subtitle = if (appLockEnabled) stringResource(R.string.settings_app_lock_on)
+                           else stringResource(R.string.settings_app_lock_off),
                 checked = appLockEnabled,
                 onCheckedChange = { checked ->
                     if (checked) {
                         if (!isBiometricAvailable(context)) {
-                            lockErrorMessage = "No screen lock set up. Add a PIN, pattern, or biometric in your device settings first."
+                            lockErrorMessage = context.getString(R.string.settings_app_lock_unavailable)
                             return@SettingsToggleRow
                         }
                         // Verify auth works before enabling — prevents lockout on unsupported devices.
@@ -405,7 +407,7 @@ fun SettingsScreen(
 
             // ── Google Drive Backup ───────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader("Google Drive Backup")
+            SettingsSectionHeader(stringResource(R.string.settings_drive_backup))
 
             DriveBackupCard(
                 connected = driveConnected,
@@ -416,14 +418,14 @@ fun SettingsScreen(
 
             // ── About ─────────────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader("About")
+            SettingsSectionHeader(stringResource(R.string.settings_about))
 
             val versionName = remember {
                 runCatching {
                     context.packageManager.getPackageInfo(context.packageName, 0).versionName
                 }.getOrNull().orEmpty()
             }
-            SettingsInfoRow(icon = Icons.Filled.Info, title = "Version", value = "Wanderlog $versionName")
+            SettingsInfoRow(icon = Icons.Filled.Info, title = stringResource(R.string.common_version), value = stringResource(R.string.settings_version_value, versionName))
 
             Spacer(Modifier.height(16.dp))
         }
@@ -479,13 +481,13 @@ private fun DriveBackupCard(
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        if (connected) "Connected to Google Drive" else "Not connected",
+                        if (connected) stringResource(R.string.settings_drive_connected) else stringResource(R.string.settings_drive_not_connected),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        if (connected) "Photos are backed up to Drive / Wanderlog"
-                        else "Connect to back up entry photos across devices",
+                        if (connected) stringResource(R.string.settings_drive_connected_subtitle)
+                        else stringResource(R.string.settings_drive_not_connected_subtitle),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -500,7 +502,7 @@ private fun DriveBackupCard(
                             modifier = Modifier.fillMaxWidth()
                         )
                         Text(
-                            "Uploading ${syncState.done} / ${syncState.total} photos…",
+                            stringResource(R.string.settings_drive_uploading, syncState.done, syncState.total),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -516,7 +518,7 @@ private fun DriveBackupCard(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            "All photos backed up",
+                            stringResource(R.string.settings_drive_all_synced),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -538,7 +540,7 @@ private fun DriveBackupCard(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp)
                 ) {
-                    Text("Connect Google Drive")
+                    Text(stringResource(R.string.settings_drive_connect))
                 }
             } else if (syncState !is DrivePhotoSyncState.Syncing) {
                 OutlinedButton(
@@ -548,7 +550,7 @@ private fun DriveBackupCard(
                 ) {
                     Icon(Icons.Filled.Sync, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Sync Now")
+                    Text(stringResource(R.string.settings_drive_sync_now))
                 }
             }
         }
@@ -609,7 +611,7 @@ private fun ReminderCadenceCard(selectedDays: Int, onSelect: (Int) -> Unit) {
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
             Text(
-                "Remind me every",
+                stringResource(R.string.settings_remind_every),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -622,7 +624,7 @@ private fun ReminderCadenceCard(selectedDays: Int, onSelect: (Int) -> Unit) {
                     FilterChip(
                         selected = d == selectedDays,
                         onClick = { onSelect(d) },
-                        label = { Text(if (d == 1) "1 day" else "$d days") }
+                        label = { Text(if (d == 1) stringResource(R.string.settings_reminder_one_day) else stringResource(R.string.settings_reminder_days, d)) }
                     )
                 }
             }

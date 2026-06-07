@@ -57,8 +57,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.R
 import com.example.myapplication.data.auth.FirebaseConfig
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 import com.example.myapplication.ui.theme.isLightTheme
@@ -104,7 +106,7 @@ fun LoginScreen(
             val account = task.getResult(ApiException::class.java)
             val idToken = account.idToken
             if (idToken == null) {
-                errorMessage = "Google sign-in failed: no ID token returned"
+                errorMessage = context.getString(R.string.login_google_error_no_token)
                 return@rememberLauncherForActivityResult
             }
             isLoading = true
@@ -116,9 +118,9 @@ fun LoginScreen(
             val apiException = e as? ApiException
             errorMessage = when (apiException?.statusCode) {
                 12501 -> null // user cancelled — show nothing
-                12500 -> "Google sign-in failed. Check your internet connection."
-                10 -> "Google sign-in not configured. Verify the SHA-1 fingerprint in Firebase."
-                else -> "Google sign-in failed (${apiException?.statusCode ?: e.message})"
+                12500 -> context.getString(R.string.login_google_error_network)
+                10 -> context.getString(R.string.login_google_error_sha1)
+                else -> context.getString(R.string.login_google_error_code, apiException?.statusCode ?: e.message)
             }
         }
     }
@@ -166,13 +168,13 @@ fun LoginScreen(
                     }
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        "Wanderlog",
+                        stringResource(R.string.app_name),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = onHero
                     )
                     Text(
-                        if (isCreatingAccount) "Create your account" else "Sign in to sync your memories",
+                        if (isCreatingAccount) stringResource(R.string.login_create_account_subtitle) else stringResource(R.string.login_sign_in_subtitle),
                         style = MaterialTheme.typography.bodySmall,
                         color = if (light) onHero.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -205,7 +207,7 @@ fun LoginScreen(
                             color = MaterialTheme.colorScheme.primary
                         )
                     } else {
-                        Text("G  Continue with Google", fontWeight = FontWeight.Medium)
+                        Text(stringResource(R.string.login_google), fontWeight = FontWeight.Medium)
                     }
                 }
 
@@ -228,7 +230,7 @@ fun LoginScreen(
                     ),
                     enabled = !isLoading
                 ) {
-                    Text("  Continue with Apple", fontWeight = FontWeight.Medium)
+                    Text(stringResource(R.string.login_apple), fontWeight = FontWeight.Medium)
                 }
 
                 // Error shown right below social buttons — always visible
@@ -253,7 +255,7 @@ fun LoginScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     HorizontalDivider(modifier = Modifier.weight(1f))
-                    Text("or", color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    Text(stringResource(R.string.common_or), color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall)
                     HorizontalDivider(modifier = Modifier.weight(1f))
                 }
@@ -267,7 +269,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = displayName,
                         onValueChange = { displayName = it },
-                        label = { Text("Full name") },
+                        label = { Text(stringResource(R.string.login_full_name)) },
                         leadingIcon = { Icon(Icons.Filled.Person, null) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
@@ -278,7 +280,7 @@ fun LoginScreen(
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it; errorMessage = null },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.login_email)) },
                     leadingIcon = { Icon(Icons.Filled.Email, null) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -289,13 +291,13 @@ fun LoginScreen(
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it; errorMessage = null },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(R.string.login_password)) },
                     leadingIcon = { Icon(Icons.Filled.Lock, null) },
                     trailingIcon = {
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                contentDescription = if (showPassword) "Hide password" else "Show password"
+                                contentDescription = if (showPassword) stringResource(R.string.login_hide_password_cd) else stringResource(R.string.login_show_password_cd)
                             )
                         }
                     },
@@ -310,7 +312,7 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         if (email.isBlank() || password.isBlank()) {
-                            errorMessage = "Please fill in all fields"
+                            errorMessage = context.getString(R.string.login_fill_fields)
                             return@Button
                         }
                         isLoading = true
@@ -341,7 +343,7 @@ fun LoginScreen(
                         )
                     } else {
                         Text(
-                            if (isCreatingAccount) "Create Account" else "Sign In",
+                            if (isCreatingAccount) stringResource(R.string.login_create_account) else stringResource(R.string.common_sign_in),
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -352,8 +354,8 @@ fun LoginScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        if (isCreatingAccount) "Already have an account? Sign in"
-                        else "Don't have an account? Create one"
+                        if (isCreatingAccount) stringResource(R.string.login_already_have_account)
+                        else stringResource(R.string.login_no_account)
                     )
                 }
 

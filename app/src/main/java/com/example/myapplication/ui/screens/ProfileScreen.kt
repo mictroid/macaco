@@ -53,7 +53,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
+import com.example.myapplication.R
 import com.example.myapplication.data.model.AuthProvider
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 import com.example.myapplication.util.ImageStorage
@@ -86,9 +88,9 @@ fun ProfileScreen(
     if (showSignOutDialog) {
         AlertDialog(
             onDismissRequest = { showSignOutDialog = false },
-            title = { Text("Sign Out") },
+            title = { Text(stringResource(R.string.common_sign_out)) },
             text = {
-                Text("Your memories will remain on this device. Sign back in anytime to access your account.")
+                Text(stringResource(R.string.profile_sign_out_message))
             },
             confirmButton = {
                 TextButton(onClick = {
@@ -96,11 +98,11 @@ fun ProfileScreen(
                     showSignOutDialog = false
                     onSignOut()
                 }) {
-                    Text("Sign Out", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.common_sign_out), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showSignOutDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showSignOutDialog = false }) { Text(stringResource(R.string.common_cancel)) }
             }
         )
     }
@@ -108,10 +110,10 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Profile") },
+                title = { Text(stringResource(R.string.common_profile)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -147,7 +149,7 @@ fun ProfileScreen(
                     if (profilePhotoUri != null) {
                         AsyncImage(
                             model = profilePhotoUri,
-                            contentDescription = "Profile photo",
+                            contentDescription = stringResource(R.string.profile_photo_cd),
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(CircleShape),
@@ -181,7 +183,7 @@ fun ProfileScreen(
                     ) {
                         Icon(
                             Icons.Filled.CameraAlt,
-                            contentDescription = "Change photo",
+                            contentDescription = stringResource(R.string.profile_change_photo_cd),
                             tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(16.dp)
                         )
@@ -210,10 +212,10 @@ fun ProfileScreen(
                 ) {
                     Text(
                         text = when (user.provider) {
-                            AuthProvider.Google -> "Google Account"
-                            AuthProvider.Apple -> "Apple Account"
-                            AuthProvider.Email -> "Email Account"
-                            AuthProvider.Guest -> "Guest"
+                            AuthProvider.Google -> stringResource(R.string.profile_google_account)
+                            AuthProvider.Apple -> stringResource(R.string.profile_apple_account)
+                            AuthProvider.Email -> stringResource(R.string.profile_email_account)
+                            AuthProvider.Guest -> stringResource(R.string.profile_guest)
                         },
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 5.dp),
                         style = MaterialTheme.typography.labelMedium,
@@ -237,7 +239,7 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        StatItem(value = "${entries.size}", label = "Memories")
+                        StatItem(value = "${entries.size}", label = stringResource(R.string.profile_memories))
                         Box(
                             modifier = Modifier
                                 .width(1.dp)
@@ -247,7 +249,7 @@ fun ProfileScreen(
                         StatItem(
                             value = entries.mapNotNull { it.location.ifBlank { null } }
                                 .distinct().size.toString(),
-                            label = "Locations"
+                            label = stringResource(R.string.profile_locations)
                         )
                         Box(
                             modifier = Modifier
@@ -257,7 +259,7 @@ fun ProfileScreen(
                         )
                         StatItem(
                             value = entries.sumOf { it.photoUris.size }.toString(),
-                            label = "Photos"
+                            label = stringResource(R.string.profile_photos)
                         )
                     }
                 }
@@ -278,20 +280,20 @@ fun ProfileScreen(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("Sign Out")
+                    Text(stringResource(R.string.common_sign_out))
                 }
             } else {
                 // Not signed in
                 Text("🔑", fontSize = 64.sp)
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    "No account connected",
+                    stringResource(R.string.profile_no_account_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Sign in to sync your memories across devices and keep them safe in the cloud.",
+                    stringResource(R.string.profile_no_account_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -304,7 +306,7 @@ fun ProfileScreen(
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Sign In", fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.common_sign_in), fontWeight = FontWeight.SemiBold)
                 }
             }
         }

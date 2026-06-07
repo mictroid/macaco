@@ -34,6 +34,8 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.example.myapplication.R
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -81,17 +83,17 @@ fun EntryDetailScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Entry") },
+            title = { Text(stringResource(R.string.entry_detail_delete_title)) },
             text = {
-                Text("Delete \"${entry.title}\"? This cannot be undone.")
+                Text(stringResource(R.string.entry_detail_delete_message, entry.title))
             },
             confirmButton = {
                 TextButton(onClick = onDelete) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.common_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.common_cancel)) }
             }
         )
     }
@@ -102,20 +104,20 @@ fun EntryDetailScreen(
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                     }
                 },
                 actions = {
                     IconButton(onClick = { shareEntry(context, entry) }) {
-                        Icon(Icons.Filled.Share, contentDescription = "Share")
+                        Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.entry_detail_share_cd))
                     }
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Edit")
+                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.entry_detail_edit_cd))
                     }
                     IconButton(onClick = { showDeleteDialog = true }) {
                         Icon(
                             Icons.Filled.Delete,
-                            contentDescription = "Delete",
+                            contentDescription = stringResource(R.string.entry_detail_delete_cd),
                             tint = MaterialTheme.colorScheme.error
                         )
                     }

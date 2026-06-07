@@ -1,5 +1,8 @@
 package com.example.myapplication.ui.screens
 
+import android.app.Activity
+import android.content.Intent
+import android.speech.RecognizerIntent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -32,6 +35,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -65,6 +69,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardActions
@@ -72,6 +77,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.myapplication.R
 import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.util.Cities
 import com.example.myapplication.util.ImageStorage
@@ -118,6 +124,21 @@ fun NewEditEntryScreen(
         photoUris = (photoUris + stored).distinct()
     }
 
+    // Speech-to-text: result is appended to the description with a space separator.
+    val speechLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val text = result.data
+                ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                ?.firstOrNull()
+                ?.trim()
+            if (!text.isNullOrEmpty()) {
+                description = if (description.isBlank()) text else "$description $text"
+            }
+        }
+    }
+
     // Dismissing without Save: drop any files added this session, since they were never committed.
     val cancel = {
         ImageStorage.delete(context, sessionAdded)
@@ -132,10 +153,10 @@ fun NewEditEntryScreen(
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { dateMillis = it }
                     showDatePicker = false
-                }) { Text("OK") }
+                }) { Text(stringResource(R.string.common_ok)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.common_cancel)) }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -147,13 +168,13 @@ fun NewEditEntryScreen(
             TopAppBar(
                 title = {
                     Text(
-                        if (existingEntry == null) "New Entry" else "Edit Entry",
+                        if (existingEntry == null) stringResource(R.string.common_new_entry) else stringResource(R.string.common_edit_entry),
                         fontWeight = FontWeight.SemiBold
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = cancel) {
-                        Icon(Icons.Filled.Close, contentDescription = "Close")
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.common_close))
                     }
                 },
                 actions = {
@@ -178,7 +199,7 @@ fun NewEditEntryScreen(
                             }
                         }
                     ) {
-                        Text("Save", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                        Text(stringResource(R.string.common_save), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -197,7 +218,7 @@ fun NewEditEntryScreen(
         ) {
             // Photos row
             item {
-                SectionLabel("Photos")
+                SectionLabel(stringResource(R.string.new_entry_photos_label))
                 Spacer(Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -219,11 +240,11 @@ fun NewEditEntryScreen(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
                                 Icons.Filled.Add,
-                                contentDescription = "Add photo",
+                                contentDescription = stringResource(R.string.new_entry_add_photo_cd),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                "Add",
+                                stringResource(R.string.new_entry_add_photo),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -261,7 +282,7 @@ fun NewEditEntryScreen(
                             ) {
                                 Icon(
                                     Icons.Filled.Close,
-                                    contentDescription = "Remove photo",
+                                    contentDescription = stringResource(R.string.new_entry_remove_photo_cd),
                                     tint = Color.White,
                                     modifier = Modifier.size(12.dp)
                                 )
@@ -276,12 +297,12 @@ fun NewEditEntryScreen(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it; titleError = false },
-                    label = { Text("Title *") },
-                    placeholder = { Text("My Paris Adventure") },
+                    label = { Text(stringResource(R.string.new_entry_title_label)) },
+                    placeholder = { Text(stringResource(R.string.new_entry_title_placeholder)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = titleError,
                     supportingText = if (titleError) {
-                        { Text("Title is required") }
+                        { Text(stringResource(R.string.new_entry_title_required)) }
                     } else null,
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
@@ -319,7 +340,7 @@ fun NewEditEntryScreen(
                         Spacer(Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                "Date",
+                                stringResource(R.string.new_entry_date_label),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -339,7 +360,7 @@ fun NewEditEntryScreen(
 
             // Mood selector
             item {
-                SectionLabel("Mood")
+                SectionLabel(stringResource(R.string.new_entry_mood_label))
                 Spacer(Modifier.height(8.dp))
                 MoodSelector(selectedMood = mood, onMoodSelected = { mood = it })
             }
@@ -349,12 +370,27 @@ fun NewEditEntryScreen(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Your story") },
-                    placeholder = { Text("Write about your experience, the sights, sounds, and feelings...") },
+                    label = { Text(stringResource(R.string.new_entry_description_label)) },
+                    placeholder = { Text(stringResource(R.string.new_entry_description_placeholder)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
                     maxLines = Int.MAX_VALUE,
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                                putExtra(RecognizerIntent.EXTRA_PROMPT, context.getString(R.string.new_entry_dictate_prompt))
+                            }
+                            speechLauncher.launch(intent)
+                        }) {
+                            Icon(
+                                Icons.Filled.Mic,
+                                contentDescription = stringResource(R.string.new_entry_dictate_cd),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    },
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary
@@ -364,7 +400,7 @@ fun NewEditEntryScreen(
 
             // Tags
             item {
-                SectionLabel("Tags")
+                SectionLabel(stringResource(R.string.new_entry_tags_label))
                 Spacer(Modifier.height(8.dp))
                 TagsField(
                     tags = tags,
@@ -417,13 +453,13 @@ private fun TagsField(
                 // A space or comma ends a tag, mirroring how hashtags are typed.
                 if (it.endsWith(" ") || it.endsWith(",")) commit(it) else input = it
             },
-            label = { Text("Add a tag") },
-            placeholder = { Text("museum, architecture, vacation") },
+            label = { Text(stringResource(R.string.new_entry_add_tag_label)) },
+            placeholder = { Text(stringResource(R.string.new_entry_add_tag_placeholder)) },
             leadingIcon = { Text("#", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
             trailingIcon = {
                 if (input.isNotBlank()) {
                     IconButton(onClick = { commit(input) }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add tag")
+                        Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.new_entry_add_tag_cd))
                     }
                 }
             },
@@ -448,7 +484,7 @@ private fun TagsField(
                         trailingIcon = {
                             Icon(
                                 Icons.Filled.Close,
-                                contentDescription = "Remove tag",
+                                contentDescription = stringResource(R.string.new_entry_remove_tag_cd),
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -510,8 +546,8 @@ private fun LocationField(
                 onValueChange(it)
                 expanded = true
             },
-            label = { Text("Location") },
-            placeholder = { Text("Paris, France") },
+            label = { Text(stringResource(R.string.new_entry_location_label)) },
+            placeholder = { Text(stringResource(R.string.new_entry_location_placeholder)) },
             leadingIcon = { Icon(Icons.Filled.LocationOn, contentDescription = null) },
             singleLine = true,
             shape = RoundedCornerShape(12.dp),

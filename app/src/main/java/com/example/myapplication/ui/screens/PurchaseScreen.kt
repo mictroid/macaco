@@ -37,10 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.R
 import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 
@@ -52,6 +54,8 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
 
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    val strUnableCheckout = stringResource(R.string.purchase_unable_checkout)
+    val strNoPreviousPurchase = stringResource(R.string.purchase_no_previous)
 
     val light = isLightTheme()
     Box(modifier = Modifier.fillMaxSize()) {
@@ -93,7 +97,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
             Spacer(Modifier.height(20.dp))
 
             Text(
-                "Wanderlog",
+                stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold
             )
@@ -101,7 +105,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
             Spacer(Modifier.height(6.dp))
 
             Text(
-                "Your personal travel diary",
+                stringResource(R.string.purchase_tagline),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -119,11 +123,11 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    FeatureRow("✓", "Unlimited journal entries")
-                    FeatureRow("✓", "Attach photos to every memory")
-                    FeatureRow("✓", "Sync across all your devices")
-                    FeatureRow("✓", "Zero ads — seriously, none")
-                    FeatureRow("✓", "No subscription, ever")
+                    FeatureRow("✓", stringResource(R.string.purchase_feature_unlimited))
+                    FeatureRow("✓", stringResource(R.string.purchase_feature_photos))
+                    FeatureRow("✓", stringResource(R.string.purchase_feature_sync))
+                    FeatureRow("✓", stringResource(R.string.purchase_feature_no_ads))
+                    FeatureRow("✓", stringResource(R.string.purchase_feature_no_sub))
                 }
             }
 
@@ -149,7 +153,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 onClick = {
                     val act = activity
                     if (act == null) {
-                        errorMessage = "Unable to start checkout."
+                        errorMessage = strUnableCheckout
                         return@Button
                     }
                     isLoading = true
@@ -179,7 +183,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                     )
                 } else {
                     Text(
-                        "Unlock for $price",
+                        stringResource(R.string.purchase_unlock_for, price),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -189,7 +193,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
             Spacer(Modifier.height(10.dp))
 
             Text(
-                "One-time purchase · No subscription · No hidden fees",
+                stringResource(R.string.purchase_one_time),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -205,7 +209,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                         isLoading = false
                         result.fold(
                             onSuccess = { restored ->
-                                if (!restored) errorMessage = "No previous purchase found to restore."
+                                if (!restored) errorMessage = strNoPreviousPurchase
                             },
                             onFailure = { errorMessage = it.message }
                         )
@@ -213,7 +217,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 },
                 enabled = !isLoading
             ) {
-                Text("Restore Purchase", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.purchase_restore), color = MaterialTheme.colorScheme.primary)
             }
 
             Spacer(Modifier.height(40.dp))

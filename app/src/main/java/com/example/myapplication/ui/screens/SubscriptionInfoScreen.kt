@@ -31,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.R
 import com.example.myapplication.ui.theme.isLightTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,10 +45,10 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Subscription") },
+                title = { Text(stringResource(R.string.common_subscription)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -86,14 +88,14 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
                 Text("⭐", fontSize = 40.sp)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Wanderlog Premium",
+                    stringResource(R.string.subscription_premium),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = onBand
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "ACTIVE",
+                    stringResource(R.string.subscription_active),
                     style = MaterialTheme.typography.labelLarge,
                     color = if (light) onBand else MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
@@ -101,7 +103,7 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "One-time purchase · Lifetime access",
+                    stringResource(R.string.subscription_lifetime),
                     style = MaterialTheme.typography.bodySmall,
                     color = if (light) onBand.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -111,7 +113,7 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
             Spacer(Modifier.height(28.dp))
 
             Text(
-                "What's included",
+                stringResource(R.string.subscription_whats_included),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.align(Alignment.Start)
@@ -130,13 +132,13 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     listOf(
-                        "Unlimited journal entries",
-                        "Attach photos to every memory",
-                        "Zero ads — ever",
-                        "Your data stays on your device",
-                        "Works fully offline",
-                        "No subscription, no recurring fees",
-                        "Future updates included"
+                        stringResource(R.string.subscription_feature_unlimited),
+                        stringResource(R.string.subscription_feature_photos),
+                        stringResource(R.string.subscription_feature_no_ads),
+                        stringResource(R.string.subscription_feature_local),
+                        stringResource(R.string.subscription_feature_offline),
+                        stringResource(R.string.subscription_feature_no_sub),
+                        stringResource(R.string.subscription_feature_updates)
                     ).forEach { feature ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -157,7 +159,7 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
             Spacer(Modifier.height(24.dp))
 
             Text(
-                "Thank you for supporting Wanderlog! 🙏\nYour purchase keeps the app independent and ad-free.",
+                stringResource(R.string.subscription_thank_you),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center

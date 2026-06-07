@@ -70,9 +70,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.myapplication.R
 import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.data.model.onThisDayEntries
 import com.example.myapplication.data.model.tagsByFrequency
@@ -185,7 +188,7 @@ fun JournalListScreen(
                         Spacer(Modifier.width(14.dp))
                         Column {
                             Text(
-                                "Wanderlog",
+                                stringResource(R.string.app_name),
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = if (light) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
@@ -212,7 +215,7 @@ fun JournalListScreen(
                 Spacer(Modifier.height(8.dp))
 
                 NavigationDrawerItem(
-                    label = { Text("Profile") },
+                    label = { Text(stringResource(R.string.common_profile)) },
                     selected = false,
                     icon = { Icon(Icons.Filled.Person, contentDescription = null) },
                     onClick = {
@@ -222,7 +225,7 @@ fun JournalListScreen(
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("Settings") },
+                    label = { Text(stringResource(R.string.common_settings)) },
                     selected = false,
                     icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
                     onClick = {
@@ -232,7 +235,7 @@ fun JournalListScreen(
                 )
 
                 NavigationDrawerItem(
-                    label = { Text("Subscription") },
+                    label = { Text(stringResource(R.string.common_subscription)) },
                     selected = false,
                     icon = { Icon(Icons.Filled.Star, contentDescription = null) },
                     onClick = {
@@ -244,7 +247,7 @@ fun JournalListScreen(
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
 
                 NavigationDrawerItem(
-                    label = { Text(if (isDarkMode) "Switch to Light Mode" else "Switch to Dark Mode") },
+                    label = { Text(if (isDarkMode) stringResource(R.string.journal_list_switch_to_light) else stringResource(R.string.journal_list_switch_to_dark)) },
                     selected = false,
                     icon = {
                         Icon(
@@ -262,7 +265,7 @@ fun JournalListScreen(
                 if (currentUser != null) {
                     NavigationDrawerItem(
                         label = {
-                            Text("Sign Out", color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(R.string.common_sign_out), color = MaterialTheme.colorScheme.error)
                         },
                         selected = false,
                         icon = {
@@ -281,7 +284,7 @@ fun JournalListScreen(
                     )
                 } else {
                     NavigationDrawerItem(
-                        label = { Text("Sign In") },
+                        label = { Text(stringResource(R.string.common_sign_in)) },
                         selected = false,
                         icon = { Icon(Icons.Filled.Person, contentDescription = null) },
                         onClick = {
@@ -301,15 +304,15 @@ fun JournalListScreen(
                     title = {
                         Column {
                             Text(
-                                "Wanderlog",
+                                stringResource(R.string.app_name),
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold
                             )
                             if (entries.isNotEmpty()) {
                                 val count = visibleEntries.size
+                                val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
                                 Text(
-                                    "$count ${if (count == 1) "memory" else "memories"}" +
-                                        if (selectedTags.isNotEmpty()) " · filtered" else "",
+                                    memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -318,7 +321,7 @@ fun JournalListScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Filled.Menu, contentDescription = "Menu")
+                            Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.journal_list_menu_cd))
                         }
                     },
                     actions = {
@@ -327,7 +330,7 @@ fun JournalListScreen(
                             if (profilePhotoUri != null) {
                                 AsyncImage(
                                     model = profilePhotoUri,
-                                    contentDescription = "Profile",
+                                    contentDescription = stringResource(R.string.common_profile),
                                     modifier = Modifier
                                         .padding(end = 8.dp)
                                         .size(32.dp)
@@ -364,7 +367,7 @@ fun JournalListScreen(
                 ExtendedFloatingActionButton(
                     onClick = onNewEntry,
                     icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                    text = { Text("New Entry") },
+                    text = { Text(stringResource(R.string.common_new_entry)) },
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
@@ -431,7 +434,7 @@ private fun TagFilterRow(
             FilterChip(
                 selected = false,
                 onClick = onClear,
-                label = { Text("Clear") },
+                label = { Text(stringResource(R.string.journal_list_filter_clear)) },
                 leadingIcon = {
                     Icon(
                         Icons.Filled.Close,
@@ -461,7 +464,7 @@ private fun NoMatchState(modifier: Modifier = Modifier) {
         Text("🔍", fontSize = 48.sp)
         Spacer(Modifier.height(12.dp))
         Text(
-            "No memories with those tags",
+            stringResource(R.string.journal_list_no_match),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -479,14 +482,14 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         Text("🗺️", fontSize = 64.sp)
         Spacer(Modifier.height(16.dp))
         Text(
-            "Your journey begins here",
+            stringResource(R.string.journal_list_empty_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            "Tap the button below to add\nyour first travel memory",
+            stringResource(R.string.journal_list_empty_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -710,7 +713,7 @@ private fun OnThisDayBanner(
                 Text("🗓️", fontSize = 16.sp)
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "On This Day",
+                    stringResource(R.string.journal_list_on_this_day),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -725,7 +728,7 @@ private fun OnThisDayBanner(
                 ) {
                     Icon(
                         Icons.Filled.Close,
-                        contentDescription = "Dismiss",
+                        contentDescription = stringResource(R.string.common_dismiss),
                         modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
                     )
@@ -759,12 +762,12 @@ private fun OnThisDayEntryChip(
         ?.let { cachedDrivePhotos[it] }
         ?: entry.photoUris.firstOrNull()
 
-    val yearsAgo = run {
-        val entryYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(Date(entry.dateMillis)).toIntOrNull() ?: return@run ""
-        val thisYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(Date()).toIntOrNull() ?: return@run ""
-        val diff = thisYear - entryYear
-        if (diff == 1) "1 year ago" else "$diff years ago"
+    val diff = run {
+        val entryYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(Date(entry.dateMillis)).toIntOrNull() ?: return@run 0
+        val thisYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(Date()).toIntOrNull() ?: return@run 0
+        thisYear - entryYear
     }
+    val yearsAgo = if (diff > 0) pluralStringResource(R.plurals.journal_list_years_ago, diff, diff) else ""
 
     Card(
         onClick = onClick,
