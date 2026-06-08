@@ -64,6 +64,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -629,22 +630,35 @@ private fun EntryCard(
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         entry.title,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.weight(1f)
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
+                    if (entry.tags.isNotEmpty()) {
+                        Spacer(Modifier.width(6.dp))
+                        TagChips(
+                            tags = entry.tags,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                    }
                     if (entry.mood.isNotBlank()) {
                         Text(entry.mood, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
                     }
                 }
 
-                if (entry.location.isNotBlank()) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                // Location and date share one row to save vertical space; the location is
+                // left-aligned (ellipsizing if long) and the date is pushed to the right.
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (entry.location.isNotBlank()) {
                         Icon(
                             Icons.Filled.LocationOn,
                             contentDescription = null,
@@ -655,12 +669,15 @@ private fun EntryCard(
                         Text(
                             entry.location,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
                         )
+                        Spacer(Modifier.width(10.dp))
+                    } else {
+                        Spacer(Modifier.weight(1f))
                     }
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Filled.DateRange,
                         contentDescription = null,
@@ -671,21 +688,39 @@ private fun EntryCard(
                     Text(
                         formatDate(entry.dateMillis),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                if (entry.tags.isNotEmpty()) {
-                    Text(
-                        entry.tags.joinToString(" ") { "#$it" },
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1
                     )
                 }
             }
+        }
+    }
+}
+
+// Renders entry tags as small themed pill chips on a single row. Chips that don't
+// fit the constrained width are clipped rather than wrapping, keeping the card compact.
+@Composable
+private fun TagChips(
+    tags: List<String>,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.clipToBounds(),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        tags.forEach { tag ->
+            Text(
+                "#$tag",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                maxLines = 1,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(horizontal = 8.dp, vertical = 3.dp)
+            )
         }
     }
 }
