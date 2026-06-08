@@ -401,8 +401,8 @@ fun JournalListScreen(
                     visibleEntries.isEmpty() -> NoMatchState(modifier = Modifier.fillMaxSize())
                     else -> LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(visibleEntries, key = { it.id }) { entry ->
                             EntryCard(entry = entry, cachedDrivePhotos = cachedDrivePhotos, onClick = { onEntryClick(entry.id) })
@@ -508,19 +508,19 @@ private fun EntryPhotoArea(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(110.dp)
+                .height(72.dp)
                 .clip(topCorners)
                 .background(Brush.horizontalGradient(heroGradientColors())),
             contentAlignment = Alignment.Center
         ) {
-            Text(mood.ifBlank { "🗺️" }, fontSize = 44.sp)
+            Text(mood.ifBlank { "🗺️" }, fontSize = 32.sp)
         }
         return
     }
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(120.dp)
             .clip(topCorners)
     ) {
         when (displayUris.size) {
@@ -624,8 +624,8 @@ private fun EntryCard(
             )
 
             Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -634,12 +634,12 @@ private fun EntryCard(
                 ) {
                     Text(
                         entry.title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f)
                     )
                     if (entry.mood.isNotBlank()) {
-                        Text(entry.mood, fontSize = 20.sp, modifier = Modifier.padding(start = 8.dp))
+                        Text(entry.mood, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
                     }
                 }
 
