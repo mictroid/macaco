@@ -100,6 +100,8 @@
     <string name="settings_drive_all_synced">Alla foton säkerhetskopierade</string>
     <string name="settings_drive_connect">Anslut Google Drive</string>
     <string name="settings_drive_sync_now">Synka nu</string>
+    <string name="settings_language">Språk</string>
+    <string name="settings_language_system_default">Systemstandard</string>
     <string name="settings_about">Om appen</string>
     <string name="settings_version_value">Wanderlog %s</string>
 

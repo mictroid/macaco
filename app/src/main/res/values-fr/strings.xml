@@ -100,6 +100,8 @@
     <string name="settings_drive_all_synced">Toutes les photos sont sauvegardées</string>
     <string name="settings_drive_connect">Connecter Google Drive</string>
     <string name="settings_drive_sync_now">Synchroniser maintenant</string>
+    <string name="settings_language">Langue</string>
+    <string name="settings_language_system_default">Paramètres système</string>
     <string name="settings_about">À propos</string>
     <string name="settings_version_value">Wanderlog %s</string>
 

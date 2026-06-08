@@ -97,6 +97,8 @@
     <string name="settings_drive_all_synced">すべての写真がバックアップ済み</string>
     <string name="settings_drive_connect">Google Drive に接続</string>
     <string name="settings_drive_sync_now">今すぐ同期</string>
+    <string name="settings_language">言語</string>
+    <string name="settings_language_system_default">システムのデフォルト</string>
     <string name="settings_about">このアプリについて</string>
     <string name="settings_version_value">Wanderlog %s</string>
 

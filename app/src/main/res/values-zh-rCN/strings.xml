@@ -97,6 +97,8 @@
     <string name="settings_drive_all_synced">所有照片已备份</string>
     <string name="settings_drive_connect">连接 Google Drive</string>
     <string name="settings_drive_sync_now">立即同步</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_system_default">系统默认</string>
     <string name="settings_about">关于</string>
     <string name="settings_version_value">Wanderlog %s</string>
 
