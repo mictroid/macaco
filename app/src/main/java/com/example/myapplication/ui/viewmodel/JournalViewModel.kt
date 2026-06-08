@@ -19,6 +19,7 @@ import com.example.myapplication.util.ImageStorage
 import com.example.myapplication.util.ReminderScheduler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,8 +38,8 @@ class JournalViewModel(
 
     val entries: StateFlow<List<TravelEntry>> = cloudEntrySync.entries
 
-    /** One-shot sync error messages (snapshot/save/delete failures) for the UI to show. */
-    val syncErrors: Flow<String> = cloudEntrySync.errors
+    /** One-shot error messages from Firestore sync and Drive backup — shown as snackbars. */
+    val syncErrors: Flow<String> = merge(cloudEntrySync.errors, drivePhotoSync.errors)
 
     val driveSyncState: StateFlow<DrivePhotoSyncState> = drivePhotoSync.syncState
     val cachedDrivePhotos: StateFlow<Map<String, String>> = drivePhotoSync.cachedPhotoUris

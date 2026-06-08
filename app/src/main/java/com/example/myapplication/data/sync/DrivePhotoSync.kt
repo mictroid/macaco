@@ -2,11 +2,12 @@ package com.example.myapplication.data.sync
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.example.myapplication.data.model.TravelEntry
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.Scope
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
@@ -15,9 +16,12 @@ import com.google.api.services.drive.model.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File as JavaFile
@@ -37,8 +41,11 @@ class DrivePhotoSync(private val context: Context) {
     private val _syncState = MutableStateFlow<DrivePhotoSyncState>(DrivePhotoSyncState.Idle)
     val syncState: StateFlow<DrivePhotoSyncState> = _syncState.asStateFlow()
 
+    // Buffered error messages for the UI to surface as snackbars.
+    private val _errors = Channel<String>(Channel.BUFFERED)
+    val errors: Flow<String> = _errors.receiveAsFlow()
+
     // Maps driveFileId → local cache file URI, populated for photos downloaded from Drive.
-    // Composables use this as a fallback when the local photoUri is inaccessible.
     private val _cachedPhotoUris = MutableStateFlow<Map<String, String>>(emptyMap())
     val cachedPhotoUris: StateFlow<Map<String, String>> = _cachedPhotoUris.asStateFlow()
 
@@ -49,14 +56,16 @@ class DrivePhotoSync(private val context: Context) {
         return GoogleSignIn.hasPermissions(account, Scope(DriveScopes.DRIVE_FILE))
     }
 
-    private fun getDriveService(): Drive? {
-        val account = GoogleSignIn.getLastSignedInAccount(context) ?: return null
-        if (!GoogleSignIn.hasPermissions(account, Scope(DriveScopes.DRIVE_FILE))) return null
+    private fun getDriveService(): Drive {
+        val account = GoogleSignIn.getLastSignedInAccount(context)
+            ?: throw IllegalStateException("No Google account signed in")
+        if (!GoogleSignIn.hasPermissions(account, Scope(DriveScopes.DRIVE_FILE)))
+            throw IllegalStateException("Drive permission not granted")
         val credential = GoogleAccountCredential
             .usingOAuth2(context, listOf(DriveScopes.DRIVE_FILE))
             .apply { selectedAccount = account.account }
         return Drive.Builder(
-            NetHttpTransport(),
+            GoogleNetHttpTransport.newTrustedTransport(),
             GsonFactory.getDefaultInstance(),
             credential
         ).setApplicationName("Wanderlog").build()
@@ -81,46 +90,40 @@ class DrivePhotoSync(private val context: Context) {
         return id.also { wanderlogFolderId = it }
     }
 
-    private fun uploadPhoto(drive: Drive, folderId: String, uriString: String): String? =
-        runCatching {
-            val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
-            val content = InputStreamContent("image/jpeg", stream)
-            val meta = File().apply {
-                name = "wanderlog_${System.currentTimeMillis()}.jpg"
-                parents = listOf(folderId)
-            }
-            drive.files().create(meta, content).setFields("id").execute().id
-        }.getOrNull()
-
-    /**
-     * Uploads any photos in [entry] that don't yet have a Drive file ID.
-     * Returns the updated driveFileIds list (same length as photoUris),
-     * or the original list if Drive is not connected or upload fails.
-     */
-    suspend fun uploadEntryPhotos(entry: TravelEntry): List<String> {
-        if (!isDriveConnected()) return entry.driveFileIds
-        val drive = getDriveService() ?: return entry.driveFileIds
-        return runCatching {
-            val folderId = getOrCreateWanderlogFolder(drive)
-            val result = entry.driveFileIds.toMutableList()
-            while (result.size < entry.photoUris.size) result.add("")
-            var changed = false
-            entry.photoUris.forEachIndexed { i, uriString ->
-                if (result[i].isEmpty()) {
-                    uploadPhoto(drive, folderId, uriString)?.let { fileId ->
-                        result[i] = fileId
-                        changed = true
-                    }
-                }
-            }
-            if (changed) result.toList() else entry.driveFileIds
-        }.getOrDefault(entry.driveFileIds)
+    // Returns the new Drive file ID, or null if the stream is unavailable. Lets other exceptions
+    // propagate so callers can count real failures vs missing-stream cases.
+    private fun uploadPhoto(drive: Drive, folderId: String, uriString: String): String? {
+        val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
+        val content = InputStreamContent("image/jpeg", stream)
+        val meta = File().apply {
+            name = "wanderlog_${System.currentTimeMillis()}.jpg"
+            parents = listOf(folderId)
+        }
+        return drive.files().create(meta, content).setFields("id").execute().id
     }
 
     /**
-     * Downloads Drive photos for entries that have Drive IDs but no accessible local file,
-     * saving them to cacheDir/drive_photos/. Updates [cachedPhotoUris] when done so composables
-     * can recompose with the Drive-backed image.
+     * Uploads any photos in [entry] that don't yet have a Drive file ID.
+     * Returns the updated driveFileIds list (same length as photoUris).
+     * Throws if Drive is not reachable — callers should catch and handle.
+     */
+    suspend fun uploadEntryPhotos(entry: TravelEntry): List<String> {
+        if (!isDriveConnected()) return entry.driveFileIds
+        val drive = getDriveService()
+        val folderId = getOrCreateWanderlogFolder(drive)
+        val result = entry.driveFileIds.toMutableList()
+        while (result.size < entry.photoUris.size) result.add("")
+        entry.photoUris.forEachIndexed { i, uriString ->
+            if (result[i].isEmpty()) {
+                uploadPhoto(drive, folderId, uriString)?.let { result[i] = it }
+            }
+        }
+        return result.toList()
+    }
+
+    /**
+     * Downloads Drive photos for entries that have Drive IDs but no accessible local file.
+     * Saves to cacheDir/drive_photos/ and updates [cachedPhotoUris].
      */
     fun downloadMissingPhotos(entries: List<TravelEntry>) {
         val needed = entries.flatMap { entry ->
@@ -133,7 +136,7 @@ class DrivePhotoSync(private val context: Context) {
         if (needed.isEmpty()) return
 
         ioScope.launch {
-            val drive = getDriveService() ?: return@launch
+            val drive = runCatching { getDriveService() }.getOrNull() ?: return@launch
             val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
             val newEntries = mutableMapOf<String, String>()
             needed.forEach { fileId ->
@@ -157,8 +160,8 @@ class DrivePhotoSync(private val context: Context) {
 
     /**
      * Full sync: uploads pending photos for all entries, then downloads missing ones.
-     * Reports progress via [syncState]. [onEntryUpdated] is called for each entry whose
-     * driveFileIds changed, so the caller can persist the update to Firestore.
+     * Now surfaces real upload errors via [syncState] and [errors] instead of silently
+     * reporting success when API calls fail.
      */
     fun syncAll(entries: List<TravelEntry>, onEntryUpdated: suspend (TravelEntry) -> Unit) {
         if (!isDriveConnected()) {
@@ -177,19 +180,63 @@ class DrivePhotoSync(private val context: Context) {
                 downloadMissingPhotos(entries)
                 return@launch
             }
-            _syncState.value = DrivePhotoSyncState.Syncing(0, pending.size)
-            var errors = 0
-            pending.forEachIndexed { i, entry ->
-                val newIds = uploadEntryPhotos(entry)
+
+            val totalPhotos = pending.sumOf { e ->
+                e.photoUris.size - e.driveFileIds.count { it.isNotEmpty() }
+            }.coerceAtLeast(1)
+            _syncState.value = DrivePhotoSyncState.Syncing(0, totalPhotos)
+
+            var uploaded = 0
+            var failed = 0
+            var firstError: String? = null
+
+            pending.forEach { entry ->
+                val prevSynced = entry.driveFileIds.count { it.isNotEmpty() }
+                val newIds = runCatching { uploadEntryPhotos(entry) }
+                    .onFailure { e ->
+                        Log.e("DrivePhotoSync", "Upload failed for entry ${entry.id}", e)
+                        val msg = friendlyDriveError(e)
+                        if (firstError == null) firstError = msg
+                        _errors.trySend(msg)
+                        failed += entry.photoUris.size - prevSynced
+                        return@forEach
+                    }
+                    .getOrThrow()
+
+                val nowSynced = newIds.count { it.isNotEmpty() }
+                uploaded += (nowSynced - prevSynced).coerceAtLeast(0)
+                failed += (entry.photoUris.size - nowSynced).coerceAtLeast(0)
+
                 if (newIds != entry.driveFileIds) {
                     runCatching { onEntryUpdated(entry.copy(driveFileIds = newIds)) }
-                        .onFailure { errors++ }
                 }
-                _syncState.value = DrivePhotoSyncState.Syncing(i + 1, pending.size)
+                _syncState.value = DrivePhotoSyncState.Syncing(uploaded, totalPhotos)
             }
-            _syncState.value = if (errors == 0) DrivePhotoSyncState.Synced
-            else DrivePhotoSyncState.Error("$errors ${if (errors == 1) "photo" else "photos"} couldn't be backed up")
-            downloadMissingPhotos(entries)
+
+            _syncState.value = when {
+                failed == 0 -> DrivePhotoSyncState.Synced
+                uploaded == 0 -> DrivePhotoSyncState.Error(
+                    firstError ?: "Backup failed. Check your Google Drive connection."
+                )
+                else -> DrivePhotoSyncState.Error("$failed ${if (failed == 1) "photo" else "photos"} couldn't be backed up")
+            }
+            if (failed == 0) downloadMissingPhotos(entries)
+        }
+    }
+
+    /** Maps a Drive API exception to a short, user-actionable message. */
+    private fun friendlyDriveError(e: Throwable): String {
+        val text = e.message ?: ""
+        return when {
+            text.contains("SERVICE_DISABLED") || text.contains("accessNotConfigured") ->
+                "Google Drive isn't enabled for this app yet. The developer needs to turn it on."
+            text.contains("403") || text.contains("insufficient") || text.contains("PERMISSION_DENIED") ->
+                "Drive access was denied. Try disconnecting and reconnecting your Google account."
+            text.contains("401") || text.contains("Unauthorized") || text.contains("invalid_grant") ->
+                "Your Google sign-in expired. Disconnect and reconnect to back up photos."
+            text.contains("Unable to resolve host") || text.contains("timeout") || text.contains("network") ->
+                "No internet connection. Photos will back up when you're back online."
+            else -> "Couldn't back up to Google Drive. Please try again."
         }
     }
 
