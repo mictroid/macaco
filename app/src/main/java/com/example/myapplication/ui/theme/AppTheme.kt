@@ -6,7 +6,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 enum class AppTheme(val key: String, val displayName: String, val swatch: Color) {
-    WANDERLOG("wanderlog", "Wanderlog", Color(0xFF2D6B6B)),
+    WANDERLOG("wanderlog", "Macaco", Color(0xFF2D6B6B)),
     LAVENDER( "lavender",  "Lavender",  Color(0xFF6750A4)),
     ROSE(     "rose",      "Rose",      Color(0xFFB72F5A)),
     SKY(      "sky",       "Sky",       Color(0xFF0061A4)),

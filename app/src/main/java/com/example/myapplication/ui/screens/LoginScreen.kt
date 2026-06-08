@@ -174,6 +174,12 @@ fun LoginScreen(
                         color = onHero
                     )
                     Text(
+                        stringResource(R.string.app_tagline),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (light) onHero.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
                         if (isCreatingAccount) stringResource(R.string.login_create_account_subtitle) else stringResource(R.string.login_sign_in_subtitle),
                         style = MaterialTheme.typography.bodySmall,
                         color = if (light) onHero.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant

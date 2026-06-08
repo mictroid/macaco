@@ -49,7 +49,13 @@ class DrivePhotoSync(private val context: Context) {
     private val _cachedPhotoUris = MutableStateFlow<Map<String, String>>(emptyMap())
     val cachedPhotoUris: StateFlow<Map<String, String>> = _cachedPhotoUris.asStateFlow()
 
-    private var wanderlogFolderId: String? = null
+    private var driveFolderId: String? = null
+
+    private companion object {
+        const val FOLDER_NAME = "Macaco"
+        // Pre-rebrand folder name; migrated to FOLDER_NAME on first sync (see getOrCreateDriveFolder).
+        const val LEGACY_FOLDER_NAME = "Wanderlog"
+    }
 
     fun isDriveConnected(): Boolean {
         val account = GoogleSignIn.getLastSignedInAccount(context) ?: return false
@@ -68,26 +74,40 @@ class DrivePhotoSync(private val context: Context) {
             GoogleNetHttpTransport.newTrustedTransport(),
             GsonFactory.getDefaultInstance(),
             credential
-        ).setApplicationName("Wanderlog").build()
+        ).setApplicationName("Macaco").build()
     }
 
-    private fun getOrCreateWanderlogFolder(drive: Drive): String {
-        wanderlogFolderId?.let { return it }
-        val existing = drive.files().list()
-            .setQ("name='Wanderlog' and mimeType='application/vnd.google-apps.folder' and trashed=false")
+    private fun getOrCreateDriveFolder(drive: Drive): String {
+        driveFolderId?.let { return it }
+
+        fun findFolder(name: String) = drive.files().list()
+            .setQ("name='$name' and mimeType='application/vnd.google-apps.folder' and trashed=false")
             .setSpaces("drive")
             .setFields("files(id)")
             .execute()
-        val id = if (existing.files.isNotEmpty()) {
-            existing.files[0].id
-        } else {
-            val meta = File().apply {
-                name = "Wanderlog"
-                mimeType = "application/vnd.google-apps.folder"
+
+        // Prefer the current "Macaco" folder. If it doesn't exist yet but a legacy "Wanderlog"
+        // folder (from before the rebrand) does, rename that in place so existing users' photos
+        // move with the brand instead of being stranded in an old folder.
+        val current = findFolder(FOLDER_NAME)
+        val id = when {
+            current.files.isNotEmpty() -> current.files[0].id
+            else -> {
+                val legacy = findFolder(LEGACY_FOLDER_NAME)
+                if (legacy.files.isNotEmpty()) {
+                    val legacyId = legacy.files[0].id
+                    drive.files().update(legacyId, File().apply { name = FOLDER_NAME }).execute()
+                    legacyId
+                } else {
+                    val meta = File().apply {
+                        name = FOLDER_NAME
+                        mimeType = "application/vnd.google-apps.folder"
+                    }
+                    drive.files().create(meta).setFields("id").execute().id
+                }
             }
-            drive.files().create(meta).setFields("id").execute().id
         }
-        return id.also { wanderlogFolderId = it }
+        return id.also { driveFolderId = it }
     }
 
     // Returns the new Drive file ID, or null if the stream is unavailable. Lets other exceptions
@@ -96,7 +116,7 @@ class DrivePhotoSync(private val context: Context) {
         val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
         val content = InputStreamContent("image/jpeg", stream)
         val meta = File().apply {
-            name = "wanderlog_${System.currentTimeMillis()}.jpg"
+            name = "macaco_${System.currentTimeMillis()}.jpg"
             parents = listOf(folderId)
         }
         return drive.files().create(meta, content).setFields("id").execute().id
@@ -110,7 +130,7 @@ class DrivePhotoSync(private val context: Context) {
     suspend fun uploadEntryPhotos(entry: TravelEntry): List<String> {
         if (!isDriveConnected()) return entry.driveFileIds
         val drive = getDriveService()
-        val folderId = getOrCreateWanderlogFolder(drive)
+        val folderId = getOrCreateDriveFolder(drive)
         val result = entry.driveFileIds.toMutableList()
         while (result.size < entry.photoUris.size) result.add("")
         entry.photoUris.forEachIndexed { i, uriString ->

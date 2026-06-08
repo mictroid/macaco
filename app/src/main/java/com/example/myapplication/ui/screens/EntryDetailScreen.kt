@@ -291,7 +291,7 @@ private fun shareEntry(context: Context, entry: TravelEntry) {
             appendLine(entry.tags.joinToString(" ") { "#$it" })
         }
         appendLine()
-        append("— Shared from Wanderlog")
+        append("— Shared from Macaco")
     }
 
     // Photos live in app-internal storage (file:// URIs), which other apps can't read directly.
@@ -321,7 +321,7 @@ private fun shareEntry(context: Context, entry: TravelEntry) {
             type = "image/*"
             putExtra(Intent.EXTRA_STREAM, shareUris[0])
             putExtra(Intent.EXTRA_TEXT, shareText)
-            clipData = ClipData.newUri(context.contentResolver, "Wanderlog photo", shareUris[0])
+            clipData = ClipData.newUri(context.contentResolver, "Macaco photo", shareUris[0])
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
@@ -331,7 +331,7 @@ private fun shareEntry(context: Context, entry: TravelEntry) {
         // copy it to the clipboard for the user to paste into the album caption field.
         else -> {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.setPrimaryClip(ClipData.newPlainText("Wanderlog entry", shareText))
+            clipboard.setPrimaryClip(ClipData.newPlainText("Macaco entry", shareText))
             Toast.makeText(
                 context,
                 "Caption copied — paste it into the photo caption",
@@ -341,7 +341,7 @@ private fun shareEntry(context: Context, entry: TravelEntry) {
                 type = "image/*"
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, shareUris)
                 // A ClipData listing every URI is what propagates the read grant to all of them.
-                clipData = ClipData.newUri(context.contentResolver, "Wanderlog photos", shareUris[0]).apply {
+                clipData = ClipData.newUri(context.contentResolver, "Macaco photos", shareUris[0]).apply {
                     for (i in 1 until shareUris.size) addItem(ClipData.Item(shareUris[i]))
                 }
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

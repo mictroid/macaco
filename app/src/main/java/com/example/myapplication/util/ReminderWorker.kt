@@ -44,7 +44,7 @@ class ReminderWorker(
         val notification = NotificationCompat.Builder(ctx, ReminderScheduler.CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_popup_reminder)
             .setContentTitle("Time for a new memory ✈️")
-            .setContentText("It's been a while — capture your latest travel memory in Wanderlog.")
+            .setContentText("It's been a while — capture your latest travel memory in Macaco.")
             .setAutoCancel(true)
             .setContentIntent(pending)
             .build()
