@@ -95,7 +95,7 @@
     <string name="settings_drive_backup">Google Drive Back-up</string>
     <string name="settings_drive_connected">Verbonden met Google Drive</string>
     <string name="settings_drive_not_connected">Niet verbonden</string>
-    <string name="settings_drive_connected_subtitle">Foto\'s worden geback-upt naar Drive / Wanderlog</string>
+    <string name="settings_drive_connected_subtitle">Foto\'s worden geback-upt naar Drive / Macaco</string>
     <string name="settings_drive_not_connected_subtitle">Verbind om foto\'s van entries op al je apparaten te back-uppen</string>
     <string name="settings_drive_uploading">%1$d / %2$d foto\'s uploaden…</string>
     <string name="settings_drive_all_synced">Alle foto\'s geback-upt</string>
@@ -104,7 +104,7 @@
     <string name="settings_language">Taal</string>
     <string name="settings_language_system_default">Systeemstandaard</string>
     <string name="settings_about">Over</string>
-    <string name="settings_version_value">Wanderlog %s</string>
+    <string name="settings_version_value">Macaco %s</string>
 
     <string name="login_sign_in_subtitle">Log in om je herinneringen te synchroniseren</string>
     <string name="login_create_account_subtitle">Maak je account aan</string>
@@ -149,7 +149,7 @@
     <string name="purchase_restore">Aankoop herstellen</string>
     <string name="purchase_no_previous">Geen eerdere aankoop gevonden om te herstellen.</string>
 
-    <string name="subscription_premium">Wanderlog Premium</string>
+    <string name="subscription_premium">Macaco Premium</string>
     <string name="subscription_active">ACTIEF</string>
     <string name="subscription_lifetime">Eenmalige aankoop · Levenslange toegang</string>
     <string name="subscription_whats_included">Wat is inbegrepen</string>
@@ -160,10 +160,10 @@
     <string name="subscription_feature_offline">Werkt volledig offline</string>
     <string name="subscription_feature_no_sub">Geen abonnement, geen terugkerende kosten</string>
     <string name="subscription_feature_updates">Toekomstige updates inbegrepen</string>
-    <string name="subscription_thank_you">Bedankt voor je steun aan Wanderlog! 🙏\nJouw aankoop houdt de app onafhankelijk en advertentievrij.</string>
+    <string name="subscription_thank_you">Bedankt voor je steun aan Macaco! 🙏\nJouw aankoop houdt de app onafhankelijk en advertentievrij.</string>
 
     <string name="app_lock_locked">Je dagboek is vergrendeld</string>
     <string name="app_lock_unlock">Ontgrendelen</string>
-    <string name="app_lock_biometric_title">Wanderlog ontgrendelen</string>
+    <string name="app_lock_biometric_title">Macaco ontgrendelen</string>
     <string name="app_lock_biometric_subtitle">Verifieer je identiteit om je dagboek te openen</string>
 </resources>

@@ -95,7 +95,7 @@
     <string name="settings_drive_backup">Copia de seguridad en Google Drive</string>
     <string name="settings_drive_connected">Conectado a Google Drive</string>
     <string name="settings_drive_not_connected">No conectado</string>
-    <string name="settings_drive_connected_subtitle">Las fotos se guardan en Drive / Wanderlog</string>
+    <string name="settings_drive_connected_subtitle">Las fotos se guardan en Drive / Macaco</string>
     <string name="settings_drive_not_connected_subtitle">Conéctate para guardar las fotos de tus entradas en otros dispositivos</string>
     <string name="settings_drive_uploading">Subiendo %1$d / %2$d fotos…</string>
     <string name="settings_drive_all_synced">Todas las fotos están guardadas</string>
@@ -104,7 +104,7 @@
     <string name="settings_language">Idioma</string>
     <string name="settings_language_system_default">Predeterminado del sistema</string>
     <string name="settings_about">Acerca de</string>
-    <string name="settings_version_value">Wanderlog %s</string>
+    <string name="settings_version_value">Macaco %s</string>
 
     <string name="login_sign_in_subtitle">Inicia sesión para sincronizar tus recuerdos</string>
     <string name="login_create_account_subtitle">Crea tu cuenta</string>
@@ -149,7 +149,7 @@
     <string name="purchase_restore">Restaurar compra</string>
     <string name="purchase_no_previous">No se encontró ninguna compra anterior para restaurar.</string>
 
-    <string name="subscription_premium">Wanderlog Premium</string>
+    <string name="subscription_premium">Macaco Premium</string>
     <string name="subscription_active">ACTIVO</string>
     <string name="subscription_lifetime">Pago único · Acceso de por vida</string>
     <string name="subscription_whats_included">Qué incluye</string>
@@ -160,10 +160,10 @@
     <string name="subscription_feature_offline">Funciona completamente sin conexión</string>
     <string name="subscription_feature_no_sub">Sin suscripción ni cargos recurrentes</string>
     <string name="subscription_feature_updates">Actualizaciones futuras incluidas</string>
-    <string name="subscription_thank_you">¡Gracias por apoyar Wanderlog! 🙏\nTu compra mantiene la app independiente y sin anuncios.</string>
+    <string name="subscription_thank_you">¡Gracias por apoyar Macaco! 🙏\nTu compra mantiene la app independiente y sin anuncios.</string>
 
     <string name="app_lock_locked">Tu diario está bloqueado</string>
     <string name="app_lock_unlock">Desbloquear</string>
-    <string name="app_lock_biometric_title">Desbloquear Wanderlog</string>
+    <string name="app_lock_biometric_title">Desbloquear Macaco</string>
     <string name="app_lock_biometric_subtitle">Verifica tu identidad para acceder a tu diario</string>
 </resources>

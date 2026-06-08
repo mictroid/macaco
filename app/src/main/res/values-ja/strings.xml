@@ -92,7 +92,7 @@
     <string name="settings_drive_backup">Google Drive バックアップ</string>
     <string name="settings_drive_connected">Google Drive に接続済み</string>
     <string name="settings_drive_not_connected">未接続</string>
-    <string name="settings_drive_connected_subtitle">写真は Drive / Wanderlog にバックアップされます</string>
+    <string name="settings_drive_connected_subtitle">写真は Drive / Macaco にバックアップされます</string>
     <string name="settings_drive_not_connected_subtitle">接続してデバイス間で写真をバックアップ</string>
     <string name="settings_drive_uploading">%1$d / %2$d 枚の写真をアップロード中…</string>
     <string name="settings_drive_all_synced">すべての写真がバックアップ済み</string>
@@ -101,7 +101,7 @@
     <string name="settings_language">言語</string>
     <string name="settings_language_system_default">システムのデフォルト</string>
     <string name="settings_about">このアプリについて</string>
-    <string name="settings_version_value">Wanderlog %s</string>
+    <string name="settings_version_value">Macaco %s</string>
 
     <string name="login_sign_in_subtitle">サインインして思い出を同期しよう</string>
     <string name="login_create_account_subtitle">アカウントを作成</string>
@@ -146,7 +146,7 @@
     <string name="purchase_restore">購入を復元</string>
     <string name="purchase_no_previous">復元できる購入履歴が見つかりませんでした。</string>
 
-    <string name="subscription_premium">Wanderlog プレミアム</string>
+    <string name="subscription_premium">Macaco プレミアム</string>
     <string name="subscription_active">有効</string>
     <string name="subscription_lifetime">買い切り · 永久アクセス</string>
     <string name="subscription_whats_included">含まれる機能</string>
@@ -157,10 +157,10 @@
     <string name="subscription_feature_offline">完全オフライン対応</string>
     <string name="subscription_feature_no_sub">サブスクなし、定期費用なし</string>
     <string name="subscription_feature_updates">将来のアップデートも含む</string>
-    <string name="subscription_thank_you">Wanderlog をご支援いただきありがとうございます！ 🙏\nあなたの購入がアプリの独立性と広告フリーを支えています。</string>
+    <string name="subscription_thank_you">Macaco をご支援いただきありがとうございます！ 🙏\nあなたの購入がアプリの独立性と広告フリーを支えています。</string>
 
     <string name="app_lock_locked">日記はロックされています</string>
     <string name="app_lock_unlock">ロック解除</string>
-    <string name="app_lock_biometric_title">Wanderlog をアンロック</string>
+    <string name="app_lock_biometric_title">Macaco をアンロック</string>
     <string name="app_lock_biometric_subtitle">日記にアクセスするには本人確認が必要です</string>
 </resources>

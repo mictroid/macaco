@@ -92,7 +92,7 @@
     <string name="settings_drive_backup">Google Drive 备份</string>
     <string name="settings_drive_connected">已连接至 Google Drive</string>
     <string name="settings_drive_not_connected">未连接</string>
-    <string name="settings_drive_connected_subtitle">照片已备份至 Drive / Wanderlog</string>
+    <string name="settings_drive_connected_subtitle">照片已备份至 Drive / Macaco</string>
     <string name="settings_drive_not_connected_subtitle">连接后可将日记照片备份至其他设备</string>
     <string name="settings_drive_uploading">正在上传 %1$d / %2$d 张照片……</string>
     <string name="settings_drive_all_synced">所有照片已备份</string>
@@ -101,7 +101,7 @@
     <string name="settings_language">语言</string>
     <string name="settings_language_system_default">系统默认</string>
     <string name="settings_about">关于</string>
-    <string name="settings_version_value">Wanderlog %s</string>
+    <string name="settings_version_value">Macaco %s</string>
 
     <string name="login_sign_in_subtitle">登录以同步您的回忆</string>
     <string name="login_create_account_subtitle">创建您的账号</string>
@@ -146,7 +146,7 @@
     <string name="purchase_restore">恢复购买</string>
     <string name="purchase_no_previous">未找到可恢复的购买记录。</string>
 
-    <string name="subscription_premium">Wanderlog 高级版</string>
+    <string name="subscription_premium">Macaco 高级版</string>
     <string name="subscription_active">已激活</string>
     <string name="subscription_lifetime">一次性购买 · 永久使用</string>
     <string name="subscription_whats_included">包含内容</string>
@@ -157,10 +157,10 @@
     <string name="subscription_feature_offline">完全支持离线使用</string>
     <string name="subscription_feature_no_sub">无订阅，无循环费用</string>
     <string name="subscription_feature_updates">包含未来更新</string>
-    <string name="subscription_thank_you">感谢您支持 Wanderlog！🙏\n您的购买让这款应用保持独立运营，永无广告。</string>
+    <string name="subscription_thank_you">感谢您支持 Macaco！🙏\n您的购买让这款应用保持独立运营，永无广告。</string>
 
     <string name="app_lock_locked">您的日记已锁定</string>
     <string name="app_lock_unlock">解锁</string>
-    <string name="app_lock_biometric_title">解锁 Wanderlog</string>
+    <string name="app_lock_biometric_title">解锁 Macaco</string>
     <string name="app_lock_biometric_subtitle">验证身份以访问您的日记</string>
 </resources>

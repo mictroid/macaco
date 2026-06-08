@@ -99,7 +99,7 @@
     <string name="settings_drive_backup">Google Drive Backup</string>
     <string name="settings_drive_connected">Connected to Google Drive</string>
     <string name="settings_drive_not_connected">Not connected</string>
-    <string name="settings_drive_connected_subtitle">Photos are backed up to Drive / Wanderlog</string>
+    <string name="settings_drive_connected_subtitle">Photos are backed up to Drive / Macaco</string>
     <string name="settings_drive_not_connected_subtitle">Connect to back up entry photos across devices</string>
     <string name="settings_drive_uploading">Uploading %1$d / %2$d photos…</string>
     <string name="settings_drive_all_synced">All photos backed up</string>
@@ -110,7 +110,7 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_system_default">System default</string>
     <string name="settings_about">About</string>
-    <string name="settings_version_value">Wanderlog %s</string>
+    <string name="settings_version_value">Macaco %s</string>
 
     <!-- Login -->
     <string name="login_sign_in_subtitle">Sign in to sync your memories</string>
@@ -159,7 +159,7 @@
     <string name="purchase_no_previous">No previous purchase found to restore.</string>
 
     <!-- Subscription Info -->
-    <string name="subscription_premium">Wanderlog Premium</string>
+    <string name="subscription_premium">Macaco Premium</string>
     <string name="subscription_active">ACTIVE</string>
     <string name="subscription_lifetime">One-time purchase · Lifetime access</string>
     <string name="subscription_whats_included">What\'s included</string>
@@ -170,11 +170,11 @@
     <string name="subscription_feature_offline">Works fully offline</string>
     <string name="subscription_feature_no_sub">No subscription, no recurring fees</string>
     <string name="subscription_feature_updates">Future updates included</string>
-    <string name="subscription_thank_you">Thank you for supporting Wanderlog! 🙏\nYour purchase keeps the app independent and ad-free.</string>
+    <string name="subscription_thank_you">Thank you for supporting Macaco! 🙏\nYour purchase keeps the app independent and ad-free.</string>
 
     <!-- App Lock -->
     <string name="app_lock_locked">Your journal is locked</string>
     <string name="app_lock_unlock">Unlock</string>
-    <string name="app_lock_biometric_title">Unlock Wanderlog</string>
+    <string name="app_lock_biometric_title">Unlock Macaco</string>
     <string name="app_lock_biometric_subtitle">Verify your identity to access your journal</string>
 </resources>

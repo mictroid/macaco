@@ -1,13 +1,18 @@
 package com.example.myapplication.util
 
 import android.content.Context
+import android.util.Log
+import java.io.InputStream
 import java.util.zip.GZIPInputStream
 
 /**
- * Offline city lookup for the location autocomplete. Reads a bundled, gzipped
- * `assets/cities.txt.gz` ("City, Country" per line) once, caches it in memory, and matches by
- * prefix. The list is gzipped (~1.6 MB vs ~4.2 MB raw) to keep the APK smaller and decompressed
- * on first load.
+ * Offline city lookup for the location autocomplete. Reads a bundled city list
+ * ("City, Country" per line) once, caches it in memory, and matches by prefix.
+ *
+ * The source asset is committed gzipped (`cities.txt.gz`, ~1.6 MB vs ~4.2 MB raw) to keep the
+ * repo small, but AAPT auto-extracts `.gz` assets at build time and ships them decompressed as
+ * `cities.txt`. [openCitiesStream] therefore handles both layouts so the lookup works regardless
+ * of how the asset ended up in the APK.
  *
  * Offline by design — no network or API key needed. Swap [search] for a geocoding API call if
  * full worldwide coverage is ever required.
@@ -20,12 +25,22 @@ object Cities {
         cache?.let { return it }
         return synchronized(this) {
             cache ?: runCatching {
-                GZIPInputStream(context.applicationContext.assets.open("cities.txt.gz"))
-                    .bufferedReader().useLines { lines ->
-                        lines.map { it.trim() }.filter { it.isNotEmpty() }.toList()
-                    }
-            }.getOrDefault(emptyList()).also { cache = it }
+                openCitiesStream(context.applicationContext).bufferedReader().useLines { lines ->
+                    lines.map { it.trim() }.filter { it.isNotEmpty() }.toList()
+                }
+            }.onFailure { Log.e("Cities", "Failed to load bundled city list", it) }
+                .getOrDefault(emptyList()).also { cache = it }
         }
+    }
+
+    /**
+     * Opens the bundled city list as a text stream. Prefers the gzipped `cities.txt.gz` when the
+     * APK actually contains it; falls back to the AAPT-extracted plain `cities.txt`.
+     */
+    private fun openCitiesStream(context: Context): InputStream {
+        val assets = context.assets
+        return runCatching { GZIPInputStream(assets.open("cities.txt.gz")) }
+            .getOrElse { assets.open("cities.txt") }
     }
 
     /**

@@ -95,7 +95,7 @@
     <string name="settings_drive_backup">Google Drive-säkerhetskopiering</string>
     <string name="settings_drive_connected">Ansluten till Google Drive</string>
     <string name="settings_drive_not_connected">Inte ansluten</string>
-    <string name="settings_drive_connected_subtitle">Foton säkerhetskopieras till Drive / Wanderlog</string>
+    <string name="settings_drive_connected_subtitle">Foton säkerhetskopieras till Drive / Macaco</string>
     <string name="settings_drive_not_connected_subtitle">Anslut för att säkerhetskopiera foton från dina anteckningar på alla enheter</string>
     <string name="settings_drive_uploading">Laddar upp %1$d / %2$d foton…</string>
     <string name="settings_drive_all_synced">Alla foton säkerhetskopierade</string>
@@ -104,7 +104,7 @@
     <string name="settings_language">Språk</string>
     <string name="settings_language_system_default">Systemstandard</string>
     <string name="settings_about">Om appen</string>
-    <string name="settings_version_value">Wanderlog %s</string>
+    <string name="settings_version_value">Macaco %s</string>
 
     <string name="login_sign_in_subtitle">Logga in för att synka dina minnen</string>
     <string name="login_create_account_subtitle">Skapa ditt konto</string>
@@ -149,7 +149,7 @@
     <string name="purchase_restore">Återställ köp</string>
     <string name="purchase_no_previous">Inget tidigare köp hittades att återställa.</string>
 
-    <string name="subscription_premium">Wanderlog Premium</string>
+    <string name="subscription_premium">Macaco Premium</string>
     <string name="subscription_active">AKTIV</string>
     <string name="subscription_lifetime">Engångsköp · Livstidsåtkomst</string>
     <string name="subscription_whats_included">Vad som ingår</string>
@@ -160,10 +160,10 @@
     <string name="subscription_feature_offline">Fungerar helt offline</string>
     <string name="subscription_feature_no_sub">Ingen prenumeration, inga återkommande avgifter</string>
     <string name="subscription_feature_updates">Framtida uppdateringar ingår</string>
-    <string name="subscription_thank_you">Tack för att du stödjer Wanderlog! 🙏\nDitt köp håller appen oberoende och reklamfri.</string>
+    <string name="subscription_thank_you">Tack för att du stödjer Macaco! 🙏\nDitt köp håller appen oberoende och reklamfri.</string>
 
     <string name="app_lock_locked">Din dagbok är låst</string>
     <string name="app_lock_unlock">Lås upp</string>
-    <string name="app_lock_biometric_title">Lås upp Wanderlog</string>
+    <string name="app_lock_biometric_title">Lås upp Macaco</string>
     <string name="app_lock_biometric_subtitle">Verifiera din identitet för att komma åt din dagbok</string>
 </resources>
