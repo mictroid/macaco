@@ -37,12 +37,15 @@ import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +58,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -77,6 +81,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import com.example.myapplication.R
 import com.example.myapplication.data.auth.FirebaseConfig
 import com.example.myapplication.data.sync.DrivePhotoSyncState
@@ -90,6 +96,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.services.drive.DriveScopes
+
+private data class AppLanguage(val code: String, val nativeName: String)
+
+private val SUPPORTED_LANGUAGES = listOf(
+    AppLanguage("",   "System default"),
+    AppLanguage("en", "English"),
+    AppLanguage("de", "Deutsch"),
+    AppLanguage("fr", "Français"),
+    AppLanguage("es", "Español"),
+    AppLanguage("it", "Italiano"),
+    AppLanguage("nl", "Nederlands"),
+    AppLanguage("pt", "Português"),
+    AppLanguage("pl", "Polski"),
+    AppLanguage("sv", "Svenska"),
+    AppLanguage("ja", "日本語"),
+    AppLanguage("zh", "中文（简体）"),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,6 +129,56 @@ fun SettingsScreen(
     val appLockEnabled by viewModel.appLockEnabled.collectAsState()
     val context = LocalContext.current
     var lockErrorMessage by remember { mutableStateOf<String?>(null) }
+
+    val currentLanguageCode = remember {
+        val locales = AppCompatDelegate.getApplicationLocales()
+        if (locales.isEmpty) "" else locales[0]?.language ?: ""
+    }
+    var selectedLanguageCode by remember { mutableStateOf(currentLanguageCode) }
+    var showLanguagePicker by remember { mutableStateOf(false) }
+
+    if (showLanguagePicker) {
+        AlertDialog(
+            onDismissRequest = { showLanguagePicker = false },
+            title = { Text(stringResource(R.string.settings_language)) },
+            text = {
+                Column {
+                    SUPPORTED_LANGUAGES.forEach { lang ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedLanguageCode = lang.code
+                                    AppCompatDelegate.setApplicationLocales(
+                                        if (lang.code.isEmpty()) LocaleListCompat.getEmptyLocaleList()
+                                        else LocaleListCompat.forLanguageTags(lang.code)
+                                    )
+                                    showLanguagePicker = false
+                                }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = lang.code == selectedLanguageCode,
+                                onClick = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                if (lang.code.isEmpty()) stringResource(R.string.settings_language_system_default)
+                                else lang.nativeName,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguagePicker = false }) {
+                    Text(stringResource(R.string.common_cancel))
+                }
+            }
+        )
+    }
 
     // Drive sign-in with DRIVE_FILE scope — used to connect Drive for photo backup.
     var driveConnected by remember { mutableStateOf(viewModel.isDriveConnected()) }
@@ -342,6 +415,20 @@ fun SettingsScreen(
                     }
                 }
             }
+
+            // ── Language ──────────────────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+            SettingsSectionHeader(stringResource(R.string.settings_language))
+
+            val displayedLanguage = SUPPORTED_LANGUAGES.find { it.code == selectedLanguageCode }
+            SettingsClickRow(
+                icon = Icons.Filled.Language,
+                title = stringResource(R.string.settings_language),
+                value = if (displayedLanguage == null || displayedLanguage.code.isEmpty())
+                    stringResource(R.string.settings_language_system_default)
+                else displayedLanguage.nativeName,
+                onClick = { showLanguagePicker = true }
+            )
 
             // ── Notifications ─────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
@@ -658,6 +745,34 @@ private fun ReminderCadenceCard(selectedDays: Int, onSelect: (Int) -> Unit) {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun SettingsClickRow(
+    icon: ImageVector,
+    title: String,
+    value: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+            Spacer(Modifier.width(16.dp))
+            Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
+            Text(value, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

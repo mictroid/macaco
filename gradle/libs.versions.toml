@@ -22,6 +22,7 @@ playServicesAuth = "21.3.0"
 googleServices = "4.4.2"
 revenueCat = "8.10.0"
 biometric = "1.1.0"
+appcompat = "1.7.0"
 googleApiClient = "2.2.0"
 googleApiServicesDrive = "v3-rev20240123-2.0.0"
 
@@ -59,6 +60,7 @@ google-identity-googleid = { group = "com.google.android.libraries.identity.goog
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 revenuecat-purchases = { group = "com.revenuecat.purchases", name = "purchases", version.ref = "revenueCat" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 google-api-client-android = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "googleApiClient" }
 google-api-services-drive = { group = "com.google.apis", name = "google-api-services-drive", version.ref = "googleApiServicesDrive" }
 

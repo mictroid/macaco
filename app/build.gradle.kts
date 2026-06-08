@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.revenuecat.purchases)
     implementation(libs.androidx.biometric)
+    implementation(libs.androidx.appcompat)
     implementation(libs.google.api.client.android) { exclude(group = "org.apache.httpcomponents") }
     implementation(libs.google.api.services.drive) { exclude(group = "org.apache.httpcomponents") }
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
