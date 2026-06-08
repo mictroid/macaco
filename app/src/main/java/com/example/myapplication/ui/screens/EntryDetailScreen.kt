@@ -151,8 +151,11 @@ fun EntryDetailScreen(
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(280.dp),
-                                contentScale = ContentScale.Crop
+                                    .height(340.dp)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                                // Fit (not Crop) so the whole photo is visible; the box background
+                                // fills any letterbox space when the aspect ratio doesn't match.
+                                contentScale = ContentScale.Fit
                             )
                         }
                         if (photoCount > 1) {
