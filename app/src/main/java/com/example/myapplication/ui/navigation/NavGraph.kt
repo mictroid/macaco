@@ -9,7 +9,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -29,6 +32,7 @@ import com.example.myapplication.ui.screens.NewEditEntryScreen
 import com.example.myapplication.ui.screens.ProfileScreen
 import com.example.myapplication.ui.screens.PurchaseScreen
 import com.example.myapplication.ui.screens.SettingsScreen
+import com.example.myapplication.ui.screens.SplashScreen
 import com.example.myapplication.ui.screens.SubscriptionInfoScreen
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 
@@ -43,6 +47,14 @@ private const val LOCK_TIMEOUT_MS = 30_000L
 
 @Composable
 fun NavGraph(viewModel: JournalViewModel) {
+    // Branded launch screen. Survives config changes so it isn't replayed on rotation, but shows
+    // on each cold start.
+    var showSplash by rememberSaveable { mutableStateOf(true) }
+    if (showSplash) {
+        SplashScreen(onFinished = { showSplash = false })
+        return
+    }
+
     val isPurchased by viewModel.isPurchased.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
     val appLockEnabled by viewModel.appLockEnabled.collectAsState()

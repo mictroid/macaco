@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.MyApplication" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
+    <!-- Launch theme: shows the teal brand colour + monkey while the process starts, then
+         hands off to the app theme. Prevents a blank/white cold-start flash. -->
+    <style name="Theme.Macaco.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MyApplication</item>
+    </style>
 </resources>

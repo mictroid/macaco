@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.ui.navigation.NavGraph
 import com.example.myapplication.ui.theme.WanderlogTheme
@@ -21,6 +22,9 @@ import com.example.myapplication.ui.viewmodel.JournalViewModel
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // System splash (teal brand colour + monkey) covers the cold-start window, then the
+        // in-app Compose SplashScreen continues the branded poster.
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val app = application as TravelJournalApp
