@@ -138,5 +138,19 @@ machine, add the debug SHA-1 to the Firebase console:
 - **Min SDK:** 24 · **Target/Compile SDK:** 36
 - **No Room/SQLite** — Firestore is the cloud database; the only remaining local-file logic is the
   one-time `LegacyEntryMigration` import of the old `entries.json`.
+
+## Backup
+
+Machine-local files needed to rebuild on a fresh machine are mirrored to Google Drive at
+`G:\My Drive\Macaco-backup\` (with its own `README.md`):
+
+- **`debug.keystore`** — debug signing key, **not in git**. This is the only irreplaceable file:
+  it fixes the build's SHA-1, which is registered in Firebase for Google Sign-In. Restore it to
+  `~/.android/debug.keystore` so the SHA-1 is unchanged and Google Sign-In keeps working.
+- **`google-services.json`** — Firebase config; already tracked in git, mirrored to Drive as a
+  fallback.
+
+Restore: clone the repo, drop `debug.keystore` into `~/.android/`, open in Android Studio (it
+regenerates `local.properties`).
 </content>
 </invoke>
