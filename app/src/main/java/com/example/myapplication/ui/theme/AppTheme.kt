@@ -6,7 +6,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 enum class AppTheme(val key: String, val displayName: String, val swatch: Color) {
-    WANDERLOG("wanderlog", "Macaco", Color(0xFF2D6B6B)),
+    WANDERLOG("wanderlog", "Macaco", Color(0xFF0A4A58)),
     LAVENDER( "lavender",  "Lavender",  Color(0xFF6750A4)),
     ROSE(     "rose",      "Rose",      Color(0xFFB72F5A)),
     SKY(      "sky",       "Sky",       Color(0xFF0061A4)),
@@ -29,30 +29,33 @@ enum class AppTheme(val key: String, val displayName: String, val swatch: Color)
     }
 }
 
-// ── Wanderlog (warm teal / leather) ──────────────────────────────────────────
+// ── Macaco (ocean teal / gold) ───────────────────────────────────────────────
+// Brand palette from the app icon: deep-teal ocean (#052A35–#1A6478) with gold line-art
+// (#C8920A–#F5D040). Teal drives primary; gold is the secondary/tertiary accent, which also
+// tints the entry tag chips (they use secondaryContainer).
 private val wanderlogLight = lightColorScheme(
-    primary = Color(0xFF2D6B6B), onPrimary = Color.White,
-    primaryContainer = Color(0xFFB2E5E5), onPrimaryContainer = Color(0xFF002020),
-    secondary = Color(0xFF7D5A40), onSecondary = Color.White,
-    secondaryContainer = Color(0xFFF7D9C0), onSecondaryContainer = Color(0xFF2E1500),
-    tertiary = Color(0xFF8B4513), onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFFFD9C0), onTertiaryContainer = Color(0xFF2E0D00),
-    background = Color(0xFFFFF8F0), onBackground = Color(0xFF1F1B17),
-    surface = Color(0xFFFFF8F0), onSurface = Color(0xFF1F1B17),
-    surfaceVariant = Color(0xFFEDE0D3), onSurfaceVariant = Color(0xFF4E4036),
-    outline = Color(0xFF7F7167), error = Color(0xFFBA1A1A), onError = Color.White,
+    primary = Color(0xFF0E5A6B), onPrimary = Color.White,
+    primaryContainer = Color(0xFFA6E9F2), onPrimaryContainer = Color(0xFF00363F),
+    secondary = Color(0xFF7A5A00), onSecondary = Color.White,
+    secondaryContainer = Color(0xFFFFE08A), onSecondaryContainer = Color(0xFF261A00),
+    tertiary = Color(0xFF9A6B00), onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFFFDEA0), onTertiaryContainer = Color(0xFF2A1700),
+    background = Color(0xFFF4FAFB), onBackground = Color(0xFF171D1F),
+    surface = Color(0xFFF4FAFB), onSurface = Color(0xFF171D1F),
+    surfaceVariant = Color(0xFFD7E4E7), onSurfaceVariant = Color(0xFF3F484B),
+    outline = Color(0xFF6F797B), error = Color(0xFFBA1A1A), onError = Color.White,
 )
 private val wanderlogDark = darkColorScheme(
-    primary = Color(0xFF7FDCDC), onPrimary = Color(0xFF003737),
-    primaryContainer = Color(0xFF1F5050), onPrimaryContainer = Color(0xFFB2E5E5),
-    secondary = Color(0xFFE0C0A0), onSecondary = Color(0xFF4A2D15),
-    secondaryContainer = Color(0xFF63412A), onSecondaryContainer = Color(0xFFF7D9C0),
-    tertiary = Color(0xFFFFB889), onTertiary = Color(0xFF4B1E00),
-    tertiaryContainer = Color(0xFF6B2E00), onTertiaryContainer = Color(0xFFFFD9C0),
-    background = Color(0xFF1A1410), onBackground = Color(0xFFEEE0D5),
-    surface = Color(0xFF1A1410), onSurface = Color(0xFFEEE0D5),
-    surfaceVariant = Color(0xFF4E4036), onSurfaceVariant = Color(0xFFD2C4B7),
-    outline = Color(0xFF9B8E83), error = Color(0xFFFFB4AB), onError = Color(0xFF690005),
+    primary = Color(0xFF5FD4E8), onPrimary = Color(0xFF00363F),
+    primaryContainer = Color(0xFF0A4A58), onPrimaryContainer = Color(0xFFA6E9F2),
+    secondary = Color(0xFFF2C744), onSecondary = Color(0xFF3D2E00),
+    secondaryContainer = Color(0xFF574400), onSecondaryContainer = Color(0xFFFFE08A),
+    tertiary = Color(0xFFF5D040), onTertiary = Color(0xFF3D2E00),
+    tertiaryContainer = Color(0xFF6B5200), onTertiaryContainer = Color(0xFFFFDEA0),
+    background = Color(0xFF0B1A1F), onBackground = Color(0xFFDDE4E6),
+    surface = Color(0xFF0B1A1F), onSurface = Color(0xFFDDE4E6),
+    surfaceVariant = Color(0xFF3F484B), onSurfaceVariant = Color(0xFFBEC8CB),
+    outline = Color(0xFF899397), error = Color(0xFFFFB4AB), onError = Color(0xFF690005),
 )
 
 // ── Lavender ──────────────────────────────────────────────────────────────────
