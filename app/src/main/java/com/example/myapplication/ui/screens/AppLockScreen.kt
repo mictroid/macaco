@@ -5,8 +5,10 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import android.content.ContextWrapper
 import androidx.biometric.BiometricPrompt
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,13 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.myapplication.R
 import androidx.compose.ui.text.font.FontWeight
@@ -40,34 +43,51 @@ fun AppLockScreen(onUnlocked: () -> Unit) {
         showBiometricPrompt(context, onUnlocked)
     }
 
-    Column(
+    // Same branded backdrop as the launch splash, so a locked launch feels continuous.
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(macacoBrandBackground()),
+        contentAlignment = Alignment.Center
     ) {
-        Text("🔒", fontSize = 72.sp)
-        Spacer(Modifier.height(24.dp))
-        Text(
-            stringResource(R.string.app_name),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            stringResource(R.string.app_lock_locked),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(48.dp))
-        Button(
-            onClick = { showBiometricPrompt(context, onUnlocked) },
-            shape = RoundedCornerShape(12.dp)
+        Column(
+            modifier = Modifier.padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(stringResource(R.string.app_lock_unlock), modifier = Modifier.padding(horizontal = 16.dp))
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier.size(150.dp)
+            )
+            Text(
+                text = "macaco",
+                color = SplashGoldBright,
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Light,
+                letterSpacing = 7.sp,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(40.dp))
+            Text("🔒", fontSize = 40.sp)
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.app_lock_locked),
+                color = SplashGold.copy(alpha = 0.82f),
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(40.dp))
+            Button(
+                onClick = { showBiometricPrompt(context, onUnlocked) },
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SplashGold,
+                    contentColor = SplashTealEdge
+                )
+            ) {
+                Text(stringResource(R.string.app_lock_unlock), modifier = Modifier.padding(horizontal = 16.dp))
+            }
         }
     }
 }

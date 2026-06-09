@@ -33,12 +33,19 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import kotlinx.coroutines.delay
 
-// Brand colours sampled from macaco_splash.svg.
-private val SplashTealCenter = Color(0xFF1C6C7E)
-private val SplashTealMid = Color(0xFF0A4A58)
-private val SplashTealEdge = Color(0xFF042830)
-private val SplashGoldBright = Color(0xFFF0C840)
-private val SplashGold = Color(0xFFE8B020)
+// Brand colours sampled from macaco_splash.svg. Shared with AppLockScreen.
+internal val SplashTealCenter = Color(0xFF1C6C7E)
+internal val SplashTealMid = Color(0xFF0A4A58)
+internal val SplashTealEdge = Color(0xFF042830)
+internal val SplashGoldBright = Color(0xFFF0C840)
+internal val SplashGold = Color(0xFFE8B020)
+
+/** The deep-ocean teal radial gradient that backs the splash and lock screens. */
+internal fun macacoBrandBackground(): Brush = Brush.radialGradient(
+    0f to SplashTealCenter,
+    0.48f to SplashTealMid,
+    1f to SplashTealEdge
+)
 
 private const val LOGO_FADE_IN_MS = 850
 private const val TEXT_FADE_IN_MS = 750
@@ -76,13 +83,7 @@ fun SplashScreen(onFinished: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.radialGradient(
-                    0f to SplashTealCenter,
-                    0.48f to SplashTealMid,
-                    1f to SplashTealEdge
-                )
-            ),
+            .background(macacoBrandBackground()),
         contentAlignment = Alignment.Center
     ) {
         Column(
