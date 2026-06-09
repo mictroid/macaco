@@ -50,7 +50,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -430,15 +429,18 @@ private fun TagsField(
     suggestions: List<String>
 ) {
     var input by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
 
     fun commit(raw: String) {
         val tag = normalizeTag(raw)
         if (tag.isNotEmpty() && tag !in tags) onTagsChange(tags + tag)
         input = ""
+        expanded = false
     }
 
-    // When the field is empty, surface previously used tags; once typing, filter them by prefix.
-    // Either way, hide tags already on this entry.
+    // Previously used tags, filtered by prefix as the user types; tags already on this entry are
+    // hidden. When the field is empty we surface the most-used tags so the dropdown is useful the
+    // moment it opens.
     val matches = remember(input, tags, suggestions) {
         val q = normalizeTag(input)
         val unused = suggestions.filterNot { it in tags }
@@ -447,31 +449,54 @@ private fun TagsField(
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedTextField(
-            value = input,
-            onValueChange = {
-                // A space or comma ends a tag, mirroring how hashtags are typed.
-                if (it.endsWith(" ") || it.endsWith(",")) commit(it) else input = it
-            },
-            label = { Text(stringResource(R.string.new_entry_add_tag_label)) },
-            placeholder = { Text(stringResource(R.string.new_entry_add_tag_placeholder)) },
-            leadingIcon = { Text("#", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
-            trailingIcon = {
-                if (input.isNotBlank()) {
-                    IconButton(onClick = { commit(input) }) {
-                        Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.new_entry_add_tag_cd))
+        // Autocomplete dropdown of existing tags, mirroring the location field.
+        ExposedDropdownMenuBox(
+            expanded = expanded && matches.isNotEmpty(),
+            onExpandedChange = { expanded = it }
+        ) {
+            OutlinedTextField(
+                value = input,
+                onValueChange = {
+                    // A space or comma ends a tag, mirroring how hashtags are typed.
+                    if (it.endsWith(" ") || it.endsWith(",")) commit(it)
+                    else {
+                        input = it
+                        expanded = true
                     }
-                }
-            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { commit(input) }),
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary
+                },
+                label = { Text(stringResource(R.string.new_entry_add_tag_label)) },
+                placeholder = { Text(stringResource(R.string.new_entry_add_tag_placeholder)) },
+                leadingIcon = { Text("#", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
+                trailingIcon = {
+                    if (input.isNotBlank()) {
+                        IconButton(onClick = { commit(input) }) {
+                            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.new_entry_add_tag_cd))
+                        }
+                    }
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { commit(input) }),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
             )
-        )
+            ExposedDropdownMenu(
+                expanded = expanded && matches.isNotEmpty(),
+                onDismissRequest = { expanded = false }
+            ) {
+                matches.forEach { suggestion ->
+                    DropdownMenuItem(
+                        text = { Text("#$suggestion") },
+                        onClick = { commit(suggestion) }
+                    )
+                }
+            }
+        }
 
         // Chosen tags, each removable by tapping its ✕.
         if (tags.isNotEmpty()) {
@@ -488,18 +513,6 @@ private fun TagsField(
                                 modifier = Modifier.size(16.dp)
                             )
                         }
-                    )
-                }
-            }
-        }
-
-        // Suggestions drawn from tags used on other entries; tap to add.
-        if (matches.isNotEmpty()) {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                matches.forEach { suggestion ->
-                    SuggestionChip(
-                        onClick = { commit(suggestion) },
-                        label = { Text("#$suggestion") }
                     )
                 }
             }

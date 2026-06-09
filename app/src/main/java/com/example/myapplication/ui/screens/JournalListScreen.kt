@@ -406,7 +406,13 @@ fun JournalListScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(visibleEntries, key = { it.id }) { entry ->
-                            EntryCard(entry = entry, cachedDrivePhotos = cachedDrivePhotos, onClick = { onEntryClick(entry.id) })
+                            EntryCard(
+                                entry = entry,
+                                cachedDrivePhotos = cachedDrivePhotos,
+                                selectedTags = selectedTags,
+                                onTagClick = { viewModel.toggleTagFilter(it) },
+                                onClick = { onEntryClick(entry.id) }
+                            )
                         }
                     }
                 }
@@ -601,6 +607,8 @@ private fun EntryPhotoArea(
 private fun EntryCard(
     entry: TravelEntry,
     cachedDrivePhotos: Map<String, String>,
+    selectedTags: Set<String>,
+    onTagClick: (String) -> Unit,
     onClick: () -> Unit
 ) {
     Card(
@@ -644,6 +652,8 @@ private fun EntryCard(
                         Spacer(Modifier.width(6.dp))
                         TagChips(
                             tags = entry.tags,
+                            selectedTags = selectedTags,
+                            onTagClick = onTagClick,
                             modifier = Modifier.weight(1f, fill = false)
                         )
                     }
@@ -697,11 +707,14 @@ private fun EntryCard(
     }
 }
 
-// Renders entry tags as small themed pill chips on a single row. Chips that don't
-// fit the constrained width are clipped rather than wrapping, keeping the card compact.
+// Renders entry tags as small themed pill chips on a single row. Tapping a chip toggles
+// that tag in the list filter; active filters are highlighted in the primary color. Chips
+// that don't fit the constrained width are clipped rather than wrapping, keeping cards compact.
 @Composable
 private fun TagChips(
     tags: List<String>,
+    selectedTags: Set<String>,
+    onTagClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -710,15 +723,21 @@ private fun TagChips(
         verticalAlignment = Alignment.CenterVertically
     ) {
         tags.forEach { tag ->
+            val isSelected = tag in selectedTags
             Text(
                 "#$tag",
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                        else MaterialTheme.colorScheme.onSecondaryContainer,
                 maxLines = 1,
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .background(
+                        if (isSelected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.secondaryContainer
+                    )
+                    .clickable { onTagClick(tag) }
                     .padding(horizontal = 8.dp, vertical = 3.dp)
             )
         }
