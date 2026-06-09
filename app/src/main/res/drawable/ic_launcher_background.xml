@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Wanderlog brand teal. Full-bleed; the launcher mask supplies the rounded/round shape. -->
+<!--
+  Macaco brand background: deep-teal ocean radial gradient (from macaco_monkey_icon.svg).
+  Full-bleed; the launcher mask supplies the rounded/round shape.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+
+    <path android:pathData="M0,0 h1024 v1024 h-1024 z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="512"
+                android:centerY="460"
+                android:gradientRadius="665">
+                <item android:offset="0.0" android:color="#1A6478" />
+                <item android:offset="0.55" android:color="#0A4A58" />
+                <item android:offset="1.0" android:color="#052A35" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Soft watery highlight -->
     <path
-        android:fillColor="#2E7D7D"
-        android:pathData="M0,0h108v108h-108z" />
+        android:fillColor="#2A7890"
+        android:fillAlpha="0.18"
+        android:pathData="M92,430 a420,290 0 1,0 840,0 a420,290 0 1,0 -840,0" />
 </vector>

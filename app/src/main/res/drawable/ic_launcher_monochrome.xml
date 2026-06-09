@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Macaco themed-icon (monochrome) layer: the monkey as pure line-art on transparent.
+  The system tints this by the user's theme colour, so lenses are outline-only here
+  (a filled lens would render as a solid tinted disc).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+
+    <group
+        android:pivotX="512"
+        android:pivotY="512"
+        android:scaleX="0.9"
+        android:scaleY="0.9">
+
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="23"
+            android:pathData="M420,613 a92,63 0 1,0 184,0 a92,63 0 1,0 -184,0" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="25"
+            android:pathData="M270,504 a242,242 0 1,0 484,0 a242,242 0 1,0 -484,0" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="23"
+            android:pathData="M186,487 a94,94 0 1,0 188,0 a94,94 0 1,0 -188,0" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="23"
+            android:pathData="M650,487 a94,94 0 1,0 188,0 a94,94 0 1,0 -188,0" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="15"
+            android:pathData="M224,487 a56,59 0 1,0 112,0 a56,59 0 1,0 -112,0" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="15"
+            android:pathData="M688,487 a56,59 0 1,0 112,0 a56,59 0 1,0 -112,0" />
+        <!-- Lenses: outline only for monochrome -->
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="21"
+            android:pathData="M335,484 a83,83 0 1,0 166,0 a83,83 0 1,0 -166,0" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="21"
+            android:pathData="M523,484 a83,83 0 1,0 166,0 a83,83 0 1,0 -166,0" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="15" android:strokeLineCap="round"
+            android:pathData="M501,484 L524,484" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="15" android:strokeLineCap="round"
+            android:pathData="M335,484 L283,487" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="15" android:strokeLineCap="round"
+            android:pathData="M689,484 L741,487" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="18" android:strokeLineCap="round"
+            android:pathData="M369,395 Q418,372 466,395" />
+        <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="18" android:strokeLineCap="round"
+            android:pathData="M558,395 Q606,372 655,395" />
+        <path android:fillColor="#FFFFFF" android:pathData="M475,629 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+        <path android:fillColor="#FFFFFF" android:pathData="M523,629 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+    </group>
+</vector>

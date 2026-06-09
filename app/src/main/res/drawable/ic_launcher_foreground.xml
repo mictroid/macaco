@@ -1,91 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Wanderlog launcher foreground: a travel arc with a destination pin and an airplane.
-  Authored in the original 512x512 artwork space; the outer group scales it down and
-  centers it so the whole design stays inside the adaptive-icon safe zone (no mask clipping).
+  Macaco launcher foreground: a sunglasses-wearing monkey rendered as gold line-art.
+  Ported from macaco_monkey_icon.svg (1024x1024 artwork space). The SVG glow filter and
+  gradient strokes are dropped (unsupported by VectorDrawable); strokes use solid brand gold.
+  The outer group scales the art to 0.9 about the centre so the ears stay inside the
+  adaptive-icon safe zone (no mask clipping).
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="512"
-    android:viewportHeight="512">
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
 
     <group
-        android:pivotX="256"
-        android:pivotY="256"
-        android:scaleX="0.8"
-        android:scaleY="0.8"
-        android:translateX="-23.2"
-        android:translateY="-3.2">
+        android:pivotX="512"
+        android:pivotY="512"
+        android:scaleX="0.9"
+        android:scaleY="0.9">
 
-        <!-- Travel arc (dashed in the source SVG; solid here — dashes are invisible at icon size) -->
+        <!-- Muzzle (behind glasses) -->
         <path
             android:fillColor="#00000000"
-            android:pathData="M105,370 Q180,190 320,230 Q410,258 460,170"
-            android:strokeAlpha="0.45"
-            android:strokeColor="#FFFFFF"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="23"
+            android:pathData="M420,613 a92,63 0 1,0 184,0 a92,63 0 1,0 -184,0" />
+
+        <!-- Head -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="25"
+            android:pathData="M270,504 a242,242 0 1,0 484,0 a242,242 0 1,0 -484,0" />
+
+        <!-- Ears -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="23"
+            android:pathData="M186,487 a94,94 0 1,0 188,0 a94,94 0 1,0 -188,0" />
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="23"
+            android:pathData="M650,487 a94,94 0 1,0 188,0 a94,94 0 1,0 -188,0" />
+
+        <!-- Inner ear bowls -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="15"
+            android:pathData="M224,487 a56,59 0 1,0 112,0 a56,59 0 1,0 -112,0" />
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="15"
+            android:pathData="M688,487 a56,59 0 1,0 112,0 a56,59 0 1,0 -112,0" />
+
+        <!-- Sunglasses — dark filled lenses -->
+        <path
+            android:fillColor="#040E14"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="21"
+            android:pathData="M335,484 a83,83 0 1,0 166,0 a83,83 0 1,0 -166,0" />
+        <path
+            android:fillColor="#040E14"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="21"
+            android:pathData="M523,484 a83,83 0 1,0 166,0 a83,83 0 1,0 -166,0" />
+
+        <!-- Nose bridge -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="15"
             android:strokeLineCap="round"
-            android:strokeWidth="4" />
+            android:pathData="M501,484 L524,484" />
 
-        <!-- Destination pin: outer ring + center dot -->
+        <!-- Temple arms -->
         <path
             android:fillColor="#00000000"
-            android:pathData="M446,156 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0"
-            android:strokeAlpha="0.6"
-            android:strokeColor="#FFFFFF"
-            android:strokeWidth="3.5" />
+            android:strokeColor="#E8B020"
+            android:strokeWidth="15"
+            android:strokeLineCap="round"
+            android:pathData="M335,484 L283,487" />
         <path
-            android:fillAlpha="0.6"
-            android:fillColor="#FFFFFF"
-            android:pathData="M454.5,156 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0" />
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="15"
+            android:strokeLineCap="round"
+            android:pathData="M689,484 L741,487" />
 
-        <!-- Origin dot -->
+        <!-- Eyebrows -->
         <path
-            android:fillAlpha="0.5"
-            android:fillColor="#FFFFFF"
-            android:pathData="M97,370 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0" />
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="18"
+            android:strokeLineCap="round"
+            android:pathData="M369,395 Q418,372 466,395" />
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="18"
+            android:strokeLineCap="round"
+            android:pathData="M558,395 Q606,372 655,395" />
 
-        <!-- Airplane: translate(278,278) rotate(-38) from the source SVG -->
-        <group
-            android:rotation="-38"
-            android:translateX="278"
-            android:translateY="278">
-            <path
-                android:fillColor="#FFFFFF"
-                android:pathData="M-58,0 a58,15 0 1,0 116,0 a58,15 0 1,0 -116,0" />
-            <path
-                android:fillColor="#FFFFFF"
-                android:pathData="M42,0 a16,9.5 0 1,0 32,0 a16,9.5 0 1,0 -32,0" />
-            <path
-                android:fillColor="#FFFFFF"
-                android:pathData="M6,-14 L-24,-58 L-38,-58 L-14,-14 Z" />
-            <path
-                android:fillColor="#FFFFFF"
-                android:pathData="M6,14 L-24,58 L-38,58 L-14,14 Z" />
-            <path
-                android:fillAlpha="0.85"
-                android:fillColor="#FFFFFF"
-                android:pathData="M-44,-13 L-64,-38 L-59,-38 L-41,-13 Z" />
-            <path
-                android:fillAlpha="0.7"
-                android:fillColor="#FFFFFF"
-                android:pathData="M-41,-11 L-62,-26 L-64,-22 L-41,-8 Z" />
-            <path
-                android:fillAlpha="0.7"
-                android:fillColor="#FFFFFF"
-                android:pathData="M-41,11 L-62,26 L-64,22 L-41,8 Z" />
-            <path
-                android:fillAlpha="0.5"
-                android:fillColor="#2E7D7D"
-                android:pathData="M23.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
-            <path
-                android:fillAlpha="0.5"
-                android:fillColor="#2E7D7D"
-                android:pathData="M7.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
-            <path
-                android:fillAlpha="0.5"
-                android:fillColor="#2E7D7D"
-                android:pathData="M-8.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
-        </group>
+        <!-- Nostrils -->
+        <path
+            android:fillColor="#E8B020"
+            android:pathData="M475,629 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+        <path
+            android:fillColor="#E8B020"
+            android:pathData="M523,629 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
     </group>
 </vector>
