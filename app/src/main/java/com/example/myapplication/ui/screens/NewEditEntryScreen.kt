@@ -48,6 +48,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
@@ -81,6 +82,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.model.TravelEntry
+import com.example.myapplication.ui.theme.MacacoGold
 import com.example.myapplication.util.Cities
 import com.example.myapplication.util.ImageStorage
 import kotlinx.coroutines.Dispatchers
@@ -577,6 +579,10 @@ private fun TagsField(
                         selected = true,
                         onClick = { onTagsChange(tags - tag) },
                         label = { Text("#$tag") },
+                        colors = InputChipDefaults.inputChipColors(
+                            labelColor = MacacoGold,
+                            selectedLabelColor = MacacoGold
+                        ),
                         trailingIcon = {
                             Icon(
                                 Icons.Filled.Close,
