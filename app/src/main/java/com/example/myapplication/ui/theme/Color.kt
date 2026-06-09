@@ -2,9 +2,6 @@ package com.example.myapplication.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Macaco brand gold — used for tag text across the app (matches the splash logo gold).
-val MacacoGold = Color(0xFFE8B020)
-
 // Light theme — warm leather & open-sky palette
 val md_light_primary = Color(0xFF2D6B6B)
 val md_light_onPrimary = Color(0xFFFFFFFF)

@@ -43,7 +43,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -87,7 +86,6 @@ import com.example.myapplication.R
 import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.data.model.onThisDayEntries
 import com.example.myapplication.data.model.tagsByFrequency
-import com.example.myapplication.ui.theme.MacacoGold
 import com.example.myapplication.ui.theme.heroGradientColors
 import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
@@ -528,11 +526,7 @@ private fun TagFilterRow(
             FilterChip(
                 selected = tag in selected,
                 onClick = { onToggle(tag) },
-                label = { Text("#$tag") },
-                colors = FilterChipDefaults.filterChipColors(
-                    labelColor = MacacoGold,
-                    selectedLabelColor = MacacoGold
-                )
+                label = { Text("#$tag") }
             )
         }
     }
@@ -805,7 +799,8 @@ private fun TagChips(
                 "#$tag",
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Medium,
-                color = MacacoGold,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                        else MaterialTheme.colorScheme.onSecondaryContainer,
                 maxLines = 1,
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))

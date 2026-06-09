@@ -36,7 +36,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.myapplication.R
-import com.example.myapplication.ui.theme.MacacoGold
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -262,7 +261,7 @@ fun EntryDetailScreen(
                                     onClick = { onTagClick(tag) },
                                     label = { Text("#$tag") },
                                     colors = AssistChipDefaults.assistChipColors(
-                                        labelColor = MacacoGold
+                                        labelColor = MaterialTheme.colorScheme.primary
                                     )
                                 )
                             }
