@@ -166,4 +166,45 @@
     <string name="app_lock_unlock">Déverrouiller</string>
     <string name="app_lock_biometric_title">Déverrouiller Macaco</string>
     <string name="app_lock_biometric_subtitle">Vérifiez votre identité pour accéder à votre journal</string>
+
+    <string name="new_entry_photo_take">Prendre une photo</string>
+    <string name="new_entry_photo_choose">Choisir dans la galerie</string>
+
+    <!-- Backup & Restore -->
+    <string name="settings_backup_file">Sauvegarde &amp; restauration</string>
+    <string name="settings_backup_file_title">Sauvegarder dans un fichier</string>
+    <string name="settings_backup_file_subtitle">Enregistrez toutes vos entrées et photos dans un fichier .zip restaurable partout</string>
+    <string name="settings_backup_premium_required">Fonctionnalité Premium – débloquez-la depuis l\'abonnement</string>
+    <string name="settings_backup_export">Exporter</string>
+    <string name="settings_backup_import">Importer</string>
+    <string name="settings_backup_export_done">%1$d entrées sauvegardées dans le fichier</string>
+    <string name="settings_backup_import_done">%1$d entrées restaurées depuis le fichier</string>
+    <string name="settings_backup_failed">Échec de la sauvegarde. Veuillez réessayer.</string>
+
+    <!-- Drawer -->
+    <string name="drawer_share_app">Partager l\'appli</string>
+    <string name="drawer_rate_us">Noter l\'appli</string>
+    <string name="drawer_help">Aide &amp; à propos</string>
+    <string name="share_app_subject">Macaco – Journal de voyage</string>
+    <string name="share_app_text">J\'utilise Macaco pour tenir mon journal de voyage – essayez-le ! %1$s</string>
+    <string name="share_app_chooser">Partager Macaco via</string>
+
+    <!-- Help &amp; About -->
+    <string name="help_title">Aide &amp; à propos</string>
+    <string name="help_faq">Questions fréquentes</string>
+    <string name="help_faq_q_sync">Où sont stockées mes entrées ?</string>
+    <string name="help_faq_a_sync">Vos entrées sont synchronisées en toute sécurité avec votre compte dans le cloud, et vous suivent sur tout appareil où vous vous connectez.</string>
+    <string name="help_faq_q_photos">Pourquoi mes photos n\'apparaissent pas sur un autre appareil ?</string>
+    <string name="help_faq_a_photos">Les photos sont enregistrées sur l\'appareil depuis lequel vous les avez ajoutées. Connectez Google Drive dans les réglages, ou utilisez « Sauvegarder dans un fichier », pour transférer vos photos d\'un appareil à l\'autre.</string>
+    <string name="help_faq_q_backup">Comment tout sauvegarder ?</string>
+    <string name="help_faq_a_backup">Réglages → Sauvegarde &amp; restauration vous permet d\'exporter toutes vos entrées et photos dans un seul fichier .zip réimportable à tout moment.</string>
+    <string name="help_faq_q_lock">Puis-je verrouiller l\'appli ?</string>
+    <string name="help_faq_a_lock">Oui – activez le verrouillage de l\'appli depuis le menu ou les réglages pour exiger votre empreinte, votre visage ou le verrouillage de l\'écran à l\'ouverture de Macaco.</string>
+    <string name="help_get_in_touch">Nous contacter</string>
+    <string name="help_contact">Contacter le support</string>
+    <string name="help_contact_subject">Support Macaco</string>
+    <string name="help_privacy_policy">Politique de confidentialité</string>
+    <string name="help_privacy_policy_subtitle">Comment vos données sont traitées</string>
+    <string name="help_open_listing">Macaco sur Google Play</string>
+    <string name="help_open_listing_subtitle">Voir ou mettre à jour l\'appli</string>
 </resources>

@@ -166,4 +166,45 @@
     <string name="app_lock_unlock">Ontgrendelen</string>
     <string name="app_lock_biometric_title">Macaco ontgrendelen</string>
     <string name="app_lock_biometric_subtitle">Verifieer je identiteit om je dagboek te openen</string>
+
+    <string name="new_entry_photo_take">Foto maken</string>
+    <string name="new_entry_photo_choose">Kies uit galerij</string>
+
+    <!-- Backup & Restore -->
+    <string name="settings_backup_file">Back-up &amp; herstel</string>
+    <string name="settings_backup_file_title">Back-up naar bestand</string>
+    <string name="settings_backup_file_subtitle">Sla al je items en foto\'s op in een .zip-bestand dat je overal kunt herstellen</string>
+    <string name="settings_backup_premium_required">Een Premium-functie – ontgrendel deze via het abonnement</string>
+    <string name="settings_backup_export">Exporteren</string>
+    <string name="settings_backup_import">Importeren</string>
+    <string name="settings_backup_export_done">%1$d items naar bestand geback-upt</string>
+    <string name="settings_backup_import_done">%1$d items uit bestand hersteld</string>
+    <string name="settings_backup_failed">Back-up mislukt. Probeer het opnieuw.</string>
+
+    <!-- Drawer -->
+    <string name="drawer_share_app">App delen</string>
+    <string name="drawer_rate_us">Beoordelen</string>
+    <string name="drawer_help">Help &amp; info</string>
+    <string name="share_app_subject">Macaco – Reisdagboek</string>
+    <string name="share_app_text">Ik gebruik Macaco om mijn reizen bij te houden – probeer het eens! %1$s</string>
+    <string name="share_app_chooser">Macaco delen via</string>
+
+    <!-- Help &amp; About -->
+    <string name="help_title">Help &amp; info</string>
+    <string name="help_faq">Veelgestelde vragen</string>
+    <string name="help_faq_q_sync">Waar worden mijn items opgeslagen?</string>
+    <string name="help_faq_a_sync">Je items worden veilig met je account in de cloud gesynchroniseerd, zodat ze meegaan naar elk apparaat waarop je inlogt.</string>
+    <string name="help_faq_q_photos">Waarom verschijnen mijn foto\'s niet op een ander apparaat?</string>
+    <string name="help_faq_a_photos">Foto\'s worden opgeslagen op het apparaat waarop je ze hebt toegevoegd. Verbind Google Drive in Instellingen, of gebruik \"Back-up naar bestand\", om foto\'s tussen apparaten mee te nemen.</string>
+    <string name="help_faq_q_backup">Hoe maak ik een back-up van alles?</string>
+    <string name="help_faq_a_backup">Via Instellingen → Back-up &amp; herstel kun je al je items en foto\'s exporteren naar één .zip-bestand dat je altijd opnieuw kunt importeren.</string>
+    <string name="help_faq_q_lock">Kan ik de app vergrendelen?</string>
+    <string name="help_faq_a_lock">Ja – schakel App-vergrendeling in via het menu of Instellingen om je vingerafdruk, gezicht of schermvergrendeling te vereisen bij het openen van Macaco.</string>
+    <string name="help_get_in_touch">Contact</string>
+    <string name="help_contact">Contact met support</string>
+    <string name="help_contact_subject">Macaco-ondersteuning</string>
+    <string name="help_privacy_policy">Privacybeleid</string>
+    <string name="help_privacy_policy_subtitle">Hoe je gegevens worden verwerkt</string>
+    <string name="help_open_listing">Macaco in Google Play</string>
+    <string name="help_open_listing_subtitle">App bekijken of bijwerken</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.myapplication.ui.screens
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.automirrored.filled.DriveFileMove
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Language
@@ -66,6 +68,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -96,6 +99,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.services.drive.DriveScopes
+import kotlinx.coroutines.launch
 
 private data class AppLanguage(val code: String, val nativeName: String)
 
@@ -223,6 +227,49 @@ fun SettingsScreen(
             // relaunches (the Photo Picker grant is temporary). See ImageStorage.
             ImageStorage.persist(context, uri, ImageStorage.BACKGROUNDS, replaceExisting = true)
                 ?.let { viewModel.setThemeImage(it) }
+        }
+    }
+
+    // Local file backup/restore (premium). SAF picks the destination/source; results via Toast.
+    val isPurchased by viewModel.isPurchased.collectAsState()
+    val backupScope = rememberCoroutineScope()
+    var backupBusy by remember { mutableStateOf(false) }
+    val backupExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/zip")
+    ) { uri ->
+        if (uri != null) {
+            backupBusy = true
+            backupScope.launch {
+                val result = viewModel.exportBackup(uri)
+                backupBusy = false
+                Toast.makeText(
+                    context,
+                    result.fold(
+                        { context.getString(R.string.settings_backup_export_done, it) },
+                        { it.message ?: context.getString(R.string.settings_backup_failed) }
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+    val backupImportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            backupBusy = true
+            backupScope.launch {
+                val result = viewModel.importBackup(uri)
+                backupBusy = false
+                Toast.makeText(
+                    context,
+                    result.fold(
+                        { context.getString(R.string.settings_backup_import_done, it) },
+                        { it.message ?: context.getString(R.string.settings_backup_failed) }
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
@@ -514,6 +561,23 @@ fun SettingsScreen(
                 }
             )
 
+            // ── Backup & restore to file ──────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+            SettingsSectionHeader(stringResource(R.string.settings_backup_file))
+
+            BackupFileCard(
+                premium = isPurchased == true,
+                busy = backupBusy,
+                onExport = {
+                    if (isPurchased == true) backupExportLauncher.launch("macaco-backup.zip")
+                    else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
+                },
+                onImport = {
+                    if (isPurchased == true) backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
+                    else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
+                }
+            )
+
             // ── About ─────────────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
             SettingsSectionHeader(stringResource(R.string.settings_about))
@@ -551,6 +615,71 @@ private fun ThemeSwatch(theme: AppTheme, selected: Boolean, onClick: () -> Unit)
                 tint = androidx.compose.ui.graphics.Color.White,
                 modifier = Modifier.size(22.dp)
             )
+        }
+    }
+}
+
+@Composable
+private fun BackupFileCard(
+    premium: Boolean,
+    busy: Boolean,
+    onExport: () -> Unit,
+    onImport: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.DriveFileMove,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        stringResource(R.string.settings_backup_file_title),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        if (premium) stringResource(R.string.settings_backup_file_subtitle)
+                        else stringResource(R.string.settings_backup_premium_required),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (!premium) {
+                    Icon(
+                        Icons.Filled.Lock,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            if (busy) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(
+                    onClick = onExport,
+                    enabled = !busy,
+                    modifier = Modifier.weight(1f)
+                ) { Text(stringResource(R.string.settings_backup_export)) }
+                OutlinedButton(
+                    onClick = onImport,
+                    enabled = !busy,
+                    modifier = Modifier.weight(1f)
+                ) { Text(stringResource(R.string.settings_backup_import)) }
+            }
         }
     }
 }

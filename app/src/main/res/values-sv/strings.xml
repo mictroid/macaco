@@ -166,4 +166,45 @@
     <string name="app_lock_unlock">Lås upp</string>
     <string name="app_lock_biometric_title">Lås upp Macaco</string>
     <string name="app_lock_biometric_subtitle">Verifiera din identitet för att komma åt din dagbok</string>
+
+    <string name="new_entry_photo_take">Ta foto</string>
+    <string name="new_entry_photo_choose">Välj från galleriet</string>
+
+    <!-- Backup & Restore -->
+    <string name="settings_backup_file">Säkerhetskopiering</string>
+    <string name="settings_backup_file_title">Säkerhetskopiera till fil</string>
+    <string name="settings_backup_file_subtitle">Spara alla inlägg och foton i en .zip-fil som du kan återställa var som helst</string>
+    <string name="settings_backup_premium_required">En Premium-funktion – lås upp den via prenumerationen</string>
+    <string name="settings_backup_export">Exportera</string>
+    <string name="settings_backup_import">Importera</string>
+    <string name="settings_backup_export_done">%1$d inlägg säkerhetskopierade till fil</string>
+    <string name="settings_backup_import_done">%1$d inlägg återställda från fil</string>
+    <string name="settings_backup_failed">Säkerhetskopieringen misslyckades. Försök igen.</string>
+
+    <!-- Drawer -->
+    <string name="drawer_share_app">Dela appen</string>
+    <string name="drawer_rate_us">Betygsätt</string>
+    <string name="drawer_help">Hjälp &amp; om</string>
+    <string name="share_app_subject">Macaco – Resedagbok</string>
+    <string name="share_app_text">Jag använder Macaco för att dagboksföra mina resor – testa det! %1$s</string>
+    <string name="share_app_chooser">Dela Macaco via</string>
+
+    <!-- Help &amp; About -->
+    <string name="help_title">Hjälp &amp; om</string>
+    <string name="help_faq">Vanliga frågor</string>
+    <string name="help_faq_q_sync">Var lagras mina inlägg?</string>
+    <string name="help_faq_a_sync">Dina inlägg synkroniseras säkert till ditt konto i molnet, så de följer med dig till alla enheter där du loggar in.</string>
+    <string name="help_faq_q_photos">Varför syns inte mina foton på en annan enhet?</string>
+    <string name="help_faq_a_photos">Foton sparas på enheten du lade till dem från. Anslut Google Drive i Inställningar, eller använd \"Säkerhetskopiera till fil\", för att ta med foton mellan enheter.</string>
+    <string name="help_faq_q_backup">Hur säkerhetskopierar jag allt?</string>
+    <string name="help_faq_a_backup">Inställningar → Säkerhetskopiering låter dig exportera alla inlägg och foton till en enda .zip-fil som du kan importera igen när som helst.</string>
+    <string name="help_faq_q_lock">Kan jag låsa appen?</string>
+    <string name="help_faq_a_lock">Ja – aktivera Applås från menyn eller Inställningar för att kräva ditt fingeravtryck, ansikte eller skärmlås för att öppna Macaco.</string>
+    <string name="help_get_in_touch">Kontakta oss</string>
+    <string name="help_contact">Kontakta support</string>
+    <string name="help_contact_subject">Macaco-support</string>
+    <string name="help_privacy_policy">Integritetspolicy</string>
+    <string name="help_privacy_policy_subtitle">Hur dina data hanteras</string>
+    <string name="help_open_listing">Macaco på Google Play</string>
+    <string name="help_open_listing_subtitle">Visa eller uppdatera appen</string>
 </resources>

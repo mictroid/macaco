@@ -28,11 +28,15 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -49,6 +53,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -68,6 +73,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -83,6 +89,7 @@ import com.example.myapplication.data.model.tagsByFrequency
 import com.example.myapplication.ui.theme.heroGradientColors
 import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
+import com.example.myapplication.util.AppActions
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -97,13 +104,34 @@ fun JournalListScreen(
     onProfile: () -> Unit,
     onSettings: () -> Unit,
     onSubscription: () -> Unit,
-    onLogin: () -> Unit
+    onLogin: () -> Unit,
+    onHelp: () -> Unit
 ) {
     val entries by viewModel.entries.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
+    val appLockEnabled by viewModel.appLockEnabled.collectAsState()
+
+    val context = LocalContext.current
+    // Toggle app lock from the drawer, reusing the same biometric-verify guard as Settings:
+    // verify auth actually works before enabling, so a user can't lock themselves out.
+    val toggleAppLock: (Boolean) -> Unit = { enable ->
+        if (enable) {
+            if (!isBiometricAvailable(context)) {
+                android.widget.Toast.makeText(
+                    context,
+                    context.getString(R.string.settings_app_lock_unavailable),
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+            } else {
+                showBiometricPrompt(context) { viewModel.setAppLockEnabled(true) }
+            }
+        } else {
+            viewModel.setAppLockEnabled(false)
+        }
+    }
 
     // Tag filter: tapping chips narrows the list to entries carrying any of the selected tags (OR).
     // State lives in the ViewModel so the detail screen can set it too.
@@ -245,6 +273,19 @@ fun JournalListScreen(
                     }
                 )
 
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.settings_app_lock)) },
+                    selected = false,
+                    icon = { Icon(Icons.Filled.Lock, contentDescription = null) },
+                    badge = {
+                        Switch(
+                            checked = appLockEnabled,
+                            onCheckedChange = { toggleAppLock(it) }
+                        )
+                    },
+                    onClick = { toggleAppLock(!appLockEnabled) }
+                )
+
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
 
                 NavigationDrawerItem(
@@ -257,6 +298,36 @@ fun JournalListScreen(
                         )
                     },
                     onClick = { viewModel.toggleDarkMode() }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.drawer_share_app)) },
+                    selected = false,
+                    icon = { Icon(Icons.Filled.Share, contentDescription = null) },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        AppActions.shareApp(context)
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.drawer_rate_us)) },
+                    selected = false,
+                    icon = { Icon(Icons.Filled.StarRate, contentDescription = null) },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        AppActions.requestReview(context)
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.drawer_help)) },
+                    selected = false,
+                    icon = { Icon(Icons.AutoMirrored.Filled.HelpOutline, contentDescription = null) },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        onHelp()
+                    }
                 )
 
                 Spacer(Modifier.weight(1f))

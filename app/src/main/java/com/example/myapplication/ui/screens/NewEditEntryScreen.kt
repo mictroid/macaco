@@ -36,6 +36,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -113,6 +116,8 @@ fun NewEditEntryScreen(
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
 
+    var showPhotoSourceDialog by remember { mutableStateOf(false) }
+
     val photoPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris ->
@@ -121,6 +126,29 @@ fun NewEditEntryScreen(
         val stored = uris.mapNotNull { ImageStorage.persistToGallery(context, it) }
         sessionAdded = sessionAdded + stored
         photoUris = (photoUris + stored).distinct()
+    }
+
+    // Camera capture: the camera app writes into a FileProvider temp file, which we then copy into
+    // the shared gallery (same destination as picked photos) so it's Drive-syncable and persists.
+    var pendingCameraUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    val cameraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        val captured = pendingCameraUri
+        if (success && captured != null) {
+            ImageStorage.persistToGallery(context, captured)?.let { stored ->
+                sessionAdded = sessionAdded + stored
+                photoUris = (photoUris + stored).distinct()
+            }
+        }
+        ImageStorage.clear(context, ImageStorage.CAMERA_TEMP)
+        pendingCameraUri = null
+    }
+    val launchCamera = {
+        ImageStorage.newCameraTempUri(context)?.let { uri ->
+            pendingCameraUri = uri
+            cameraLauncher.launch(uri)
+        }
     }
 
     // Speech-to-text: result is appended to the description with a space separator.
@@ -144,6 +172,53 @@ fun NewEditEntryScreen(
         onBack()
     }
     BackHandler(onBack = cancel)
+
+    if (showPhotoSourceDialog) {
+        AlertDialog(
+            onDismissRequest = { showPhotoSourceDialog = false },
+            title = { Text(stringResource(R.string.new_entry_add_photo)) },
+            text = {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showPhotoSourceDialog = false
+                                launchCamera()
+                            }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.PhotoCamera, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.width(16.dp))
+                        Text(stringResource(R.string.new_entry_photo_take), style = MaterialTheme.typography.bodyLarge)
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showPhotoSourceDialog = false
+                                photoPicker.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.PhotoLibrary, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.width(16.dp))
+                        Text(stringResource(R.string.new_entry_photo_choose), style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showPhotoSourceDialog = false }) {
+                    Text(stringResource(R.string.common_cancel))
+                }
+            }
+        )
+    }
 
     if (showDatePicker) {
         DatePickerDialog(
@@ -229,11 +304,7 @@ fun NewEditEntryScreen(
                             .size(80.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .clickable {
-                                photoPicker.launch(
-                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                )
-                            },
+                            .clickable { showPhotoSourceDialog = true },
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {

@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import androidx.core.content.FileProvider
 import java.io.File
 
 /**
@@ -81,6 +82,40 @@ object ImageStorage {
         uri.toString()
     }.getOrNull()
 
+    /**
+     * Like [persistToGallery] but writes raw [bytes] (e.g. from a backup zip) instead of copying
+     * from a source URI. Returns the resulting `content://` URI string, or null on failure.
+     */
+    fun persistBytesToGallery(context: Context, bytes: ByteArray): String? = runCatching {
+        val resolver = context.contentResolver
+        val name = "macaco_${System.currentTimeMillis()}_${bytes.size}.jpg"
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, name)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Macaco")
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
+        }
+        val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        } else {
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+        val uri = resolver.insert(collection, values) ?: return null
+        val ok = resolver.openOutputStream(uri)?.use { output -> output.write(bytes); true } ?: false
+        if (!ok) {
+            runCatching { resolver.delete(uri, null, null) }
+            return null
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.clear()
+            values.put(MediaStore.Images.Media.IS_PENDING, 0)
+            resolver.update(uri, values, null, null)
+        }
+        uri.toString()
+    }.getOrNull()
+
     /** Deletes everything stored under `filesDir/[subDir]`. */
     fun clear(context: Context, subDir: String) {
         runCatching { File(context.filesDir, subDir).listFiles()?.forEach { it.delete() } }
@@ -104,7 +139,21 @@ object ImageStorage {
         }
     }
 
+    /**
+     * Creates an empty temp file under `filesDir/[CAMERA_TEMP]` and returns a FileProvider
+     * `content://` URI the camera app can write the captured photo into, or null on failure.
+     * After capture, copy the result into the gallery via [persistToGallery] and call
+     * `clear(context, CAMERA_TEMP)` to remove the temp file.
+     */
+    fun newCameraTempUri(context: Context): Uri? = runCatching {
+        val dir = File(context.filesDir, CAMERA_TEMP).apply { mkdirs() }
+        val file = File(dir, "capture_${System.currentTimeMillis()}.jpg")
+        file.createNewFile()
+        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    }.getOrNull()
+
     const val BACKGROUNDS = "backgrounds"
     const val PROFILE = "profile"
     const val ENTRY_PHOTOS = "entry_photos"
+    const val CAMERA_TEMP = "camera_temp"
 }

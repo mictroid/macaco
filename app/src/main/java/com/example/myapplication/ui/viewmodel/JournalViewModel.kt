@@ -14,6 +14,7 @@ import com.example.myapplication.data.storage.CloudEntrySync
 import com.example.myapplication.data.storage.LegacyEntryMigration
 import com.example.myapplication.data.sync.DrivePhotoSync
 import com.example.myapplication.data.sync.DrivePhotoSyncState
+import com.example.myapplication.data.sync.JournalBackup
 import com.example.myapplication.ui.theme.AppTheme
 import com.example.myapplication.util.ImageStorage
 import com.example.myapplication.util.ReminderScheduler
@@ -43,6 +44,9 @@ class JournalViewModel(
 
     val driveSyncState: StateFlow<DrivePhotoSyncState> = drivePhotoSync.syncState
     val cachedDrivePhotos: StateFlow<Map<String, String>> = drivePhotoSync.cachedPhotoUris
+
+    // Local file backup/restore (premium feature). Stateless helper — built from appContext.
+    private val journalBackup = JournalBackup(appContext)
 
     // Tags currently filtering the journal list (empty = show all). Lifted here so the entry
     // detail screen can set it (tap a tag → list filtered by that tag).
@@ -215,6 +219,14 @@ class JournalViewModel(
     fun refreshDriveDownloads() {
         drivePhotoSync.downloadMissingPhotos(entries.value)
     }
+
+    /** Writes a full backup zip (entries + photo bytes) to the user-picked [dest]. */
+    suspend fun exportBackup(dest: android.net.Uri): Result<Int> =
+        journalBackup.exportTo(dest, entries.value)
+
+    /** Restores entries from a backup zip at [src], upserting each into the cloud store. */
+    suspend fun importBackup(src: android.net.Uri): Result<Int> =
+        journalBackup.importFrom(src) { cloudEntrySync.save(it) }
 
     class Factory(
         private val appContext: Context,

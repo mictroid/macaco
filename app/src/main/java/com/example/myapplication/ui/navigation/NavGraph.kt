@@ -26,6 +26,7 @@ import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.data.model.tagsByFrequency
 import com.example.myapplication.ui.screens.AppLockScreen
 import com.example.myapplication.ui.screens.EntryDetailScreen
+import com.example.myapplication.ui.screens.HelpAboutScreen
 import com.example.myapplication.ui.screens.JournalListScreen
 import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.NewEditEntryScreen
@@ -126,7 +127,8 @@ fun NavGraph(viewModel: JournalViewModel) {
                         onProfile = { navController.navigate(Screen.Profile.route) },
                         onSettings = { navController.navigate(Screen.Settings.route) },
                         onSubscription = { navController.navigate(Screen.Subscription.route) },
-                        onLogin = { navController.navigate(Screen.Login.route) }
+                        onLogin = { navController.navigate(Screen.Login.route) },
+                        onHelp = { navController.navigate(Screen.HelpAbout.route) }
                     )
                 }
 
@@ -222,6 +224,10 @@ fun NavGraph(viewModel: JournalViewModel) {
                     SubscriptionInfoScreen(
                         onBack = { navController.popBackStack() }
                     )
+                }
+
+                composable(Screen.HelpAbout.route) {
+                    HelpAboutScreen(onBack = { navController.popBackStack() })
                 }
             }
         }

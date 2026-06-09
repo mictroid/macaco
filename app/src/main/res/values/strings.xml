@@ -29,6 +29,31 @@
     <string name="journal_list_menu_cd">Menu</string>
     <string name="journal_list_switch_to_dark">Switch to Dark Mode</string>
     <string name="journal_list_switch_to_light">Switch to Light Mode</string>
+    <string name="drawer_share_app">Share App</string>
+    <string name="drawer_rate_us">Rate Us</string>
+    <string name="drawer_help">Help &amp; About</string>
+
+    <!-- Help & About -->
+    <string name="help_title">Help &amp; About</string>
+    <string name="help_faq">Frequently asked</string>
+    <string name="help_faq_q_sync">Where are my entries stored?</string>
+    <string name="help_faq_a_sync">Your entries sync securely to your account in the cloud, so they follow you to any device where you sign in.</string>
+    <string name="help_faq_q_photos">Why don\'t my photos show on another device?</string>
+    <string name="help_faq_a_photos">Photos are saved on the device you added them from. Connect Google Drive in Settings, or use Backup to file, to carry photos across devices.</string>
+    <string name="help_faq_q_backup">How do I back up everything?</string>
+    <string name="help_faq_a_backup">Settings → Backup &amp; Restore lets you export all entries and photos to a single .zip file you can re-import anytime.</string>
+    <string name="help_faq_q_lock">Can I lock the app?</string>
+    <string name="help_faq_a_lock">Yes — turn on App Lock from the menu or Settings to require your fingerprint, face, or screen lock to open Macaco.</string>
+    <string name="help_get_in_touch">Get in touch</string>
+    <string name="help_contact">Contact support</string>
+    <string name="help_contact_subject">Macaco support</string>
+    <string name="help_privacy_policy">Privacy policy</string>
+    <string name="help_privacy_policy_subtitle">How your data is handled</string>
+    <string name="help_open_listing">Macaco on Google Play</string>
+    <string name="help_open_listing_subtitle">View or update the app</string>
+    <string name="share_app_subject">Macaco — Travel Journal</string>
+    <string name="share_app_text">I\'m using Macaco to journal my travels — give it a try! %1$s</string>
+    <string name="share_app_chooser">Share Macaco via</string>
     <string name="journal_list_empty_title">Your journey begins here</string>
     <string name="journal_list_empty_subtitle">Tap the button below to add\nyour first travel memory</string>
     <string name="journal_list_no_match">No memories with those tags</string>
@@ -43,6 +68,8 @@
     <string name="new_entry_photos_label">Photos</string>
     <string name="new_entry_add_photo">Add</string>
     <string name="new_entry_add_photo_cd">Add photo</string>
+    <string name="new_entry_photo_take">Take photo</string>
+    <string name="new_entry_photo_choose">Choose from gallery</string>
     <string name="new_entry_remove_photo_cd">Remove photo</string>
     <string name="new_entry_title_label">Title *</string>
     <string name="new_entry_title_placeholder">My Paris Adventure</string>
@@ -96,6 +123,15 @@
     <string name="settings_app_lock_on">Biometric / screen lock required to open</string>
     <string name="settings_app_lock_off">Lock journal with biometric or screen lock</string>
     <string name="settings_app_lock_unavailable">No screen lock set up. Add a PIN, pattern, or biometric in your device settings first.</string>
+    <string name="settings_backup_file">Backup &amp; Restore</string>
+    <string name="settings_backup_file_title">Backup to file</string>
+    <string name="settings_backup_file_subtitle">Save all entries and photos to a .zip you can restore anywhere</string>
+    <string name="settings_backup_premium_required">A Premium feature — unlock it from Subscription</string>
+    <string name="settings_backup_export">Export</string>
+    <string name="settings_backup_import">Import</string>
+    <string name="settings_backup_export_done">Backed up %1$d entries to file</string>
+    <string name="settings_backup_import_done">Restored %1$d entries from file</string>
+    <string name="settings_backup_failed">Backup failed. Please try again.</string>
     <string name="settings_drive_backup">Google Drive Backup</string>
     <string name="settings_drive_connected">Connected to Google Drive</string>
     <string name="settings_drive_not_connected">Not connected</string>

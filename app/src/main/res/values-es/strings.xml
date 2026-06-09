@@ -166,4 +166,45 @@
     <string name="app_lock_unlock">Desbloquear</string>
     <string name="app_lock_biometric_title">Desbloquear Macaco</string>
     <string name="app_lock_biometric_subtitle">Verifica tu identidad para acceder a tu diario</string>
+
+    <string name="new_entry_photo_take">Hacer foto</string>
+    <string name="new_entry_photo_choose">Elegir de la galería</string>
+
+    <!-- Backup & Restore -->
+    <string name="settings_backup_file">Copia y restauración</string>
+    <string name="settings_backup_file_title">Copia en archivo</string>
+    <string name="settings_backup_file_subtitle">Guarda todas tus entradas y fotos en un archivo .zip que puedes restaurar en cualquier lugar</string>
+    <string name="settings_backup_premium_required">Función Premium: desbloquéala desde la suscripción</string>
+    <string name="settings_backup_export">Exportar</string>
+    <string name="settings_backup_import">Importar</string>
+    <string name="settings_backup_export_done">%1$d entradas guardadas en el archivo</string>
+    <string name="settings_backup_import_done">%1$d entradas restauradas desde el archivo</string>
+    <string name="settings_backup_failed">Error en la copia. Inténtalo de nuevo.</string>
+
+    <!-- Drawer -->
+    <string name="drawer_share_app">Compartir app</string>
+    <string name="drawer_rate_us">Valorar</string>
+    <string name="drawer_help">Ayuda e información</string>
+    <string name="share_app_subject">Macaco – Diario de viaje</string>
+    <string name="share_app_text">Uso Macaco para registrar mis viajes, ¡pruébalo! %1$s</string>
+    <string name="share_app_chooser">Compartir Macaco con</string>
+
+    <!-- Help &amp; About -->
+    <string name="help_title">Ayuda e información</string>
+    <string name="help_faq">Preguntas frecuentes</string>
+    <string name="help_faq_q_sync">¿Dónde se guardan mis entradas?</string>
+    <string name="help_faq_a_sync">Tus entradas se sincronizan de forma segura con tu cuenta en la nube, así que te acompañan en cualquier dispositivo en el que inicies sesión.</string>
+    <string name="help_faq_q_photos">¿Por qué no aparecen mis fotos en otro dispositivo?</string>
+    <string name="help_faq_a_photos">Las fotos se guardan en el dispositivo desde el que las añadiste. Conecta Google Drive en Ajustes, o usa «Copia en archivo», para llevar tus fotos entre dispositivos.</string>
+    <string name="help_faq_q_backup">¿Cómo hago una copia de todo?</string>
+    <string name="help_faq_a_backup">En Ajustes → Copia y restauración puedes exportar todas tus entradas y fotos a un único archivo .zip que puedes reimportar cuando quieras.</string>
+    <string name="help_faq_q_lock">¿Puedo bloquear la app?</string>
+    <string name="help_faq_a_lock">Sí: activa el Bloqueo de la app desde el menú o los Ajustes para pedir tu huella, rostro o bloqueo de pantalla al abrir Macaco.</string>
+    <string name="help_get_in_touch">Contacto</string>
+    <string name="help_contact">Contactar con soporte</string>
+    <string name="help_contact_subject">Soporte de Macaco</string>
+    <string name="help_privacy_policy">Política de privacidad</string>
+    <string name="help_privacy_policy_subtitle">Cómo se tratan tus datos</string>
+    <string name="help_open_listing">Macaco en Google Play</string>
+    <string name="help_open_listing_subtitle">Ver o actualizar la app</string>
 </resources>

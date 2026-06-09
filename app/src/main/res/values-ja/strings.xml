@@ -163,4 +163,45 @@
     <string name="app_lock_unlock">ロック解除</string>
     <string name="app_lock_biometric_title">Macaco をアンロック</string>
     <string name="app_lock_biometric_subtitle">日記にアクセスするには本人確認が必要です</string>
+
+    <string name="new_entry_photo_take">写真を撮る</string>
+    <string name="new_entry_photo_choose">ギャラリーから選択</string>
+
+    <!-- Backup & Restore -->
+    <string name="settings_backup_file">バックアップと復元</string>
+    <string name="settings_backup_file_title">ファイルにバックアップ</string>
+    <string name="settings_backup_file_subtitle">すべての記録と写真を、どこでも復元できる .zip ファイルに保存します</string>
+    <string name="settings_backup_premium_required">プレミアム機能です。サブスクリプションからアンロックしてください</string>
+    <string name="settings_backup_export">エクスポート</string>
+    <string name="settings_backup_import">インポート</string>
+    <string name="settings_backup_export_done">%1$d 件の記録をファイルにバックアップしました</string>
+    <string name="settings_backup_import_done">%1$d 件の記録をファイルから復元しました</string>
+    <string name="settings_backup_failed">バックアップに失敗しました。もう一度お試しください。</string>
+
+    <!-- Drawer -->
+    <string name="drawer_share_app">アプリを共有</string>
+    <string name="drawer_rate_us">評価する</string>
+    <string name="drawer_help">ヘルプと情報</string>
+    <string name="share_app_subject">Macaco – 旅の日記</string>
+    <string name="share_app_text">Macaco で旅の記録をつけています。ぜひ試してみてください！ %1$s</string>
+    <string name="share_app_chooser">Macaco を共有</string>
+
+    <!-- Help &amp; About -->
+    <string name="help_title">ヘルプと情報</string>
+    <string name="help_faq">よくある質問</string>
+    <string name="help_faq_q_sync">記録はどこに保存されますか？</string>
+    <string name="help_faq_a_sync">記録はクラウド上のアカウントに安全に同期されるため、ログインすればどの端末でも利用できます。</string>
+    <string name="help_faq_q_photos">写真が別の端末で表示されないのはなぜですか？</string>
+    <string name="help_faq_a_photos">写真は追加した端末に保存されます。端末間で写真を持ち運ぶには、設定で Google Drive を接続するか、「ファイルにバックアップ」を使用してください。</string>
+    <string name="help_faq_q_backup">すべてをバックアップするには？</string>
+    <string name="help_faq_a_backup">設定 → バックアップと復元 から、すべての記録と写真を 1 つの .zip ファイルにエクスポートでき、いつでも再インポートできます。</string>
+    <string name="help_faq_q_lock">アプリをロックできますか？</string>
+    <string name="help_faq_a_lock">はい。メニューまたは設定からアプリロックを有効にすると、Macaco を開く際に指紋・顔・画面ロックが必要になります。</string>
+    <string name="help_get_in_touch">お問い合わせ</string>
+    <string name="help_contact">サポートに連絡</string>
+    <string name="help_contact_subject">Macaco サポート</string>
+    <string name="help_privacy_policy">プライバシーポリシー</string>
+    <string name="help_privacy_policy_subtitle">データの取り扱いについて</string>
+    <string name="help_open_listing">Google Play で Macaco を見る</string>
+    <string name="help_open_listing_subtitle">アプリを表示・更新</string>
 </resources>

@@ -163,4 +163,45 @@
     <string name="app_lock_unlock">解锁</string>
     <string name="app_lock_biometric_title">解锁 Macaco</string>
     <string name="app_lock_biometric_subtitle">验证身份以访问您的日记</string>
+
+    <string name="new_entry_photo_take">拍照</string>
+    <string name="new_entry_photo_choose">从相册选择</string>
+
+    <!-- Backup & Restore -->
+    <string name="settings_backup_file">备份与恢复</string>
+    <string name="settings_backup_file_title">备份到文件</string>
+    <string name="settings_backup_file_subtitle">将所有条目和照片保存为一个 .zip 文件，可随处恢复</string>
+    <string name="settings_backup_premium_required">高级功能 — 请在订阅中解锁</string>
+    <string name="settings_backup_export">导出</string>
+    <string name="settings_backup_import">导入</string>
+    <string name="settings_backup_export_done">已将 %1$d 条记录备份到文件</string>
+    <string name="settings_backup_import_done">已从文件恢复 %1$d 条记录</string>
+    <string name="settings_backup_failed">备份失败，请重试。</string>
+
+    <!-- Drawer -->
+    <string name="drawer_share_app">分享应用</string>
+    <string name="drawer_rate_us">评分</string>
+    <string name="drawer_help">帮助与关于</string>
+    <string name="share_app_subject">Macaco – 旅行日记</string>
+    <string name="share_app_text">我正在用 Macaco 记录我的旅程 — 快来试试吧！%1$s</string>
+    <string name="share_app_chooser">分享 Macaco 到</string>
+
+    <!-- Help &amp; About -->
+    <string name="help_title">帮助与关于</string>
+    <string name="help_faq">常见问题</string>
+    <string name="help_faq_q_sync">我的记录保存在哪里？</string>
+    <string name="help_faq_a_sync">您的记录会安全地同步到云端账户，因此在您登录的任何设备上都能查看。</string>
+    <string name="help_faq_q_photos">为什么我的照片在其他设备上看不到？</string>
+    <string name="help_faq_a_photos">照片保存在添加它们的设备上。请在“设置”中连接 Google Drive，或使用“备份到文件”，以便在设备间携带照片。</string>
+    <string name="help_faq_q_backup">如何备份所有内容？</string>
+    <string name="help_faq_a_backup">在“设置 → 备份与恢复”中，您可以将所有记录和照片导出为单个 .zip 文件，并随时重新导入。</string>
+    <string name="help_faq_q_lock">可以锁定应用吗？</string>
+    <string name="help_faq_a_lock">可以 — 在菜单或“设置”中开启应用锁，打开 Macaco 时即需指纹、面容或屏幕锁验证。</string>
+    <string name="help_get_in_touch">联系我们</string>
+    <string name="help_contact">联系支持</string>
+    <string name="help_contact_subject">Macaco 支持</string>
+    <string name="help_privacy_policy">隐私政策</string>
+    <string name="help_privacy_policy_subtitle">您的数据如何被处理</string>
+    <string name="help_open_listing">在 Google Play 查看 Macaco</string>
+    <string name="help_open_listing_subtitle">查看或更新应用</string>
 </resources>
