@@ -18,8 +18,8 @@ object AppActions {
     private const val PACKAGE = "com.houseofmmminq.wanderlog"
     private const val LISTING_URL = "https://play.google.com/store/apps/details?id=$PACKAGE"
 
-    // TODO: confirm these point at the real support inbox / hosted policy before release.
-    const val SUPPORT_EMAIL = "support@houseofmmminq.com"
+    const val SUPPORT_EMAIL = "houseofmmminq@gmail.com"
+    // TODO: set this to the public URL where docs/privacy-policy.md is hosted before release.
     const val PRIVACY_POLICY_URL = "https://houseofmmminq.com/macaco/privacy"
 
     /** Opens the system share sheet with a link to the app's Play Store listing. */
