@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.houseofmmminq.wanderlog"
+        applicationId = "com.houseofmmminq.macaco"
         minSdk = 24
         targetSdk = 36
         versionCode = 3

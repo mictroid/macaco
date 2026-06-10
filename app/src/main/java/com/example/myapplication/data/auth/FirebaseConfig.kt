@@ -21,10 +21,10 @@ package com.example.myapplication.data.auth
  *    configured in both Firebase Console and Apple Developer Portal
  */
 object FirebaseConfig {
-    const val PROJECT_ID = "wanderlog-11d28"
-    const val APPLICATION_ID = "1:1014576253205:android:e60997fbcf5e793c74011c"
-    const val API_KEY = "AIzaSyAC8qmrXoPl2D9Dlzl7vNJnbM2ZCDJY5oU"
-    const val GOOGLE_WEB_CLIENT_ID = "1014576253205-ipmqsau9kd6rintk3cidbiuhoqctvghi.apps.googleusercontent.com"
+    const val PROJECT_ID = "macaco-499016"
+    const val APPLICATION_ID = "1:502845055894:android:0579d29d68f9e5421573b7"
+    const val API_KEY = "AIzaSyBpHbabUV7hBeucnrQ4I-g1dNpr12LviXk"
+    const val GOOGLE_WEB_CLIENT_ID = "502845055894-mcnohto1psitd5ls3burga1ncu5sk6ul.apps.googleusercontent.com"
 
     val isConfigured: Boolean
         get() = !APPLICATION_ID.startsWith("1:000000000000") && API_KEY != "your-api-key"

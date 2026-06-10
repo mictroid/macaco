@@ -9,10 +9,12 @@ per-user via Firebase (Firestore + Auth), entry photos back up to the user's Goo
 premium access is gated by a RevenueCat in-app purchase. Single-module, single-activity,
 Compose-only UI.
 
-The app was renamed Wanderlog → Macaco; the Kotlin package is still `com.example.myapplication`
-and the Play `applicationId` is `com.houseofmmminq.wanderlog` (the git remote / Firebase project
-`wanderlog-11d28` also keep the old name). Treat "Wanderlog" in identifiers as legacy; user-facing
-strings and Drive/gallery folders say "Macaco".
+The app was renamed Wanderlog → Macaco. The Kotlin package is still `com.example.myapplication`
+and the git remote still says `wanderlog`, but the Play `applicationId` is now
+`com.houseofmmminq.macaco` and the Firebase/GCP project is `macaco-499016` (migrated off the
+legacy `wanderlog-11d28` project — Auth users and Firestore entries were copied across with UIDs
+preserved). Treat "Wanderlog"/`wanderlog-11d28` in identifiers as legacy; user-facing strings and
+Drive/gallery folders say "Macaco".
 
 ## Build Commands
 
@@ -173,7 +175,7 @@ chosen deliberately ("avoids Credential Manager cancellation issues") and is als
 GMS account back both Firebase auth and `DrivePhotoSync.isDriveConnected()`. (See **Photos & sync**
 for how Apple/email users connect Drive separately via Settings.)
 
-`google-services.json` is present (project `wanderlog-11d28`) and the plugin is applied, so Firebase
+`google-services.json` is present (project `macaco-499016`) and the plugin is applied, so Firebase
 initializes automatically. `FirebaseConfig.kt` holds the project values (filled in) and is now used
 only for `GOOGLE_WEB_CLIENT_ID` in `LoginScreen`. For Google Sign-In on a new machine, add the debug
 SHA-1 to the Firebase console:

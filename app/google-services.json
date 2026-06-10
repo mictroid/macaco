@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "1014576253205",
-    "project_id": "wanderlog-11d28",
-    "storage_bucket": "wanderlog-11d28.firebasestorage.app"
+    "project_number": "502845055894",
+    "project_id": "macaco-499016",
+    "storage_bucket": "macaco-499016.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1014576253205:android:e60997fbcf5e793c74011c",
+        "mobilesdk_app_id": "1:502845055894:android:0579d29d68f9e5421573b7",
         "android_client_info": {
-          "package_name": "com.houseofmmminq.wanderlog"
+          "package_name": "com.houseofmmminq.macaco"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1014576253205-n3ra2l73jp76pk7v3pha1luub5153tir.apps.googleusercontent.com",
+          "client_id": "502845055894-vajr3omdg5ic8d5cutb3ufrh6l5cnddr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.houseofmmminq.wanderlog",
+            "package_name": "com.houseofmmminq.macaco",
             "certificate_hash": "385f9ef1e6bf29dbc60152a01d3a46ffd0868ef8"
           }
         },
         {
-          "client_id": "1014576253205-ipmqsau9kd6rintk3cidbiuhoqctvghi.apps.googleusercontent.com",
+          "client_id": "502845055894-mcnohto1psitd5ls3burga1ncu5sk6ul.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAC8qmrXoPl2D9Dlzl7vNJnbM2ZCDJY5oU"
+          "current_key": "AIzaSyBpHbabUV7hBeucnrQ4I-g1dNpr12LviXk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1014576253205-ipmqsau9kd6rintk3cidbiuhoqctvghi.apps.googleusercontent.com",
+              "client_id": "502845055894-mcnohto1psitd5ls3burga1ncu5sk6ul.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
