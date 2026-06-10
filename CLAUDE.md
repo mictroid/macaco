@@ -4,9 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**Wanderlog** — a cloud-synced travel journal Android app. Entries sync per-user via Firebase
-(Firestore + Auth), and premium access is gated by a RevenueCat in-app purchase. Single-module,
-single-activity, Compose-only UI.
+**Macaco** (formerly **Wanderlog**) — a cloud-synced travel journal Android app. Entries sync
+per-user via Firebase (Firestore + Auth), entry photos back up to the user's Google Drive, and
+premium access is gated by a RevenueCat in-app purchase. Single-module, single-activity,
+Compose-only UI.
+
+The app was renamed Wanderlog → Macaco; the Kotlin package is still `com.example.myapplication`
+and the Play `applicationId` is `com.houseofmmminq.wanderlog` (the git remote / Firebase project
+`wanderlog-11d28` also keep the old name). Treat "Wanderlog" in identifiers as legacy; user-facing
+strings and Drive/gallery folders say "Macaco".
 
 ## Build Commands
 
@@ -29,49 +35,85 @@ Run a single test class:
 
 ```
 TravelJournalApp (Application)            ← manual service locator
-  ├── preferencesManager: PreferencesManager  ← DataStore (theme, profile, local-billing fallback)
+  ├── preferencesManager: PreferencesManager  ← DataStore (theme, profile, reminders, app lock, local-billing fallback)
   ├── authRepository: AuthRepository           ← FirebaseAuthRepository (active)
   ├── cloudEntrySync: CloudEntrySync           ← Firestore-backed entry sync (per uid)
-  └── billingManager: BillingManager           ← RevenueCat entitlement gate
+  ├── billingManager: BillingManager           ← RevenueCat entitlement gate
+  └── drivePhotoSync: DrivePhotoSync           ← Google Drive photo backup/restore
 
 MainActivity
   └── JournalViewModel (via custom Factory)
-        ├── StateFlow<List<TravelEntry>>   (from CloudEntrySync)
-        ├── StateFlow<Boolean?> isPurchased (from BillingManager.isPremium; null = loading)
+        ├── StateFlow<List<TravelEntry>>      (from CloudEntrySync)
+        ├── StateFlow<Boolean?> isPurchased    (from BillingManager.isPremium; null = loading)
         ├── StateFlow<UserProfile?> currentUser
+        ├── StateFlow<DrivePhotoSyncState> driveSyncState + cachedDrivePhotos map
+        ├── Flow<String> syncErrors            (merged Firestore + Drive errors → snackbars)
+        ├── reminders (enabled / interval) + app-lock state (appLockEnabled, isAppLocked)
+        ├── selectedTags filter (lifted so EntryDetail can filter the list by a tag)
+        ├── exportBackup / importBackup        (local .zip via JournalBackup)
         └── theme / profile-photo state
 
-NavGraph (Compose Navigation)
-  ├── JournalListScreen
-  ├── NewEditEntryScreen (shared for create + edit, receives optional entryId)
-  ├── EntryDetailScreen
-  ├── LoginScreen
-  ├── ProfileScreen
-  ├── SettingsScreen
-  ├── SubscriptionInfoScreen
-  └── PurchaseScreen  ← shown until isPurchased == true
+NavGraph (Compose Navigation) — gate order, outermost first:
+  SplashScreen (cold-start branded splash)
+  → AppLockScreen     ← if app lock enabled, on, and signed-in+purchased
+  → blank box         ← while isPurchased == null (DataStore loading)
+  → LoginScreen       ← currentUser == null (login required)
+  → PurchaseScreen    ← isPurchased == false
+  → NavHost (full journal):
+      ├── JournalListScreen
+      ├── NewEditEntryScreen (shared create + edit via Screen.NewEntry / Screen.EditEntry)
+      ├── EntryDetailScreen  (receives cachedDrivePhotos for Drive-restored images)
+      ├── LoginScreen
+      ├── ProfileScreen
+      ├── SettingsScreen     (Drive sync, backup/restore, reminders, app lock live here)
+      ├── SubscriptionInfoScreen
+      └── HelpAboutScreen
 ```
 
 **Dependency injection:** manual constructor injection via `TravelJournalApp` as a service locator.
-`JournalViewModel.Factory` takes `CloudEntrySync`, `PreferencesManager`, `AuthRepository`, and
-`BillingManager` explicitly — no Hilt/Dagger.
+`JournalViewModel.Factory` takes `CloudEntrySync`, `PreferencesManager`, `AuthRepository`,
+`BillingManager`, and `DrivePhotoSync` explicitly — no Hilt/Dagger.
 
 ## Data Layer
 
 - **`TravelEntry`** (`data/model/`) — `@Serializable` data class, UUID id, immutable. Fields:
-  `title`, `location`, `dateMillis`, `description`, `mood`, `photoUris`, `tags`, `createdAt`.
+  `title`, `location`, `dateMillis`, `description`, `mood`, `photoUris`, `tags`, `createdAt`, and
+  `driveFileIds` (parallel to `photoUris`; `""` = that photo isn't uploaded to Drive yet). Also
+  defines `onThisDayEntries()` and `tagsByFrequency()` list extensions.
 - **`CloudEntrySync`** (`data/storage/`) — the active entry store. Listens to
   `users/{uid}/entries` in Firestore (ordered by `createdAt` desc) and exposes
   `StateFlow<List<TravelEntry>>`. Re-subscribes on auth change; clears to empty list when signed
-  out. `save`/`delete` write to the signed-in user's subcollection. Snapshot errors are swallowed
-  (no error UI). **Photos are stored as local content URIs**, so images are only visible on the
-  device they were added from.
+  out. `save`/`delete` write to the signed-in user's subcollection. Exposes an `errors` flow.
 - **`LegacyEntryMigration`** (`data/storage/`) — one-time import of entries from the legacy local
   `filesDir/entries.json` (written by older on-device app versions) into the signed-in user's cloud
   account, then renames the file to `.imported` so it never runs again. The old `EntryStorage`
   class that wrote that file has been removed.
 - **`PreferencesManager`** (`data/`) — DataStore. Keys: `is_purchased` (local billing fallback),
-  `dark_mode`, `profile_photo_uri`, `app_theme`, `theme_image_uri`.
+  `dark_mode`, `profile_photo_uri`, `app_theme`, `theme_image_uri`, `reminders_enabled`,
+  `reminder_interval_days` (default 4), `app_lock_enabled`.
+
+### Photos & sync
+
+Entry photos are no longer device-local. The flow is:
+
+- **`ImageStorage`** (`util/`) — `persistToGallery` copies a picked/captured photo into the shared
+  **Pictures/Macaco** MediaStore collection and returns a `content://` URI (survives uninstall, so
+  cloud-synced entries can re-show photos after reinstall + media permission). `persist` keeps
+  local-only personalization (profile photo, theme background) in `filesDir`. `persistBytesToGallery`
+  writes raw bytes (used by backup import). Also handles camera temp files (`newCameraTempUri` +
+  FileProvider) and best-effort `delete` when photos are removed from an entry.
+- **`DrivePhotoSync`** (`data/sync/`) — backs entry photos up to a **"Macaco"** folder in the user's
+  Google Drive (migrating a pre-rebrand "Wanderlog" folder in place if found). `uploadEntryPhotos`
+  fills in missing `driveFileIds`; `downloadMissingPhotos` pulls photos that have a Drive ID but no
+  readable local URI into `cacheDir/drive_photos/` and exposes them via `cachedPhotoUris`
+  (consumed by `EntryDetailScreen`). `syncAll` does a full upload+download pass with progress
+  (`DrivePhotoSyncState`: Idle/NotConnected/Syncing/Synced/Error) and user-friendly error mapping.
+  Requires the `DRIVE_FILE` OAuth scope on the signed-in Google account (`isDriveConnected()`).
+  The ViewModel auto-uploads on `saveEntry` and auto-downloads when the entry list changes.
+- **`JournalBackup`** (`data/sync/`) — full local backup/restore as a single `.zip` picked via SAF
+  (premium feature). Bundles `backup.json` (all entries) + `photos/<id>_<i>.jpg` bytes so the
+  backup is portable; import re-materializes photos into the gallery and clears `driveFileIds` so
+  they re-upload fresh. Wired as `exportBackup` / `importBackup` on the ViewModel.
 
 ## Billing
 
@@ -87,9 +129,19 @@ NavGraph (Compose Navigation)
 
 ## Navigation & Routing
 
-Routes are a sealed class in `Screen.kt`. `NavGraph.kt` wires all composable destinations and owns
-argument passing (entry IDs passed as string nav args). `NewEditEntryScreen` handles both create
-and edit depending on whether an `entryId` arg is present.
+Routes are a sealed class in `Screen.kt` (`JournalList`, `NewEntry`, `EntryDetail`, `EditEntry`,
+`Login`, `Profile`, `Settings`, `Subscription`, `HelpAbout`). `NavGraph.kt` wires all composable
+destinations and owns argument passing (entry IDs passed as string nav args). Create vs. edit are
+separate routes (`NewEntry` / `EditEntry`) both rendered by `NewEditEntryScreen` (passed
+`existingEntry = null` for create). `NavGraph` also owns the pre-NavHost gating (splash → app lock
+→ loading → login → purchase) and the re-lock-on-background timer (`LOCK_TIMEOUT_MS = 30s`).
+
+### Reminders & app lock
+
+- **`ReminderScheduler`** (`util/`) — schedules/cancels periodic "write an entry" reminders via the
+  `reminders_enabled` + `reminder_interval_days` prefs (the ViewModel calls it when those change).
+- **App lock** — when `app_lock_enabled` is on, `AppLockScreen` covers the journal after the app
+  has been backgrounded longer than `LOCK_TIMEOUT_MS`. Only active once signed-in and purchased.
 
 ## Key Conventions
 
@@ -108,15 +160,23 @@ and edit depending on whether an `entryId` arg is present.
 `AuthRepository` interface with two implementations:
 
 - **`FirebaseAuthRepository`** (active) — Firebase Auth, auto-initialized via the
-  `google-services.json` + `com.google.gms.google-services` plugin. Supports Google (Credential
-  Manager), Apple (OAuthProvider), and Email/Password.
+  `google-services.json` + `com.google.gms.google-services` plugin. Supports Google, Apple
+  (OAuthProvider), and Email/Password.
 - **`MockAuthRepository`** — simulates auth locally; swap into `TravelJournalApp.kt` for
   development without Firebase. Currently **not** wired in.
 
+**Google Sign-In uses the legacy GMS `GoogleSignIn` intent**, not Credential Manager. `LoginScreen`
+builds a `GoogleSignInClient` with `requestIdToken(GOOGLE_WEB_CLIENT_ID)` **and**
+`requestScopes(Scope(DriveScopes.DRIVE_FILE))`, so the Drive backup scope is granted in the same
+consent dialog as login; the returned idToken is handed to `FirebaseAuthRepository`. This path was
+chosen deliberately ("avoids Credential Manager cancellation issues") and is also what lets the one
+GMS account back both Firebase auth and `DrivePhotoSync.isDriveConnected()`. (See **Photos & sync**
+for how Apple/email users connect Drive separately via Settings.)
+
 `google-services.json` is present (project `wanderlog-11d28`) and the plugin is applied, so Firebase
 initializes automatically. `FirebaseConfig.kt` holds the project values (filled in) and is now used
-only for `GOOGLE_WEB_CLIENT_ID` in `LoginScreen` (Google Sign-In). For Google Sign-In on a new
-machine, add the debug SHA-1 to the Firebase console:
+only for `GOOGLE_WEB_CLIENT_ID` in `LoginScreen`. For Google Sign-In on a new machine, add the debug
+SHA-1 to the Firebase console:
 `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android`.
 
 ## Tech Stack
@@ -131,8 +191,10 @@ machine, add the debug SHA-1 to the Firebase console:
 | Preferences | AndroidX DataStore |
 | Cloud DB | Firebase Firestore (per-user entry sync) |
 | Auth | Firebase Auth (`google-services` plugin) |
-| Google Sign-In | AndroidX Credential Manager + googleid |
+| Google Sign-In | Legacy Play Services Auth (`GoogleSignIn` intent) |
+| Drive backup | Google Drive REST API (`google-api-services-drive`) + Play Services Auth |
 | Billing | RevenueCat (`com.revenuecat.purchases`) over Google Play Billing |
+| Growth | Play In-App Review + share/support intents (`util/AppActions`) |
 | Async | Kotlin Coroutines + coroutines-play-services |
 
 - **Min SDK:** 24 · **Target/Compile SDK:** 36
@@ -149,6 +211,8 @@ Machine-local files needed to rebuild on a fresh machine are mirrored to Google 
   `~/.android/debug.keystore` so the SHA-1 is unchanged and Google Sign-In keeps working.
 - **`google-services.json`** — Firebase config; already tracked in git, mirrored to Drive as a
   fallback.
+- **`local.properties`** — Android SDK path; git-ignored and auto-regenerated by Android Studio,
+  so the mirrored copy is reference only (you normally won't restore it).
 
 Restore: clone the repo, drop `debug.keystore` into `~/.android/`, open in Android Studio (it
 regenerates `local.properties`).
