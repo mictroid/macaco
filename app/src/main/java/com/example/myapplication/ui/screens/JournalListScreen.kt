@@ -28,7 +28,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
@@ -53,6 +52,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -142,6 +142,17 @@ fun JournalListScreen(
         if (selectedTags.isEmpty()) entries
         else entries.filter { entry -> entry.tags.any { it in selectedTags } }
     }
+    // Break the list into consecutive month/year runs so the LazyColumn can show a date header
+    // before each run — adds structure without reordering the existing createdAt-desc list.
+    val monthSections = remember(visibleEntries) {
+        val out = mutableListOf<Pair<String, MutableList<TravelEntry>>>()
+        visibleEntries.forEach { e ->
+            val key = monthYear(e.dateMillis)
+            if (out.isEmpty() || out.last().first != key) out.add(key to mutableListOf(e))
+            else out.last().second.add(e)
+        }
+        out
+    }
 
     // "On This Day" — entries from the same month+day in prior years.
     val onThisDayEntries = remember(entries) { entries.onThisDayEntries() }
@@ -159,7 +170,11 @@ fun JournalListScreen(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            // Brand-teal icon tint on every row so the menu feels designed, not default-grey.
+            val drawerItemColors = NavigationDrawerItemDefaults.colors(
+                unselectedIconColor = MaterialTheme.colorScheme.primary
+            )
+            ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.surface) {
                 // Branded drawer header: the same splash teal fade + gold "macaco" wordmark as the
                 // app header, with the monkey icon above the signed-in user's name.
                 Box(
@@ -210,6 +225,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.common_profile)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = { Icon(Icons.Filled.Person, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -220,6 +236,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.common_settings)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -230,6 +247,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.common_subscription)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = { Icon(Icons.Filled.Star, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -240,6 +258,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.settings_app_lock)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                     badge = {
                         Switch(
@@ -255,6 +274,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(if (isDarkMode) stringResource(R.string.journal_list_switch_to_light) else stringResource(R.string.journal_list_switch_to_dark)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = {
                         Icon(
                             if (isDarkMode) Icons.Filled.LightMode else Icons.Filled.DarkMode,
@@ -267,6 +287,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.drawer_share_app)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = { Icon(Icons.Filled.Share, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -277,6 +298,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.drawer_rate_us)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = { Icon(Icons.Filled.StarRate, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -287,6 +309,7 @@ fun JournalListScreen(
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.drawer_help)) },
                     selected = false,
+                    colors = drawerItemColors,
                     icon = { Icon(Icons.AutoMirrored.Filled.HelpOutline, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -304,6 +327,7 @@ fun JournalListScreen(
                             Text(stringResource(R.string.common_sign_out), color = MaterialTheme.colorScheme.error)
                         },
                         selected = false,
+                    colors = drawerItemColors,
                         icon = {
                             Icon(
                                 Icons.AutoMirrored.Filled.Logout,
@@ -322,6 +346,7 @@ fun JournalListScreen(
                     NavigationDrawerItem(
                         label = { Text(stringResource(R.string.common_sign_in)) },
                         selected = false,
+                    colors = drawerItemColors,
                         icon = { Icon(Icons.Filled.Person, contentDescription = null) },
                         onClick = {
                             scope.launch { drawerState.close() }
@@ -458,6 +483,15 @@ fun JournalListScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
+                    // Faint teal wash from the top so the page isn't a flat slab behind the cards.
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                                MaterialTheme.colorScheme.background
+                            )
+                        )
+                    )
             ) {
                 if (onThisDayEntries.isNotEmpty() && !onThisDayDismissed) {
                     OnThisDayBanner(
@@ -483,14 +517,17 @@ fun JournalListScreen(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        items(visibleEntries, key = { it.id }) { entry ->
-                            EntryCard(
-                                entry = entry,
-                                cachedDrivePhotos = cachedDrivePhotos,
-                                selectedTags = selectedTags,
-                                onTagClick = { viewModel.toggleTagFilter(it) },
-                                onClick = { onEntryClick(entry.id) }
-                            )
+                        monthSections.forEach { (month, sectionEntries) ->
+                            item(key = "header-$month") { MonthHeader(month) }
+                            items(sectionEntries, key = { it.id }) { entry ->
+                                EntryCard(
+                                    entry = entry,
+                                    cachedDrivePhotos = cachedDrivePhotos,
+                                    selectedTags = selectedTags,
+                                    onTagClick = { viewModel.toggleTagFilter(it) },
+                                    onClick = { onEntryClick(entry.id) }
+                                )
+                            }
                         }
                     }
                 }
@@ -736,7 +773,16 @@ private fun EntryCard(
                         )
                     }
                     if (entry.mood.isNotBlank()) {
-                        Text(entry.mood, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 6.dp)
+                                .size(26.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(entry.mood, fontSize = 14.sp)
+                        }
                     }
                 }
 
@@ -766,19 +812,20 @@ private fun EntryCard(
                     } else {
                         Spacer(Modifier.weight(1f))
                     }
-                    Icon(
-                        Icons.Filled.DateRange,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        formatDate(entry.dateMillis),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1
-                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(SplashGold.copy(alpha = 0.16f))
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            formatDate(entry.dateMillis),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1
+                        )
+                    }
                 }
             }
         }
@@ -961,3 +1008,31 @@ private fun OnThisDayEntryChip(
 
 internal fun formatDate(millis: Long): String =
     SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(Date(millis))
+
+internal fun monthYear(millis: Long): String =
+    SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(Date(millis))
+
+// Month/year run header: a small gold-uppercase label with a hairline rule trailing off to the
+// right, breaking the list into chapters instead of one unbroken stream of cards.
+@Composable
+private fun MonthHeader(month: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 6.dp, bottom = 2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            month.uppercase(),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.5.sp,
+            color = SplashGold
+        )
+        Spacer(Modifier.width(10.dp))
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = SplashGold.copy(alpha = 0.3f)
+        )
+    }
+}
