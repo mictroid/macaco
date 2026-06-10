@@ -3,6 +3,7 @@ package com.example.myapplication.ui.screens
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,13 +11,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,8 +42,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,12 +51,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.example.myapplication.R
@@ -108,33 +114,80 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.common_profile)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
-            )
-        },
+        // The branded teal banner runs edge-to-edge under the status bar; opt out of the default
+        // top inset and re-apply it inside the banner instead.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp),
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(32.dp))
+            // Branded banner: splash teal radial with the back button and gold "macaco" wordmark.
+            // The avatar below overlaps its bottom edge.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(macacoBrandBackground())
+                    .statusBarsPadding()
+            ) {
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(4.dp)
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back),
+                        tint = Color.White
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(top = 18.dp, bottom = 60.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "macaco",
+                        color = SplashGoldBright,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Light,
+                        letterSpacing = 6.sp
+                    )
+                    Text(
+                        text = "Roam Freely. Forget Nothing.",
+                        color = SplashGold.copy(alpha = 0.82f),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Light,
+                        letterSpacing = 1.sp
+                    )
+                }
+            }
 
+            // Content pulled up so the avatar overlaps the banner's bottom edge.
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-44).dp)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
             val user = currentUser
             if (user != null) {
-                // Tappable avatar circle
+                // Tappable avatar circle, with a background-colored ring so it reads over the banner.
+                Box(
+                    modifier = Modifier
+                        .size(108.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.background),
+                    contentAlignment = Alignment.Center
+                ) {
                 Box(
                     modifier = Modifier
                         .size(100.dp)
@@ -189,8 +242,9 @@ fun ProfileScreen(
                         )
                     }
                 }
+                }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
 
                 Text(
                     user.displayName,
@@ -284,6 +338,7 @@ fun ProfileScreen(
                 }
             } else {
                 // Not signed in
+                Spacer(Modifier.height(56.dp))
                 Text("🔑", fontSize = 64.sp)
                 Spacer(Modifier.height(16.dp))
                 Text(
@@ -308,6 +363,22 @@ fun ProfileScreen(
                 ) {
                     Text(stringResource(R.string.common_sign_in), fontWeight = FontWeight.SemiBold)
                 }
+            }
+            }
+
+            // Sleek branded footer band echoing the header, with the monkey face centered.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .background(macacoBrandBackground()),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(120.dp)
+                )
             }
         }
     }

@@ -18,8 +18,17 @@ All notable changes to Macaco are documented here. Format loosely follows
 
 ### Added
 - Official multicolor Google "G" logo on the sign-in button. (`5a53fa7`)
+- **"Adventures" drawer item** — a labelled entry pointing to the journal/entries
+  list; closes the menu and clears any active tag filter. Localized in all 11
+  languages.
 
 ### Changed
+- **Branded the profile and settings screens** with the splash identity: a teal
+  header banner (gold "macaco" wordmark) on both, the profile avatar overlapping
+  the banner, and a teal footer band with the monkey face at the bottom of the
+  profile.
+- **Back from a drawer-launched screen reopens the menu.** Pressing back from
+  Profile/Settings/Subscription/Help now returns to the list with the drawer open.
 - **Rebranded the remaining off-brand screens** to the Macaco splash identity
   (teal radial + gold "macaco" wordmark): the purchase/paywall screen (replacing
   the ✈️ hero), the subscription-info premium band (replacing the ⭐ band), and
