@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -55,8 +58,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,6 +78,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -87,7 +89,6 @@ import com.example.myapplication.data.model.TravelEntry
 import com.example.myapplication.data.model.onThisDayEntries
 import com.example.myapplication.data.model.tagsByFrequency
 import com.example.myapplication.ui.theme.heroGradientColors
-import com.example.myapplication.ui.theme.isLightTheme
 import com.example.myapplication.ui.viewmodel.JournalViewModel
 import com.example.myapplication.util.AppActions
 import kotlinx.coroutines.launch
@@ -159,84 +160,40 @@ fun JournalListScreen(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                // Header. Light mode: vibrant accent band with light text; dark mode unchanged.
-                val light = isLightTheme()
+                // Branded drawer header: the same splash teal fade + gold "macaco" wordmark as the
+                // app header, with the monkey icon above the signed-in user's name.
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = if (light) listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.primaryContainer
-                                ) else listOf(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    MaterialTheme.colorScheme.surface
-                                )
-                            )
-                        )
+                        .background(macacoBrandBackground())
                         .padding(horizontal = 20.dp, vertical = 24.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Avatar: profile photo or app icon
-                        if (currentUser != null && profilePhotoUri != null) {
-                            AsyncImage(
-                                model = profilePhotoUri,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(52.dp)
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else if (currentUser != null) {
-                            Box(
-                                modifier = Modifier
-                                    .size(52.dp)
-                                    .clip(CircleShape)
-                                    .background(if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    currentUser!!.displayName.take(1).uppercase(),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (light) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .size(52.dp)
-                                    .clip(RoundedCornerShape(13.dp))
-                                    .background(if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("✈️", fontSize = 26.sp)
-                            }
-                        }
-                        Spacer(Modifier.width(14.dp))
-                        Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp)
+                        )
+                        Column(
+                            modifier = Modifier.offset(y = (-8).dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Text(
-                                stringResource(R.string.app_name),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = if (light) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
+                                text = "macaco",
+                                color = SplashGoldBright,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Light,
+                                letterSpacing = 5.sp
                             )
-                            val subColor = if (light) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
-                                           else MaterialTheme.colorScheme.onSurfaceVariant
-                            if (currentUser != null) {
-                                Text(
-                                    currentUser!!.displayName,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = subColor
-                                )
-                            } else {
-                                Text(
-                                    "Not signed in",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = subColor
-                                )
-                            }
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = if (currentUser != null) currentUser!!.displayName else "Not signed in",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.White.copy(alpha = 0.85f)
+                            )
                         }
                     }
                 }
@@ -372,40 +329,43 @@ fun JournalListScreen(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Column {
-                            Text(
-                                stringResource(R.string.app_name),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
+                // Branded header: the splash's deep-teal radial fade behind the icon, with the
+                // gold "macaco" wordmark styled to match the splash. Kept compact; the drawer menu
+                // and profile avatar ride the top so navigation stays reachable.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(macacoBrandBackground())
+                        .statusBarsPadding()
+                        .padding(bottom = 4.dp)
+                ) {
+                    // Menu and avatar ride the top edge; the brand block overlays them centered,
+                    // so the icon sits flush at the top with no dead space above it.
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Menu,
+                                contentDescription = stringResource(R.string.journal_list_menu_cd),
+                                tint = Color.White
                             )
-                            if (entries.isNotEmpty()) {
-                                val count = visibleEntries.size
-                                val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
-                                Text(
-                                    memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
                         }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.journal_list_menu_cd))
-                        }
-                    },
-                    actions = {
-                        // Avatar chip — tapping navigates to profile
+                        Spacer(Modifier.weight(1f))
                         if (currentUser != null) {
                             if (profilePhotoUri != null) {
                                 AsyncImage(
                                     model = profilePhotoUri,
                                     contentDescription = stringResource(R.string.common_profile),
                                     modifier = Modifier
-                                        .padding(end = 8.dp)
-                                        .size(32.dp)
+                                        .padding(end = 12.dp)
+                                        .size(28.dp)
                                         .clip(CircleShape)
                                         .clickable { onProfile() },
                                     contentScale = ContentScale.Crop
@@ -413,10 +373,10 @@ fun JournalListScreen(
                             } else {
                                 Box(
                                     modifier = Modifier
-                                        .padding(end = 8.dp)
-                                        .size(32.dp)
+                                        .padding(end = 12.dp)
+                                        .size(28.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                        .background(Color.White)
                                         .clickable { onProfile() },
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -424,16 +384,56 @@ fun JournalListScreen(
                                         currentUser!!.displayName.take(1).uppercase(),
                                         style = MaterialTheme.typography.labelMedium,
                                         fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        color = SplashTealMid
                                     )
                                 }
                             }
                         }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background
-                    )
-                )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopCenter),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        // Pull the wordmark up into the adaptive icon's bottom padding so it sits
+                        // snug under the monkey, with the splash slogan and count beneath.
+                        Column(
+                            modifier = Modifier.offset(y = (-10).dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "macaco",
+                                color = SplashGoldBright,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Light,
+                                letterSpacing = 3.sp
+                            )
+                            Text(
+                                text = "Roam Freely. Forget Nothing.",
+                                color = SplashGold.copy(alpha = 0.82f),
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Light,
+                                letterSpacing = 1.sp
+                            )
+                            if (entries.isNotEmpty()) {
+                                val count = visibleEntries.size
+                                val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
+                                Text(
+                                    memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = SplashGold.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+                    }
+                }
             },
             floatingActionButton = {
                 ExtendedFloatingActionButton(
