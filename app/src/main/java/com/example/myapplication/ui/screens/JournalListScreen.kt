@@ -188,7 +188,14 @@ fun JournalListScreen(
                                 fontWeight = FontWeight.Light,
                                 letterSpacing = 5.sp
                             )
-                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = "Roam Freely. Forget Nothing.",
+                                color = SplashGold.copy(alpha = 0.82f),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Light,
+                                letterSpacing = 1.sp
+                            )
+                            Spacer(Modifier.height(6.dp))
                             Text(
                                 text = if (currentUser != null) currentUser!!.displayName else "Not signed in",
                                 style = MaterialTheme.typography.bodySmall,
