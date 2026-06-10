@@ -20,6 +20,10 @@ All notable changes to Macaco are documented here. Format loosely follows
 - Official multicolor Google "G" logo on the sign-in button. (`5a53fa7`)
 
 ### Changed
+- **Rebranded the remaining off-brand screens** to the Macaco splash identity
+  (teal radial + gold "macaco" wordmark): the purchase/paywall screen (replacing
+  the ✈️ hero), the subscription-info premium band (replacing the ⭐ band), and
+  the Help/About header. Also swapped the ✈️ in shared-entry text for 🐒.
 - **Rebranded the login screen** to the Macaco splash identity: deep-teal radial
   header, monkey icon, gold "macaco" wordmark and slogan — matching the journal
   header and drawer. Replaced the old plane-emoji hero; header now runs

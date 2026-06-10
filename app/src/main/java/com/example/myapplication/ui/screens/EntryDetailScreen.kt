@@ -278,7 +278,7 @@ fun EntryDetailScreen(
 private fun shareEntry(context: Context, entry: TravelEntry) {
     val dateStr = formatDate(entry.dateMillis)
     val shareText = buildString {
-        appendLine("✈️ ${entry.title}")
+        appendLine("🐒 ${entry.title}")
         if (entry.location.isNotBlank()) appendLine("📍 ${entry.location}")
         appendLine("📅 $dateStr")
         if (entry.mood.isNotBlank()) appendLine(entry.mood)

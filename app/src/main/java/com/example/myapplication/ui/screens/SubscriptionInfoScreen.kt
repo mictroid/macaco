@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -30,14 +32,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
-import com.example.myapplication.ui.theme.isLightTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,44 +70,49 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
         ) {
             Spacer(Modifier.height(24.dp))
 
-            // Premium status card. Light mode: vibrant accent band with light text. Dark mode:
-            // the original rich container band (unchanged).
-            val light = isLightTheme()
-            val bandColors = if (light) {
-                listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
-            } else {
-                listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.tertiaryContainer)
-            }
-            val onBand = if (light) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+            // Premium status band on the Macaco splash identity: teal radial behind the monkey
+            // icon and gold "macaco" wordmark, with the premium/active/lifetime status beneath.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
-                    .background(Brush.horizontalGradient(bandColors))
+                    .background(macacoBrandBackground())
                     .padding(28.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("⭐", fontSize = 40.sp)
-                Spacer(Modifier.height(8.dp))
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(76.dp)
+                )
+                Text(
+                    text = "macaco",
+                    color = SplashGoldBright,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Light,
+                    letterSpacing = 5.sp,
+                    modifier = Modifier.offset(y = (-6).dp)
+                )
+                Spacer(Modifier.height(10.dp))
                 Text(
                     stringResource(R.string.subscription_premium),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = onBand
+                    color = Color.White
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     stringResource(R.string.subscription_active),
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (light) onBand else MaterialTheme.colorScheme.primary,
+                    color = SplashGold,
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = androidx.compose.ui.unit.TextUnit(2f, androidx.compose.ui.unit.TextUnitType.Sp)
+                    letterSpacing = 2.sp
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     stringResource(R.string.subscription_lifetime),
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (light) onBand.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color.White.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center
                 )
             }
