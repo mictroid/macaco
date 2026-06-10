@@ -115,7 +115,7 @@ class JournalViewModel(
             // Upload new photos to Drive in the background; persist updated IDs when done.
             if (entry.photoUris.isNotEmpty()) {
                 launch {
-                    val updatedIds = drivePhotoSync.uploadEntryPhotos(entry)
+                    val updatedIds = drivePhotoSync.uploadEntryPhotosOrReport(entry)
                     if (updatedIds != entry.driveFileIds) {
                         cloudEntrySync.save(entry.copy(driveFileIds = updatedIds))
                     }

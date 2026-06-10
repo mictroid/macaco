@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File as JavaFile
 
@@ -127,8 +128,10 @@ class DrivePhotoSync(private val context: Context) {
      * Returns the updated driveFileIds list (same length as photoUris).
      * Throws if Drive is not reachable — callers should catch and handle.
      */
-    suspend fun uploadEntryPhotos(entry: TravelEntry): List<String> {
-        if (!isDriveConnected()) return entry.driveFileIds
+    suspend fun uploadEntryPhotos(entry: TravelEntry): List<String> = withContext(Dispatchers.IO) {
+        // Drive auth/network (GoogleAccountCredential.getToken) hard-crashes if run on the main
+        // thread, so the whole upload must stay on IO regardless of the calling dispatcher.
+        if (!isDriveConnected()) return@withContext entry.driveFileIds
         val drive = getDriveService()
         val folderId = getOrCreateDriveFolder(drive)
         val result = entry.driveFileIds.toMutableList()
@@ -138,8 +141,21 @@ class DrivePhotoSync(private val context: Context) {
                 uploadPhoto(drive, folderId, uriString)?.let { result[i] = it }
             }
         }
-        return result.toList()
+        result.toList()
     }
+
+    /**
+     * Auto-upload variant for the save-entry path: catches Drive failures and reports them via
+     * [errors] (snackbar) instead of throwing, so a Drive outage or disabled API can't crash the
+     * app. Returns the updated driveFileIds, or the entry's existing ids if the upload failed.
+     */
+    suspend fun uploadEntryPhotosOrReport(entry: TravelEntry): List<String> =
+        runCatching { uploadEntryPhotos(entry) }
+            .onFailure { e ->
+                Log.e("DrivePhotoSync", "Auto-upload failed for entry ${entry.id}", e)
+                _errors.trySend(friendlyDriveError(e))
+            }
+            .getOrDefault(entry.driveFileIds)
 
     /**
      * Downloads Drive photos for entries that have Drive IDs but no accessible local file.
