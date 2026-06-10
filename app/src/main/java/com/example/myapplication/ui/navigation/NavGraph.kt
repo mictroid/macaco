@@ -113,6 +113,8 @@ fun NavGraph(viewModel: JournalViewModel) {
         // Logged in and purchased — full journal
         else -> {
             val navController = rememberNavController()
+            // Set when navigating to a drawer-launched screen so the menu reopens on return.
+            var reopenDrawer by remember { mutableStateOf(false) }
             NavHost(
                 navController = navController,
                 startDestination = Screen.JournalList.route
@@ -120,15 +122,17 @@ fun NavGraph(viewModel: JournalViewModel) {
                 composable(Screen.JournalList.route) {
                     JournalListScreen(
                         viewModel = viewModel,
+                        openDrawerOnEnter = reopenDrawer,
+                        onDrawerConsumed = { reopenDrawer = false },
                         onNewEntry = { navController.navigate(Screen.NewEntry.route) },
                         onEntryClick = { id ->
                             navController.navigate(Screen.EntryDetail.createRoute(id))
                         },
-                        onProfile = { navController.navigate(Screen.Profile.route) },
-                        onSettings = { navController.navigate(Screen.Settings.route) },
-                        onSubscription = { navController.navigate(Screen.Subscription.route) },
+                        onProfile = { reopenDrawer = true; navController.navigate(Screen.Profile.route) },
+                        onSettings = { reopenDrawer = true; navController.navigate(Screen.Settings.route) },
+                        onSubscription = { reopenDrawer = true; navController.navigate(Screen.Subscription.route) },
                         onLogin = { navController.navigate(Screen.Login.route) },
-                        onHelp = { navController.navigate(Screen.HelpAbout.route) }
+                        onHelp = { reopenDrawer = true; navController.navigate(Screen.HelpAbout.route) }
                     )
                 }
 

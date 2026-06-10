@@ -182,6 +182,7 @@
     <string name="settings_backup_failed">Back-up mislukt. Probeer het opnieuw.</string>
 
     <!-- Drawer -->
+    <string name="drawer_adventures">Avonturen</string>
     <string name="drawer_share_app">App delen</string>
     <string name="drawer_rate_us">Beoordelen</string>
     <string name="drawer_help">Help &amp; info</string>

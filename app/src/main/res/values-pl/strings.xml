@@ -188,6 +188,7 @@
     <string name="settings_backup_failed">Tworzenie kopii nie powiodło się. Spróbuj ponownie.</string>
 
     <!-- Drawer -->
+    <string name="drawer_adventures">Przygody</string>
     <string name="drawer_share_app">Udostępnij aplikację</string>
     <string name="drawer_rate_us">Oceń</string>
     <string name="drawer_help">Pomoc i informacje</string>

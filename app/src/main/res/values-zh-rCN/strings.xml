@@ -179,6 +179,7 @@
     <string name="settings_backup_failed">备份失败，请重试。</string>
 
     <!-- Drawer -->
+    <string name="drawer_adventures">冒险</string>
     <string name="drawer_share_app">分享应用</string>
     <string name="drawer_rate_us">评分</string>
     <string name="drawer_help">帮助与关于</string>

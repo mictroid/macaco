@@ -179,6 +179,7 @@
     <string name="settings_backup_failed">バックアップに失敗しました。もう一度お試しください。</string>
 
     <!-- Drawer -->
+    <string name="drawer_adventures">冒険</string>
     <string name="drawer_share_app">アプリを共有</string>
     <string name="drawer_rate_us">評価する</string>
     <string name="drawer_help">ヘルプと情報</string>

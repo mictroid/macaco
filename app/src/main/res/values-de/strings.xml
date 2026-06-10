@@ -193,6 +193,7 @@
     <string name="settings_backup_failed">Sicherung fehlgeschlagen. Bitte versuche es erneut.</string>
 
     <!-- Drawer -->
+    <string name="drawer_adventures">Abenteuer</string>
     <string name="drawer_share_app">App teilen</string>
     <string name="drawer_rate_us">Bewerten</string>
     <string name="drawer_help">Hilfe &amp; Info</string>

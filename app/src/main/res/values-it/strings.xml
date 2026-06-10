@@ -182,6 +182,7 @@
     <string name="settings_backup_failed">Backup non riuscito. Riprova.</string>
 
     <!-- Drawer -->
+    <string name="drawer_adventures">Avventure</string>
     <string name="drawer_share_app">Condividi app</string>
     <string name="drawer_rate_us">Valuta</string>
     <string name="drawer_help">Aiuto e informazioni</string>

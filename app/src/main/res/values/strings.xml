@@ -29,6 +29,7 @@
     <string name="journal_list_menu_cd">Menu</string>
     <string name="journal_list_switch_to_dark">Switch to Dark Mode</string>
     <string name="journal_list_switch_to_light">Switch to Light Mode</string>
+    <string name="drawer_adventures">Adventures</string>
     <string name="drawer_share_app">Share App</string>
     <string name="drawer_rate_us">Rate Us</string>
     <string name="drawer_help">Help &amp; About</string>

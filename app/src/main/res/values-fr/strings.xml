@@ -182,6 +182,7 @@
     <string name="settings_backup_failed">Échec de la sauvegarde. Veuillez réessayer.</string>
 
     <!-- Drawer -->
+    <string name="drawer_adventures">Aventures</string>
     <string name="drawer_share_app">Partager l\'appli</string>
     <string name="drawer_rate_us">Noter l\'appli</string>
     <string name="drawer_help">Aide &amp; à propos</string>

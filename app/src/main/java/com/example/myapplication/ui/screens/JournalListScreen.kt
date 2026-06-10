@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
@@ -106,7 +107,10 @@ fun JournalListScreen(
     onSettings: () -> Unit,
     onSubscription: () -> Unit,
     onLogin: () -> Unit,
-    onHelp: () -> Unit
+    onHelp: () -> Unit,
+    // True when returning from a drawer-launched screen: reopen the menu so back lands on it.
+    openDrawerOnEnter: Boolean = false,
+    onDrawerConsumed: () -> Unit = {}
 ) {
     val entries by viewModel.entries.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
@@ -160,6 +164,15 @@ fun JournalListScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    // Re-open the menu drawer when returning to the list from a drawer-launched screen, so
+    // pressing back from a menu screen lands back on the menu.
+    LaunchedEffect(openDrawerOnEnter) {
+        if (openDrawerOnEnter) {
+            drawerState.open()
+            onDrawerConsumed()
+        }
+    }
 
     // Surface cloud-sync failures (load/save/delete) as a snackbar.
     val snackbarHostState = remember { SnackbarHostState() }
@@ -221,6 +234,19 @@ fun JournalListScreen(
                 }
 
                 Spacer(Modifier.height(8.dp))
+
+                // Adventures = the journal/entries list itself. Tapping it closes the menu and
+                // clears any active tag filter so all entries show; marked selected as the current screen.
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.drawer_adventures)) },
+                    selected = true,
+                    colors = drawerItemColors,
+                    icon = { Icon(Icons.Filled.Explore, contentDescription = null) },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        viewModel.clearTagFilter()
+                    }
+                )
 
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.common_profile)) },
