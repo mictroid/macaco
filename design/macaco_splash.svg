@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920" shape-rendering="geometricPrecision">
+  <defs>
+
+    <!-- Ocean teal background — light at centre, deep at edges -->
+    <radialGradient id="bg" cx="50%" cy="40%" r="72%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#1C6C7E"/>
+      <stop offset="48%"  stop-color="#0A4A58"/>
+      <stop offset="100%" stop-color="#042830"/>
+    </radialGradient>
+
+    <!-- Gold gradient for all outlines — richer at base, bright at top -->
+    <linearGradient id="gold" gradientUnits="userSpaceOnUse" x1="540" y1="910" x2="540" y2="510">
+      <stop offset="0%"   stop-color="#B88010"/>
+      <stop offset="42%"  stop-color="#E8B020"/>
+      <stop offset="100%" stop-color="#F5D040"/>
+    </linearGradient>
+
+    <!-- Soft glow pass for key elements -->
+    <filter id="glow" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Softer glow for wordmark -->
+    <filter id="textGlow" x="-10%" y="-30%" width="120%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+  </defs>
+
+  <!-- ── Background ────────────────────────────────────────────── -->
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+
+  <!-- Concentric depth rings — oceanic stillness -->
+  <circle cx="540" cy="760" r="300" fill="none" stroke="#2A8090" stroke-width="1.5" opacity="0.14"/>
+  <circle cx="540" cy="760" r="420" fill="none" stroke="#2A8090" stroke-width="1"   opacity="0.09"/>
+  <circle cx="540" cy="760" r="545" fill="none" stroke="#2A8090" stroke-width="1"   opacity="0.06"/>
+
+  <!-- ── Monkey face — centre (540, 760), head r=190 ───────────── -->
+
+  <!-- Muzzle (drawn first, behind glasses) -->
+  <ellipse cx="540" cy="846" rx="72" ry="50"
+           fill="none" stroke="url(#gold)" stroke-width="18"
+           filter="url(#glow)"/>
+
+  <!-- Head -->
+  <circle cx="540" cy="760" r="190"
+          fill="none" stroke="url(#gold)" stroke-width="20"
+          filter="url(#glow)"/>
+
+  <!-- Ears -->
+  <circle cx="358" cy="747" r="74" fill="none" stroke="url(#gold)" stroke-width="18" filter="url(#glow)"/>
+  <circle cx="722" cy="747" r="74" fill="none" stroke="url(#gold)" stroke-width="18" filter="url(#glow)"/>
+  <!-- Inner ear bowls -->
+  <ellipse cx="358" cy="747" rx="44" ry="46" fill="none" stroke="url(#gold)" stroke-width="12"/>
+  <ellipse cx="722" cy="747" rx="44" ry="46" fill="none" stroke="url(#gold)" stroke-width="12"/>
+
+  <!-- Sunglasses lenses -->
+  <circle cx="466" cy="744" r="65" fill="#040E14" stroke="url(#gold)" stroke-width="17" filter="url(#glow)"/>
+  <circle cx="614" cy="744" r="65" fill="#040E14" stroke="url(#gold)" stroke-width="17" filter="url(#glow)"/>
+  <!-- Nose bridge -->
+  <line x1="531" y1="744" x2="549" y2="744" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+  <!-- Temple arms -->
+  <line x1="401" y1="744" x2="360" y2="747" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+  <line x1="679" y1="744" x2="720" y2="747" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- Eyebrows -->
+  <path d="M428 674 Q466 656 504 674" fill="none" stroke="url(#gold)" stroke-width="14" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M576 674 Q614 656 652 674" fill="none" stroke="url(#gold)" stroke-width="14" stroke-linecap="round" filter="url(#glow)"/>
+
+  <!-- Nostrils -->
+  <circle cx="521" cy="858" r="10" fill="#E8B020"/>
+  <circle cx="559" cy="858" r="10" fill="#E8B020"/>
+
+  <!-- ── Wordmark + tagline ──────────────────────────────────────── -->
+
+  <!-- Thin separator line -->
+  <line x1="390" y1="968" x2="690" y2="968"
+        stroke="#E8B020" stroke-width="1" opacity="0.30"/>
+
+  <!-- "macaco" — light weight, wide tracking, golden -->
+  <text x="540" y="1082"
+        text-anchor="middle"
+        font-family="'Montserrat','Century Gothic','Futura','Trebuchet MS',sans-serif"
+        font-weight="200"
+        font-size="118"
+        letter-spacing="22"
+        fill="#F0C840"
+        filter="url(#textGlow)">macaco</text>
+
+  <!-- Tagline -->
+  <text x="540" y="1172"
+        text-anchor="middle"
+        font-family="'Montserrat','Century Gothic','Futura','Trebuchet MS',sans-serif"
+        font-weight="300"
+        font-size="34"
+        letter-spacing="4"
+        fill="#E8B020"
+        opacity="0.78">Roam Freely. Forget Nothing.</text>
+
+</svg>
