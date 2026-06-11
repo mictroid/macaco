@@ -120,11 +120,12 @@ fun ProfileScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -370,15 +371,14 @@ fun ProfileScreen(
                 }
             }
             }
-            Spacer(Modifier.height(180.dp))
         } // scrollable content Column
+        } // weight(1f) Box
 
-            // Sleek branded footer band pinned to bottom of screen.
+            // Sleek branded footer band anchored at the bottom of the column.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp)
-                    .align(Alignment.BottomCenter)
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
@@ -389,6 +389,21 @@ fun ProfileScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
+                // Scrim at the very top of the footer to soften the white-to-teal edge.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(24.dp)
+                        .align(Alignment.TopCenter)
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.background.copy(alpha = 0.4f),
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                )
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = null,

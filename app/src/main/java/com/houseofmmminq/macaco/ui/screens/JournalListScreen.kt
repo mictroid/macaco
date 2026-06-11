@@ -227,7 +227,11 @@ fun JournalListScreen(
                                     modifier = Modifier
                                         .size(44.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer),
+                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                        .clickable {
+                                            scope.launch { drawerState.close() }
+                                            onProfile()
+                                        },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     if (profilePhotoUri != null) {
@@ -253,7 +257,11 @@ fun JournalListScreen(
                             Text(
                                 text = if (currentUser != null) currentUser!!.displayName else "Not signed in",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Color.White.copy(alpha = 0.85f)
+                                color = Color.White.copy(alpha = 0.85f),
+                                modifier = if (currentUser != null) Modifier.clickable {
+                                    scope.launch { drawerState.close() }
+                                    onProfile()
+                                } else Modifier
                             )
                         }
                     }
