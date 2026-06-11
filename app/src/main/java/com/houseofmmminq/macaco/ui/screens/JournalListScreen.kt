@@ -235,30 +235,6 @@ fun JournalListScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                // Adventures = the journal/entries list itself. Tapping it closes the menu and
-                // clears any active tag filter so all entries show; marked selected as the current screen.
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.drawer_adventures)) },
-                    selected = true,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.Explore, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        viewModel.clearTagFilter()
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.common_profile)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.Person, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        onProfile()
-                    }
-                )
-
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.common_settings)) },
                     selected = false,
@@ -503,7 +479,8 @@ fun JournalListScreen(
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.background,
+            contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0)
         ) { padding ->
             Column(
                 modifier = Modifier

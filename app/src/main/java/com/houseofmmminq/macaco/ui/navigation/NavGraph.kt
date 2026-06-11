@@ -2,8 +2,24 @@ package com.houseofmmminq.macaco.ui.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoStories
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.AutoStories
+import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -17,13 +33,17 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
+import com.houseofmmminq.macaco.ui.screens.AdventuresScreen
 import com.houseofmmminq.macaco.ui.screens.AppLockScreen
 import com.houseofmmminq.macaco.ui.screens.OnboardingScreen
 import com.houseofmmminq.macaco.ui.screens.EntryDetailScreen
@@ -130,9 +150,21 @@ fun NavGraph(viewModel: JournalViewModel) {
             val navController = rememberNavController()
             // Set when navigating to a drawer-launched screen so the menu reopens on return.
             var reopenDrawer by remember { mutableStateOf(false) }
+            val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+            val tabRoutes = setOf(Screen.JournalList.route, Screen.Adventures.route, Screen.Profile.route)
+
+            Scaffold(
+                contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                bottomBar = {
+                    if (currentRoute in tabRoutes) {
+                        MacacoBottomNavBar(navController = navController, currentRoute = currentRoute)
+                    }
+                }
+            ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = Screen.JournalList.route
+                startDestination = Screen.JournalList.route,
+                modifier = Modifier.padding(innerPadding)
             ) {
                 composable(Screen.JournalList.route) {
                     JournalListScreen(
@@ -143,12 +175,16 @@ fun NavGraph(viewModel: JournalViewModel) {
                         onEntryClick = { id ->
                             navController.navigate(Screen.EntryDetail.createRoute(id))
                         },
-                        onProfile = { reopenDrawer = true; navController.navigate(Screen.Profile.route) },
+                        onProfile = { navController.navigateToTab(Screen.Profile.route) },
                         onSettings = { reopenDrawer = true; navController.navigate(Screen.Settings.route) },
                         onSubscription = { reopenDrawer = true; navController.navigate(Screen.Subscription.route) },
                         onLogin = { navController.navigate(Screen.Login.route) },
                         onHelp = { reopenDrawer = true; navController.navigate(Screen.HelpAbout.route) }
                     )
+                }
+
+                composable(Screen.Adventures.route) {
+                    AdventuresScreen()
                 }
 
                 composable(Screen.NewEntry.route) {
@@ -249,6 +285,72 @@ fun NavGraph(viewModel: JournalViewModel) {
                     HelpAboutScreen(onBack = { navController.popBackStack() })
                 }
             }
+            } // Scaffold
         }
+    }
+}
+
+private fun NavController.navigateToTab(route: String) {
+    navigate(route) {
+        popUpTo(graph.findStartDestination().id) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
+private val tabRoutes = setOf(Screen.JournalList.route, Screen.Adventures.route, Screen.Profile.route)
+
+private val NavGold = Color(0xFFE8B020)
+private val NavGoldBright = Color(0xFFF0C840)
+
+@Composable
+private fun MacacoBottomNavBar(navController: NavController, currentRoute: String?) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
+        val itemColors = NavigationBarItemDefaults.colors(
+            selectedIconColor = NavGoldBright,
+            unselectedIconColor = NavGold.copy(alpha = 0.55f),
+            selectedTextColor = NavGoldBright,
+            unselectedTextColor = NavGold.copy(alpha = 0.55f),
+            indicatorColor = NavGold.copy(alpha = 0.20f)
+        )
+        NavigationBarItem(
+            selected = currentRoute == Screen.JournalList.route,
+            onClick = { navController.navigateToTab(Screen.JournalList.route) },
+            colors = itemColors,
+            icon = {
+                Icon(
+                    if (currentRoute == Screen.JournalList.route) Icons.Filled.AutoStories
+                    else Icons.Outlined.AutoStories,
+                    contentDescription = null
+                )
+            },
+            label = { Text("Journal") }
+        )
+        NavigationBarItem(
+            selected = currentRoute == Screen.Adventures.route,
+            onClick = { navController.navigateToTab(Screen.Adventures.route) },
+            colors = itemColors,
+            icon = {
+                Icon(
+                    if (currentRoute == Screen.Adventures.route) Icons.Filled.Explore
+                    else Icons.Outlined.Explore,
+                    contentDescription = null
+                )
+            },
+            label = { Text("Adventures") }
+        )
+        NavigationBarItem(
+            selected = currentRoute == Screen.Profile.route,
+            onClick = { navController.navigateToTab(Screen.Profile.route) },
+            colors = itemColors,
+            icon = {
+                Icon(
+                    if (currentRoute == Screen.Profile.route) Icons.Filled.Person
+                    else Icons.Outlined.Person,
+                    contentDescription = null
+                )
+            },
+            label = { Text("Profile") }
+        )
     }
 }
