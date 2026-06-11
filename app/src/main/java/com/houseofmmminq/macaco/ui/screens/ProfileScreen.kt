@@ -51,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -378,7 +379,14 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .height(160.dp)
                     .align(Alignment.BottomCenter)
-                    .background(macacoBrandBackground()),
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFF071E26),
+                                Color(0xFF0E5A6B),
+                            )
+                        )
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
