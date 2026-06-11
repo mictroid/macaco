@@ -324,24 +324,6 @@ fun ProfileScreen(
                     }
                 }
 
-                Spacer(Modifier.height(24.dp))
-
-                OutlinedButton(
-                    onClick = { showSignOutDialog = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.Logout,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.common_sign_out))
-                }
             } else {
                 // Not signed in
                 Spacer(Modifier.height(56.dp))
@@ -359,20 +341,43 @@ fun ProfileScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
-                Spacer(Modifier.height(24.dp))
+            }
+            }
+        } // scrollable content Column
+        } // weight(1f) Box
+
+            // Action button pinned above the footer — no gap possible.
+            if (currentUser != null) {
+                OutlinedButton(
+                    onClick = { showSignOutDialog = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 12.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.common_sign_out))
+                }
+            } else {
                 Button(
                     onClick = onLogin,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 12.dp)
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(stringResource(R.string.common_sign_in), fontWeight = FontWeight.SemiBold)
                 }
             }
-            }
-        } // scrollable content Column
-        } // weight(1f) Box
 
             // Sleek branded footer band anchored at the bottom of the column.
             Box(
