@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,15 +32,14 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarRate
+import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -117,26 +117,7 @@ fun JournalListScreen(
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
-    val appLockEnabled by viewModel.appLockEnabled.collectAsState()
-
     val context = LocalContext.current
-    // Toggle app lock from the drawer, reusing the same biometric-verify guard as Settings:
-    // verify auth actually works before enabling, so a user can't lock themselves out.
-    val toggleAppLock: (Boolean) -> Unit = { enable ->
-        if (enable) {
-            if (!isBiometricAvailable(context)) {
-                android.widget.Toast.makeText(
-                    context,
-                    context.getString(R.string.settings_app_lock_unavailable),
-                    android.widget.Toast.LENGTH_LONG
-                ).show()
-            } else {
-                showBiometricPrompt(context) { viewModel.setAppLockEnabled(true) }
-            }
-        } else {
-            viewModel.setAppLockEnabled(false)
-        }
-    }
 
     // Tag filter: tapping chips narrows the list to entries carrying any of the selected tags (OR).
     // State lives in the ViewModel so the detail screen can set it too.
@@ -200,13 +181,17 @@ fun JournalListScreen(
             val drawerItemColors = NavigationDrawerItemDefaults.colors(
                 unselectedIconColor = MaterialTheme.colorScheme.primary
             )
-            ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.surface) {
+            ModalDrawerSheet(
+                drawerContainerColor = MaterialTheme.colorScheme.surface,
+                windowInsets = WindowInsets(0)
+            ) {
                 // Branded drawer header: the same splash teal fade + gold "macaco" wordmark as the
                 // app header, with the monkey icon above the signed-in user's name.
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(macacoBrandBackground())
+                        .statusBarsPadding()
                         .padding(horizontal = 20.dp, vertical = 24.dp)
                 ) {
                     Column(
@@ -236,7 +221,35 @@ fun JournalListScreen(
                                 fontWeight = FontWeight.Light,
                                 letterSpacing = 1.sp
                             )
-                            Spacer(Modifier.height(6.dp))
+                            Spacer(Modifier.height(8.dp))
+                            if (currentUser != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(44.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primaryContainer),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (profilePhotoUri != null) {
+                                        AsyncImage(
+                                            model = profilePhotoUri,
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(44.dp)
+                                                .clip(CircleShape),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        Text(
+                                            currentUser!!.displayName.take(2).uppercase(),
+                                            style = MaterialTheme.typography.labelLarge,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                }
+                                Spacer(Modifier.height(4.dp))
+                            }
                             Text(
                                 text = if (currentUser != null) currentUser!!.displayName else "Not signed in",
                                 style = MaterialTheme.typography.bodySmall,
@@ -263,37 +276,29 @@ fun JournalListScreen(
                     label = { Text(stringResource(R.string.common_subscription)) },
                     selected = false,
                     colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.Star, contentDescription = null) },
+                    icon = { Icon(Icons.Outlined.WorkspacePremium, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
                         onSubscription()
                     }
                 )
 
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.settings_app_lock)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.Lock, contentDescription = null) },
-                    badge = {
-                        Switch(
-                            checked = appLockEnabled,
-                            onCheckedChange = { toggleAppLock(it) }
-                        )
-                    },
-                    onClick = { toggleAppLock(!appLockEnabled) }
-                )
-
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
 
                 NavigationDrawerItem(
-                    label = { Text(if (isDarkMode) stringResource(R.string.journal_list_switch_to_light) else stringResource(R.string.journal_list_switch_to_dark)) },
+                    label = { Text("Dark Mode") },
                     selected = false,
                     colors = drawerItemColors,
                     icon = {
                         Icon(
-                            if (isDarkMode) Icons.Filled.LightMode else Icons.Filled.DarkMode,
+                            if (isDarkMode) Icons.Filled.DarkMode else Icons.Filled.LightMode,
                             contentDescription = null
+                        )
+                    },
+                    badge = {
+                        Switch(
+                            checked = isDarkMode,
+                            onCheckedChange = { viewModel.toggleDarkMode() }
                         )
                     },
                     onClick = { viewModel.toggleDarkMode() }
@@ -493,7 +498,7 @@ fun JournalListScreen(
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
             containerColor = MaterialTheme.colorScheme.background,
-            contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0)
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { padding ->
             Column(
                 modifier = Modifier
