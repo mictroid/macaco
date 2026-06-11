@@ -83,6 +83,7 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.util.Cities
 import com.houseofmmminq.macaco.util.ImageStorage
+import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -492,6 +493,17 @@ fun NewEditEntryScreen(
                 )
             }
 
+            // Suggested tag chips — tap to add; already-added chips are de-emphasised
+            item {
+                SuggestedTagsRow(
+                    currentTags = tags,
+                    onAdd = { raw ->
+                        val tag = normalizeTag(raw)
+                        if (tag.isNotEmpty() && tag !in tags) tags = tags + tag
+                    }
+                )
+            }
+
             item { Spacer(Modifier.height(24.dp)) }
         }
     }
@@ -522,12 +534,15 @@ private fun TagsField(
         expanded = false
     }
 
-    // Previously used tags, filtered by prefix as the user types; tags already on this entry are
-    // hidden. When the field is empty we surface the most-used tags so the dropdown is useful the
-    // moment it opens.
-    val matches = remember(input, tags, suggestions) {
+    // Previously used tags come first (most-used order); preset suggestions fill the rest.
+    // Tags already on this entry are hidden. When the field is empty the dropdown opens with
+    // the most relevant tags immediately visible.
+    val allSuggestions = remember(suggestions) {
+        (suggestions + SUGGESTED_TAGS.map { normalizeTag(it) }).distinctBy { it }
+    }
+    val matches = remember(input, tags, allSuggestions) {
         val q = normalizeTag(input)
-        val unused = suggestions.filterNot { it in tags }
+        val unused = allSuggestions.filterNot { it in tags }
         if (q.isEmpty()) unused.take(8)
         else unused.filter { it.startsWith(q) }.take(8)
     }
@@ -741,6 +756,40 @@ private fun TripField(
                     }
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun SuggestedTagsRow(
+    currentTags: List<String>,
+    onAdd: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        SUGGESTED_TAGS.forEach { label ->
+            val normalized = normalizeTag(label)
+            val alreadyAdded = normalized in currentTags
+            Text(
+                "#$label",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Medium,
+                color = if (alreadyAdded) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        else MaterialTheme.colorScheme.onSecondaryContainer,
+                maxLines = 1,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(
+                        if (alreadyAdded) MaterialTheme.colorScheme.surfaceVariant
+                        else MaterialTheme.colorScheme.secondaryContainer
+                    )
+                    .clickable(enabled = !alreadyAdded) { onAdd(label) }
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+            )
         }
     }
 }
