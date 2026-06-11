@@ -18,6 +18,8 @@ import com.houseofmmminq.macaco.data.sync.JournalBackup
 import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.ReminderScheduler
+import android.location.Geocoder
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -26,6 +28,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class JournalViewModel(
@@ -95,6 +98,27 @@ class JournalViewModel(
 
     fun completeOnboarding() {
         viewModelScope.launch { preferencesManager.setOnboardingComplete() }
+    }
+
+    // location string → (lat, lon); populated lazily when MapScreen is open.
+    private val _geocodedLocations = MutableStateFlow<Map<String, Pair<Double, Double>>>(emptyMap())
+    val geocodedLocations: StateFlow<Map<String, Pair<Double, Double>>> = _geocodedLocations.asStateFlow()
+
+    fun geocodeLocations(context: Context, locations: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val geocoder = Geocoder(context)
+            locations.forEach { loc ->
+                if (loc !in _geocodedLocations.value) {
+                    try {
+                        @Suppress("DEPRECATION")
+                        val results = geocoder.getFromLocationName(loc, 1)
+                        results?.firstOrNull()?.let { addr ->
+                            _geocodedLocations.update { it + (loc to Pair(addr.latitude, addr.longitude)) }
+                        }
+                    } catch (_: Exception) { }
+                }
+            }
+        }
     }
 
     init {

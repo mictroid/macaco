@@ -43,7 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
-import com.houseofmmminq.macaco.ui.screens.AdventuresScreen
+import com.houseofmmminq.macaco.ui.screens.MapScreen
 import com.houseofmmminq.macaco.ui.screens.AppLockScreen
 import com.houseofmmminq.macaco.ui.screens.OnboardingScreen
 import com.houseofmmminq.macaco.ui.screens.EntryDetailScreen
@@ -184,7 +184,10 @@ fun NavGraph(viewModel: JournalViewModel) {
                 }
 
                 composable(Screen.Adventures.route) {
-                    AdventuresScreen()
+                    MapScreen(
+                        viewModel = viewModel,
+                        onEntryClick = { id -> navController.navigate(Screen.EntryDetail.createRoute(id)) }
+                    )
                 }
 
                 composable(Screen.NewEntry.route) {

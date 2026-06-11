@@ -1,9 +1,14 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
 }
+
+val localProperties = Properties()
+rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { localProperties.load(it) }
 
 android {
     namespace = "com.houseofmmminq.macaco"
@@ -21,6 +26,7 @@ android {
         versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
     }
 
     buildTypes {
@@ -71,6 +77,8 @@ dependencies {
     implementation(libs.google.api.client.android) { exclude(group = "org.apache.httpcomponents") }
     implementation(libs.google.api.services.drive) { exclude(group = "org.apache.httpcomponents") }
     implementation(libs.play.review.ktx)
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
