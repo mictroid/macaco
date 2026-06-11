@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.houseofmmminq.macaco"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
