@@ -109,7 +109,8 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
                 ?: "User",
             email = email ?: "",
             photoUrl = photoUrl?.toString(),
-            provider = provider
+            provider = provider,
+            createdAt = metadata?.creationTimestamp
         )
     }
 }

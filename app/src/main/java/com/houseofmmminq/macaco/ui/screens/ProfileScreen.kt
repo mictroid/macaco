@@ -324,6 +324,19 @@ fun ProfileScreen(
                     }
                 }
 
+                val memberSince = user.createdAt?.let { millis ->
+                    java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
+                        .format(java.util.Date(millis))
+                }
+                if (memberSince != null) {
+                    Text(
+                        text = "Member since $memberSince",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+                }
+
             } else {
                 // Not signed in
                 Spacer(Modifier.height(56.dp))
