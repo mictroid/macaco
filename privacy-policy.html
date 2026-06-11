@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macaco — Privacy Policy</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .brand-name { font-size: 24px; font-weight: 300; letter-spacing: 6px; color: #0E5A6B; }
+    h1 { font-size: 28px; font-weight: 700; color: #0E5A6B; margin-bottom: 6px; }
+    .updated { color: #888; font-size: 14px; margin-bottom: 32px; }
+    h2 { font-size: 18px; font-weight: 600; color: #0E5A6B; margin-top: 36px; margin-bottom: 10px; }
+    p { margin-bottom: 14px; }
+    ul { margin: 10px 0 14px 20px; }
+    ul li { margin-bottom: 6px; }
+    a { color: #0E5A6B; }
+    .highlight {
+      background: #f0f8fa;
+      border-left: 3px solid #0E5A6B;
+      padding: 14px 18px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+    th { background: #0E5A6B; color: #fff; text-align: left; padding: 10px 12px; }
+    td { padding: 9px 12px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    footer { margin-top: 48px; font-size: 13px; color: #aaa; border-top: 1px solid #eee; padding-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="brand">
+    <span class="brand-name">macaco</span>
+  </div>
+
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: 11 June 2026</p>
+
+  <div class="highlight">
+    <strong>Short version:</strong> Macaco stores your journal entries and account info securely in your own cloud account. We don't sell your data, show ads, or share your content with anyone. Your photos go to your own Google Drive — we never hold them on our servers.
+  </div>
+
+  <h2>1. Who we are</h2>
+  <p>Macaco is a personal travel journal app developed by <strong>House of MMMinq</strong>. If you have any questions about this policy, contact us at <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
+
+  <h2>2. What data we collect</h2>
+
+  <table>
+    <tr>
+      <th>Data</th>
+      <th>Why we collect it</th>
+      <th>Where it's stored</th>
+    </tr>
+    <tr>
+      <td><strong>Account info</strong><br>Name, email address, profile photo</td>
+      <td>To identify your account and sync your entries across devices</td>
+      <td>Firebase Authentication (Google)</td>
+    </tr>
+    <tr>
+      <td><strong>Journal entries</strong><br>Title, location, date, description, mood, tags, trip name</td>
+      <td>Your travel memories — the core purpose of the app</td>
+      <td>Firebase Firestore, in your personal account subcollection</td>
+    </tr>
+    <tr>
+      <td><strong>Photos</strong></td>
+      <td>To attach memories to your entries</td>
+      <td>Your device gallery (MediaStore) and optionally your own Google Drive account</td>
+    </tr>
+    <tr>
+      <td><strong>Purchase status</strong></td>
+      <td>To verify your premium subscription</td>
+      <td>Managed by RevenueCat and Google Play — we never handle payment details directly</td>
+    </tr>
+  </table>
+
+  <p>We do <strong>not</strong> collect location data automatically, track your usage behaviour, or use analytics SDKs.</p>
+
+  <h2>3. How we use your data</h2>
+  <ul>
+    <li>To sync your journal entries across devices you're signed in to</li>
+    <li>To back up and restore your photos via your connected Google Drive account</li>
+    <li>To verify your premium subscription status</li>
+    <li>To send you optional local reminders to write a new entry (no data leaves your device for this)</li>
+  </ul>
+  <p>We do not use your data for advertising, profiling, or any purpose beyond running the app for you.</p>
+
+  <h2>4. Third-party services</h2>
+  <p>Macaco uses the following third-party services. Each has its own privacy policy:</p>
+  <ul>
+    <li><strong>Google Firebase</strong> (Authentication, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
+    <li><strong>Google Drive API</strong> — photos are written to and read from your own Google Drive account. We request the <code>drive.file</code> scope, which limits our access to only files created by Macaco.</li>
+    <li><strong>RevenueCat</strong> — subscription and purchase management — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
+    <li><strong>Google Play Billing</strong> — payment processing — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+  </ul>
+
+  <h2>5. Data sharing</h2>
+  <p>We do not sell, rent, or share your personal data with any third parties for their own purposes. The only data transfers that occur are those described above (Firebase sync, your own Drive account, RevenueCat purchase verification).</p>
+
+  <h2>6. Data retention and deletion</h2>
+  <p>Your journal entries and account data remain in Firebase as long as your account exists. To delete your data:</p>
+  <ul>
+    <li><strong>Entries:</strong> Delete individual entries from within the app, or delete all entries by signing out and deleting your Firebase account</li>
+    <li><strong>Photos:</strong> Removing a photo from an entry deletes it from your device gallery. Drive copies can be deleted from your own Google Drive</li>
+    <li><strong>Account:</strong> Contact us at <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a> to request full account deletion</li>
+  </ul>
+
+  <h2>7. Security</h2>
+  <p>All data in transit is encrypted via HTTPS/TLS. Data at rest is protected by Firebase's security rules, which ensure each user can only access their own entries. We do not have access to your Google account credentials — authentication is handled entirely by Google.</p>
+
+  <h2>8. Children's privacy</h2>
+  <p>Macaco is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal data, please contact us and we will delete it promptly.</p>
+
+  <h2>9. Your rights</h2>
+  <p>Depending on your location, you may have rights to access, correct, or delete your personal data, or to object to its processing. To exercise any of these rights, contact us at <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
+
+  <h2>10. Changes to this policy</h2>
+  <p>We may update this privacy policy from time to time. We will notify you of significant changes by updating the "Last updated" date at the top of this page. Continued use of the app after changes constitutes acceptance of the updated policy.</p>
+
+  <h2>11. Contact</h2>
+  <p>House of MMMinq<br>
+  <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
+
+  <footer>
+    &copy; 2026 House of MMMinq. All rights reserved.
+  </footer>
+
+</body>
+</html>
