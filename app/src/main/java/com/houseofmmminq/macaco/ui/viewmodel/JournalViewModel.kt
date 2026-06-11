@@ -60,6 +60,8 @@ class JournalViewModel(
     val isPurchased: StateFlow<Boolean?> = billingManager.isPremium
 
     val priceLabel: StateFlow<String> = billingManager.priceLabel
+    val offerings = billingManager.offerings
+    val currentPlanId = billingManager.currentPlanId
 
     val isDarkMode: StateFlow<Boolean> = preferencesManager.isDarkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
@@ -163,8 +165,8 @@ class JournalViewModel(
         }
     }
 
-    fun purchase(activity: Activity, onResult: (Result<Boolean>) -> Unit) {
-        viewModelScope.launch { onResult(billingManager.purchase(activity)) }
+    fun purchase(activity: Activity, pkg: com.revenuecat.purchases.Package, onResult: (Result<Boolean>) -> Unit) {
+        viewModelScope.launch { onResult(billingManager.purchase(activity, pkg)) }
     }
 
     fun restorePurchase(onResult: (Result<Boolean>) -> Unit) {

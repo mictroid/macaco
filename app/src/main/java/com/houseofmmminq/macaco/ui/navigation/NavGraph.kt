@@ -288,6 +288,7 @@ fun NavGraph(viewModel: JournalViewModel) {
 
                 composable(Screen.Subscription.route) {
                     SubscriptionInfoScreen(
+                        viewModel = viewModel,
                         onBack = { navController.popBackStack() }
                     )
                 }

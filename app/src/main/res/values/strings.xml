@@ -195,6 +195,24 @@
     <string name="purchase_restore">Restore Purchase</string>
     <string name="purchase_no_previous">No previous purchase found to restore.</string>
 
+    <!-- Pricing tiers -->
+    <string name="purchase_plan_monthly">Monthly</string>
+    <string name="purchase_plan_annual">Annual</string>
+    <string name="purchase_plan_lifetime">Lifetime</string>
+    <string name="purchase_best_value">Best Value</string>
+    <string name="purchase_most_popular">Most popular</string>
+    <string name="purchase_per_month">/ month</string>
+    <string name="purchase_per_year">/ year</string>
+    <string name="purchase_once">one-time</string>
+    <string name="purchase_save_50">Save 50% vs monthly</string>
+    <string name="purchase_free_trial">7 days free, then %s / year</string>
+    <string name="purchase_trial_note">Cancel anytime during trial and you won\'t be charged</string>
+    <string name="purchase_cancel_anytime">Cancel anytime</string>
+    <string name="purchase_own_forever">Pay once, own forever</string>
+    <string name="purchase_cta_monthly">Start Monthly — %s</string>
+    <string name="purchase_cta_annual">Try Free for 7 Days</string>
+    <string name="purchase_cta_lifetime">Get Lifetime — %s</string>
+
     <!-- Subscription Info -->
     <string name="subscription_premium">Macaco Premium</string>
     <string name="subscription_active">ACTIVE</string>
@@ -205,7 +223,7 @@
     <string name="subscription_feature_no_ads">Zero ads — ever</string>
     <string name="subscription_feature_local">Your data stays on your device</string>
     <string name="subscription_feature_offline">Works fully offline</string>
-    <string name="subscription_feature_no_sub">No subscription, no recurring fees</string>
+    <string name="subscription_feature_no_sub">Lifetime: no subscription, no recurring fees</string>
     <string name="subscription_feature_updates">Future updates included</string>
     <string name="subscription_thank_you">Thank you for supporting Macaco! 🙏\nYour purchase keeps the app independent and ad-free.</string>
 

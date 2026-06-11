@@ -29,6 +29,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,10 +42,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
+import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SubscriptionInfoScreen(onBack: () -> Unit) {
+fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
+    val currentPlanId by viewModel.currentPlanId.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -109,8 +113,14 @@ fun SubscriptionInfoScreen(onBack: () -> Unit) {
                     letterSpacing = 2.sp
                 )
                 Spacer(Modifier.height(4.dp))
+                val planLabel = when {
+                    currentPlanId?.contains("annual") == true   -> stringResource(R.string.purchase_plan_annual)
+                    currentPlanId?.contains("monthly") == true  -> stringResource(R.string.purchase_plan_monthly)
+                    currentPlanId?.contains("lifetime") == true -> stringResource(R.string.purchase_plan_lifetime)
+                    else -> stringResource(R.string.subscription_lifetime)
+                }
                 Text(
-                    stringResource(R.string.subscription_lifetime),
+                    planLabel,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center

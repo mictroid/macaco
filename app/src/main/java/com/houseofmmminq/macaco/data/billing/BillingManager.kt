@@ -8,11 +8,11 @@ import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
+import com.revenuecat.purchases.Offerings
 import com.revenuecat.purchases.getCustomerInfoWith
 import com.revenuecat.purchases.getOfferingsWith
 import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
 import com.revenuecat.purchases.logInWith
-import com.revenuecat.purchases.models.StoreProduct
 import com.revenuecat.purchases.purchaseWith
 import com.revenuecat.purchases.restorePurchasesWith
 import com.revenuecat.purchases.PurchaseParams
@@ -47,6 +47,13 @@ class BillingManager(
     private val _priceLabel = MutableStateFlow("$2.99")
     val priceLabel: StateFlow<String> = _priceLabel.asStateFlow()
 
+    private val _offerings = MutableStateFlow<Offerings?>(null)
+    val offerings: StateFlow<Offerings?> = _offerings.asStateFlow()
+
+    // Product identifier of the active entitlement, e.g. "macaco_annual"
+    private val _currentPlanId = MutableStateFlow<String?>(null)
+    val currentPlanId: StateFlow<String?> = _currentPlanId.asStateFlow()
+
     init {
         if (configured) {
             if (!Purchases.isConfigured) {
@@ -63,7 +70,7 @@ class BillingManager(
                 }
 
             refreshEntitlement()
-            loadPrice()
+            loadOfferings()
 
             // Tie RevenueCat identity to the signed-in account so purchases follow the user
             scope.launch {
@@ -92,40 +99,43 @@ class BillingManager(
         Purchases.sharedInstance.getCustomerInfoWith(
             onError = { if (_isPremium.value == null) _isPremium.value = false },
             onSuccess = { info ->
-                _isPremium.value = info.entitlements[RevenueCatConfig.ENTITLEMENT_ID]?.isActive == true
+                val entitlement = info.entitlements[RevenueCatConfig.ENTITLEMENT_ID]
+                _isPremium.value = entitlement?.isActive == true
+                if (entitlement?.isActive == true) _currentPlanId.value = entitlement.productIdentifier
             }
         )
     }
 
-    private fun loadPrice() {
+    private fun loadOfferings() {
         Purchases.sharedInstance.getOfferingsWith(
             onError = { },
             onSuccess = { offerings ->
-                val product: StoreProduct? = offerings.current?.availablePackages?.firstOrNull()?.product
-                product?.price?.formatted?.let { _priceLabel.value = it }
+                _offerings.value = offerings
+                // Default price label: annual if available, else first available
+                val priceFormatted = offerings.current?.annual?.product?.price?.formatted
+                    ?: offerings.current?.availablePackages?.firstOrNull()?.product?.price?.formatted
+                priceFormatted?.let { _priceLabel.value = it }
             }
         )
     }
 
-    suspend fun purchase(activity: Activity): Result<Boolean> {
+    suspend fun purchase(activity: Activity, packageToPurchase: Package): Result<Boolean> {
         if (!configured) {
             preferencesManager.setPurchased(true)
             return Result.success(true)
         }
-        val pkg = firstPackage()
-            ?: return Result.failure(
-                Exception("No products available. Add an offering in the RevenueCat dashboard.")
-            )
         return suspendCancellableCoroutine { cont ->
             Purchases.sharedInstance.purchaseWith(
-                PurchaseParams.Builder(activity, pkg).build(),
+                PurchaseParams.Builder(activity, packageToPurchase).build(),
                 onError = { error, userCancelled ->
                     if (userCancelled) cont.resume(Result.success(false))
                     else cont.resume(Result.failure(Exception(error.message)))
                 },
                 onSuccess = { _, customerInfo ->
-                    val active = customerInfo.entitlements[RevenueCatConfig.ENTITLEMENT_ID]?.isActive == true
+                    val entitlement = customerInfo.entitlements[RevenueCatConfig.ENTITLEMENT_ID]
+                    val active = entitlement?.isActive == true
                     _isPremium.value = active
+                    if (active) _currentPlanId.value = entitlement?.productIdentifier
                     cont.resume(Result.success(active))
                 }
             )
@@ -148,10 +158,4 @@ class BillingManager(
         }
     }
 
-    private suspend fun firstPackage(): Package? = suspendCancellableCoroutine { cont ->
-        Purchases.sharedInstance.getOfferingsWith(
-            onError = { cont.resume(null) },
-            onSuccess = { offerings -> cont.resume(offerings.current?.availablePackages?.firstOrNull()) }
-        )
-    }
 }
