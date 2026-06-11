@@ -25,6 +25,7 @@ import androidx.navigation.navArgument
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
 import com.houseofmmminq.macaco.ui.screens.AppLockScreen
+import com.houseofmmminq.macaco.ui.screens.OnboardingScreen
 import com.houseofmmminq.macaco.ui.screens.EntryDetailScreen
 import com.houseofmmminq.macaco.ui.screens.HelpAboutScreen
 import com.houseofmmminq.macaco.ui.screens.JournalListScreen
@@ -48,14 +49,9 @@ private const val LOCK_TIMEOUT_MS = 30_000L
 
 @Composable
 fun NavGraph(viewModel: JournalViewModel) {
-    // Branded launch screen. Survives config changes so it isn't replayed on rotation, but shows
-    // on each cold start.
+    // All state collected unconditionally so Compose hooks are always called in the same order.
+    val onboardingComplete by viewModel.onboardingComplete.collectAsState()
     var showSplash by rememberSaveable { mutableStateOf(true) }
-    if (showSplash) {
-        SplashScreen(onFinished = { showSplash = false })
-        return
-    }
-
     val isPurchased by viewModel.isPurchased.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
     val appLockEnabled by viewModel.appLockEnabled.collectAsState()
@@ -79,6 +75,25 @@ fun NavGraph(viewModel: JournalViewModel) {
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // Wait for DataStore to read the onboarding flag before showing anything.
+    if (onboardingComplete == null) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+        return
+    }
+
+    // First install — show onboarding once, then proceed to splash.
+    if (onboardingComplete == false) {
+        OnboardingScreen(onComplete = { viewModel.completeOnboarding() })
+        return
+    }
+
+    // Branded launch screen. Survives config changes so it isn't replayed on rotation, but shows
+    // on each cold start (after onboarding).
+    if (showSplash) {
+        SplashScreen(onFinished = { showSplash = false })
+        return
     }
 
     // Show the lock screen over everything when the journal is locked (only after login+purchase).

@@ -25,6 +25,7 @@ class PreferencesManager(private val context: Context) {
     private val KEY_REMINDERS_ENABLED = booleanPreferencesKey("reminders_enabled")
     private val KEY_REMINDER_INTERVAL = intPreferencesKey("reminder_interval_days")
     private val KEY_APP_LOCK = booleanPreferencesKey("app_lock_enabled")
+    private val KEY_ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
 
     companion object {
         const val DEFAULT_REMINDER_INTERVAL_DAYS = 4
@@ -104,5 +105,13 @@ class PreferencesManager(private val context: Context) {
 
     suspend fun setAppLockEnabled(value: Boolean) {
         context.dataStore.edit { it[KEY_APP_LOCK] = value }
+    }
+
+    val onboardingComplete: Flow<Boolean> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_ONBOARDING_COMPLETE] ?: false }
+
+    suspend fun setOnboardingComplete() {
+        context.dataStore.edit { it[KEY_ONBOARDING_COMPLETE] = true }
     }
 }

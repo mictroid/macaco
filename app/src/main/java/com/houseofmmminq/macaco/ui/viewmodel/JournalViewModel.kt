@@ -89,6 +89,14 @@ class JournalViewModel(
     fun lock() { _isAppLocked.value = true }
     fun unlock() { _isAppLocked.value = false }
 
+    // null = DataStore loading; false = first install (show onboarding); true = already seen
+    val onboardingComplete: StateFlow<Boolean?> = preferencesManager.onboardingComplete
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun completeOnboarding() {
+        viewModelScope.launch { preferencesManager.setOnboardingComplete() }
+    }
+
     init {
         // Once a user is signed in, import any leftover entries from the legacy on-device store
         // into their cloud account (one-time; the migration renames the file when done).
