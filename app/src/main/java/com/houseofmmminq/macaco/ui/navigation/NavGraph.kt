@@ -64,6 +64,12 @@ private fun List<TravelEntry>.toLocationSuggestions(): List<String> =
         .distinct()
         .sorted()
 
+/** Distinct trip names from existing entries, most-recently-used first. */
+private fun List<TravelEntry>.toTripSuggestions(): List<String> =
+    mapNotNull { it.tripName?.trim()?.ifBlank { null } }
+        .distinct()
+        .sorted()
+
 // Re-lock after this many ms in the background.
 private const val LOCK_TIMEOUT_MS = 30_000L
 
@@ -200,7 +206,8 @@ fun NavGraph(viewModel: JournalViewModel) {
                         },
                         onBack = { navController.popBackStack() },
                         locationSuggestions = entries.toLocationSuggestions(),
-                        tagSuggestions = entries.tagsByFrequency()
+                        tagSuggestions = entries.tagsByFrequency(),
+                        tripSuggestions = entries.toTripSuggestions()
                     )
                 }
 
@@ -247,7 +254,8 @@ fun NavGraph(viewModel: JournalViewModel) {
                         },
                         onBack = { navController.popBackStack() },
                         locationSuggestions = entries.toLocationSuggestions(),
-                        tagSuggestions = entries.tagsByFrequency()
+                        tagSuggestions = entries.tagsByFrequency(),
+                        tripSuggestions = entries.toTripSuggestions()
                     )
                 }
 

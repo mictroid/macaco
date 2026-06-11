@@ -146,11 +146,24 @@ fun JournalListScreen(
         if (selectedTags.isEmpty()) entries
         else entries.filter { entry -> entry.tags.any { it in selectedTags } }
     }
-    // Break the list into consecutive month/year runs so the LazyColumn can show a date header
-    // before each run — adds structure without reordering the existing createdAt-desc list.
-    val monthSections = remember(visibleEntries) {
+    // Trips: when any visible entry has a tripName, switch to trip grouping.
+    val hasTrips = remember(visibleEntries) { visibleEntries.any { !it.tripName.isNullOrBlank() } }
+
+    // Trip sections: each named trip's entries, trips ordered by most recent entry first.
+    val tripSections = remember(visibleEntries) {
+        visibleEntries
+            .filter { !it.tripName.isNullOrBlank() }
+            .groupBy { it.tripName!! }
+            .entries
+            .sortedByDescending { (_, list) -> list.maxOf { it.dateMillis } }
+            .map { (name, list) -> name to list.sortedByDescending { it.dateMillis } }
+    }
+
+    // Month sections: when trips are active, covers only entries with no trip; otherwise all entries.
+    val monthSections = remember(visibleEntries, hasTrips) {
+        val source = if (hasTrips) visibleEntries.filter { it.tripName.isNullOrBlank() } else visibleEntries
         val out = mutableListOf<Pair<String, MutableList<TravelEntry>>>()
-        visibleEntries.forEach { e ->
+        source.forEach { e ->
             val key = monthYear(e.dateMillis)
             if (out.isEmpty() || out.last().first != key) out.add(key to mutableListOf(e))
             else out.last().second.add(e)
@@ -520,6 +533,20 @@ fun JournalListScreen(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
+                        if (hasTrips) {
+                            tripSections.forEach { (trip, sectionEntries) ->
+                                item(key = "trip-header-$trip") { TripHeader(trip, sectionEntries.size) }
+                                items(sectionEntries, key = { it.id }) { entry ->
+                                    EntryCard(
+                                        entry = entry,
+                                        cachedDrivePhotos = cachedDrivePhotos,
+                                        selectedTags = selectedTags,
+                                        onTagClick = { viewModel.toggleTagFilter(it) },
+                                        onClick = { onEntryClick(entry.id) }
+                                    )
+                                }
+                            }
+                        }
                         monthSections.forEach { (month, sectionEntries) ->
                             item(key = "header-$month") { MonthHeader(month) }
                             items(sectionEntries, key = { it.id }) { entry ->
@@ -1014,6 +1041,33 @@ internal fun formatDate(millis: Long): String =
 
 internal fun monthYear(millis: Long): String =
     SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(Date(millis))
+
+// Trip section header: a filled pill banner that opens each named-trip group in the list.
+@Composable
+private fun TripHeader(tripName: String, entryCount: Int) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp, bottom = 2.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            tripName,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            pluralStringResource(R.plurals.journal_list_memories, entryCount, entryCount),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+        )
+    }
+}
 
 // Month/year run header: a small gold-uppercase label with a hairline rule trailing off to the
 // right, breaking the list into chapters instead of one unbroken stream of cards.

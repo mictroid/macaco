@@ -16,7 +16,8 @@ data class TravelEntry(
     val tags: List<String> = emptyList(),
     val createdAt: Long = System.currentTimeMillis(),
     // Drive file IDs parallel to photoUris — "" means not yet uploaded.
-    val driveFileIds: List<String> = emptyList()
+    val driveFileIds: List<String> = emptyList(),
+    val tripName: String? = null
 )
 
 /**

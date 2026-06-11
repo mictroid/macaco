@@ -52,7 +52,14 @@ class PreferencesManager(private val context: Context) {
     // ignore any legacy transient content:// value so it can't render a broken/unreadable photo.
     val profilePhotoUri: Flow<String?> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { prefs -> prefs[KEY_PROFILE_PHOTO]?.takeIf { it.startsWith("file://") } }
+        .map { prefs ->
+            prefs[KEY_PROFILE_PHOTO]
+                ?.takeIf { it.startsWith("file://") }
+                ?.takeIf {
+                    try { java.io.File(java.net.URI(it)).exists() }
+                    catch (_: Exception) { false }
+                }
+        }
 
     suspend fun setProfilePhotoUri(uri: String?) {
         context.dataStore.edit { prefs ->

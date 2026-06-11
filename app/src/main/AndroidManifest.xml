@@ -17,6 +17,10 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
+    <!-- androidx.biometric pulls in USE_FINGERPRINT which implies this feature is required;
+         override to "false" so devices without a fingerprint sensor aren't filtered out. -->
+    <uses-feature android:name="android.hardware.fingerprint" android:required="false" />
+
     <application
         android:name=".TravelJournalApp"
         android:allowBackup="true"

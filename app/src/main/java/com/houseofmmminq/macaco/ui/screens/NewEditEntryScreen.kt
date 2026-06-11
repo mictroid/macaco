@@ -96,7 +96,8 @@ fun NewEditEntryScreen(
     onSave: (TravelEntry) -> Unit,
     onBack: () -> Unit,
     locationSuggestions: List<String> = emptyList(),
-    tagSuggestions: List<String> = emptyList()
+    tagSuggestions: List<String> = emptyList(),
+    tripSuggestions: List<String> = emptyList()
 ) {
     val context = LocalContext.current
 
@@ -107,6 +108,7 @@ fun NewEditEntryScreen(
     var description by remember { mutableStateOf(existingEntry?.description ?: "") }
     var photoUris by remember { mutableStateOf(existingEntry?.photoUris ?: emptyList()) }
     var tags by remember { mutableStateOf(existingEntry?.tags ?: emptyList()) }
+    var tripName by remember { mutableStateOf(existingEntry?.tripName ?: "") }
     var titleError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     // Files we copied into storage this session. Any that aren't committed via Save (removed again,
@@ -267,7 +269,9 @@ fun NewEditEntryScreen(
                                         mood = mood,
                                         photoUris = photoUris,
                                         tags = tags,
-                                        createdAt = existingEntry?.createdAt ?: System.currentTimeMillis()
+                                        createdAt = existingEntry?.createdAt ?: System.currentTimeMillis(),
+                                        driveFileIds = existingEntry?.driveFileIds ?: emptyList(),
+                                        tripName = tripName.trim().ifBlank { null }
                                     )
                                 )
                             }
@@ -388,6 +392,15 @@ fun NewEditEntryScreen(
                     value = location,
                     onValueChange = { location = it },
                     suggestions = locationSuggestions
+                )
+            }
+
+            // Trip (optional — groups this entry with others from the same named trip)
+            item {
+                TripField(
+                    value = tripName,
+                    onValueChange = { tripName = it },
+                    suggestions = tripSuggestions
                 )
             }
 
@@ -656,6 +669,72 @@ private fun LocationField(
                             modifier = Modifier.size(18.dp)
                         )
                     },
+                    onClick = {
+                        onValueChange(suggestion)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TripField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    suggestions: List<String>
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val matches = remember(value, suggestions) {
+        val q = value.trim()
+        if (q.isBlank()) suggestions.take(5)
+        else suggestions
+            .filter { it.contains(q, ignoreCase = true) }
+            .filterNot { it.equals(q, ignoreCase = true) }
+            .take(5)
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded && matches.isNotEmpty(),
+        onExpandedChange = { expanded = it }
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {
+                onValueChange(it)
+                expanded = true
+            },
+            label = { Text("Trip") },
+            placeholder = { Text("e.g. Thailand 2026") },
+            leadingIcon = {
+                Text("✈️", fontSize = 16.sp, modifier = androidx.compose.ui.Modifier.padding(start = 4.dp))
+            },
+            trailingIcon = {
+                if (value.isNotBlank()) {
+                    IconButton(onClick = { onValueChange("") }) {
+                        Icon(Icons.Filled.Close, contentDescription = "Clear trip")
+                    }
+                }
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary
+            ),
+            modifier = androidx.compose.ui.Modifier
+                .fillMaxWidth()
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
+        )
+        ExposedDropdownMenu(
+            expanded = expanded && matches.isNotEmpty(),
+            onDismissRequest = { expanded = false }
+        ) {
+            matches.forEach { suggestion ->
+                DropdownMenuItem(
+                    text = { Text(suggestion) },
+                    leadingIcon = { Text("✈️") },
                     onClick = {
                         onValueChange(suggestion)
                         expanded = false

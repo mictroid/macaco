@@ -1,5 +1,9 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,20 +36,41 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.theme.MacacoFontFamily
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 
-// Hue 192° ≈ the Macaco teal primary.
-private const val TealMarkerHue = 192f
+private fun createTealMarkerBitmap(context: Context): Bitmap {
+    val dp = context.resources.displayMetrics.density
+    val size = (36 * dp).toInt()
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val radius = size / 2f
+
+    paint.style = Paint.Style.FILL
+    paint.color = android.graphics.Color.parseColor("#1B96B3")
+    canvas.drawCircle(radius, radius, radius - 2 * dp, paint)
+
+    paint.style = Paint.Style.STROKE
+    paint.strokeWidth = 3 * dp
+    paint.color = android.graphics.Color.WHITE
+    canvas.drawCircle(radius, radius, radius - 3.5f * dp, paint)
+
+    return bitmap
+}
 
 @Composable
 fun MapScreen(
@@ -56,6 +81,15 @@ fun MapScreen(
     val entries by viewModel.entries.collectAsState()
     val geocodedLocations by viewModel.geocodedLocations.collectAsState()
 
+    // BitmapDescriptorFactory requires the Maps SDK to be initialized, which happens when
+    // GoogleMap first renders. Defer creation to onMapLoaded so we never call it too early.
+    var tealMarker by remember { mutableStateOf<BitmapDescriptor?>(null) }
+    val mapProperties = remember {
+        MapProperties(
+            mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style)
+        )
+    }
+
     val locations = remember(entries) {
         entries.mapNotNull { it.location.trim().ifBlank { null } }.distinct()
     }
@@ -64,7 +98,6 @@ fun MapScreen(
         viewModel.geocodeLocations(context, locations)
     }
 
-    // Most recent entry per unique location string — tap target for each pin.
     val topEntryByLocation = remember(entries) {
         entries
             .groupBy { it.location.trim() }
@@ -130,22 +163,29 @@ fun MapScreen(
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                onMapLoaded = { mapLoaded = true },
+                properties = mapProperties,
+                onMapLoaded = {
+                    mapLoaded = true
+                    tealMarker = BitmapDescriptorFactory.fromBitmap(createTealMarkerBitmap(context))
+                },
                 uiSettings = MapUiSettings(
                     zoomControlsEnabled = false,
                     myLocationButtonEnabled = false
                 )
             ) {
-                geocodedLocations.forEach { (location, coords) ->
-                    val topEntry = topEntryByLocation[location] ?: return@forEach
-                    val count = countByLocation[location] ?: 1
-                    Marker(
-                        state = MarkerState(position = LatLng(coords.first, coords.second)),
-                        title = location,
-                        snippet = if (count == 1) "1 memory · tap to open" else "$count memories · tap to open",
-                        icon = BitmapDescriptorFactory.defaultMarker(TealMarkerHue),
-                        onInfoWindowClick = { onEntryClick(topEntry.id) }
-                    )
+                val marker = tealMarker
+                if (marker != null) {
+                    geocodedLocations.forEach { (location, coords) ->
+                        val topEntry = topEntryByLocation[location] ?: return@forEach
+                        val count = countByLocation[location] ?: 1
+                        Marker(
+                            state = MarkerState(position = LatLng(coords.first, coords.second)),
+                            title = location,
+                            snippet = if (count == 1) "1 memory · tap to open" else "$count memories · tap to open",
+                            icon = marker,
+                            onInfoWindowClick = { onEntryClick(topEntry.id) }
+                        )
+                    }
                 }
             }
 
