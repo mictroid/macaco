@@ -214,7 +214,7 @@ fun JournalListScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.ic_macaco_small),
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
                             contentDescription = null,
                             modifier = Modifier.size(64.dp)
                         )
@@ -445,7 +445,7 @@ fun JournalListScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.ic_macaco_small),
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
                             contentDescription = null,
                             modifier = Modifier.size(48.dp)
                         )

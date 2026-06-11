@@ -119,15 +119,14 @@ fun ProfileScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(padding)
         ) {
         Column(
             modifier = Modifier
-                .weight(1f)
+                .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -370,13 +369,15 @@ fun ProfileScreen(
                 }
             }
             }
+            Spacer(Modifier.height(180.dp))
         } // scrollable content Column
 
-            // Sleek branded footer band echoing the header, with the monkey face centered.
+            // Sleek branded footer band pinned to bottom of screen.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp)
+                    .align(Alignment.BottomCenter)
                     .background(macacoBrandBackground()),
                 contentAlignment = Alignment.Center
             ) {

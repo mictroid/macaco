@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +25,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -768,7 +769,8 @@ private fun SuggestedTagsRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
+            .horizontalScroll(rememberScrollState())
+            .padding(start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         SUGGESTED_TAGS.forEach { label ->
@@ -806,26 +808,20 @@ private fun SectionLabel(text: String) {
 
 @Composable
 private fun MoodSelector(selectedMood: String, onMoodSelected: (String) -> Unit) {
-    val chunked = MOODS.chunked(6)
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        chunked.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                row.forEach { m ->
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(
-                                if (selectedMood == m) MaterialTheme.colorScheme.primaryContainer
-                                else MaterialTheme.colorScheme.surfaceVariant
-                            )
-                            .clickable { onMoodSelected(if (selectedMood == m) "" else m) },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(m, fontSize = 22.sp)
-                    }
-                }
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(MOODS) { m ->
+            Box(
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(
+                        if (selectedMood == m) MaterialTheme.colorScheme.primaryContainer
+                        else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                    .clickable { onMoodSelected(if (selectedMood == m) "" else m) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(m, fontSize = 22.sp)
             }
         }
     }

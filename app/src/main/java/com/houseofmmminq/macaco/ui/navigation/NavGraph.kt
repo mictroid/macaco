@@ -311,12 +311,13 @@ private fun NavController.navigateToTab(route: String) {
 
 private val tabRoutes = setOf(Screen.JournalList.route, Screen.Adventures.route, Screen.Profile.route)
 
+private val NavTeal = Color(0xFF0E5A6B) // brand teal — same shade in light and dark mode
 private val NavGold = Color(0xFFE8B020)
 private val NavGoldBright = Color(0xFFF0C840)
 
 @Composable
 private fun MacacoBottomNavBar(navController: NavController, currentRoute: String?) {
-    NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
+    NavigationBar(containerColor = NavTeal) {
         val itemColors = NavigationBarItemDefaults.colors(
             selectedIconColor = NavGoldBright,
             unselectedIconColor = NavGold.copy(alpha = 0.55f),

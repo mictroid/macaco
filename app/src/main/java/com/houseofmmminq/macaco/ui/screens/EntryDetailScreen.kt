@@ -1,6 +1,8 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -205,7 +207,11 @@ fun EntryDetailScreen(
                         fontWeight = FontWeight.Bold
                     )
 
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    // Single metadata row: mood · location · date
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         if (entry.mood.isNotBlank()) {
                             AssistChip(
                                 onClick = {},
@@ -228,19 +234,31 @@ fun EntryDetailScreen(
                                 }
                             )
                         }
+                        AssistChip(
+                            onClick = {},
+                            label = { Text(formatDate(entry.dateMillis)) },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.DateRange,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        )
                     }
-
-                    AssistChip(
-                        onClick = {},
-                        label = { Text(formatDate(entry.dateMillis)) },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Filled.DateRange,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp)
+                    if (!entry.tripName.isNullOrBlank()) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text("✈️", fontSize = 14.sp)
+                            Text(
+                                entry.tripName!!,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-                    )
+                    }
 
                     if (entry.description.isNotBlank()) {
                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
