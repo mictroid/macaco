@@ -153,9 +153,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
+                    modifier = Modifier.padding(vertical = 4.dp)
                 ) {
                     Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(20.dp))
                     Text(stringResource(labelRes), style = MaterialTheme.typography.bodyMedium, color = Color.White)
@@ -365,7 +363,7 @@ private fun PlanCard(
                 }
             }
             Spacer(Modifier.height(4.dp))
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+            Text(subtitle, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, color = SplashGoldBright)
             Text(
                 detail,
                 style = MaterialTheme.typography.bodySmall,
