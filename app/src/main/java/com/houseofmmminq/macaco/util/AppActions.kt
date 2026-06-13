@@ -19,8 +19,8 @@ object AppActions {
     private const val LISTING_URL = "https://play.google.com/store/apps/details?id=$PACKAGE"
 
     const val SUPPORT_EMAIL = "houseofmmminq@gmail.com"
-    // TODO: set this to the public URL where docs/privacy-policy.md is hosted before release.
-    const val PRIVACY_POLICY_URL = "https://houseofmmminq.com/macaco/privacy"
+    // Hosted on GitHub Pages from privacy-policy.html at the repo root.
+    const val PRIVACY_POLICY_URL = "https://mictroid.github.io/macaco/privacy-policy.html"
 
     /** Opens the system share sheet with a link to the app's Play Store listing. */
     fun shareApp(context: Context) {
