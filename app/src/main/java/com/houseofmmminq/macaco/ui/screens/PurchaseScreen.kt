@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -97,9 +98,10 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 .background(macacoBrandBackground())
         )
 
+        Column(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -282,24 +284,28 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
             }
 
             Spacer(Modifier.height(24.dp))
+            } // end scrollable content
 
+            // Fixed footer — pinned below the scroll area, always visible
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp)
+                    .navigationBarsPadding()
+                    .padding(top = 8.dp, bottom = 16.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_macaco_small),
                     contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.2f),
-                    modifier = Modifier.size(48.dp)
+                    tint = Color.White.copy(alpha = 0.30f),
+                    modifier = Modifier.size(36.dp)
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(6.dp))
                 Text(
                     "No hidden fees. Cancel anytime.",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.4f)
+                    color = Color.White.copy(alpha = 0.55f),
+                    textAlign = TextAlign.Center
                 )
             }
         }
