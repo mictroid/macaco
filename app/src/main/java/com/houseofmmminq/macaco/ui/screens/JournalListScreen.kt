@@ -798,22 +798,33 @@ private fun EntryCard(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Title expands to fill the row so the tags + mood are pushed to the right edge.
                     Text(
                         entry.title,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
+                        modifier = Modifier.weight(1f)
                     )
                     if (entry.tags.isNotEmpty()) {
                         Spacer(Modifier.width(6.dp))
+                        // Show the first two tags, then "+N" so the right cluster stays bounded.
+                        val visibleTags = entry.tags.take(2)
+                        val overflow = entry.tags.size - visibleTags.size
                         TagChips(
-                            tags = entry.tags,
+                            tags = visibleTags,
                             selectedTags = selectedTags,
-                            onTagClick = onTagClick,
-                            modifier = Modifier.weight(1f, fill = false)
+                            onTagClick = onTagClick
                         )
+                        if (overflow > 0) {
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                "+$overflow",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                     if (entry.mood.isNotBlank()) {
                         Box(
