@@ -266,6 +266,8 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
 
             // Fixed footer — pinned below the scroll area, always visible.
             // Restore is merged in here as an inline link to save a full row.
+            // No branding icon here — the wordmark + full icon already sit at the
+            // top, and ic_macaco_small loses all detail at this size.
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -273,13 +275,6 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                     .navigationBarsPadding()
                     .padding(top = 8.dp, bottom = 16.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_macaco_small),
-                    contentDescription = null,
-                    tint = Color(0xFFE8B020),
-                    modifier = Modifier.size(32.dp)
-                )
-                Spacer(Modifier.height(6.dp))
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
