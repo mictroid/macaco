@@ -74,7 +74,11 @@ private fun List<TravelEntry>.toTripSuggestions(): List<String> =
 private const val LOCK_TIMEOUT_MS = 30_000L
 
 @Composable
-fun NavGraph(viewModel: JournalViewModel) {
+fun NavGraph(
+    viewModel: JournalViewModel,
+    openNewEntry: Boolean = false,
+    onOpenNewEntryConsumed: () -> Unit = {}
+) {
     // All state collected unconditionally so Compose hooks are always called in the same order.
     val onboardingComplete by viewModel.onboardingComplete.collectAsState()
     var showSplash by rememberSaveable { mutableStateOf(true) }
@@ -156,6 +160,15 @@ fun NavGraph(viewModel: JournalViewModel) {
             val navController = rememberNavController()
             // Set when navigating to a drawer-launched screen so the menu reopens on return.
             var reopenDrawer by remember { mutableStateOf(false) }
+
+            // Deep link from the journal-reminder notification: jump straight to the new-entry
+            // screen. Only reachable here (signed-in + purchased), so the gates are respected.
+            LaunchedEffect(openNewEntry) {
+                if (openNewEntry) {
+                    navController.navigate(Screen.NewEntry.route)
+                    onOpenNewEntryConsumed()
+                }
+            }
             val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
             val tabRoutes = setOf(Screen.JournalList.route, Screen.Adventures.route, Screen.Profile.route)
 
