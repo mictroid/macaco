@@ -320,10 +320,14 @@ private fun PlanCard(
     val border = if (selected) BorderStroke(2.dp, Color(0xFF0E5A6B))
                  else BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
 
+    // Every card gets an explicit dark background so they read correctly against the
+    // dark teal paywall regardless of the system light/dark theme. `isRecommended`
+    // is the Annual card, which keeps a subtle passive highlight when unselected.
     val containerColor = when {
-        selected      -> Color(0xFF1A3A45)
-        isRecommended -> Color(0xFF112830)
-        else          -> MaterialTheme.colorScheme.surface
+        selected && isRecommended -> Color(0xFF1A3A45)  // Annual selected
+        isRecommended             -> Color(0xFF112830)  // Annual unselected — subtle highlight
+        selected                  -> Color(0xFF1A3A45)  // Monthly / Lifetime selected
+        else                      -> Color(0xFF0D1F25)  // Monthly / Lifetime unselected — darkest
     }
 
     Card(
@@ -335,7 +339,7 @@ private fun PlanCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = containerColor,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            contentColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 3.dp else 1.dp)
     ) {
@@ -345,7 +349,7 @@ private fun PlanCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Color.White)
                 if (badge != null) {
                     Box(
                         modifier = Modifier
@@ -367,14 +371,14 @@ private fun PlanCard(
             Text(
                 detail,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color.White.copy(alpha = 0.6f)
             )
             if (note != null) {
                 Spacer(Modifier.height(4.dp))
                 Text(
                     note,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.White.copy(alpha = 0.6f)
                 )
             }
         }
