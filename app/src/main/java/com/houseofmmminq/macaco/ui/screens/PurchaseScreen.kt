@@ -32,7 +32,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -143,7 +142,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 textAlign = TextAlign.Center
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
             val featureItems = listOf(
                 Icons.Filled.AllInclusive to R.string.purchase_feature_unlimited,
@@ -155,14 +154,14 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    modifier = Modifier.padding(vertical = 2.dp)
                 ) {
                     Icon(icon, contentDescription = null, tint = Color(0xFFE8B020), modifier = Modifier.size(28.dp))
                     Text(stringResource(labelRes), style = MaterialTheme.typography.bodyMedium, color = Color.White)
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(8.dp))
 
             // Annual — highlighted as Best Value
             PlanCard(
@@ -176,7 +175,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 onClick = { selectedPlan = PlanSelection.Annual }
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(6.dp))
 
             // Monthly
             PlanCard(
@@ -189,7 +188,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 onClick = { selectedPlan = PlanSelection.Monthly }
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(6.dp))
 
             // Lifetime
             PlanCard(
@@ -203,7 +202,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 onClick = { selectedPlan = PlanSelection.Lifetime }
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(12.dp))
 
             if (errorMessage != null) {
                 Surface(
@@ -262,31 +261,11 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
-
-            TextButton(
-                onClick = {
-                    isLoading = true
-                    errorMessage = null
-                    viewModel.restorePurchase { result ->
-                        isLoading = false
-                        result.fold(
-                            onSuccess = { restored ->
-                                if (!restored) errorMessage = strNoPreviousPurchase
-                            },
-                            onFailure = { errorMessage = it.message }
-                        )
-                    }
-                },
-                enabled = !isLoading
-            ) {
-                Text(stringResource(R.string.purchase_restore), color = MaterialTheme.colorScheme.primary)
-            }
-
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
             } // end scrollable content
 
-            // Fixed footer — pinned below the scroll area, always visible
+            // Fixed footer — pinned below the scroll area, always visible.
+            // Restore is merged in here as an inline link to save a full row.
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -297,16 +276,43 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 Icon(
                     painter = painterResource(R.drawable.ic_macaco_small),
                     contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.30f),
-                    modifier = Modifier.size(36.dp)
+                    tint = Color(0xFFE8B020),
+                    modifier = Modifier.size(32.dp)
                 )
                 Spacer(Modifier.height(6.dp))
-                Text(
-                    "No hidden fees. Cancel anytime.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.55f),
-                    textAlign = TextAlign.Center
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "No hidden fees. Cancel anytime.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White.copy(alpha = 0.55f)
+                    )
+                    Text(
+                        " · ",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White.copy(alpha = 0.3f)
+                    )
+                    Text(
+                        stringResource(R.string.purchase_restore),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF5FD4E8),
+                        modifier = Modifier.clickable(enabled = !isLoading) {
+                            isLoading = true
+                            errorMessage = null
+                            viewModel.restorePurchase { result ->
+                                isLoading = false
+                                result.fold(
+                                    onSuccess = { restored ->
+                                        if (!restored) errorMessage = strNoPreviousPurchase
+                                    },
+                                    onFailure = { errorMessage = it.message }
+                                )
+                            }
+                        }
+                    )
+                }
             }
         }
     }
