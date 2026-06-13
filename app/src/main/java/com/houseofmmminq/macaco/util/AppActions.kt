@@ -15,7 +15,7 @@ import com.google.android.play.core.review.ReviewManagerFactory
 object AppActions {
 
     // Matches the Play Console listing (build.gradle applicationId).
-    private const val PACKAGE = "com.houseofmmminq.wanderlog"
+    private const val PACKAGE = "com.houseofmmminq.macaco"
     private const val LISTING_URL = "https://play.google.com/store/apps/details?id=$PACKAGE"
 
     const val SUPPORT_EMAIL = "houseofmmminq@gmail.com"
