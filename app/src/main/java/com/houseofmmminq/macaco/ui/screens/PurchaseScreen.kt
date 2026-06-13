@@ -50,10 +50,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AllInclusive
-import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.CloudSync
-import androidx.compose.material.icons.outlined.PhotoLibrary
+import androidx.compose.material.icons.filled.AllInclusive
+import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.CloudSync
+import androidx.compose.material.icons.filled.PhotoLibrary
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.revenuecat.purchases.Package
@@ -144,10 +144,10 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
             Spacer(Modifier.height(16.dp))
 
             val featureItems = listOf(
-                Icons.Outlined.AllInclusive to R.string.purchase_feature_unlimited,
-                Icons.Outlined.PhotoLibrary  to R.string.purchase_feature_photos,
-                Icons.Outlined.CloudSync     to R.string.purchase_feature_sync,
-                Icons.Outlined.Block         to R.string.purchase_feature_no_ads,
+                Icons.Filled.AllInclusive to R.string.purchase_feature_unlimited,
+                Icons.Filled.PhotoLibrary  to R.string.purchase_feature_photos,
+                Icons.Filled.CloudSync     to R.string.purchase_feature_sync,
+                Icons.Filled.Block         to R.string.purchase_feature_no_ads,
             )
             featureItems.forEach { (icon, labelRes) ->
                 Row(
@@ -155,7 +155,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.padding(vertical = 4.dp)
                 ) {
-                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(20.dp))
+                    Icon(icon, contentDescription = null, tint = Color(0xFFE8B020), modifier = Modifier.size(28.dp))
                     Text(stringResource(labelRes), style = MaterialTheme.typography.bodyMedium, color = Color.White)
                 }
             }
