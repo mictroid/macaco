@@ -2,6 +2,46 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
+
+**Goal:** add a Samsung Galaxy S8+ as a second USB-connected test device (alongside the A53, which
+is on wireless ADB). Resuming after a planned PC reboot.
+
+**Status: not connected yet.** `adb devices` only shows the A53
+(`adb-RZCT80LVGNY-...` transport_id varies). The S8+ never enumerates as an ADB device.
+
+**Root cause identified:** Windows keeps binding the S8+'s USB interface as a
+**`SAMSUNG Mobile USB Remote NDIS Network Device`** (RNDIS / USB-Ethernet) instead of an
+**Android ADB Interface**. Every Device-Manager fix bounced back to RNDIS because the *phone* is
+actively advertising RNDIS as its USB mode — so it must be changed on the phone, not in Windows.
+
+**Tried (all still left it as RNDIS):** enabled USB debugging; installed Samsung USB Driver;
+confirmed USB tethering OFF; restarted adb server; uninstalled the RNDIS device.
+
+**Driver facts (confirmed installed):**
+- Samsung ADB inf is present at `C:\Program Files\Samsung\USB Drivers\25_escape\ssudadb.inf`
+  (defines "SAMSUNG Android ADB Interface"); also in the Windows DriverStore.
+- Google USB driver is NOT installed.
+
+**Next steps after reboot:**
+1. On the S8+: **Settings → Developer options → Default USB Configuration → set to File Transfer /
+   MTP** (it was likely RNDIS/USB-tethering — the suspected real cause). Confirm USB debugging ON.
+2. Replug; on the notification shade pick **File Transfer**. The RNDIS "Network Device" should be
+   replaced by an MTP device + an ADB interface, and the "Allow USB debugging?" prompt should appear
+   — accept with *Always allow*.
+3. If it still binds as RNDIS: Device Manager → Network adapters → the RNDIS device → **Update
+   driver → Have Disk →** `C:\Program Files\Samsung\USB Drivers\25_escape\ssudadb.inf` → pick
+   **SAMSUNG Android ADB Interface**.
+4. Then `adb devices` should show the S8+; install Macaco on it. With two devices attached, target
+   each explicitly via `-s <transport_id>`.
+
+**Note:** S8+ runs Android 9 (API 28), above the app's `minSdk 24`. Pre-Android-11 wireless ADB
+still needs one working USB session first (`adb tcpip 5555` then `adb connect <ip>:5555`), so USB
+must bind correctly at least once.
+
+adb path: `C:/Users/micke/AppData/Local/Android/Sdk/platform-tools/adb.exe`. Note: `adb kill-server`
+drops the A53's wireless link too — reconnect it afterward if needed.
+
 ## 2026-06-15 — RevenueCat live + first internal-testing build
 
 **Focus: Wired up live RevenueCat billing and got the first internal-testing build ready for Play.**
