@@ -23,7 +23,7 @@ package com.houseofmmminq.macaco.data.billing
  * It will NOT complete a real purchase from a plain sideloaded debug APK.
  */
 object RevenueCatConfig {
-    const val GOOGLE_API_KEY = "goog_YOUR_PUBLIC_SDK_KEY"
+    const val GOOGLE_API_KEY = "goog_yRpbApeYiaVGynRsivoAwHwmJMI"
 
     // Must match the entitlement identifier configured in the RevenueCat dashboard.
     const val ENTITLEMENT_ID = "premium"
