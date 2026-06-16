@@ -30,8 +30,8 @@ After signing out from a Google login, the next "Sign in with Google" silently r
 account — you could never switch Google accounts. Cause: `FirebaseAuthRepository.signOut()` only
 cleared Firebase auth and left the legacy GMS `GoogleSignInClient`'s cached account intact. Fix: also
 call `GoogleSignIn.getClient(...).signOut()` on sign-out (using the previously-unused `appContext`),
-so the next `signInIntent` shows the account chooser. Not yet tested on-device (would need another
-uninstall/sideload on the A53).
+so the next `signInIntent` shows the account chooser. Shipped in vc6; **verified on-device
+2026-06-16 — sign-out now shows the account picker.** ✅
 
 ### Added Adventures map theme setting + gold country names (`49921ed`)
 Made the Adventures map (the `MapScreen` reached from the drawer) customizable:
