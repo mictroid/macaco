@@ -113,7 +113,9 @@ note was wrong — fixed above). Since vc5 was consumed, bumped `versionCode` **
 `versionName` 1.3) and did a clean `bundleRelease`. The signed vc6 AAB at
 `app/build/outputs/bundle/release/app-release.aab` (~22 MB) bundles everything since vc5: the
 sign-out fix, gradle-play-publisher setup, entry-detail branding, the subscription button fix + plan
-display, and the new-entry hints. Not yet uploaded.
+display, and the new-entry hints. **Uploaded to the Play internal-testing track.** Worth verifying
+on-device once it propagates: the subscription button + plan label with a real subscription account,
+the Google sign-out account picker, entry-detail branding, map themes, and the new-entry hints.
 
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
