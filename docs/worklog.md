@@ -76,6 +76,26 @@ colours instead of the brief's hardcoded teal/amber** so it holds up across all 
   "gold tag text across all screens" and **reverted** it. Post-1.3 (not in the vc5 AAB); not yet
   seen on-device.
 
+### Fixed: Manage-subscription button never showed for subscribers (`9fbee37`)
+Tester reported the "Manage subscription" button missing on a fresh account after buying **monthly**.
+Root cause: the button (and the plan label) keyed off the entitlement's `productIdentifier`
+containing `"monthly"`/`"annual"`, but **both base plans live under one product id (`macaco_premium`)**,
+so it returned `"macaco_premium"` for every subscriber — the check never matched, the button never
+showed for *anyone*, and subscribers were mislabeled "Lifetime". Fix: `BillingManager` now derives
+**`manageableSubscription`** from `store == PLAY_STORE && expirationDate != null` (a real
+auto-renewing Play sub), via a single `applyEntitlement()` helper shared by all RevenueCat callbacks;
+`SubscriptionInfoScreen` gates the button on that and shows a neutral "Auto-renewing subscription"
+label instead of "Lifetime". New string in 11 locales.
+
+### Show which plan the user is on (`2282d0d`)
+Display **Monthly / Annual / Lifetime** on the subscription page. Resolves cadence by matching the
+entitlement's base-plan id (`productPlanIdentifier`) against the offering's monthly/annual packages
+(`googleProduct.basePlanId`) — exact, since the product id alone can't distinguish them. Falls back to
+the neutral label only when unresolved.
+
+Both billing fixes are **post-1.3 (not in the vc5 AAB), not yet verified on-device** — and the gating
+bug means the button currently never shows for real subscribers, so worth verifying after the next build.
+
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
 > **2026-06-16 update — RNDIS issue RESOLVED; new blocker is USB debugging.** The phone now
