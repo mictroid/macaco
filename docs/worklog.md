@@ -2,6 +2,13 @@
 
 Running log of notable work sessions. Newest first.
 
+> **NEXT (2026-06-17):** Revisit the **empty-state watermark design** and write **clearer
+> expectations** for it before tweaking further — agree on size, density, opacity, and exactly which
+> screens it belongs on (the new-entry form is the contentious one). Current state: vc9/1.4 built
+> (denser ~2.5×, smaller icons, opaque form fields) but **not yet uploaded/seen on-device**. Also
+> still open: enable **R8** with keep rules before production; the paused **Galaxy S8+ ADB** setup
+> (toggle USB debugging on the phone).
+
 ## 2026-06-16 — Watermark refinement + vc8 / 1.4 build (`9d047d5`, `62291ea`)
 
 On-device review of the watermark (on vc7) showed it read **too large** and **bled through the
