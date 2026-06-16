@@ -2,12 +2,28 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-06-16 — Play internal-testing purchase → entitlement verified ✅
+## 2026-06-16 — Play purchase verified + in-app subscription management
 
+### Play internal-testing purchase → entitlement verified ✅
 Installed Macaco from the Play **internal-testing** track and ran a real test purchase. The full
 chain works end-to-end: purchase completes in Play Billing → RevenueCat reports the `premium`
 entitlement → the app unlocks (opens straight to the journal). This closes out the last open billing
 item — the promo-entitlement workaround is no longer the only path; **real test purchases now work**.
+
+### Added in-app subscription management (`bf86b23`)
+Closed the launch gap where users had no in-app way to cancel/refund (also a Google recommendation):
+- **`AppActions.manageSubscriptions()`** — deep-links to the Play subscription centre
+  (`play.google.com/store/account/subscriptions?package=…`).
+- **`SubscriptionInfoScreen`** — a "Manage subscription" `OutlinedButton`, shown only for recurring
+  plans (`currentPlanId` contains `annual`/`monthly`); hidden for lifetime, which has nothing to cancel.
+- **`HelpAboutScreen`** — new FAQ entry "How do I cancel or get a refund?" explaining the Play-billing flow.
+- Strings (`subscription_manage`, `help_faq_q/a_billing`) added across all 11 locales.
+
+**On-device test (A53):** the promo entitlement carries no real product id, so the button stays
+hidden there. Forced `isRecurring = true` temporarily, sideloaded the debug build (had to uninstall
+the Play build first — signature mismatch), and confirmed the button renders, the deep link opens the
+Play subscriptions page, and the FAQ entry reads correctly. Reverted the temp override and reinstalled
+the A53 from the Play track (premium restored via the account-tied entitlement).
 
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
