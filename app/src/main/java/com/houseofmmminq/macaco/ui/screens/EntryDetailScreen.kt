@@ -68,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.houseofmmminq.macaco.data.model.TravelEntry
+import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -135,11 +136,17 @@ fun EntryDetailScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            // Subtle macaco watermark behind the content when the entry has no description, so the
+            // empty lower area doesn't read as dead space.
+            if (entry.description.isBlank()) {
+                MacacoWatermarkBackground(modifier = Modifier.matchParentSize())
+            }
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
                 val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
                 if (photoCount > 0) {
@@ -340,6 +347,7 @@ fun EntryDetailScreen(
 
                     Spacer(Modifier.height(32.dp))
                 }
+            }
             }
         }
     }

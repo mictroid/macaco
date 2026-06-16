@@ -89,6 +89,7 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.onThisDayEntries
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
+import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.util.AppActions
@@ -639,26 +640,28 @@ private fun NoMatchState(modifier: Modifier = Modifier) {
 
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("🗺️", fontSize = 64.sp)
-        Spacer(Modifier.height(16.dp))
-        Text(
-            stringResource(R.string.journal_list_empty_title),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            stringResource(R.string.journal_list_empty_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
+    MacacoWatermarkBackground(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("🗺️", fontSize = 64.sp)
+            Spacer(Modifier.height(16.dp))
+            Text(
+                stringResource(R.string.journal_list_empty_title),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                stringResource(R.string.journal_list_empty_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 

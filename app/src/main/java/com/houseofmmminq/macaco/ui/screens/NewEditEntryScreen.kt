@@ -83,6 +83,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
+import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.util.Cities
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
@@ -290,10 +291,13 @@ fun NewEditEntryScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        LazyColumn(
+        MacacoWatermarkBackground(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(padding)
+        ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -516,6 +520,7 @@ fun NewEditEntryScreen(
             }
 
             item { Spacer(Modifier.height(24.dp)) }
+        }
         }
     }
 }
