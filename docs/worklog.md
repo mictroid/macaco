@@ -78,6 +78,15 @@ colours instead of the brief's hardcoded teal/amber** so it holds up across all 
 
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
+> **2026-06-16 update — RNDIS issue RESOLVED; new blocker is USB debugging.** The phone now
+> enumerates as **PID_6860 (MTP / File Transfer)** — the RNDIS device (PID_6863) is no longer
+> present, so the Default USB Configuration change worked. But the composite device advertises only
+> **MTP + Modem, no ADB interface**, and there are no undriven/problem devices — the signature of
+> **USB debugging being off** on the phone. **Next step (on the phone, not Windows):** Developer
+> options → toggle **USB debugging** off→on (and *Revoke USB debugging authorizations*), replug,
+> accept the **"Allow USB debugging?"** prompt with *Always allow*. Then re-scan + `adb devices`.
+> The Device-Manager / RNDIS driver steps below are now obsolete. (Paused again at user's request.)
+
 **Goal:** add a Samsung Galaxy S8+ as a second USB-connected test device (alongside the A53, which
 is on wireless ADB). Resuming after a planned PC reboot.
 
