@@ -167,6 +167,7 @@
     <string name="subscription_feature_no_sub">Bez subskrypcji, bez cyklicznych opłat</string>
     <string name="subscription_feature_updates">Przyszłe aktualizacje w cenie</string>
     <string name="subscription_thank_you">Dziękujemy za wsparcie Macaco! 🙏\nTwój zakup pozwala utrzymać aplikację niezależną i wolną od reklam.</string>
+    <string name="subscription_manage">Zarządzaj subskrypcją</string>
 
     <string name="app_lock_locked">Twój dziennik jest zablokowany</string>
     <string name="app_lock_unlock">Odblokuj</string>
@@ -207,6 +208,8 @@
     <string name="help_faq_a_backup">Ustawienia → Kopia i przywracanie pozwala wyeksportować wszystkie wpisy i zdjęcia do jednego pliku .zip, który możesz w każdej chwili ponownie zaimportować.</string>
     <string name="help_faq_q_lock">Czy mogę zablokować aplikację?</string>
     <string name="help_faq_a_lock">Tak – włącz Blokadę aplikacji z menu lub Ustawień, aby otwarcie Macaco wymagało odcisku palca, twarzy lub blokady ekranu.</string>
+    <string name="help_faq_q_billing">Jak anulować lub uzyskać zwrot?</string>
+    <string name="help_faq_a_billing">Subskrypcje i zakupy rozlicza Google Play. Otwórz Subskrypcję, aby zarządzać planem, lub przejdź do Sklepu Play → Płatności i subskrypcje, aby anulować. Po zwrot zgłoś się w ciągu 48 godzin przez historię zamówień w Sklepie Play lub skontaktuj się z nami.</string>
     <string name="help_get_in_touch">Kontakt</string>
     <string name="help_contact">Skontaktuj się z pomocą</string>
     <string name="help_contact_subject">Pomoc Macaco</string>

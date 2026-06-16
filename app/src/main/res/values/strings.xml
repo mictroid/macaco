@@ -45,6 +45,8 @@
     <string name="help_faq_a_backup">Settings → Backup &amp; Restore lets you export all entries and photos to a single .zip file you can re-import anytime.</string>
     <string name="help_faq_q_lock">Can I lock the app?</string>
     <string name="help_faq_a_lock">Yes — turn on App Lock from the menu or Settings to require your fingerprint, face, or screen lock to open Macaco.</string>
+    <string name="help_faq_q_billing">How do I cancel or get a refund?</string>
+    <string name="help_faq_a_billing">Subscriptions and purchases are billed by Google Play. Open Subscription to manage your plan, or go to Play Store → Payments &amp; subscriptions to cancel. For refunds, use Play Store → order history within 48 hours, or contact us.</string>
     <string name="help_get_in_touch">Get in touch</string>
     <string name="help_contact">Contact support</string>
     <string name="help_contact_subject">Macaco support</string>
@@ -226,6 +228,7 @@
     <string name="subscription_feature_no_sub">Lifetime: no subscription, no recurring fees</string>
     <string name="subscription_feature_updates">Future updates included</string>
     <string name="subscription_thank_you">Thank you for supporting Macaco! 🙏\nYour purchase keeps the app independent and ad-free.</string>
+    <string name="subscription_manage">Manage subscription</string>
 
     <!-- App Lock -->
     <string name="app_lock_locked">Your journal is locked</string>

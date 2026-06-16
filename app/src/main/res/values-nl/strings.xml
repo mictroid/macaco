@@ -161,6 +161,7 @@
     <string name="subscription_feature_no_sub">Geen abonnement, geen terugkerende kosten</string>
     <string name="subscription_feature_updates">Toekomstige updates inbegrepen</string>
     <string name="subscription_thank_you">Bedankt voor je steun aan Macaco! 🙏\nJouw aankoop houdt de app onafhankelijk en advertentievrij.</string>
+    <string name="subscription_manage">Abonnement beheren</string>
 
     <string name="app_lock_locked">Je dagboek is vergrendeld</string>
     <string name="app_lock_unlock">Ontgrendelen</string>
@@ -201,6 +202,8 @@
     <string name="help_faq_a_backup">Via Instellingen → Back-up &amp; herstel kun je al je items en foto\'s exporteren naar één .zip-bestand dat je altijd opnieuw kunt importeren.</string>
     <string name="help_faq_q_lock">Kan ik de app vergrendelen?</string>
     <string name="help_faq_a_lock">Ja – schakel App-vergrendeling in via het menu of Instellingen om je vingerafdruk, gezicht of schermvergrendeling te vereisen bij het openen van Macaco.</string>
+    <string name="help_faq_q_billing">Hoe zeg ik op of vraag ik terugbetaling aan?</string>
+    <string name="help_faq_a_billing">Abonnementen en aankopen worden door Google Play afgehandeld. Open Abonnement om je plan te beheren, of ga naar Play Store → Betalingen &amp; abonnementen om op te zeggen. Voor terugbetaling gebruik je binnen 48 uur de bestelgeschiedenis in de Play Store, of neem contact met ons op.</string>
     <string name="help_get_in_touch">Contact</string>
     <string name="help_contact">Contact met support</string>
     <string name="help_contact_subject">Macaco-ondersteuning</string>

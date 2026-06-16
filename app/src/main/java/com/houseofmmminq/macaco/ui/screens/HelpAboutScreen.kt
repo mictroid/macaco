@@ -53,6 +53,7 @@ private val FAQ = listOf(
     R.string.help_faq_q_photos to R.string.help_faq_a_photos,
     R.string.help_faq_q_backup to R.string.help_faq_a_backup,
     R.string.help_faq_q_lock to R.string.help_faq_a_lock,
+    R.string.help_faq_q_billing to R.string.help_faq_a_billing,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -161,6 +161,7 @@
     <string name="subscription_feature_no_sub">Ingen prenumeration, inga återkommande avgifter</string>
     <string name="subscription_feature_updates">Framtida uppdateringar ingår</string>
     <string name="subscription_thank_you">Tack för att du stödjer Macaco! 🙏\nDitt köp håller appen oberoende och reklamfri.</string>
+    <string name="subscription_manage">Hantera prenumeration</string>
 
     <string name="app_lock_locked">Din dagbok är låst</string>
     <string name="app_lock_unlock">Lås upp</string>
@@ -201,6 +202,8 @@
     <string name="help_faq_a_backup">Inställningar → Säkerhetskopiering låter dig exportera alla inlägg och foton till en enda .zip-fil som du kan importera igen när som helst.</string>
     <string name="help_faq_q_lock">Kan jag låsa appen?</string>
     <string name="help_faq_a_lock">Ja – aktivera Applås från menyn eller Inställningar för att kräva ditt fingeravtryck, ansikte eller skärmlås för att öppna Macaco.</string>
+    <string name="help_faq_q_billing">Hur avslutar jag eller får återbetalning?</string>
+    <string name="help_faq_a_billing">Prenumerationer och köp faktureras av Google Play. Öppna Prenumeration för att hantera ditt abonnemang, eller gå till Play Butik → Betalningar &amp; prenumerationer för att avsluta. För återbetalning, använd orderhistoriken i Play Butik inom 48 timmar, eller kontakta oss.</string>
     <string name="help_get_in_touch">Kontakta oss</string>
     <string name="help_contact">Kontakta support</string>
     <string name="help_contact_subject">Macaco-support</string>

@@ -171,6 +171,7 @@
     <string name="subscription_feature_no_sub">Kein Abonnement, keine wiederkehrenden Kosten</string>
     <string name="subscription_feature_updates">Zukünftige Updates inklusive</string>
     <string name="subscription_thank_you">Danke, dass du Macaco unterstützt! 🙏\nDein Kauf hält die App unabhängig und werbefrei.</string>
+    <string name="subscription_manage">Abo verwalten</string>
 
     <!-- App Lock -->
     <string name="app_lock_locked">Dein Tagebuch ist gesperrt</string>
@@ -212,6 +213,8 @@
     <string name="help_faq_a_backup">Über Einstellungen → Sichern &amp; Wiederherstellen kannst du alle Einträge und Fotos in eine einzige .zip-Datei exportieren und jederzeit wieder importieren.</string>
     <string name="help_faq_q_lock">Kann ich die App sperren?</string>
     <string name="help_faq_a_lock">Ja – aktiviere die App-Sperre über das Menü oder die Einstellungen, um Macaco mit Fingerabdruck, Gesicht oder Bildschirmsperre zu schützen.</string>
+    <string name="help_faq_q_billing">Wie kündige ich oder erhalte eine Rückerstattung?</string>
+    <string name="help_faq_a_billing">Abos und Käufe werden über Google Play abgerechnet. Öffne „Abo“, um deinen Plan zu verwalten, oder gehe zu Play Store → Zahlungen &amp; Abos, um zu kündigen. Für Rückerstattungen nutze innerhalb von 48 Stunden den Bestellverlauf im Play Store oder kontaktiere uns.</string>
     <string name="help_get_in_touch">Kontakt</string>
     <string name="help_contact">Support kontaktieren</string>
     <string name="help_contact_subject">Macaco Support</string>

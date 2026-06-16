@@ -161,6 +161,7 @@
     <string name="subscription_feature_no_sub">Sin suscripción ni cargos recurrentes</string>
     <string name="subscription_feature_updates">Actualizaciones futuras incluidas</string>
     <string name="subscription_thank_you">¡Gracias por apoyar Macaco! 🙏\nTu compra mantiene la app independiente y sin anuncios.</string>
+    <string name="subscription_manage">Gestionar suscripción</string>
 
     <string name="app_lock_locked">Tu diario está bloqueado</string>
     <string name="app_lock_unlock">Desbloquear</string>
@@ -201,6 +202,8 @@
     <string name="help_faq_a_backup">En Ajustes → Copia y restauración puedes exportar todas tus entradas y fotos a un único archivo .zip que puedes reimportar cuando quieras.</string>
     <string name="help_faq_q_lock">¿Puedo bloquear la app?</string>
     <string name="help_faq_a_lock">Sí: activa el Bloqueo de la app desde el menú o los Ajustes para pedir tu huella, rostro o bloqueo de pantalla al abrir Macaco.</string>
+    <string name="help_faq_q_billing">¿Cómo cancelo o pido un reembolso?</string>
+    <string name="help_faq_a_billing">Las suscripciones y compras las cobra Google Play. Abre Suscripción para gestionar tu plan, o ve a Play Store → Pagos y suscripciones para cancelar. Para reembolsos, usa el historial de pedidos de Play Store dentro de las 48 horas, o contáctanos.</string>
     <string name="help_get_in_touch">Contacto</string>
     <string name="help_contact">Contactar con soporte</string>
     <string name="help_contact_subject">Soporte de Macaco</string>

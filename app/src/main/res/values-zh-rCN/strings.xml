@@ -158,6 +158,7 @@
     <string name="subscription_feature_no_sub">无订阅，无循环费用</string>
     <string name="subscription_feature_updates">包含未来更新</string>
     <string name="subscription_thank_you">感谢您支持 Macaco！🙏\n您的购买让这款应用保持独立运营，永无广告。</string>
+    <string name="subscription_manage">管理订阅</string>
 
     <string name="app_lock_locked">您的日记已锁定</string>
     <string name="app_lock_unlock">解锁</string>
@@ -198,6 +199,8 @@
     <string name="help_faq_a_backup">在“设置 → 备份与恢复”中，您可以将所有记录和照片导出为单个 .zip 文件，并随时重新导入。</string>
     <string name="help_faq_q_lock">可以锁定应用吗？</string>
     <string name="help_faq_a_lock">可以 — 在菜单或“设置”中开启应用锁，打开 Macaco 时即需指纹、面容或屏幕锁验证。</string>
+    <string name="help_faq_q_billing">如何取消或申请退款？</string>
+    <string name="help_faq_a_billing">订阅和购买由 Google Play 计费。打开“订阅”可管理您的方案，或前往 Play 商店 → 付款和订阅进行取消。如需退款，请在 48 小时内通过 Play 商店的订单记录办理，或联系我们。</string>
     <string name="help_get_in_touch">联系我们</string>
     <string name="help_contact">联系支持</string>
     <string name="help_contact_subject">Macaco 支持</string>

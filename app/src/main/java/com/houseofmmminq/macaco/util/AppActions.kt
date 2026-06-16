@@ -73,6 +73,15 @@ object AppActions {
         }
     }
 
+    /**
+     * Opens the Play Store subscription-management page for this app, where the user can cancel or
+     * change their plan. Falls back to the web URL if the Play Store app can't handle the intent.
+     */
+    fun manageSubscriptions(context: Context) {
+        val uri = Uri.parse("https://play.google.com/store/account/subscriptions?package=$PACKAGE")
+        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, uri)) }
+    }
+
     /** Opens [url] in the browser. */
     fun openUrl(context: Context, url: String) {
         runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }

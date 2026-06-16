@@ -158,6 +158,7 @@
     <string name="subscription_feature_no_sub">サブスクなし、定期費用なし</string>
     <string name="subscription_feature_updates">将来のアップデートも含む</string>
     <string name="subscription_thank_you">Macaco をご支援いただきありがとうございます！ 🙏\nあなたの購入がアプリの独立性と広告フリーを支えています。</string>
+    <string name="subscription_manage">サブスクリプションを管理</string>
 
     <string name="app_lock_locked">日記はロックされています</string>
     <string name="app_lock_unlock">ロック解除</string>
@@ -198,6 +199,8 @@
     <string name="help_faq_a_backup">設定 → バックアップと復元 から、すべての記録と写真を 1 つの .zip ファイルにエクスポートでき、いつでも再インポートできます。</string>
     <string name="help_faq_q_lock">アプリをロックできますか？</string>
     <string name="help_faq_a_lock">はい。メニューまたは設定からアプリロックを有効にすると、Macaco を開く際に指紋・顔・画面ロックが必要になります。</string>
+    <string name="help_faq_q_billing">解約や返金はどうすればよいですか？</string>
+    <string name="help_faq_a_billing">サブスクリプションと購入は Google Play が請求します。「サブスクリプション」を開いてプランを管理するか、Play ストア → お支払いと定期購入から解約できます。返金は 48 時間以内に Play ストアの注文履歴から行うか、当社にお問い合わせください。</string>
     <string name="help_get_in_touch">お問い合わせ</string>
     <string name="help_contact">サポートに連絡</string>
     <string name="help_contact_subject">Macaco サポート</string>

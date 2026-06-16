@@ -24,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,11 +45,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import com.houseofmmminq.macaco.util.AppActions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
     val currentPlanId by viewModel.currentPlanId.collectAsState()
+    val context = LocalContext.current
+    // Lifetime is a one-time purchase with nothing to cancel; only show "Manage subscription"
+    // for the recurring plans, where it deep-links to the Play subscription centre.
+    val isRecurring = currentPlanId?.contains("annual") == true ||
+        currentPlanId?.contains("monthly") == true
     Scaffold(
         topBar = {
             TopAppBar(
@@ -181,6 +189,16 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
+
+            if (isRecurring) {
+                Spacer(Modifier.height(20.dp))
+                OutlinedButton(
+                    onClick = { AppActions.manageSubscriptions(context) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.subscription_manage))
+                }
+            }
 
             Spacer(Modifier.height(32.dp))
         }

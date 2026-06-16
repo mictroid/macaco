@@ -161,6 +161,7 @@
     <string name="subscription_feature_no_sub">Sans abonnement, sans frais récurrents</string>
     <string name="subscription_feature_updates">Mises à jour futures incluses</string>
     <string name="subscription_thank_you">Merci de soutenir Macaco ! 🙏\nVotre achat permet à l\'application de rester indépendante et sans publicité.</string>
+    <string name="subscription_manage">Gérer l\'abonnement</string>
 
     <string name="app_lock_locked">Votre journal est verrouillé</string>
     <string name="app_lock_unlock">Déverrouiller</string>
@@ -201,6 +202,8 @@
     <string name="help_faq_a_backup">Réglages → Sauvegarde &amp; restauration vous permet d\'exporter toutes vos entrées et photos dans un seul fichier .zip réimportable à tout moment.</string>
     <string name="help_faq_q_lock">Puis-je verrouiller l\'appli ?</string>
     <string name="help_faq_a_lock">Oui – activez le verrouillage de l\'appli depuis le menu ou les réglages pour exiger votre empreinte, votre visage ou le verrouillage de l\'écran à l\'ouverture de Macaco.</string>
+    <string name="help_faq_q_billing">Comment annuler ou obtenir un remboursement ?</string>
+    <string name="help_faq_a_billing">Les abonnements et achats sont facturés par Google Play. Ouvrez Abonnement pour gérer votre formule, ou allez dans Play Store → Paiements &amp; abonnements pour annuler. Pour un remboursement, utilisez l\'historique des commandes du Play Store dans les 48 heures, ou contactez-nous.</string>
     <string name="help_get_in_touch">Nous contacter</string>
     <string name="help_contact">Contacter le support</string>
     <string name="help_contact_subject">Support Macaco</string>
