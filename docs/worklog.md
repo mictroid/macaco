@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-16 — Watermark refinement + vc8 / 1.4 build (`9d047d5`, `62291ea`)
+
+On-device review of the watermark (on vc7) showed it read **too large** and **bled through the
+new-entry form's transparent text fields**. Fixed:
+- Smaller icons (~18–32dp diameter) and sparser spacing in `MacacoWatermarkBackground`.
+- Gave the new-entry form's five `OutlinedTextField`s an **opaque background fill**
+  (`focused/unfocusedContainerColor = background`) so the watermark only shows in the gaps, behind
+  the fields — not through them.
+
+Couldn't verify the fix on-device: a sideloaded debug build hits the paywall ("product not found",
+can't transact), so built the release instead. Bumped `versionCode` **7→8** (still `versionName` 1.4),
+clean `bundleRelease` → signed AAB at `app/build/outputs/bundle/release/app-release.aab` (~22 MB).
+**First build to include native debug symbols** (`debugSymbolLevel = FULL`), so it also clears Play
+Warning 2. **Not yet uploaded.** Note: the A53 was left on the sideloaded debug build — reinstall
+vc8 from Play to get back to a clean state (and to eyeball the watermark fix on the form).
+
 ## 2026-06-16 — Play upload warnings: native symbols fixed, R8 deferred
 
 Addressed the two non-blocking Play upload **warnings** (seen on vc6/vc7):
