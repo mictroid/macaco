@@ -54,6 +54,28 @@ subscription management, the sign-out fix, and the map theme feature. **Not yet 
 Same two non-blocking warnings expected on upload (no mapping file — `isMinifyEnabled = false` — and
 native debug symbols).
 
+### Set up gradle-play-publisher (`9f4fbcc`)
+Wired the Triple-T `com.github.triplet.play` plugin so `./gradlew publishReleaseBundle` can push the
+signed AAB straight to the internal track. Hit a real AGP-compat issue — 3.12.1 fails on AGP 9.2.1
+(`BaseAppModuleExtension` gone); **4.0.0** applies cleanly. Configured `track = internal`, AAB mode.
+Credential (`play-service-account.json`, git-ignored) **not yet created** — that one-time
+service-account setup (documented in `docs/release-setup.md`) is the only thing blocking automated
+uploads.
+
+### Branded the entry detail screen, theme-adaptive (`97b25cd`)
+Followed an old design brief (found in the stale `MyApplication` clone — legacy `com.example.myapplication`
+package) to bring `EntryDetailScreen` in line with the app's branding, but using **Material theme
+colours instead of the brief's hardcoded teal/amber** so it holds up across all 7 selectable themes:
+- Header bar → theme `primary` with `onPrimary` icons.
+- Mood + date chips → filled `secondaryContainer` accent chips (same token as the journal-list date
+  pill); tag chips → filled `secondaryContainer` matching list tags; location chip tinted `primary`.
+- Blank descriptions now show a tappable **"Add your story…"** prompt (opens the editor) + a subtle
+  bottom fade instead of dead space. String added across all 11 locales.
+- Photo full-bleed (also in the brief) was already in place.
+- Chose `secondaryContainer` over hardcoded brand colours partly because that old clone already tried
+  "gold tag text across all screens" and **reverted** it. Post-1.3 (not in the vc5 AAB); not yet
+  seen on-device.
+
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
 **Goal:** add a Samsung Galaxy S8+ as a second USB-connected test device (alongside the A53, which
