@@ -44,7 +44,7 @@ Made the Adventures map (the `MapScreen` reached from the drawer) customizable:
   stroke on the light style for legibility.
 - `MapTheme` enum added; `settings_map*` / `map_theme_*` strings across all 11 locales.
 
-Compiles + merges clean; not yet seen on-device (same uninstall/sideload caveat as above).
+Shipped in vc6; **verified on-device 2026-06-16** — the Dark/Light/Standard selector works. ✅
 
 ### Built release AAB for Play (`a9c57a9`)
 Bumped `versionCode` 4→5 and `versionName` 1.2→1.3, then built the signed release bundle
