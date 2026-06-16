@@ -93,8 +93,9 @@ entitlement's base-plan id (`productPlanIdentifier`) against the offering's mont
 (`googleProduct.basePlanId`) — exact, since the product id alone can't distinguish them. Falls back to
 the neutral label only when unresolved.
 
-Both billing fixes are **post-1.3 (not in the vc5 AAB), not yet verified on-device** — and the gating
-bug means the button currently never shows for real subscribers, so worth verifying after the next build.
+Both billing fixes shipped in vc6. **Verified on-device 2026-06-16:** with a real **monthly** Play
+subscription, the "Manage subscription" button now shows on the Subscription screen. ✅ (Annual /
+lifetime not separately re-checked, but share the same gating path.)
 
 ### Added contextual empty-state hints to the new/edit entry screen (`78c23c8`)
 Second Cowork brief from the stale `MyApplication` clone — three "whispered guidance" hints in
