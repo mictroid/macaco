@@ -33,6 +33,19 @@ call `GoogleSignIn.getClient(...).signOut()` on sign-out (using the previously-u
 so the next `signInIntent` shows the account chooser. Not yet tested on-device (would need another
 uninstall/sideload on the A53).
 
+### Added Adventures map theme setting + gold country names (`49921ed`)
+Made the Adventures map (the `MapScreen` reached from the drawer) customizable:
+- **Dark / Light / Standard** map theme, selectable in **Settings → Map** via a `FilterChip` row.
+  Persisted as the `map_theme` DataStore pref (default Dark), exposed as `MapTheme` on the ViewModel,
+  and applied live by `MapScreen` (mirrors the existing `AppTheme` plumbing).
+- New `map_style_light.json` (light teal-tinted) for the Light option; Standard uses Google's default
+  map (no style override).
+- **Country labels are now Macaco bright gold (`#F0C840`)** in both branded styles — with a dark
+  stroke on the light style for legibility.
+- `MapTheme` enum added; `settings_map*` / `map_theme_*` strings across all 11 locales.
+
+Compiles + merges clean; not yet seen on-device (same uninstall/sideload caveat as above).
+
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
 **Goal:** add a Samsung Galaxy S8+ as a second USB-connected test device (alongside the A53, which
