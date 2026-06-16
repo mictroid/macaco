@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.play.publisher)
 }
 
 val localProperties = Properties()
@@ -68,6 +69,16 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+// Google Play publishing (Triple-T gradle-play-publisher). The credential is a Play Developer API
+// service-account key kept in a git-ignored play-service-account.json at the repo root. With it in
+// place, `./gradlew publishReleaseBundle` uploads the signed AAB straight to the internal track.
+// See docs/release-setup.md for how to create the service account and grant it access.
+play {
+    serviceAccountCredentials.set(rootProject.file("play-service-account.json"))
+    track.set("internal")
+    defaultToAppBundles.set(true)
 }
 
 dependencies {

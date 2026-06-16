@@ -219,6 +219,10 @@ Machine-local files needed to rebuild on a fresh machine are mirrored to Google 
   in git**. Empty passphrase; the public half is registered on GitHub. Replaceable (generate a new
   key with `ssh-keygen -t ed25519` and add it at https://github.com/settings/keys), but restoring
   this copy avoids that. The repo is configured to use it via `core.sshCommand = ssh -i ~/.ssh/id_ed25519`.
+- **`play-service-account.json`** — Play Developer API service-account key used by
+  gradle-play-publisher (`./gradlew publishReleaseBundle`) to upload AABs. Git-ignored; lives at the
+  repo root. Replaceable (mint a new key in Google Cloud Console), but back it up. See
+  `docs/release-setup.md` → **Automated upload**.
 
 Restore: clone the repo, drop `debug.keystore` into `~/.android/`, copy the `ssh/` keys into
 `~/.ssh/` (for push access), open in Android Studio (it regenerates `local.properties`).

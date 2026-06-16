@@ -106,6 +106,44 @@ is accepted:
 - `MAPS_API_KEY` is injected from `local.properties` via a manifest placeholder — no action.
 - `google-services.json` is present and committed.
 
+## Automated upload (gradle-play-publisher)
+
+The Triple-T **gradle-play-publisher** plugin (`com.github.triplet.play`, v4.0.0 — 3.x doesn't
+support AGP 9) is applied in `app/build.gradle.kts`, configured to push the signed AAB to the
+**internal** track:
+
+```kotlin
+play {
+    serviceAccountCredentials.set(rootProject.file("play-service-account.json"))
+    track.set("internal")
+    defaultToAppBundles.set(true)
+}
+```
+
+**One-time credential setup** (the only missing piece — the JSON is git-ignored and not in Drive yet):
+
+1. **Google Cloud Console** (project `macaco-499016`) → enable the **Google Play Android Developer API**.
+2. **APIs & Services → Credentials → Create credentials → Service account.** Name it e.g.
+   `play-publisher`. No project roles needed.
+3. On the service account → **Keys → Add key → JSON**. Download it and save as
+   `play-service-account.json` at the **repo root** (git-ignored; also back it up to
+   `G:\My Drive\Macaco-backup\`).
+4. **Play Console → Users and permissions → Invite new user**, enter the service-account email
+   (`…@macaco-499016.iam.gserviceaccount.com`). Grant app access to **Macaco** with at least
+   *Release to testing tracks* (Releases) permission. (First invite can take a few minutes to
+   propagate.)
+
+**Then, to build + upload to internal testing in one shot:**
+
+```bash
+JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew publishReleaseBundle
+```
+
+This signs the release AAB (via `keystore.properties`) and uploads it to the internal track. Still
+**bump `versionCode`** before each run. `track`/`releaseStatus` can be overridden per-run with
+`--track` / `--release-status`. The very first upload of an app must still be done manually in the
+Console (the API can't create the app), but Macaco is already past that.
+
 ## Related
 
 - `docs/revenuecat-setup.md` — billing setup (also needs an uploaded build on a track).

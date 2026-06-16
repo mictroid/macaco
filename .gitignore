@@ -20,5 +20,8 @@ keystore.properties
 *.jks
 *.keystore
 
+# Google Play publishing — never commit the Play Developer API service-account key
+play-service-account.json
+
 # Local Claude Code settings
 .claude/settings.local.json

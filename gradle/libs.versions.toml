@@ -27,6 +27,7 @@ coreSplashscreen = "1.0.1"
 playReview = "2.0.2"
 mapsCompose = "4.3.3"
 playServicesMaps = "19.0.0"
+playPublisher = "4.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -72,3 +73,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+play-publisher = { id = "com.github.triplet.play", version.ref = "playPublisher" }
