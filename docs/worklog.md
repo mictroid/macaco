@@ -25,6 +25,14 @@ the Play build first — signature mismatch), and confirmed the button renders, 
 Play subscriptions page, and the FAQ entry reads correctly. Reverted the temp override and reinstalled
 the A53 from the Play track (premium restored via the account-tied entitlement).
 
+### Fixed: Google sign-out didn't show the account picker (`1f97c91`)
+After signing out from a Google login, the next "Sign in with Google" silently reused the previous
+account — you could never switch Google accounts. Cause: `FirebaseAuthRepository.signOut()` only
+cleared Firebase auth and left the legacy GMS `GoogleSignInClient`'s cached account intact. Fix: also
+call `GoogleSignIn.getClient(...).signOut()` on sign-out (using the previously-unused `appContext`),
+so the next `signInIntent` shows the account chooser. Not yet tested on-device (would need another
+uninstall/sideload on the A53).
+
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
 **Goal:** add a Samsung Galaxy S8+ as a second USB-connected test device (alongside the A53, which
