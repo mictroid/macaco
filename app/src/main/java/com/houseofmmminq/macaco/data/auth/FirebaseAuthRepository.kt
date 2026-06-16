@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import com.houseofmmminq.macaco.data.model.AuthProvider
 import com.houseofmmminq.macaco.data.model.UserProfile
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -20,6 +22,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthRepository(appContext: Context) : AuthRepository {
+
+    private val appContext = appContext.applicationContext
 
     private val _currentUser = MutableStateFlow<UserProfile?>(null)
     override val currentUser: StateFlow<UserProfile?> = _currentUser.asStateFlow()
@@ -90,6 +94,13 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
 
     override suspend fun signOut() {
         auth.signOut()
+        // Also clear the cached GMS Google account. Without this, the GoogleSignInClient keeps the
+        // last-selected account and the next sign-in silently reuses it instead of showing the
+        // account picker, so the user can never switch Google accounts.
+        runCatching {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            GoogleSignIn.getClient(appContext, gso).signOut().await()
+        }
         _currentUser.value = null
     }
 
