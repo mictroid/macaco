@@ -165,6 +165,7 @@
     <string name="subscription_feature_updates">包含未来更新</string>
     <string name="subscription_thank_you">感谢您支持 Macaco！🙏\n您的购买让这款应用保持独立运营，永无广告。</string>
     <string name="subscription_manage">管理订阅</string>
+    <string name="subscription_plan_recurring">自动续订订阅</string>
 
     <string name="app_lock_locked">您的日记已锁定</string>
     <string name="app_lock_unlock">解锁</string>

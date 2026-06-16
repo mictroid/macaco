@@ -168,6 +168,7 @@
     <string name="subscription_feature_updates">Toekomstige updates inbegrepen</string>
     <string name="subscription_thank_you">Bedankt voor je steun aan Macaco! 🙏\nJouw aankoop houdt de app onafhankelijk en advertentievrij.</string>
     <string name="subscription_manage">Abonnement beheren</string>
+    <string name="subscription_plan_recurring">Automatisch verlengend abonnement</string>
 
     <string name="app_lock_locked">Je dagboek is vergrendeld</string>
     <string name="app_lock_unlock">Ontgrendelen</string>

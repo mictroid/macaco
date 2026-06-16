@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Context
 import com.houseofmmminq.macaco.data.PreferencesManager
 import com.houseofmmminq.macaco.data.auth.AuthRepository
+import com.revenuecat.purchases.EntitlementInfo
 import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.Store
 import com.revenuecat.purchases.PurchasesConfiguration
 import com.revenuecat.purchases.Offerings
 import com.revenuecat.purchases.getCustomerInfoWith
@@ -50,9 +52,18 @@ class BillingManager(
     private val _offerings = MutableStateFlow<Offerings?>(null)
     val offerings: StateFlow<Offerings?> = _offerings.asStateFlow()
 
-    // Product identifier of the active entitlement, e.g. "macaco_annual"
+    // Product identifier of the active entitlement. NOTE: with one subscription product
+    // (macaco_premium) carrying both the monthly and annual base plans, this is "macaco_premium"
+    // for both cadences — it does NOT encode monthly/annual. Use [manageableSubscription] for the
+    // "is this a manageable Play subscription?" question rather than string-matching this.
     private val _currentPlanId = MutableStateFlow<String?>(null)
     val currentPlanId: StateFlow<String?> = _currentPlanId.asStateFlow()
+
+    // True when the active entitlement is an actual Play Store subscription (has a renewal/expiry),
+    // as opposed to a one-time lifetime purchase (no expiry) or a promotional/other-store grant.
+    // Drives whether the "Manage subscription" link is shown.
+    private val _manageableSubscription = MutableStateFlow(false)
+    val manageableSubscription: StateFlow<Boolean> = _manageableSubscription.asStateFlow()
 
     init {
         if (configured) {
@@ -66,7 +77,7 @@ class BillingManager(
             // React to entitlement changes pushed by the SDK
             Purchases.sharedInstance.updatedCustomerInfoListener =
                 UpdatedCustomerInfoListener { info ->
-                    _isPremium.value = info.entitlements[RevenueCatConfig.ENTITLEMENT_ID]?.isActive == true
+                    applyEntitlement(info.entitlements[RevenueCatConfig.ENTITLEMENT_ID])
                 }
 
             refreshEntitlement()
@@ -80,8 +91,7 @@ class BillingManager(
                             user.uid,
                             onError = { },
                             onSuccess = { info, _ ->
-                                _isPremium.value =
-                                    info.entitlements[RevenueCatConfig.ENTITLEMENT_ID]?.isActive == true
+                                applyEntitlement(info.entitlements[RevenueCatConfig.ENTITLEMENT_ID])
                             }
                         )
                     }
@@ -99,11 +109,28 @@ class BillingManager(
         Purchases.sharedInstance.getCustomerInfoWith(
             onError = { if (_isPremium.value == null) _isPremium.value = false },
             onSuccess = { info ->
-                val entitlement = info.entitlements[RevenueCatConfig.ENTITLEMENT_ID]
-                _isPremium.value = entitlement?.isActive == true
-                if (entitlement?.isActive == true) _currentPlanId.value = entitlement.productIdentifier
+                applyEntitlement(info.entitlements[RevenueCatConfig.ENTITLEMENT_ID])
             }
         )
+    }
+
+    /**
+     * Apply the latest "premium" entitlement to all derived state. Single source of truth so every
+     * RevenueCat callback (refresh, login, purchase, push update) stays consistent.
+     */
+    private fun applyEntitlement(entitlement: EntitlementInfo?) {
+        val active = entitlement?.isActive == true
+        _isPremium.value = active
+        if (active && entitlement != null) {
+            _currentPlanId.value = entitlement.productIdentifier
+            // A Play subscription has an expiry (next renewal); a one-time lifetime purchase has
+            // none, and promo/other-store grants can't be managed in Play. This is the reliable
+            // way to gate "Manage subscription" — the product id can't tell monthly/annual apart.
+            _manageableSubscription.value =
+                entitlement.store == Store.PLAY_STORE && entitlement.expirationDate != null
+        } else {
+            _manageableSubscription.value = false
+        }
     }
 
     private fun loadOfferings() {
@@ -133,10 +160,8 @@ class BillingManager(
                 },
                 onSuccess = { _, customerInfo ->
                     val entitlement = customerInfo.entitlements[RevenueCatConfig.ENTITLEMENT_ID]
-                    val active = entitlement?.isActive == true
-                    _isPremium.value = active
-                    if (active) _currentPlanId.value = entitlement?.productIdentifier
-                    cont.resume(Result.success(active))
+                    applyEntitlement(entitlement)
+                    cont.resume(Result.success(entitlement?.isActive == true))
                 }
             )
         }

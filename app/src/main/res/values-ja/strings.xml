@@ -165,6 +165,7 @@
     <string name="subscription_feature_updates">将来のアップデートも含む</string>
     <string name="subscription_thank_you">Macaco をご支援いただきありがとうございます！ 🙏\nあなたの購入がアプリの独立性と広告フリーを支えています。</string>
     <string name="subscription_manage">サブスクリプションを管理</string>
+    <string name="subscription_plan_recurring">自動更新サブスクリプション</string>
 
     <string name="app_lock_locked">日記はロックされています</string>
     <string name="app_lock_unlock">ロック解除</string>

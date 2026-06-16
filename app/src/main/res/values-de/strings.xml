@@ -178,6 +178,7 @@
     <string name="subscription_feature_updates">Zukünftige Updates inklusive</string>
     <string name="subscription_thank_you">Danke, dass du Macaco unterstützt! 🙏\nDein Kauf hält die App unabhängig und werbefrei.</string>
     <string name="subscription_manage">Abo verwalten</string>
+    <string name="subscription_plan_recurring">Automatisch verlängertes Abo</string>
 
     <!-- App Lock -->
     <string name="app_lock_locked">Dein Tagebuch ist gesperrt</string>

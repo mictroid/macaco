@@ -168,6 +168,7 @@
     <string name="subscription_feature_updates">Aggiornamenti futuri inclusi</string>
     <string name="subscription_thank_you">Grazie per supportare Macaco! 🙏\nIl tuo acquisto mantiene l\'app indipendente e senza pubblicità.</string>
     <string name="subscription_manage">Gestisci abbonamento</string>
+    <string name="subscription_plan_recurring">Abbonamento a rinnovo automatico</string>
 
     <string name="app_lock_locked">Il tuo diario è bloccato</string>
     <string name="app_lock_unlock">Sblocca</string>

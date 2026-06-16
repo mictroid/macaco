@@ -52,10 +52,10 @@ import com.houseofmmminq.macaco.util.AppActions
 fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
     val currentPlanId by viewModel.currentPlanId.collectAsState()
     val context = LocalContext.current
-    // Lifetime is a one-time purchase with nothing to cancel; only show "Manage subscription"
-    // for the recurring plans, where it deep-links to the Play subscription centre.
-    val isRecurring = currentPlanId?.contains("annual") == true ||
-        currentPlanId?.contains("monthly") == true
+    // "Manage subscription" shows only for an actual Play subscription (monthly/annual). Lifetime
+    // is a one-time purchase with nothing to cancel. This comes from the entitlement's store +
+    // expiry, not the product id — both base plans share the one "macaco_premium" product id.
+    val manageableSubscription by viewModel.manageableSubscription.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -125,6 +125,9 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
                     currentPlanId?.contains("annual") == true   -> stringResource(R.string.purchase_plan_annual)
                     currentPlanId?.contains("monthly") == true  -> stringResource(R.string.purchase_plan_monthly)
                     currentPlanId?.contains("lifetime") == true -> stringResource(R.string.purchase_plan_lifetime)
+                    // A subscription whose cadence isn't encoded in the product id — don't mislabel
+                    // it as "Lifetime"; show a neutral subscription label instead.
+                    manageableSubscription -> stringResource(R.string.subscription_plan_recurring)
                     else -> stringResource(R.string.subscription_lifetime)
                 }
                 Text(
@@ -190,7 +193,7 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
                 textAlign = TextAlign.Center
             )
 
-            if (isRecurring) {
+            if (manageableSubscription) {
                 Spacer(Modifier.height(20.dp))
                 OutlinedButton(
                     onClick = { AppActions.manageSubscriptions(context) },

@@ -168,6 +168,7 @@
     <string name="subscription_feature_updates">Framtida uppdateringar ingår</string>
     <string name="subscription_thank_you">Tack för att du stödjer Macaco! 🙏\nDitt köp håller appen oberoende och reklamfri.</string>
     <string name="subscription_manage">Hantera prenumeration</string>
+    <string name="subscription_plan_recurring">Förnyas automatiskt</string>
 
     <string name="app_lock_locked">Din dagbok är låst</string>
     <string name="app_lock_unlock">Lås upp</string>

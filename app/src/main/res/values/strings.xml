@@ -235,6 +235,7 @@
     <string name="subscription_feature_updates">Future updates included</string>
     <string name="subscription_thank_you">Thank you for supporting Macaco! 🙏\nYour purchase keeps the app independent and ad-free.</string>
     <string name="subscription_manage">Manage subscription</string>
+    <string name="subscription_plan_recurring">Auto-renewing subscription</string>
 
     <!-- App Lock -->
     <string name="app_lock_locked">Your journal is locked</string>

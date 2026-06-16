@@ -168,6 +168,7 @@
     <string name="subscription_feature_updates">Mises à jour futures incluses</string>
     <string name="subscription_thank_you">Merci de soutenir Macaco ! 🙏\nVotre achat permet à l\'application de rester indépendante et sans publicité.</string>
     <string name="subscription_manage">Gérer l\'abonnement</string>
+    <string name="subscription_plan_recurring">Abonnement à renouvellement automatique</string>
 
     <string name="app_lock_locked">Votre journal est verrouillé</string>
     <string name="app_lock_unlock">Déverrouiller</string>
