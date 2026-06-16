@@ -68,6 +68,11 @@
     <string name="settings_dark_mode_on">ダークテーマ有効</string>
     <string name="settings_dark_mode_off">ライトテーマ有効</string>
     <string name="settings_theme_color">テーマカラー</string>
+    <string name="settings_map">地図</string>
+    <string name="settings_map_style">アドベンチャー地図のスタイル</string>
+    <string name="map_theme_dark">ダーク</string>
+    <string name="map_theme_light">ライト</string>
+    <string name="map_theme_standard">標準</string>
     <string name="settings_background_image">背景画像</string>
     <string name="settings_custom_bg_active">カスタム背景が有効です</string>
     <string name="settings_custom_bg_tap_change">タップして変更</string>

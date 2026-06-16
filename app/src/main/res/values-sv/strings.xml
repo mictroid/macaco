@@ -70,6 +70,11 @@
     <string name="settings_dark_mode_on">Mörkt tema aktivt</string>
     <string name="settings_dark_mode_off">Ljust tema aktivt</string>
     <string name="settings_theme_color">Temafärg</string>
+    <string name="settings_map">Karta</string>
+    <string name="settings_map_style">Stil för Äventyrskartan</string>
+    <string name="map_theme_dark">Mörk</string>
+    <string name="map_theme_light">Ljus</string>
+    <string name="map_theme_standard">Standard</string>
     <string name="settings_background_image">Bakgrundsbild</string>
     <string name="settings_custom_bg_active">Anpassad bakgrund aktiv</string>
     <string name="settings_custom_bg_tap_change">Tryck för att byta</string>

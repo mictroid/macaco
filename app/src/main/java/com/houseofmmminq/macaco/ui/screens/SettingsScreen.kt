@@ -96,6 +96,7 @@ import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.ui.screens.isBiometricAvailable
 import com.houseofmmminq.macaco.ui.screens.showBiometricPrompt
 import com.houseofmmminq.macaco.ui.theme.AppTheme
+import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.theme.isLightTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.util.ImageStorage
@@ -130,6 +131,7 @@ fun SettingsScreen(
 ) {
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val appTheme by viewModel.appTheme.collectAsState()
+    val mapTheme by viewModel.mapTheme.collectAsState()
     val themeImageUri by viewModel.themeImageUri.collectAsState()
     val remindersEnabled by viewModel.remindersEnabled.collectAsState()
     val reminderIntervalDays by viewModel.reminderIntervalDays.collectAsState()
@@ -508,6 +510,15 @@ fun SettingsScreen(
                     }
                 }
             }
+
+            // ── Map ───────────────────────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+            SettingsSectionHeader(stringResource(R.string.settings_map))
+
+            MapThemeCard(
+                selected = mapTheme,
+                onSelect = { viewModel.setMapTheme(it) }
+            )
 
             // ── Language ──────────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
@@ -893,6 +904,37 @@ private fun SettingsToggleRow(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MapThemeCard(selected: MapTheme, onSelect: (MapTheme) -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+            Text(
+                stringResource(R.string.settings_map_style),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                MapTheme.entries.forEach { theme ->
+                    FilterChip(
+                        selected = theme == selected,
+                        onClick = { onSelect(theme) },
+                        label = { Text(stringResource(theme.labelRes)) }
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun ReminderCadenceCard(selectedDays: Int, onSelect: (Int) -> Unit) {
     val options = listOf(1, 3, 4, 7, 14)

@@ -104,6 +104,11 @@
     <string name="settings_dark_mode_on">Dark theme active</string>
     <string name="settings_dark_mode_off">Light theme active</string>
     <string name="settings_theme_color">Theme Color</string>
+    <string name="settings_map">Map</string>
+    <string name="settings_map_style">Adventures map style</string>
+    <string name="map_theme_dark">Dark</string>
+    <string name="map_theme_light">Light</string>
+    <string name="map_theme_standard">Standard</string>
     <string name="settings_background_image">Background Image</string>
     <string name="settings_custom_bg_active">Custom background active</string>
     <string name="settings_custom_bg_tap_change">Tap to change</string>

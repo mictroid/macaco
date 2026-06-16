@@ -54,6 +54,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.theme.MacacoFontFamily
+import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 
 private fun createTealMarkerBitmap(context: Context): Bitmap {
@@ -84,13 +85,17 @@ fun MapScreen(
     val context = LocalContext.current
     val entries by viewModel.entries.collectAsState()
     val geocodedLocations by viewModel.geocodedLocations.collectAsState()
+    val mapTheme by viewModel.mapTheme.collectAsState()
 
     // BitmapDescriptorFactory requires the Maps SDK to be initialized, which happens when
     // GoogleMap first renders. Defer creation to onMapLoaded so we never call it too early.
     var tealMarker by remember { mutableStateOf<BitmapDescriptor?>(null) }
-    val mapProperties = remember {
+    // Apply the user-selected map style; Standard (styleRes == null) uses Google's default map.
+    val mapProperties = remember(mapTheme) {
         MapProperties(
-            mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style)
+            mapStyleOptions = mapTheme.styleRes?.let {
+                MapStyleOptions.loadRawResourceStyle(context, it)
+            }
         )
     }
 

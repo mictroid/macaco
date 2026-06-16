@@ -70,6 +70,11 @@
     <string name="settings_dark_mode_on">Tema scuro attivo</string>
     <string name="settings_dark_mode_off">Tema chiaro attivo</string>
     <string name="settings_theme_color">Colore del tema</string>
+    <string name="settings_map">Mappa</string>
+    <string name="settings_map_style">Stile della mappa Avventure</string>
+    <string name="map_theme_dark">Scuro</string>
+    <string name="map_theme_light">Chiaro</string>
+    <string name="map_theme_standard">Standard</string>
     <string name="settings_background_image">Immagine di sfondo</string>
     <string name="settings_custom_bg_active">Sfondo personalizzato attivo</string>
     <string name="settings_custom_bg_tap_change">Tocca per cambiare</string>

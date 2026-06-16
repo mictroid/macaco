@@ -70,6 +70,11 @@
     <string name="settings_dark_mode_on">Donker thema actief</string>
     <string name="settings_dark_mode_off">Licht thema actief</string>
     <string name="settings_theme_color">Themakleur</string>
+    <string name="settings_map">Kaart</string>
+    <string name="settings_map_style">Stijl van de Avonturenkaart</string>
+    <string name="map_theme_dark">Donker</string>
+    <string name="map_theme_light">Licht</string>
+    <string name="map_theme_standard">Standaard</string>
     <string name="settings_background_image">Achtergrondafbeelding</string>
     <string name="settings_custom_bg_active">Aangepaste achtergrond actief</string>
     <string name="settings_custom_bg_tap_change">Tik om te wijzigen</string>

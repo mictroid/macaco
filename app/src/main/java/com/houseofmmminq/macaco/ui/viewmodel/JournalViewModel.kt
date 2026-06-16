@@ -16,6 +16,7 @@ import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
 import com.houseofmmminq.macaco.ui.theme.AppTheme
+import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.ReminderScheduler
 import android.location.Geocoder
@@ -75,6 +76,10 @@ class JournalViewModel(
     val appTheme: StateFlow<AppTheme> = preferencesManager.appThemeKey
         .map { AppTheme.fromKey(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AppTheme.WANDERLOG)
+
+    val mapTheme: StateFlow<MapTheme> = preferencesManager.mapThemeKey
+        .map { MapTheme.fromKey(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, MapTheme.DARK)
 
     val themeImageUri: StateFlow<String?> = preferencesManager.themeImageUri
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -199,6 +204,10 @@ class JournalViewModel(
 
     fun setAppTheme(theme: AppTheme) {
         viewModelScope.launch { preferencesManager.setAppThemeKey(theme.key) }
+    }
+
+    fun setMapTheme(theme: MapTheme) {
+        viewModelScope.launch { preferencesManager.setMapThemeKey(theme.key) }
     }
 
     fun setThemeImage(uri: String?) {

@@ -21,6 +21,7 @@ class PreferencesManager(private val context: Context) {
     private val KEY_DARK_MODE = booleanPreferencesKey("dark_mode")
     private val KEY_PROFILE_PHOTO = stringPreferencesKey("profile_photo_uri")
     private val KEY_APP_THEME = stringPreferencesKey("app_theme")
+    private val KEY_MAP_THEME = stringPreferencesKey("map_theme")
     private val KEY_THEME_IMAGE = stringPreferencesKey("theme_image_uri")
     private val KEY_REMINDERS_ENABLED = booleanPreferencesKey("reminders_enabled")
     private val KEY_REMINDER_INTERVAL = intPreferencesKey("reminder_interval_days")
@@ -74,6 +75,14 @@ class PreferencesManager(private val context: Context) {
 
     suspend fun setAppThemeKey(key: String) {
         context.dataStore.edit { it[KEY_APP_THEME] = key }
+    }
+
+    val mapThemeKey: Flow<String> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_MAP_THEME] ?: "dark" }
+
+    suspend fun setMapThemeKey(key: String) {
+        context.dataStore.edit { it[KEY_MAP_THEME] = key }
     }
 
     // Only file:// URIs (copied into our own storage) are usable across restarts. Older builds

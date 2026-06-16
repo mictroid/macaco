@@ -70,6 +70,11 @@
     <string name="settings_dark_mode_on">Thème sombre activé</string>
     <string name="settings_dark_mode_off">Thème clair activé</string>
     <string name="settings_theme_color">Couleur du thème</string>
+    <string name="settings_map">Carte</string>
+    <string name="settings_map_style">Style de la carte Aventures</string>
+    <string name="map_theme_dark">Sombre</string>
+    <string name="map_theme_light">Clair</string>
+    <string name="map_theme_standard">Standard</string>
     <string name="settings_background_image">Image de fond</string>
     <string name="settings_custom_bg_active">Fond personnalisé actif</string>
     <string name="settings_custom_bg_tap_change">Appuyer pour modifier</string>
