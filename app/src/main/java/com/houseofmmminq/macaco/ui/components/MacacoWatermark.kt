@@ -83,8 +83,8 @@ fun MacacoWatermarkBackground(
 
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            val spacing = 165.dp.toPx()
-            val jitter = 80.dp.toPx()
+            val spacing = 105.dp.toPx() // ~2.5× the density of 165dp (icons scale as 1/spacing²)
+            val jitter = 50.dp.toPx()
             val rng = java.util.Random(42L) // fixed seed → stable layout
 
             var y = -spacing * 0.4f
