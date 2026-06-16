@@ -2,6 +2,13 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-16 — Play internal-testing purchase → entitlement verified ✅
+
+Installed Macaco from the Play **internal-testing** track and ran a real test purchase. The full
+chain works end-to-end: purchase completes in Play Billing → RevenueCat reports the `premium`
+entitlement → the app unlocks (opens straight to the journal). This closes out the last open billing
+item — the promo-entitlement workaround is no longer the only path; **real test purchases now work**.
+
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
 **Goal:** add a Samsung Galaxy S8+ as a second USB-connected test device (alongside the A53, which
@@ -76,8 +83,7 @@ Installed debug builds and read RevenueCat logcat to confirm, end-to-end:
   non-blocking, safe to ignore for testing.
 
 ### Still open
-- Finish the Play Console internal-testing rollout (testers list, license testing) so **real test
-  purchases** work — currently "product not available" because the sideloaded debug build can't
-  transact. The promo route already covers using the app on the A53.
-- Once the build is installed from the Play track, verify the real purchase → entitlement flow
-  end-to-end.
+- ~~Finish the Play Console internal-testing rollout (testers list, license testing) so **real test
+  purchases** work.~~ **Done 2026-06-16** — see top entry.
+- ~~Once the build is installed from the Play track, verify the real purchase → entitlement flow
+  end-to-end.~~ **Done 2026-06-16** — verified working.
