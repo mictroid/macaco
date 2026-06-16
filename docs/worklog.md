@@ -13,10 +13,16 @@ new-entry form's transparent text fields**. Fixed:
 
 Couldn't verify the fix on-device: a sideloaded debug build hits the paywall ("product not found",
 can't transact), so built the release instead. Bumped `versionCode` **7→8** (still `versionName` 1.4),
-clean `bundleRelease` → signed AAB at `app/build/outputs/bundle/release/app-release.aab` (~22 MB).
-**First build to include native debug symbols** (`debugSymbolLevel = FULL`), so it also clears Play
-Warning 2. **Not yet uploaded.** Note: the A53 was left on the sideloaded debug build — reinstall
-vc8 from Play to get back to a clean state (and to eyeball the watermark fix on the form).
+clean `bundleRelease`. **First build to include native debug symbols** (`debugSymbolLevel = FULL`), so
+it also clears Play Warning 2. **vc8 uploaded to the Play internal-testing track.**
+
+### Denser watermark → vc9 / 1.4 (`c92f5ad`)
+Reviewed the refined watermark and it read too sparse, so **increased icon density ~2.5×** (tile
+spacing 165dp→105dp, jitter 80dp→50dp; icon size unchanged). Since vc8 was already uploaded, bumped
+`versionCode` **8→9** (still 1.4) and built the signed AAB at
+`app/build/outputs/bundle/release/app-release.aab` (~22 MB). **Not yet uploaded.** (No on-device
+install this round — the A53's sideloaded debug build was removed due to the paywall; verify on the
+next Play install.)
 
 ## 2026-06-16 — Play upload warnings: native symbols fixed, R8 deferred
 
