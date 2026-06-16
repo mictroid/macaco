@@ -106,7 +106,7 @@ Second Cowork brief from the stale `MyApplication` clone — three "whispered gu
 
 Shared `HintRow` helper, **theme-adaptive (`primary` @ 60% alpha)** instead of the brief's hardcoded
 teal. Story copy points at the screen's own mic button rather than the keyboard mic. Strings in all
-11 locales. Post-1.3; not yet seen on-device.
+11 locales. Shipped in vc6; **verified on-device 2026-06-16 — all three hints show.** ✅
 
 ### Rebuilt the 1.3 AAB at vc6 with all the latest changes
 **Correction:** vc5 *was* uploaded to the Play internal-testing track (the earlier "not yet uploaded"
