@@ -49,10 +49,10 @@ Compiles + merges clean; not yet seen on-device (same uninstall/sideload caveat 
 ### Built release AAB for Play (`a9c57a9`)
 Bumped `versionCode` 4→5 and `versionName` 1.2→1.3, then built the signed release bundle
 (`./gradlew bundleRelease`, signed with the upload keystore via the git-ignored `keystore.properties`).
-Output: `app/build/outputs/bundle/release/app-release.aab` (~22 MB). Bundles everything above —
-subscription management, the sign-out fix, and the map theme feature. **Not yet uploaded to Play.**
-Same two non-blocking warnings expected on upload (no mapping file — `isMinifyEnabled = false` — and
-native debug symbols).
+Output: `app/build/outputs/bundle/release/app-release.aab` (~22 MB). Bundles subscription management,
+the sign-out fix, and the map theme feature. Same two non-blocking warnings expected on upload (no
+mapping file — `isMinifyEnabled = false` — and native debug symbols). **vc5 was uploaded to the Play
+internal-testing track** (superseded by vc6 below — see the next entry's correction).
 
 ### Set up gradle-play-publisher (`9f4fbcc`)
 Wired the Triple-T `com.github.triplet.play` plugin so `./gradlew publishReleaseBundle` can push the
@@ -106,6 +106,14 @@ Second Cowork brief from the stale `MyApplication` clone — three "whispered gu
 Shared `HintRow` helper, **theme-adaptive (`primary` @ 60% alpha)** instead of the brief's hardcoded
 teal. Story copy points at the screen's own mic button rather than the keyboard mic. Strings in all
 11 locales. Post-1.3; not yet seen on-device.
+
+### Rebuilt the 1.3 AAB at vc6 with all the latest changes
+**Correction:** vc5 *was* uploaded to the Play internal-testing track (the earlier "not yet uploaded"
+note was wrong — fixed above). Since vc5 was consumed, bumped `versionCode` **5→6** (still
+`versionName` 1.3) and did a clean `bundleRelease`. The signed vc6 AAB at
+`app/build/outputs/bundle/release/app-release.aab` (~22 MB) bundles everything since vc5: the
+sign-out fix, gradle-play-publisher setup, entry-detail branding, the subscription button fix + plan
+display, and the new-entry hints. Not yet uploaded.
 
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
