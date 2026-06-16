@@ -20,7 +20,7 @@ Bumped `versionCode` **6→7** and `versionName` **1.3→1.4** (first versionNam
 adds the watermark on top of the fully-verified vc6). Clean `bundleRelease`; signed AAB at
 `app/build/outputs/bundle/release/app-release.aab` (~22 MB). Only new feature vs vc6 is the
 empty-state watermark — so on the next install, eyeball the empty states (especially the new-entry
-form) and adjust alpha/spacing if needed.
+form) and adjust alpha/spacing if needed. **Uploaded to the Play internal-testing track.**
 
 ## 2026-06-16 — Play purchase verified + in-app subscription management
 
