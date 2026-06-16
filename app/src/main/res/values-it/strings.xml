@@ -62,6 +62,7 @@
     <string name="entry_detail_share_cd">Condividi</string>
     <string name="entry_detail_edit_cd">Modifica</string>
     <string name="entry_detail_delete_cd">Elimina</string>
+    <string name="entry_detail_add_story">Racconta la tua storia…</string>
     <string name="entry_detail_delete_title">Elimina ricordo</string>
     <string name="entry_detail_delete_message">Eliminare &quot;%s&quot;? Questa azione non può essere annullata.</string>
 

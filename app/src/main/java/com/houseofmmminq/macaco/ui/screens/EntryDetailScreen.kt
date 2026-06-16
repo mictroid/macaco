@@ -1,6 +1,7 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
@@ -119,13 +120,16 @@ fun EntryDetailScreen(
                     IconButton(onClick = { showDeleteDialog = true }) {
                         Icon(
                             Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.entry_detail_delete_cd),
-                            tint = MaterialTheme.colorScheme.error
+                            contentDescription = stringResource(R.string.entry_detail_delete_cd)
                         )
                     }
                 },
+                // Branded header: the active theme's primary colour with on-primary icons, so it
+                // reads as a header band across all themes (not hardcoded teal).
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
@@ -212,12 +216,17 @@ fun EntryDetailScreen(
                         modifier = Modifier.horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        // Mood + date are filled accent chips (secondaryContainer = the amber accent
+                        // in the Macaco theme, matching the journal-list date pill and adapting per
+                        // theme). Location keeps an outlined look, tinted in the primary colour.
                         if (entry.mood.isNotBlank()) {
                             AssistChip(
                                 onClick = {},
                                 label = { Text(entry.mood) },
+                                border = null,
                                 colors = AssistChipDefaults.assistChipColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    labelColor = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                             )
                         }
@@ -231,7 +240,11 @@ fun EntryDetailScreen(
                                         contentDescription = null,
                                         modifier = Modifier.size(16.dp)
                                     )
-                                }
+                                },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    labelColor = MaterialTheme.colorScheme.primary,
+                                    leadingIconContentColor = MaterialTheme.colorScheme.primary
+                                )
                             )
                         }
                         AssistChip(
@@ -243,7 +256,13 @@ fun EntryDetailScreen(
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp)
                                 )
-                            }
+                            },
+                            border = null,
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                labelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                leadingIconContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
                         )
                     }
                     if (!entry.tripName.isNullOrBlank()) {
@@ -260,12 +279,43 @@ fun EntryDetailScreen(
                         }
                     }
 
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     if (entry.description.isNotBlank()) {
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                         Text(
                             entry.description,
                             style = MaterialTheme.typography.bodyLarge,
                             lineHeight = 28.sp
+                        )
+                    } else {
+                        // No description yet — invite the user to add one instead of leaving the
+                        // lower half of the screen blank. Tapping opens the editor.
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
+                                .clickable(onClick = onEdit)
+                                .padding(24.dp)
+                        ) {
+                            Text(
+                                stringResource(R.string.entry_detail_add_story),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        // Subtle branded fade so the empty lower area doesn't read as dead space.
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color.Transparent,
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.06f)
+                                        )
+                                    )
+                                )
                         )
                     }
 
@@ -278,8 +328,10 @@ fun EntryDetailScreen(
                                 AssistChip(
                                     onClick = { onTagClick(tag) },
                                     label = { Text("#$tag") },
+                                    border = null,
                                     colors = AssistChipDefaults.assistChipColors(
-                                        labelColor = MaterialTheme.colorScheme.primary
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        labelColor = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                 )
                             }

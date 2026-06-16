@@ -62,6 +62,7 @@
     <string name="entry_detail_share_cd">Delen</string>
     <string name="entry_detail_edit_cd">Bewerken</string>
     <string name="entry_detail_delete_cd">Verwijderen</string>
+    <string name="entry_detail_add_story">Vertel je verhaal…</string>
     <string name="entry_detail_delete_title">Herinnering verwijderen</string>
     <string name="entry_detail_delete_message">&quot;%s&quot; verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
 

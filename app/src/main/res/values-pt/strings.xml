@@ -62,6 +62,7 @@
     <string name="entry_detail_share_cd">Compartilhar</string>
     <string name="entry_detail_edit_cd">Editar</string>
     <string name="entry_detail_delete_cd">Excluir</string>
+    <string name="entry_detail_add_story">Conte sua história…</string>
     <string name="entry_detail_delete_title">Excluir Entrada</string>
     <string name="entry_detail_delete_message">Excluir &quot;%s&quot;? Essa ação não pode ser desfeita.</string>
 

@@ -62,6 +62,7 @@
     <string name="entry_detail_share_cd">Dela</string>
     <string name="entry_detail_edit_cd">Redigera</string>
     <string name="entry_detail_delete_cd">Radera</string>
+    <string name="entry_detail_add_story">Berätta din historia…</string>
     <string name="entry_detail_delete_title">Radera anteckning</string>
     <string name="entry_detail_delete_message">Radera &quot;%s&quot;? Detta kan inte ångras.</string>
 

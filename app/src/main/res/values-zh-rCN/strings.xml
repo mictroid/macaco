@@ -60,6 +60,7 @@
     <string name="entry_detail_share_cd">分享</string>
     <string name="entry_detail_edit_cd">编辑</string>
     <string name="entry_detail_delete_cd">删除</string>
+    <string name="entry_detail_add_story">写下你的故事…</string>
     <string name="entry_detail_delete_title">删除日记</string>
     <string name="entry_detail_delete_message">删除 &quot;%s&quot;？此操作无法撤销。</string>
 
