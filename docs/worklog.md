@@ -96,6 +96,17 @@ the neutral label only when unresolved.
 Both billing fixes are **post-1.3 (not in the vc5 AAB), not yet verified on-device** — and the gating
 bug means the button currently never shows for real subscribers, so worth verifying after the next build.
 
+### Added contextual empty-state hints to the new/edit entry screen (`78c23c8`)
+Second Cowork brief from the stale `MyApplication` clone — three "whispered guidance" hints in
+`NewEditEntryScreen`, each shown only while its field is empty and gone on first interaction:
+- Photos: "Add photos to bring your memory to life" (📷, below the photo row).
+- Tags: "Try #beach, #food, #family" (below the tags field).
+- Story: "Tap the mic to speak your memory" (🎤, below the description field).
+
+Shared `HintRow` helper, **theme-adaptive (`primary` @ 60% alpha)** instead of the brief's hardcoded
+teal. Story copy points at the screen's own mic button rather than the keyboard mic. Strings in all
+11 locales. Post-1.3; not yet seen on-device.
+
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
 > **2026-06-16 update — RNDIS issue RESOLVED; new blocker is USB debugging.** The phone now
