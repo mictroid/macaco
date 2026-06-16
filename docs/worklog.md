@@ -46,6 +46,14 @@ Made the Adventures map (the `MapScreen` reached from the drawer) customizable:
 
 Compiles + merges clean; not yet seen on-device (same uninstall/sideload caveat as above).
 
+### Built release AAB for Play (`a9c57a9`)
+Bumped `versionCode` 4→5 and `versionName` 1.2→1.3, then built the signed release bundle
+(`./gradlew bundleRelease`, signed with the upload keystore via the git-ignored `keystore.properties`).
+Output: `app/build/outputs/bundle/release/app-release.aab` (~22 MB). Bundles everything above —
+subscription management, the sign-out fix, and the map theme feature. **Not yet uploaded to Play.**
+Same two non-blocking warnings expected on upload (no mapping file — `isMinifyEnabled = false` — and
+native debug symbols).
+
 ## 2026-06-15 — Galaxy S8+ ADB connection (IN PROGRESS, paused for PC reboot)
 
 **Goal:** add a Samsung Galaxy S8+ as a second USB-connected test device (alongside the A53, which
