@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import com.revenuecat.purchases.models.googleProduct
 import com.houseofmmminq.macaco.util.AppActions
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +57,12 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
     // is a one-time purchase with nothing to cancel. This comes from the entitlement's store +
     // expiry, not the product id — both base plans share the one "macaco_premium" product id.
     val manageableSubscription by viewModel.manageableSubscription.collectAsState()
+    // Which cadence the user is on: match the active entitlement's base-plan id against the
+    // offering's monthly/annual packages (exact match — the product id alone can't tell them apart).
+    val currentBasePlanId by viewModel.currentBasePlanId.collectAsState()
+    val offerings by viewModel.offerings.collectAsState()
+    val annualBasePlanId = offerings?.current?.annual?.product?.googleProduct?.basePlanId
+    val monthlyBasePlanId = offerings?.current?.monthly?.product?.googleProduct?.basePlanId
     Scaffold(
         topBar = {
             TopAppBar(
@@ -122,11 +129,17 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
                 )
                 Spacer(Modifier.height(4.dp))
                 val planLabel = when {
+                    // Exact base-plan match first (one product, two base plans).
+                    manageableSubscription && annualBasePlanId != null && currentBasePlanId == annualBasePlanId ->
+                        stringResource(R.string.purchase_plan_annual)
+                    manageableSubscription && monthlyBasePlanId != null && currentBasePlanId == monthlyBasePlanId ->
+                        stringResource(R.string.purchase_plan_monthly)
+                    // Fallbacks for a separate-product setup where the cadence is in the product id.
                     currentPlanId?.contains("annual") == true   -> stringResource(R.string.purchase_plan_annual)
                     currentPlanId?.contains("monthly") == true  -> stringResource(R.string.purchase_plan_monthly)
                     currentPlanId?.contains("lifetime") == true -> stringResource(R.string.purchase_plan_lifetime)
-                    // A subscription whose cadence isn't encoded in the product id — don't mislabel
-                    // it as "Lifetime"; show a neutral subscription label instead.
+                    // A subscription whose cadence we couldn't resolve — don't mislabel it as
+                    // "Lifetime"; show a neutral subscription label instead.
                     manageableSubscription -> stringResource(R.string.subscription_plan_recurring)
                     else -> stringResource(R.string.subscription_lifetime)
                 }

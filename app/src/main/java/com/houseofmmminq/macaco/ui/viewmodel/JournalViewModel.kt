@@ -64,6 +64,7 @@ class JournalViewModel(
     val offerings = billingManager.offerings
     val currentPlanId = billingManager.currentPlanId
     val manageableSubscription = billingManager.manageableSubscription
+    val currentBasePlanId = billingManager.currentBasePlanId
 
     val isDarkMode: StateFlow<Boolean> = preferencesManager.isDarkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)

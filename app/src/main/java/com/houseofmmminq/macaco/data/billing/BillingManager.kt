@@ -65,6 +65,12 @@ class BillingManager(
     private val _manageableSubscription = MutableStateFlow(false)
     val manageableSubscription: StateFlow<Boolean> = _manageableSubscription.asStateFlow()
 
+    // The active entitlement's Google base-plan id (e.g. the monthly vs annual base plan under
+    // macaco_premium). Matched against the offering's packages by the UI to show which plan the
+    // user is on; null when not on a subscription.
+    private val _currentBasePlanId = MutableStateFlow<String?>(null)
+    val currentBasePlanId: StateFlow<String?> = _currentBasePlanId.asStateFlow()
+
     init {
         if (configured) {
             if (!Purchases.isConfigured) {
@@ -123,6 +129,7 @@ class BillingManager(
         _isPremium.value = active
         if (active && entitlement != null) {
             _currentPlanId.value = entitlement.productIdentifier
+            _currentBasePlanId.value = entitlement.productPlanIdentifier
             // A Play subscription has an expiry (next renewal); a one-time lifetime purchase has
             // none, and promo/other-store grants can't be managed in Play. This is the reliable
             // way to gate "Manage subscription" — the product id can't tell monthly/annual apart.
@@ -130,6 +137,7 @@ class BillingManager(
                 entitlement.store == Store.PLAY_STORE && entitlement.expirationDate != null
         } else {
             _manageableSubscription.value = false
+            _currentBasePlanId.value = null
         }
     }
 
