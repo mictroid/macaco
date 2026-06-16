@@ -2,6 +2,18 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-16 — Play upload warnings: native symbols fixed, R8 deferred
+
+Addressed the two non-blocking Play upload **warnings** (seen on vc6/vc7):
+- **Native debug symbols** — added `ndk { debugSymbolLevel = "FULL" }` to the release build type so
+  Play can symbolicate native crashes/ANRs. Clears the warning on the **next** build (vc7 already
+  uploaded still shows it). Config validated; no behaviour change.
+- **Deobfuscation/mapping file** — only clears by enabling R8 (`isMinifyEnabled = true`). **Deferred**
+  by decision: R8 needs keep rules for the reflection-heavy Google Drive REST client,
+  kotlinx.serialization (@Serializable models), and Firebase/RevenueCat, plus a full on-device test
+  pass (Drive sync, billing, backup/restore). Harmless while not obfuscating. Revisit as its own
+  tested task before public launch. **TODO: enable R8 with keep rules before production.**
+
 ## 2026-06-16 — Macaco watermark on empty-state screens (`6683e25`)
 
 Third Cowork brief: a subtle repeating line-art **macaco icon pattern** as an empty-state background.

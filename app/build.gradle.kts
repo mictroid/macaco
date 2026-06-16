@@ -59,6 +59,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Bundle native debug symbols so Play can symbolicate native crashes/ANRs
+            // (clears the "native code without debug symbols" upload warning).
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
     compileOptions {
