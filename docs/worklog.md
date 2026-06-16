@@ -2,6 +2,19 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-16 — Macaco watermark on empty-state screens (`6683e25`)
+
+Third Cowork brief: a subtle repeating line-art **macaco icon pattern** as an empty-state background.
+New `ui/components/MacacoWatermark.kt` — a `drawMacacoIcon` `DrawScope` helper (goggled-monkey line
+art: head, concentric ears, goggles, muzzle, nostrils) and a `MacacoWatermarkBackground` wrapper that
+tiles jittered, randomly-sized icons in the theme's **`primary` colour at low alpha** (so it adapts
+across all 7 themes), with a fixed RNG seed for a stable layout. Applied behind: the **journal-list
+empty state**, the **entry-detail content when the description is blank**, and the **new/edit entry
+form**. Brief was already theme-adaptive, so no colour deviation — only dropped a no-op `shuffle`.
+Compiles clean; **not yet verified on-device** (chose to commit now rather than re-do the
+uninstall/sideload dance on the A53). The new-entry-form placement is the densest screen and most
+likely to want an alpha/spacing tweak or removal after a look.
+
 ## 2026-06-16 — Play purchase verified + in-app subscription management
 
 ### Play internal-testing purchase → entitlement verified ✅
