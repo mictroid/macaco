@@ -54,6 +54,9 @@
     <string name="new_entry_dictate_cd">Dicteren</string>
     <string name="new_entry_dictate_prompt">Vertel me over jouw reisherinnering…</string>
     <string name="new_entry_tags_label">Tags</string>
+    <string name="new_entry_hint_photos">Voeg foto\'s toe om je herinnering tot leven te brengen</string>
+    <string name="new_entry_hint_tags">Probeer #strand, #eten, #familie</string>
+    <string name="new_entry_hint_story">Tik op de microfoon om je herinnering in te spreken</string>
     <string name="new_entry_add_tag_label">Tag toevoegen</string>
     <string name="new_entry_add_tag_placeholder">museum, architectuur, vakantie</string>
     <string name="new_entry_add_tag_cd">Tag toevoegen</string>

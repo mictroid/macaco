@@ -54,6 +54,9 @@
     <string name="new_entry_dictate_cd">Detta</string>
     <string name="new_entry_dictate_prompt">Raccontami del tuo ricordo di viaggio…</string>
     <string name="new_entry_tags_label">Tag</string>
+    <string name="new_entry_hint_photos">Aggiungi foto per dar vita al tuo ricordo</string>
+    <string name="new_entry_hint_tags">Prova #spiaggia, #cibo, #famiglia</string>
+    <string name="new_entry_hint_story">Tocca il microfono per dettare il tuo ricordo</string>
     <string name="new_entry_add_tag_label">Aggiungi un tag</string>
     <string name="new_entry_add_tag_placeholder">museo, architettura, vacanza</string>
     <string name="new_entry_add_tag_cd">Aggiungi tag</string>

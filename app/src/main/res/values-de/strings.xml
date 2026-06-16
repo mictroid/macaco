@@ -56,6 +56,9 @@
     <string name="new_entry_dictate_cd">Diktieren</string>
     <string name="new_entry_dictate_prompt">Erzähl mir von deiner Reiseerinnerung…</string>
     <string name="new_entry_tags_label">Tags</string>
+    <string name="new_entry_hint_photos">Füge Fotos hinzu, um deine Erinnerung lebendig zu machen</string>
+    <string name="new_entry_hint_tags">Probier #strand, #essen, #familie</string>
+    <string name="new_entry_hint_story">Tippe aufs Mikrofon, um deine Erinnerung zu sprechen</string>
     <string name="new_entry_add_tag_label">Tag hinzufügen</string>
     <string name="new_entry_add_tag_placeholder">Museum, Architektur, Urlaub</string>
     <string name="new_entry_add_tag_cd">Tag hinzufügen</string>

@@ -54,6 +54,9 @@
     <string name="new_entry_dictate_cd">Dicter</string>
     <string name="new_entry_dictate_prompt">Parlez-moi de votre souvenir de voyage…</string>
     <string name="new_entry_tags_label">Étiquettes</string>
+    <string name="new_entry_hint_photos">Ajoutez des photos pour faire vivre votre souvenir</string>
+    <string name="new_entry_hint_tags">Essayez #plage, #cuisine, #famille</string>
+    <string name="new_entry_hint_story">Appuyez sur le micro pour dicter votre souvenir</string>
     <string name="new_entry_add_tag_label">Ajouter une étiquette</string>
     <string name="new_entry_add_tag_placeholder">musée, architecture, vacances</string>
     <string name="new_entry_add_tag_cd">Ajouter une étiquette</string>

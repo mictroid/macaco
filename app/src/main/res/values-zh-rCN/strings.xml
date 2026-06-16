@@ -52,6 +52,9 @@
     <string name="new_entry_dictate_cd">语音输入</string>
     <string name="new_entry_dictate_prompt">说说您的旅行回忆……</string>
     <string name="new_entry_tags_label">标签</string>
+    <string name="new_entry_hint_photos">添加照片，让回忆鲜活起来</string>
+    <string name="new_entry_hint_tags">试试 #海滩、#美食、#家人</string>
+    <string name="new_entry_hint_story">点按麦克风，说出你的回忆</string>
     <string name="new_entry_add_tag_label">添加标签</string>
     <string name="new_entry_add_tag_placeholder">博物馆, 建筑, 度假</string>
     <string name="new_entry_add_tag_cd">添加标签</string>

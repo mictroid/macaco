@@ -86,6 +86,9 @@
     <string name="new_entry_dictate_cd">Dictate</string>
     <string name="new_entry_dictate_prompt">Tell me about your travel memory…</string>
     <string name="new_entry_tags_label">Tags</string>
+    <string name="new_entry_hint_photos">Add photos to bring your memory to life</string>
+    <string name="new_entry_hint_tags">Try #beach, #food, #family</string>
+    <string name="new_entry_hint_story">Tap the mic to speak your memory</string>
     <string name="new_entry_add_tag_label">Add a tag</string>
     <string name="new_entry_add_tag_placeholder">museum, architecture, vacation</string>
     <string name="new_entry_add_tag_cd">Add tag</string>

@@ -70,6 +70,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -366,6 +367,9 @@ fun NewEditEntryScreen(
                         }
                     }
                 }
+                if (photoUris.isEmpty()) {
+                    HintRow(Icons.Filled.PhotoCamera, stringResource(R.string.new_entry_hint_photos))
+                }
             }
 
             // Title
@@ -481,6 +485,9 @@ fun NewEditEntryScreen(
                         focusedBorderColor = MaterialTheme.colorScheme.primary
                     )
                 )
+                if (description.isEmpty()) {
+                    HintRow(Icons.Filled.Mic, stringResource(R.string.new_entry_hint_story))
+                }
             }
 
             // Tags
@@ -492,6 +499,9 @@ fun NewEditEntryScreen(
                     onTagsChange = { tags = it },
                     suggestions = tagSuggestions
                 )
+                if (tags.isEmpty()) {
+                    HintRow(null, stringResource(R.string.new_entry_hint_tags))
+                }
             }
 
             // Suggested tag chips — tap to add; already-added chips are de-emphasised
@@ -793,6 +803,26 @@ private fun SuggestedTagsRow(
                     .padding(horizontal = 10.dp, vertical = 5.dp)
             )
         }
+    }
+}
+
+/**
+ * A "whispered guidance" empty-state hint: small primary-tinted text (optionally with a leading
+ * icon) shown below a field only while it's empty. Theme-adaptive (primary at low alpha) rather than
+ * a hardcoded brand colour, so it reads correctly under every app theme.
+ */
+@Composable
+private fun HintRow(icon: ImageVector?, text: String) {
+    val tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = 8.dp, start = 4.dp)
+    ) {
+        if (icon != null) {
+            Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
+            Spacer(Modifier.width(6.dp))
+        }
+        Text(text, style = MaterialTheme.typography.bodySmall, color = tint)
     }
 }
 

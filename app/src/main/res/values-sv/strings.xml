@@ -54,6 +54,9 @@
     <string name="new_entry_dictate_cd">Diktera</string>
     <string name="new_entry_dictate_prompt">Berätta om ditt reseminne…</string>
     <string name="new_entry_tags_label">Taggar</string>
+    <string name="new_entry_hint_photos">Lägg till foton för att väcka ditt minne till liv</string>
+    <string name="new_entry_hint_tags">Prova #strand, #mat, #familj</string>
+    <string name="new_entry_hint_story">Tryck på mikrofonen för att tala in ditt minne</string>
     <string name="new_entry_add_tag_label">Lägg till en tagg</string>
     <string name="new_entry_add_tag_placeholder">museum, arkitektur, semester</string>
     <string name="new_entry_add_tag_cd">Lägg till tagg</string>

@@ -54,6 +54,9 @@
     <string name="new_entry_dictate_cd">Ditar</string>
     <string name="new_entry_dictate_prompt">Fale sobre sua lembrança de viagem…</string>
     <string name="new_entry_tags_label">Tags</string>
+    <string name="new_entry_hint_photos">Adicione fotos para dar vida à sua memória</string>
+    <string name="new_entry_hint_tags">Experimente #praia, #comida, #família</string>
+    <string name="new_entry_hint_story">Toque no microfone para ditar sua memória</string>
     <string name="new_entry_add_tag_label">Adicionar uma tag</string>
     <string name="new_entry_add_tag_placeholder">museu, arquitetura, férias</string>
     <string name="new_entry_add_tag_cd">Adicionar tag</string>

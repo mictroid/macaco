@@ -52,6 +52,9 @@
     <string name="new_entry_dictate_cd">音声入力</string>
     <string name="new_entry_dictate_prompt">旅の思い出を話してください…</string>
     <string name="new_entry_tags_label">タグ</string>
+    <string name="new_entry_hint_photos">写真を追加して思い出を生き生きと</string>
+    <string name="new_entry_hint_tags">例: #ビーチ、#グルメ、#家族</string>
+    <string name="new_entry_hint_story">マイクをタップして思い出を話そう</string>
     <string name="new_entry_add_tag_label">タグを追加</string>
     <string name="new_entry_add_tag_placeholder">博物館、建築、バケーション</string>
     <string name="new_entry_add_tag_cd">タグを追加</string>
