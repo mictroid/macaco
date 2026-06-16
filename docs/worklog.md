@@ -15,6 +15,13 @@ Compiles clean; **not yet verified on-device** (chose to commit now rather than 
 uninstall/sideload dance on the A53). The new-entry-form placement is the densest screen and most
 likely to want an alpha/spacing tweak or removal after a look.
 
+### Built release AAB at vc7 / 1.4
+Bumped `versionCode` **6→7** and `versionName` **1.3→1.4** (first versionName bump since 1.3 — vc7
+adds the watermark on top of the fully-verified vc6). Clean `bundleRelease`; signed AAB at
+`app/build/outputs/bundle/release/app-release.aab` (~22 MB). Only new feature vs vc6 is the
+empty-state watermark — so on the next install, eyeball the empty states (especially the new-entry
+form) and adjust alpha/spacing if needed.
+
 ## 2026-06-16 — Play purchase verified + in-app subscription management
 
 ### Play internal-testing purchase → entitlement verified ✅
