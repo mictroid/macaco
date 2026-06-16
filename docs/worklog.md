@@ -73,8 +73,11 @@ colours instead of the brief's hardcoded teal/amber** so it holds up across all 
   bottom fade instead of dead space. String added across all 11 locales.
 - Photo full-bleed (also in the brief) was already in place.
 - Chose `secondaryContainer` over hardcoded brand colours partly because that old clone already tried
-  "gold tag text across all screens" and **reverted** it. Post-1.3 (not in the vc5 AAB); not yet
-  seen on-device.
+  "gold tag text across all screens" and **reverted** it. Shipped in vc6.
+- **Verified on-device 2026-06-16** (driven over ADB with screenshots): header band, mood/date/location/
+  tag chips, full-bleed photo, and the empty-description **"Add your story…"** prompt + bottom fade
+  (tap → opens the editor). **Theme adaptivity confirmed** by switching to the Rose theme — the header
+  and chips adopt the theme's colours (the deliberate deviation from the brief's hardcoded teal). ✅
 
 ### Fixed: Manage-subscription button never showed for subscribers (`9fbee37`)
 Tester reported the "Manage subscription" button missing on a fresh account after buying **monthly**.
