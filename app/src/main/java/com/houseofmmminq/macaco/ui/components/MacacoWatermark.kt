@@ -83,8 +83,8 @@ fun MacacoWatermarkBackground(
 
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            val spacing = 150.dp.toPx()
-            val jitter = 100.dp.toPx()
+            val spacing = 165.dp.toPx()
+            val jitter = 80.dp.toPx()
             val rng = java.util.Random(42L) // fixed seed → stable layout
 
             var y = -spacing * 0.4f
@@ -93,7 +93,8 @@ fun MacacoWatermarkBackground(
                 while (x < size.width + spacing) {
                     val cx = x + (rng.nextFloat() - 0.5f) * jitter
                     val cy = y + (rng.nextFloat() - 0.5f) * jitter
-                    val r = (28 + rng.nextInt(24)).dp.toPx() / 2f
+                    // Diameter ~18–32dp (kept small so it stays a background texture, not a motif).
+                    val r = (18 + rng.nextInt(14)).dp.toPx() / 2f
                     val alpha = 0.13f + rng.nextFloat() * 0.09f
                     drawMacacoIcon(cx, cy, r, primaryColor.copy(alpha = alpha))
                     x += spacing

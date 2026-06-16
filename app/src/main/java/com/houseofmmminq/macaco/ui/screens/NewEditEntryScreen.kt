@@ -391,7 +391,9 @@ fun NewEditEntryScreen(
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background
                     )
                 )
             }
@@ -486,7 +488,9 @@ fun NewEditEntryScreen(
                     },
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background
                     )
                 )
                 if (description.isEmpty()) {
@@ -594,7 +598,10 @@ private fun TagsField(
                 keyboardActions = KeyboardActions(onDone = { commit(input) }),
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    // Opaque fill so the empty-state watermark only shows in the gaps, not through fields.
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -680,7 +687,9 @@ private fun LocationField(
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -752,7 +761,9 @@ private fun TripField(
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background
             ),
             modifier = androidx.compose.ui.Modifier
                 .fillMaxWidth()
