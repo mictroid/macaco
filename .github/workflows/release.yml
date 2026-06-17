@@ -34,17 +34,34 @@ jobs:
       - name: Write local.properties
         run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > local.properties
 
-      # No play-service-account.json is checked out (it's git-ignored and never committed), so
-      # this step exchanges the job's OIDC token for short-lived credentials impersonating
-      # play-publisher via Workload Identity Federation (no long-lived key, trust scoped to this
-      # exact repo; see docs/release-setup.md). The generated credentials file's path is exported
-      # as GOOGLE_APPLICATION_CREDENTIALS, which app/build.gradle.kts feeds directly to GPP's
-      # serviceAccountCredentials.
-      - id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: projects/502845055894/locations/global/workloadIdentityPools/github-pool/providers/github-provider
-          service_account: play-publisher@macaco-499016.iam.gserviceaccount.com
+      # No play-service-account.json is checked out (it's git-ignored and never committed), so we
+      # build a Workload Identity Federation credential config ourselves rather than using
+      # google-github-actions/auth's default (URL-sourced) config — that had the JVM fetch the
+      # GitHub OIDC token over HTTPS at publish time, which failed PKIX validation against
+      # GitHub's token endpoint cert chain from inside Java (a known JVM/PKIX interop gotcha; curl
+      # validates the same chain fine via the OS trust store). Fetching the token with curl right
+      # before the build and pointing credential_source at that local file sidesteps the in-JVM
+      # HTTPS call entirely — Java then only talks to sts.googleapis.com / iamcredentials.
+      # googleapis.com, both of which it already trusts fine. Trust is scoped to this exact repo;
+      # see docs/release-setup.md.
+      - name: Fetch GitHub OIDC token and build WIF credential config
+        run: |
+          curl -sLS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=//iam.googleapis.com/projects/502845055894/locations/global/workloadIdentityPools/github-pool/providers/github-provider" \
+            | jq -r '.value' > "$GITHUB_WORKSPACE/gh-oidc-token.txt"
+          cat > "$GITHUB_WORKSPACE/wif-creds.json" <<EOF
+          {
+            "type": "external_account",
+            "audience": "//iam.googleapis.com/projects/502845055894/locations/global/workloadIdentityPools/github-pool/providers/github-provider",
+            "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+            "token_url": "https://sts.googleapis.com/v1/token",
+            "service_account_impersonation_url": "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/play-publisher@macaco-499016.iam.gserviceaccount.com:generateAccessToken",
+            "credential_source": {
+              "file": "$GITHUB_WORKSPACE/gh-oidc-token.txt"
+            }
+          }
+          EOF
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/wif-creds.json" >> "$GITHUB_ENV"
 
       - name: Build and publish to Play internal testing
         run: |
