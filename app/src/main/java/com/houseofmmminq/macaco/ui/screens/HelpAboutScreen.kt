@@ -33,6 +33,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,9 +61,11 @@ private val FAQ = listOf(
 @Composable
 fun HelpAboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val versionName = remember {
+    val versionLabel = remember {
         runCatching {
-            context.packageManager.getPackageInfo(context.packageName, 0).versionName
+            val info = context.packageManager.getPackageInfo(context.packageName, 0)
+            val versionCode = PackageInfoCompat.getLongVersionCode(info)
+            "${info.versionName} ($versionCode)"
         }.getOrNull().orEmpty()
     }
 
@@ -124,7 +127,7 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                     )
                     Spacer(Modifier.size(6.dp))
                     Text(
-                        stringResource(R.string.settings_version_value, versionName),
+                        stringResource(R.string.settings_version_value, versionLabel),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White.copy(alpha = 0.8f)
                     )

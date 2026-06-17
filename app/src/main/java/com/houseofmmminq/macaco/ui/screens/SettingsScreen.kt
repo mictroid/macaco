@@ -84,6 +84,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.content.ContextCompat
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -639,12 +640,14 @@ fun SettingsScreen(
             Spacer(Modifier.height(4.dp))
             SettingsSectionHeader(stringResource(R.string.settings_about))
 
-            val versionName = remember {
+            val versionLabel = remember {
                 runCatching {
-                    context.packageManager.getPackageInfo(context.packageName, 0).versionName
+                    val info = context.packageManager.getPackageInfo(context.packageName, 0)
+                    val versionCode = PackageInfoCompat.getLongVersionCode(info)
+                    "${info.versionName} ($versionCode)"
                 }.getOrNull().orEmpty()
             }
-            SettingsInfoRow(icon = Icons.Filled.Info, title = stringResource(R.string.common_version), value = stringResource(R.string.settings_version_value, versionName))
+            SettingsInfoRow(icon = Icons.Filled.Info, title = stringResource(R.string.common_version), value = stringResource(R.string.settings_version_value, versionLabel))
 
             Spacer(Modifier.height(16.dp))
             }
