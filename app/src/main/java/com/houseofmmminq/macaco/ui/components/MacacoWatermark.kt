@@ -72,8 +72,8 @@ private fun DrawScope.drawMacacoIcon(cx: Float, cy: Float, r: Float, color: Colo
 /**
  * A [Box] that tiles faint macaco icons behind [content] as an empty-state watermark. Icons sit
  * on a staggered grid — odd rows offset by half the horizontal spacing — so the pattern reads as
- * a diamond lattice rather than a random scatter. Every icon is the same size at the same
- * whisper-level alpha, so the layout needs no randomness to stay stable across recompositions.
+ * a diamond lattice rather than a random scatter. Every icon is the same size at the same alpha,
+ * so the layout needs no randomness to stay stable across recompositions.
  * Icons use the theme's primary colour, so the pattern adapts to all themes.
  */
 @Composable
@@ -88,7 +88,7 @@ fun MacacoWatermarkBackground(
             val spacingX = 130.dp.toPx()
             val spacingY = 90.dp.toPx()
             val iconR = 52.dp.toPx() / 2f // radius = 26dp
-            val alpha = 0.03f // 3% opacity — whisper level
+            val alpha = 0.16f // 16% opacity — clearly visible, uniform
 
             var row = 0
             var y = -spacingY * 0.5f

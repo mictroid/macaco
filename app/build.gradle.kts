@@ -79,11 +79,15 @@ android {
 // Google Play publishing (Triple-T gradle-play-publisher). Locally, the credential is a Play
 // Developer API service-account key kept in a git-ignored play-service-account.json at the repo
 // root — see docs/release-setup.md for how to create it. In CI (GitHub Actions), that file isn't
-// present; the plugin then falls back to Application Default Credentials, which the workflow sets
-// up via Workload Identity Federation (no key file needed there at all).
+// present; the plugin then uses Application Default Credentials instead, which the workflow sets
+// up via Workload Identity Federation (no key file needed there at all). GPP requires this flag
+// explicitly — it doesn't fall back to ADC on its own just because no JSON file was set.
 play {
-    rootProject.file("play-service-account.json").takeIf { it.exists() }?.let {
-        serviceAccountCredentials.set(it)
+    val playServiceAccountFile = rootProject.file("play-service-account.json")
+    if (playServiceAccountFile.exists()) {
+        serviceAccountCredentials.set(playServiceAccountFile)
+    } else {
+        useApplicationDefaultCredentials = true
     }
     track.set("internal")
     defaultToAppBundles.set(true)
