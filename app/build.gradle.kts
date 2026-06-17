@@ -31,7 +31,7 @@ android {
         applicationId = "com.houseofmmminq.macaco"
         minSdk = 24
         targetSdk = 36
-        versionCode = 12
+        versionCode = 13
         versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -92,7 +92,9 @@ play {
     } else if (ciCredentialsPath != null) {
         serviceAccountCredentials.set(file(ciCredentialsPath))
     }
-    track.set("internal")
+    // Closed testing's default track is still called "alpha" in the Play Developer API/GPP,
+    // even though Play Console itself just calls it "Closed testing" in the UI.
+    track.set("alpha")
     defaultToAppBundles.set(true)
 }
 
