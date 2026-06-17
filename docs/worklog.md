@@ -2,12 +2,127 @@
 
 Running log of notable work sessions. Newest first.
 
-> **NEXT (2026-06-17):** Revisit the **empty-state watermark design** and write **clearer
-> expectations** for it before tweaking further — agree on size, density, opacity, and exactly which
-> screens it belongs on (the new-entry form is the contentious one). Current state: vc9/1.4 built
-> (denser ~2.5×, smaller icons, opaque form fields) but **not yet uploaded/seen on-device**. Also
-> still open: enable **R8** with keep rules before production; the paused **Galaxy S8+ ADB** setup
-> (toggle USB debugging on the phone).
+> **NEXT (2026-06-17):** Testing the new GitHub Actions release pipeline (`release.yml`) by
+> triggering it for vc11 — first real run of the Workload Identity Federation setup. If it works,
+> vc11 ships via CI instead of a local `bundleRelease`; verify the upload lands before trusting the
+> pipeline for future releases. Still open from earlier: enable **R8** with keep rules before
+> production; the paused **Galaxy S8+ ADB** setup (toggle USB debugging on the phone).
+
+## 2026-06-17 — Release pipeline moved to GitHub Actions via Workload Identity Federation
+
+Replaced the manual local `bundleRelease` + `play-service-account.json` upload flow with a
+GitHub Actions workflow (`.github/workflows/release.yml`, manual `workflow_dispatch` trigger) that
+authenticates to GCP without any long-lived key:
+
+- Created a Workload Identity Pool (`github-pool`) + OIDC provider (`github-provider`) in
+  `macaco-499016`, trusting GitHub's OIDC issuer with an attribute condition locked to
+  `mictroid/wanderlog` specifically (not just the GitHub org/owner).
+- Granted that federated identity `roles/iam.workloadIdentityUser` on the existing
+  `play-publisher@macaco-499016.iam.gserviceaccount.com` service account, scoped via
+  `principalSet://.../attribute.repository/mictroid/wanderlog` — only workflow runs from this exact
+  repo can impersonate it.
+- `app/build.gradle.kts`'s `play {}` block now only sets `serviceAccountCredentials` when
+  `play-service-account.json` exists locally; in CI (where that git-ignored file is never checked
+  out) gradle-play-publisher falls back to Application Default Credentials, which
+  `google-github-actions/auth` populates via the WIF exchange above. Local dev is unaffected.
+- The workflow decodes the upload keystore from a `RELEASE_KEYSTORE_BASE64` repo secret (plus
+  `RELEASE_KEYSTORE_PASSWORD`/`RELEASE_KEY_ALIAS`/`RELEASE_KEY_PASSWORD`/`MAPS_API_KEY`), writes
+  `keystore.properties`/`local.properties` at runtime, then runs `./gradlew publishReleaseBundle`.
+- Installed and authenticated `gh`/`gcloud` CLIs in the WSL2 dev environment to set this up (apt
+  install needs an interactive terminal — `sudo` fails non-interactively, so the install commands
+  had to be run directly in a terminal window rather than over this session's command runner).
+
+Not yet tested end-to-end — next step is triggering it for vc11 and confirming the upload lands on
+the Play internal-testing track.
+
+## 2026-06-17 — vc10 verified on-device; watermark v2 + vc11 build
+
+### vc10 verified on the A53 (Play internal testing install)
+User uploaded vc10 to Play and installed it on the A53. Connected over ADB and drove the app
+directly (taps/swipes/`uiautomator dump`, which exposes full off-screen text of share intents) to
+confirm all five vc10 changes work on the real release build:
+- **Watermark lattice** — staggered diamond pattern measured directly off a screenshot (row offset
+  ≈ half horizontal spacing, vertical:horizontal ratio ≈ 0.6), not the old random scatter.
+- **Entry swipe + pager polish** — swiping moves cleanly between entries; counter updates live
+  (caught it mid-update during a mid-gesture screenshot); edge-peek (two entries partially visible
+  with a gap) confirmed in the same mid-swipe capture.
+- **Share text** — `uiautomator dump` captured the exact share-intent strings: entry share
+  (`"test\n📍 Oranjestad, Aruba  ·  June 10, 2026\n\n\n— shared from Macaco"` + photo attached) and
+  app-referral share (`"I've logged 14 travel memories in Macaco — ...\n\nhttps://play.google.com/..."`,
+  count matched the real journal size) — both exact matches to spec.
+- **Adventures map** — subtitle read "9 of 10 locations mapped" (sane), country/region labels thin
+  and legible.
+
+**Found in passing (pre-existing, not caused by today's changes):** the "Dresden City Museum" entry's
+**title** field contained leftover pasted share-text output from earlier testing (garbled into the
+title, not the description as first suspected). Attempted to fix it via ADB text injection
+mid-session; the replacement typing went wrong (title ended up as "my Paris" — keyboard
+autocomplete likely interfered) before the cleanup could be verified. **User is fixing the title
+directly on-device.** Location/date/description/tags on that entry were never affected.
+
+### Watermark v2 (Cowork brief: watermark-v2)
+Follow-up refinement to the lattice from the previous brief — `drawMacacoIcon` itself unchanged,
+only `MacacoWatermarkBackground`'s grid parameters:
+- Horizontal spacing 150dp → 130dp (vertical stays 90dp).
+- Icon radius: fixed 26dp (was random 10–16.5dp).
+- Opacity: fixed 3% (was random 13–22%) — much lighter, "whisper level."
+- Removed `java.util.Random` entirely — no randomness left to seed.
+
+### vc11 / 1.4 build
+Bumped `versionCode` **10→11** (still `versionName` 1.4) and built a clean signed `bundleRelease`
+(~22 MB) on top of vc10, with only the watermark v2 change. **Not yet uploaded to Play or installed.**
+
+## 2026-06-17 — Entry swipe, share text, watermark lattice, map fixes — vc10 / 1.4 build
+
+Five Cowork-brief-driven changes, all compiled clean and bundled into a signed AAB. None verified
+on-device yet (see NEXT above).
+
+### Swipe between entries on the detail screen
+Finished wiring a `HorizontalPager` across `entries` on `EntryDetailScreen` (the signature change
+to take the full list + `initialEntryId` had been started in an earlier session but left
+non-compiling — body still referenced the old single-`entry` parameter, and `NavGraph` hadn't been
+updated to match). Swiping left/right now moves to the next/previous entry without backing out to
+the list; the toolbar and delete dialog always act on whichever entry is currently in view.
+`NavGraph.kt` updated to pass `entries` + `initialEntryId` instead of a single looked-up entry.
+
+### Premium pager polish (Cowork brief: horizontal-pager-premium)
+Layered six refinements onto the new pager: parallax photo header (translates at 40% of swipe
+offset, clipped to bounds), edge-peek with inactive-page scale (0.93→1.0) and fade (75%→100%) via
+`contentPadding`/`pageSpacing`, animated "N / total" counter in the top bar (hidden for single-entry
+journals), per-page scroll-to-top on page change, a single haptic tick per swipe settle (suppressed
+on initial screen open via `snapshotFlow`+`drop(1)`), and Coil crossfade on entry photos.
+
+### Share text improvements (Cowork brief: share-text)
+**App-referral share** (`AppActions.shareApp`) now pulls live entry count into a pluralized
+`share_app_text` string ("I've logged N travel memories...") with the Play Store URL on its own
+line so receiving apps auto-link it. Translated into all 11 locales. **Entry share**
+(`EntryDetailScreen.shareEntry`) reformatted to a cleaner layout — plain title, combined
+"📍 location · date" line, description capped at 300 chars, lowercase "— shared from Macaco" credit.
+Kept the existing photo-attachment intent logic (single/multi-photo, clipboard caption fallback)
+intact since the brief's reference code didn't know about it.
+
+### Watermark redesign (Cowork brief: watermark-background)
+Resolves the open "clarify watermark design expectations" item from the previous NEXT note. Switched
+`MacacoWatermarkBackground`'s layout from random jitter to the brief's structured staggered diamond
+lattice — odd rows offset by half a spacing unit, 150dp horizontal / 90dp vertical spacing, only
+icon size/alpha still randomized (fixed seed). Icon art and screen coverage (journal-list empty
+state, full new/edit-entry form background, entry-detail empty-description area) already matched
+the brief — no changes needed there.
+
+### Adventures map fixes (Cowork brief: adventures-map-fixes)
+**Label weight:** added `weight: 0.5` to `labels.text.stroke` on `administrative.country/locality/
+province` in both `map_style.json` (dark) and `map_style_light.json` — thins the bold halo around
+country/region labels. No `map_style_standard.json` exists (Standard theme uses Google's default
+style, `styleRes = null`), so that's the only file the brief assumed that doesn't apply. **Counter
+bug:** the brief diagnosed "12 of 2 locations mapped" as swapped `entries.size`/`uniqueLocations.size`
+arguments, but this codebase doesn't use those variables in that string at all — the real cause is
+`geocodedLocations` being an append-only cache in the ViewModel that's never pruned when entries are
+edited/deleted, so its raw size can exceed the current unique-location count. Fixed by counting the
+overlap between current `locations` and `geocodedLocations` instead of using the raw cache size.
+
+### vc10 / 1.4 build
+Bumped `versionCode` **9→10** (still `versionName` 1.4) and built a clean signed `bundleRelease`
+(~22 MB) bundling all five changes above on top of vc9. **Not yet uploaded to Play.**
 
 ## 2026-06-16 — Watermark refinement + vc8 / 1.4 build (`9d047d5`, `62291ea`)
 

@@ -31,7 +31,7 @@ android {
         applicationId = "com.houseofmmminq.macaco"
         minSdk = 24
         targetSdk = 36
-        versionCode = 9
+        versionCode = 11
         versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -76,12 +76,15 @@ android {
     }
 }
 
-// Google Play publishing (Triple-T gradle-play-publisher). The credential is a Play Developer API
-// service-account key kept in a git-ignored play-service-account.json at the repo root. With it in
-// place, `./gradlew publishReleaseBundle` uploads the signed AAB straight to the internal track.
-// See docs/release-setup.md for how to create the service account and grant it access.
+// Google Play publishing (Triple-T gradle-play-publisher). Locally, the credential is a Play
+// Developer API service-account key kept in a git-ignored play-service-account.json at the repo
+// root — see docs/release-setup.md for how to create it. In CI (GitHub Actions), that file isn't
+// present; the plugin then falls back to Application Default Credentials, which the workflow sets
+// up via Workload Identity Federation (no key file needed there at all).
 play {
-    serviceAccountCredentials.set(rootProject.file("play-service-account.json"))
+    rootProject.file("play-service-account.json").takeIf { it.exists() }?.let {
+        serviceAccountCredentials.set(it)
+    }
     track.set("internal")
     defaultToAppBundles.set(true)
 }

@@ -1,0 +1,51 @@
+name: Release to Play Store
+
+# Manual trigger only — releases are deliberate, not on every push.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # required for Workload Identity Federation
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Decode release keystore
+        run: echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/release.jks"
+
+      - name: Write keystore.properties
+        run: |
+          cat > keystore.properties <<EOF
+          storeFile=$GITHUB_WORKSPACE/release.jks
+          storePassword=${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.RELEASE_KEY_ALIAS }}
+          keyPassword=${{ secrets.RELEASE_KEY_PASSWORD }}
+          EOF
+
+      - name: Write local.properties
+        run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > local.properties
+
+      # No play-service-account.json is checked out (it's git-ignored and never committed), so
+      # gradle-play-publisher falls back to Application Default Credentials — which this step
+      # supplies via Workload Identity Federation, impersonating play-publisher@macaco-499016
+      # without any long-lived key. The federation trust is scoped to this exact repo (see
+      # docs/release-setup.md).
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/502845055894/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: play-publisher@macaco-499016.iam.gserviceaccount.com
+
+      - name: Build and publish to Play internal testing
+        run: |
+          chmod +x gradlew
+          ./gradlew publishReleaseBundle
