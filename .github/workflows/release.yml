@@ -49,4 +49,4 @@ jobs:
       - name: Build and publish to Play internal testing
         run: |
           chmod +x gradlew
-          ./gradlew publishReleaseBundle
+          ./gradlew publishReleaseBundle --stacktrace
