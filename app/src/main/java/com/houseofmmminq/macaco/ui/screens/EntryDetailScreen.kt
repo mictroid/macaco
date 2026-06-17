@@ -1,5 +1,10 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -9,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -53,35 +60,70 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
+import kotlin.math.absoluteValue
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun EntryDetailScreen(
-    entry: TravelEntry,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
+    entries: List<TravelEntry>,
+    initialEntryId: String,
+    onEdit: (String) -> Unit,
+    onDelete: (String) -> Unit,
     onBack: () -> Unit,
     onTagClick: (String) -> Unit = {},
     cachedDrivePhotos: Map<String, String> = emptyMap()
 ) {
     val context = LocalContext.current
+    // Swipe horizontally to move between entries. Opens on the tapped entry; the toolbar and the
+    // delete dialog always act on whichever entry is currently in view.
+    val initialIndex = remember(initialEntryId) {
+        entries.indexOfFirst { it.id == initialEntryId }.coerceAtLeast(0)
+    }
+    val entriesPagerState = rememberPagerState(initialPage = initialIndex) { entries.size }
+    val currentEntry = entries.getOrNull(entriesPagerState.currentPage)
+    if (currentEntry == null) {
+        // List emptied out from under us (e.g. the last entry was deleted) — return to the list.
+        LaunchedEffect(Unit) { onBack() }
+        return
+    }
+
+    // Light haptic tick each time a swipe settles on a new entry. `drop(1)` skips the initial
+    // (already-idle) state so opening the screen doesn't fire a tick.
+    val haptic = LocalHapticFeedback.current
+    LaunchedEffect(entriesPagerState) {
+        snapshotFlow { entriesPagerState.isScrollInProgress }
+            .drop(1)
+            .distinctUntilChanged()
+            .collect { inProgress -> if (!inProgress) haptic.performHapticFeedback(HapticFeedbackType.LongPress) }
+    }
+
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     if (showDeleteDialog) {
@@ -89,10 +131,10 @@ fun EntryDetailScreen(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text(stringResource(R.string.entry_detail_delete_title)) },
             text = {
-                Text(stringResource(R.string.entry_detail_delete_message, entry.title))
+                Text(stringResource(R.string.entry_detail_delete_message, currentEntry.title))
             },
             confirmButton = {
-                TextButton(onClick = onDelete) {
+                TextButton(onClick = { onDelete(currentEntry.id) }) {
                     Text(stringResource(R.string.common_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -105,17 +147,34 @@ fun EntryDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    // Orientation among entries — only worth showing once there's more than one.
+                    if (entries.size > 1) {
+                        AnimatedContent(
+                            targetState = entriesPagerState.currentPage + 1,
+                            transitionSpec = {
+                                fadeIn(animationSpec = tween(150)) togetherWith fadeOut(animationSpec = tween(150))
+                            },
+                            label = "entryCounter"
+                        ) { pageNumber ->
+                            Text(
+                                text = "$pageNumber / ${entries.size}",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                     }
                 },
                 actions = {
-                    IconButton(onClick = { shareEntry(context, entry) }) {
+                    IconButton(onClick = { shareEntry(context, currentEntry) }) {
                         Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.entry_detail_share_cd))
                     }
-                    IconButton(onClick = onEdit) {
+                    IconButton(onClick = { onEdit(currentEntry.id) }) {
                         Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.entry_detail_edit_cd))
                     }
                     IconButton(onClick = { showDeleteDialog = true }) {
@@ -136,31 +195,71 @@ fun EntryDetailScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        Box(
+        HorizontalPager(
+            state = entriesPagerState,
+            // Reveals a sliver of the neighbouring entries so swiping reads as discoverable.
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            pageSpacing = 12.dp,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+        ) { page ->
+        val entry = entries[page]
+        // How far this page is from the active one, in pages (0 = active, ±1 = adjacent).
+        val pageOffset = entriesPagerState.currentPage - page + entriesPagerState.currentPageOffsetFraction
+        val pageProximity = 1f - pageOffset.absoluteValue.coerceIn(0f, 1f)
+        val pageScale = lerp(start = 0.93f, stop = 1f, fraction = pageProximity)
+        val pageAlpha = lerp(start = 0.75f, stop = 1f, fraction = pageProximity)
+
+        // Each entry keeps its own scroll position, but lands back at the top whenever it becomes
+        // the active page so swiping in never resumes mid-scroll.
+        val listState = rememberLazyListState()
+        LaunchedEffect(entriesPagerState.currentPage) {
+            if (entriesPagerState.currentPage == page) {
+                listState.scrollToItem(0)
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = pageScale
+                    scaleY = pageScale
+                    alpha = pageAlpha
+                }
         ) {
             // Subtle macaco watermark behind the content when the entry has no description, so the
             // empty lower area doesn't read as dead space.
             if (entry.description.isBlank()) {
                 MacacoWatermarkBackground(modifier = Modifier.matchParentSize())
             }
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             item {
+                // Parallax: the header moves at ~40% of the swipe offset, clipped so it never
+                // bleeds past the page edge.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clipToBounds()
+                        .graphicsLayer { translationX = pageOffset * size.width * 0.4f }
+                ) {
                 val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
                 if (photoCount > 0) {
                     val pagerState = rememberPagerState(pageCount = { photoCount })
                     Box {
-                        HorizontalPager(state = pagerState) { page ->
+                        HorizontalPager(state = pagerState) { photoPage ->
                             // Prefer cached Drive photo (downloaded on this device); fall back to
                             // local URI (may fail on a device that didn't add the photo).
-                            val displayUri = entry.driveFileIds.getOrNull(page)
+                            val displayUri = entry.driveFileIds.getOrNull(photoPage)
                                 ?.takeIf { it.isNotEmpty() }
                                 ?.let { cachedDrivePhotos[it] }
-                                ?: entry.photoUris.getOrNull(page)
+                                ?: entry.photoUris.getOrNull(photoPage)
                             AsyncImage(
-                                model = displayUri,
+                                model = ImageRequest.Builder(context)
+                                    .data(displayUri)
+                                    .crossfade(true)
+                                    .build(),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -202,6 +301,7 @@ fun EntryDetailScreen(
                     ) {
                         Text(entry.mood.ifBlank { "🗺️" }, fontSize = 72.sp)
                     }
+                }
                 }
             }
 
@@ -301,7 +401,7 @@ fun EntryDetailScreen(
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
-                                .clickable(onClick = onEdit)
+                                .clickable(onClick = { onEdit(entry.id) })
                                 .padding(24.dp)
                         ) {
                             Text(
@@ -350,26 +450,37 @@ fun EntryDetailScreen(
             }
             }
         }
+        }
     }
 }
 
 private fun shareEntry(context: Context, entry: TravelEntry) {
     val dateStr = formatDate(entry.dateMillis)
     val shareText = buildString {
-        appendLine("🐒 ${entry.title}")
-        if (entry.location.isNotBlank()) appendLine("📍 ${entry.location}")
-        appendLine("📅 $dateStr")
-        if (entry.mood.isNotBlank()) appendLine(entry.mood)
+        appendLine(entry.title)
+
+        // Location + date on one line.
+        val locationLine = listOfNotNull(
+            entry.location.takeIf { it.isNotBlank() },
+            dateStr.takeIf { it.isNotBlank() }
+        ).joinToString("  ·  ")
+        if (locationLine.isNotBlank()) appendLine("📍 $locationLine")
+
+        // Description snippet — capped so the share doesn't dwarf the rest of the message.
         if (entry.description.isNotBlank()) {
             appendLine()
-            appendLine(entry.description)
+            if (entry.description.length <= 300) {
+                append(entry.description)
+            } else {
+                append(entry.description.take(300))
+                append("…")
+            }
         }
-        if (entry.tags.isNotEmpty()) {
-            appendLine()
-            appendLine(entry.tags.joinToString(" ") { "#$it" })
-        }
+
+        // Soft app credit — organic word-of-mouth, not an advertisement.
         appendLine()
-        append("— Shared from Macaco")
+        appendLine()
+        append("— shared from Macaco")
     }
 
     // Photos live in app-internal storage (file:// URIs), which other apps can't read directly.

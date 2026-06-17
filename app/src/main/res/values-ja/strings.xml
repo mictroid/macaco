@@ -195,7 +195,9 @@
     <string name="drawer_rate_us">評価する</string>
     <string name="drawer_help">ヘルプと情報</string>
     <string name="share_app_subject">Macaco – 旅の日記</string>
-    <string name="share_app_text">Macaco で旅の記録をつけています。ぜひ試してみてください！ %1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="other">Macaco で %d 件の旅の思い出を記録しました — 冒険を記録する一番の方法です。</item>
+    </plurals>
     <string name="share_app_chooser">Macaco を共有</string>
 
     <!-- Help &amp; About -->

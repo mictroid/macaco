@@ -198,7 +198,10 @@
     <string name="drawer_rate_us">Valorar</string>
     <string name="drawer_help">Ayuda e información</string>
     <string name="share_app_subject">Macaco – Diario de viaje</string>
-    <string name="share_app_text">Uso Macaco para registrar mis viajes, ¡pruébalo! %1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="one">He registrado %d recuerdo de viaje en Macaco — la mejor forma de documentar tus aventuras.</item>
+        <item quantity="other">He registrado %d recuerdos de viaje en Macaco — la mejor forma de documentar tus aventuras.</item>
+    </plurals>
     <string name="share_app_chooser">Compartir Macaco con</string>
 
     <!-- Help &amp; About -->

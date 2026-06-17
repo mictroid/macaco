@@ -169,8 +169,12 @@ fun MapScreen(
                     color = Color.White.copy(alpha = 0.85f)
                 )
                 if (locations.isNotEmpty()) {
+                    // geocodedLocations is an append-only cache (never pruned when entries are
+                    // edited/deleted), so its raw size can exceed the current location count —
+                    // count only the overlap with today's unique locations.
+                    val mappedCount = locations.count { it in geocodedLocations }
                     Text(
-                        "${geocodedLocations.size} of ${locations.size} locations mapped",
+                        "$mappedCount of ${locations.size} locations mapped",
                         color = SplashGold.copy(alpha = 0.70f),
                         fontSize = 11.sp,
                         fontFamily = MacacoFontFamily

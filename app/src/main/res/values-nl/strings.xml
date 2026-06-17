@@ -198,7 +198,10 @@
     <string name="drawer_rate_us">Beoordelen</string>
     <string name="drawer_help">Help &amp; info</string>
     <string name="share_app_subject">Macaco – Reisdagboek</string>
-    <string name="share_app_text">Ik gebruik Macaco om mijn reizen bij te houden – probeer het eens! %1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="one">Ik heb %d reisherinnering vastgelegd in Macaco — de beste manier om je avonturen bij te houden.</item>
+        <item quantity="other">Ik heb %d reisherinneringen vastgelegd in Macaco — de beste manier om je avonturen bij te houden.</item>
+    </plurals>
     <string name="share_app_chooser">Macaco delen via</string>
 
     <!-- Help &amp; About -->

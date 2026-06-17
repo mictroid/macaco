@@ -195,7 +195,9 @@
     <string name="drawer_rate_us">评分</string>
     <string name="drawer_help">帮助与关于</string>
     <string name="share_app_subject">Macaco – 旅行日记</string>
-    <string name="share_app_text">我正在用 Macaco 记录我的旅程 — 快来试试吧！%1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="other">我已经在 Macaco 中记录了 %d 条旅行回忆 — 记录你的冒险的最佳方式。</item>
+    </plurals>
     <string name="share_app_chooser">分享 Macaco 到</string>
 
     <!-- Help &amp; About -->

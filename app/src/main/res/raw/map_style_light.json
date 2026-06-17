@@ -28,7 +28,7 @@
   {
     "featureType": "administrative.country",
     "elementType": "labels.text.stroke",
-    "stylers": [{"color": "#5a4a10"}]
+    "stylers": [{"color": "#5a4a10"}, {"weight": 0.5}]
   },
   {
     "featureType": "administrative.land_parcel",
@@ -38,6 +38,16 @@
     "featureType": "administrative.locality",
     "elementType": "labels.text.fill",
     "stylers": [{"color": "#33555f"}]
+  },
+  {
+    "featureType": "administrative.locality",
+    "elementType": "labels.text.stroke",
+    "stylers": [{"weight": 0.5}]
+  },
+  {
+    "featureType": "administrative.province",
+    "elementType": "labels.text.stroke",
+    "stylers": [{"weight": 0.5}]
   },
   {
     "featureType": "poi",

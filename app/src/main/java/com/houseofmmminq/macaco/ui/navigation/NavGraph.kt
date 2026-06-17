@@ -231,16 +231,16 @@ fun NavGraph(
                     val id = backStackEntry.arguments?.getString("entryId") ?: return@composable
                     val entries by viewModel.entries.collectAsState()
                     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
-                    val entry = entries.find { it.id == id }
-                    if (entry == null) {
+                    if (entries.none { it.id == id }) {
                         LaunchedEffect(Unit) { navController.popBackStack() }
                         return@composable
                     }
                     EntryDetailScreen(
-                        entry = entry,
-                        onEdit = { navController.navigate(Screen.EditEntry.createRoute(id)) },
-                        onDelete = {
-                            viewModel.deleteEntry(id)
+                        entries = entries,
+                        initialEntryId = id,
+                        onEdit = { entryId -> navController.navigate(Screen.EditEntry.createRoute(entryId)) },
+                        onDelete = { entryId ->
+                            viewModel.deleteEntry(entryId)
                             navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() },

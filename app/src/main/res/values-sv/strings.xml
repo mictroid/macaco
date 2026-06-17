@@ -198,7 +198,10 @@
     <string name="drawer_rate_us">Betygsätt</string>
     <string name="drawer_help">Hjälp &amp; om</string>
     <string name="share_app_subject">Macaco – Resedagbok</string>
-    <string name="share_app_text">Jag använder Macaco för att dagboksföra mina resor – testa det! %1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="one">Jag har loggat %d reseminne i Macaco — det bästa sättet att dokumentera dina äventyr.</item>
+        <item quantity="other">Jag har loggat %d reseminnen i Macaco — det bästa sättet att dokumentera dina äventyr.</item>
+    </plurals>
     <string name="share_app_chooser">Dela Macaco via</string>
 
     <!-- Help &amp; About -->

@@ -320,7 +320,7 @@ fun JournalListScreen(
                     icon = { Icon(Icons.Filled.Share, contentDescription = null) },
                     onClick = {
                         scope.launch { drawerState.close() }
-                        AppActions.shareApp(context)
+                        AppActions.shareApp(context, entries.size)
                     }
                 )
 

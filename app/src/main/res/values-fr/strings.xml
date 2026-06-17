@@ -198,7 +198,10 @@
     <string name="drawer_rate_us">Noter l\'appli</string>
     <string name="drawer_help">Aide &amp; à propos</string>
     <string name="share_app_subject">Macaco – Journal de voyage</string>
-    <string name="share_app_text">J\'utilise Macaco pour tenir mon journal de voyage – essayez-le ! %1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="one">J\'ai enregistré %d souvenir de voyage dans Macaco — la meilleure façon de raconter vos aventures.</item>
+        <item quantity="other">J\'ai enregistré %d souvenirs de voyage dans Macaco — la meilleure façon de raconter vos aventures.</item>
+    </plurals>
     <string name="share_app_chooser">Partager Macaco via</string>
 
     <!-- Help &amp; About -->

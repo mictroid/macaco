@@ -55,7 +55,10 @@
     <string name="help_open_listing">Macaco on Google Play</string>
     <string name="help_open_listing_subtitle">View or update the app</string>
     <string name="share_app_subject">Macaco — Travel Journal</string>
-    <string name="share_app_text">I\'m using Macaco to journal my travels — give it a try! %1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="one">I\'ve logged %d travel memory in Macaco — the best way to journal your adventures.</item>
+        <item quantity="other">I\'ve logged %d travel memories in Macaco — the best way to journal your adventures.</item>
+    </plurals>
     <string name="share_app_chooser">Share Macaco via</string>
     <string name="journal_list_empty_title">Your journey begins here</string>
     <string name="journal_list_empty_subtitle">Tap the button below to add\nyour first travel memory</string>

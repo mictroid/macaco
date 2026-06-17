@@ -22,12 +22,17 @@ object AppActions {
     // Hosted on GitHub Pages from privacy-policy.html at the repo root.
     const val PRIVACY_POLICY_URL = "https://mictroid.github.io/macaco/privacy-policy.html"
 
-    /** Opens the system share sheet with a link to the app's Play Store listing. */
-    fun shareApp(context: Context) {
+    /**
+     * Opens the system share sheet with a personalized blurb (entry count) and a link to the
+     * app's Play Store listing on its own line, so the receiving app auto-links it.
+     */
+    fun shareApp(context: Context, entryCount: Int) {
+        val blurb = context.resources.getQuantityString(R.plurals.share_app_text, entryCount, entryCount)
+        val shareText = "$blurb\n\n$LISTING_URL"
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_app_subject))
-            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_app_text, LISTING_URL))
+            putExtra(Intent.EXTRA_TEXT, shareText)
         }
         context.startActivity(
             Intent.createChooser(intent, context.getString(R.string.share_app_chooser))

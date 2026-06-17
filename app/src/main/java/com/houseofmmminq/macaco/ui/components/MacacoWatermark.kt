@@ -70,9 +70,11 @@ private fun DrawScope.drawMacacoIcon(cx: Float, cy: Float, r: Float, color: Colo
 }
 
 /**
- * A [Box] that tiles faint, jittered macaco icons behind [content] as an empty-state watermark.
- * Icons use the theme's primary colour at low alpha, so the pattern adapts to all themes. The
- * layout uses a fixed RNG seed so it stays stable across recompositions.
+ * A [Box] that tiles faint macaco icons behind [content] as an empty-state watermark. Icons sit
+ * on a staggered grid — odd rows offset by half the horizontal spacing — so the pattern reads as
+ * a diamond lattice rather than a random scatter. Every icon is the same size at the same
+ * whisper-level alpha, so the layout needs no randomness to stay stable across recompositions.
+ * Icons use the theme's primary colour, so the pattern adapts to all themes.
  */
 @Composable
 fun MacacoWatermarkBackground(
@@ -83,23 +85,22 @@ fun MacacoWatermarkBackground(
 
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            val spacing = 105.dp.toPx() // ~2.5× the density of 165dp (icons scale as 1/spacing²)
-            val jitter = 50.dp.toPx()
-            val rng = java.util.Random(42L) // fixed seed → stable layout
+            val spacingX = 130.dp.toPx()
+            val spacingY = 90.dp.toPx()
+            val iconR = 52.dp.toPx() / 2f // radius = 26dp
+            val alpha = 0.03f // 3% opacity — whisper level
 
-            var y = -spacing * 0.4f
-            while (y < size.height + spacing) {
-                var x = -spacing * 0.4f
-                while (x < size.width + spacing) {
-                    val cx = x + (rng.nextFloat() - 0.5f) * jitter
-                    val cy = y + (rng.nextFloat() - 0.5f) * jitter
-                    // Diameter ~18–32dp (kept small so it stays a background texture, not a motif).
-                    val r = (18 + rng.nextInt(14)).dp.toPx() / 2f
-                    val alpha = 0.13f + rng.nextFloat() * 0.09f
-                    drawMacacoIcon(cx, cy, r, primaryColor.copy(alpha = alpha))
-                    x += spacing
+            var row = 0
+            var y = -spacingY * 0.5f
+            while (y < size.height + spacingY) {
+                val xOffset = if (row % 2 == 1) spacingX * 0.5f else 0f
+                var x = -spacingX + xOffset
+                while (x < size.width + spacingX) {
+                    drawMacacoIcon(x, y, iconR, primaryColor.copy(alpha = alpha))
+                    x += spacingX
                 }
-                y += spacing
+                y += spacingY
+                row++
             }
         }
 

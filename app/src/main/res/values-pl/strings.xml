@@ -204,7 +204,12 @@
     <string name="drawer_rate_us">Oceń</string>
     <string name="drawer_help">Pomoc i informacje</string>
     <string name="share_app_subject">Macaco – Dziennik podróży</string>
-    <string name="share_app_text">Używam Macaco do prowadzenia dziennika podróży – wypróbuj! %1$s</string>
+    <plurals name="share_app_text">
+        <item quantity="one">%d wspomnienie z podróży zapisane w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
+        <item quantity="few">%d wspomnienia z podróży zapisane w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
+        <item quantity="many">%d wspomnień z podróży zapisanych w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
+        <item quantity="other">%d wspomnień z podróży zapisanych w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
+    </plurals>
     <string name="share_app_chooser">Udostępnij Macaco przez</string>
 
     <!-- Help &amp; About -->
