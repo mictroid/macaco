@@ -2,38 +2,75 @@
 
 Running log of notable work sessions. Newest first.
 
-> **NEXT (2026-06-17):** Testing the new GitHub Actions release pipeline (`release.yml`) by
-> triggering it for vc11 — first real run of the Workload Identity Federation setup. If it works,
-> vc11 ships via CI instead of a local `bundleRelease`; verify the upload lands before trusting the
-> pipeline for future releases. Still open from earlier: enable **R8** with keep rules before
-> production; the paused **Galaxy S8+ ADB** setup (toggle USB debugging on the phone).
+> **NEXT (2026-06-17):** vc12/1.4 shipped via the new CI pipeline and is live on the Play
+> internal-testing track — **not yet installed/verified on a device** (vc10 was the last build
+> actually checked on the A53). Install vc12 and confirm nothing regressed. Still open from
+> earlier: enable **R8** with keep rules before production; the paused **Galaxy S8+ ADB** setup
+> (toggle USB debugging on the phone).
 
-## 2026-06-17 — Release pipeline moved to GitHub Actions via Workload Identity Federation
+## 2026-06-17 — Release pipeline moved to GitHub Actions via Workload Identity Federation (vc12 shipped)
 
 Replaced the manual local `bundleRelease` + `play-service-account.json` upload flow with a
 GitHub Actions workflow (`.github/workflows/release.yml`, manual `workflow_dispatch` trigger) that
-authenticates to GCP without any long-lived key:
+authenticates to GCP without any long-lived key. **Working end-to-end as of vc12** — took seven CI
+runs to get there; logging the failures since the fixes aren't obvious.
 
+### Infra setup
 - Created a Workload Identity Pool (`github-pool`) + OIDC provider (`github-provider`) in
-  `macaco-499016`, trusting GitHub's OIDC issuer with an attribute condition locked to
-  `mictroid/wanderlog` specifically (not just the GitHub org/owner).
-- Granted that federated identity `roles/iam.workloadIdentityUser` on the existing
-  `play-publisher@macaco-499016.iam.gserviceaccount.com` service account, scoped via
-  `principalSet://.../attribute.repository/mictroid/wanderlog` — only workflow runs from this exact
-  repo can impersonate it.
-- `app/build.gradle.kts`'s `play {}` block now only sets `serviceAccountCredentials` when
-  `play-service-account.json` exists locally; in CI (where that git-ignored file is never checked
-  out) gradle-play-publisher falls back to Application Default Credentials, which
-  `google-github-actions/auth` populates via the WIF exchange above. Local dev is unaffected.
-- The workflow decodes the upload keystore from a `RELEASE_KEYSTORE_BASE64` repo secret (plus
-  `RELEASE_KEYSTORE_PASSWORD`/`RELEASE_KEY_ALIAS`/`RELEASE_KEY_PASSWORD`/`MAPS_API_KEY`), writes
-  `keystore.properties`/`local.properties` at runtime, then runs `./gradlew publishReleaseBundle`.
-- Installed and authenticated `gh`/`gcloud` CLIs in the WSL2 dev environment to set this up (apt
-  install needs an interactive terminal — `sudo` fails non-interactively, so the install commands
-  had to be run directly in a terminal window rather than over this session's command runner).
+  `macaco-499016`, trusting GitHub's OIDC issuer with an attribute condition locked to the repo.
+  **Caught mid-setup:** the condition was first written for `mictroid/wanderlog`, but the actual
+  GitHub repo had been renamed to `mictroid/macaco` (the old name just redirects) — the OIDC
+  token's `repository` claim is the *current* name, so the trust condition and IAM binding both
+  had to target `mictroid/macaco` or every exchange would fail the attribute condition silently.
+- Granted that federated identity `roles/iam.workloadIdentityUser` *and* `roles/iam.
+  serviceAccountTokenCreator` on the existing `play-publisher@macaco-499016.iam.gserviceaccount.com`
+  service account, scoped via `principalSet://.../attribute.repository/mictroid/macaco`.
+- Installed and authenticated `gh`/`gcloud` CLIs in the WSL2 dev environment to do all this (apt
+  install needs an interactive terminal — `sudo` fails non-interactively over this session's
+  command runner, so those steps had to run in a real terminal window).
+- 5 new GitHub Actions repo secrets: `RELEASE_KEYSTORE_BASE64` (the upload `.jks`, base64),
+  `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD`, `MAPS_API_KEY`.
 
-Not yet tested end-to-end — next step is triggering it for vc11 and confirming the upload lands on
-the Play internal-testing track.
+### Seven attempts to get the credential plumbing right
+1. **403 "No credentials specified"** — gradle-play-publisher doesn't fall back to Application
+   Default Credentials just because no JSON key was configured; it needs
+   `useApplicationDefaultCredentials = true` explicitly (confirmed in GPP's README).
+2. **403 PERMISSION_DENIED from Android Publisher API** — auth step impersonated play-publisher
+   *and* GPP's ADC path scoped whatever ADC resolved to; the resulting token wasn't right. Switched
+   to GPP's own `impersonateServiceAccount` (its dedicated, explicitly-`androidpublisher`-scoped
+   impersonation path) and removed the action-level impersonation to avoid a double hop.
+3. **Same 403** — explicit scoping didn't fix it either (this turned out to be a red herring; see
+   #7). At this point switched strategy entirely: feed the WIF auth step's generated credentials
+   file straight to `serviceAccountCredentials` (the pattern documented as working by
+   `r0adkll/upload-google-play`), instead of going through any ADC auto-detection.
+4. **New error** — `Error getting subject token from metadata server: PKIX path building failed`.
+   Progress: this is the JVM itself making a live HTTPS call to GitHub's OIDC token endpoint to
+   re-fetch the subject token at publish time, and Java's PKIX validator rejects the cert chain (a
+   known JVM/PKIX interop gotcha — curl validates the same endpoint fine via the OS trust store;
+   the server likely omits intermediate certs that browsers/curl fetch via AIA but Java doesn't).
+5. Bumped to vc12 partway through (no prior attempt got far enough to actually upload, so this
+   wasn't a real re-release, just a clean versionCode for continued testing) and added
+   `--stacktrace` for better diagnostics — same PKIX error, now with the full stack trace.
+6. **Fix for the PKIX error**: stopped using `google-github-actions/auth`'s default (URL-sourced)
+   credential config entirely. Fetch the GitHub OIDC token with `curl` ourselves right before the
+   build (OS trust store, known-good) and build a **file-sourced** `external_account` credential
+   config pointing at the local token file. Java then only ever talks to `sts.googleapis.com` /
+   `iamcredentials.googleapis.com` for the actual exchange — both trusted fine. This fixed the PKIX
+   error, but resurfaced the exact same 403 from attempt #2/#3.
+7. With the credential mechanics now confirmed solid across three different approaches all hitting
+   the identical generic 403, the real cause was elsewhere: **play-publisher's Play Console "Users
+   and permissions" grant**. User re-invited/fixed the service account's app-level release
+   permission directly in Play Console → **next run succeeded**: vc12 uploaded and committed to
+   the internal track in 5m43s.
+
+### Final working shape
+- `.github/workflows/release.yml`: checkout → setup-java 21 → decode keystore + write
+  `keystore.properties`/`local.properties` from secrets → fetch GitHub OIDC token via `curl` →
+  build a file-sourced WIF credential config → `./gradlew publishReleaseBundle --stacktrace`.
+- `app/build.gradle.kts`'s `play {}` block: `serviceAccountCredentials` from
+  `play-service-account.json` locally, or from `$GOOGLE_APPLICATION_CREDENTIALS` in CI (the
+  workflow exports that path after writing the WIF credential config). No long-lived key in CI at
+  all; local dev is unaffected either way.
 
 ## 2026-06-17 — vc10 verified on-device; watermark v2 + vc11 build
 
