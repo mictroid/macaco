@@ -2,11 +2,20 @@
 
 Running log of notable work sessions. Newest first.
 
-> **NEXT (2026-06-17):** vc14/1.4 shipped via CI and is live on **closed testing** — **not yet
-> installed/verified on a device** (vc10 is still the last build actually checked on the A53,
-> three releases behind). Install vc14 and confirm nothing regressed, especially the watermark's
-> third sizing pass. Still open from earlier: enable **R8** with keep rules before production; the
-> paused **Galaxy S8+ ADB** setup (toggle USB debugging on the phone).
+> **NEXT (2026-06-17):** vc15/1.4 shipping via CI, live on **closed testing** once that run
+> completes — **not yet installed/verified on a device** (vc10 is still the last build actually
+> checked on the A53, four releases behind). Install vc15 and confirm nothing regressed —
+> especially the watermark's third sizing pass, and check that Settings/Help & About now show the
+> versionCode ("1.4 (15)"). Still open from earlier: enable **R8** with keep rules before
+> production; the paused **Galaxy S8+ ADB** setup (toggle USB debugging on the phone).
+
+## 2026-06-17 — Show versionCode in-app — vc15 build
+
+Settings and Help & About only displayed `versionName` ("1.4"), which hasn't changed across the
+last several builds — no way to tell which versionCode is actually installed without ADB or Play
+Console (came up directly while debugging the CI pipeline above). Both screens now show
+`"${versionName} (${versionCode})"` e.g. "1.4 (15)", via `PackageInfoCompat.getLongVersionCode`.
+Bumped `versionCode` **14→15**, shipped via CI.
 
 ## 2026-06-17 — Watermark v3 (tighter spacing) — vc14 build
 
