@@ -2,11 +2,12 @@
 
 Running log of notable work sessions. Newest first.
 
-> **NEXT (2026-06-17):** vc12/1.4 shipped via the new CI pipeline and is live on the Play
-> internal-testing track — **not yet installed/verified on a device** (vc10 was the last build
-> actually checked on the A53). Install vc12 and confirm nothing regressed. Still open from
-> earlier: enable **R8** with keep rules before production; the paused **Galaxy S8+ ADB** setup
-> (toggle USB debugging on the phone).
+> **NEXT (2026-06-17):** vc13/1.4 shipped via CI and is live on **closed testing** (track switched
+> from internal — user moved testing there mid-session, manually released vc12 there before CI's
+> vc13 confirmed the pipeline targets it correctly) — **not yet installed/verified on a device**
+> (vc10 was the last build actually checked on the A53). Install vc13 and confirm nothing
+> regressed. Still open from earlier: enable **R8** with keep rules before production; the paused
+> **Galaxy S8+ ADB** setup (toggle USB debugging on the phone).
 
 ## 2026-06-17 — Release pipeline moved to GitHub Actions via Workload Identity Federation (vc12 shipped)
 
@@ -62,6 +63,15 @@ runs to get there; logging the failures since the fixes aren't obvious.
    and permissions" grant**. User re-invited/fixed the service account's app-level release
    permission directly in Play Console → **next run succeeded**: vc12 uploaded and committed to
    the internal track in 5m43s.
+
+### Track switched to closed testing (vc13)
+Mid-verification, found the app under test had moved from internal testing to a **closed testing**
+group — user had manually released vc12 there directly in Play Console. Closed testing's track
+identifier in the Play Developer API (and GPP) is still `"alpha"` even though Play Console's UI
+just calls it "Closed testing". Updated `track.set("alpha")`, bumped to vc13 (vc12 was already
+consumed on this track from the manual release), and re-ran the pipeline to confirm it targets the
+new track correctly: **succeeded** — `Updating [completed] release (com.houseofmmminq.macaco:[13])
+in track 'alpha'`, 5m56s. Two clean runs in a row now; the pipeline is trustworthy going forward.
 
 ### Final working shape
 - `.github/workflows/release.yml`: checkout → setup-java 21 → decode keystore + write
