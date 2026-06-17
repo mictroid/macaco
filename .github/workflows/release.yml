@@ -35,16 +35,16 @@ jobs:
         run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > local.properties
 
       # No play-service-account.json is checked out (it's git-ignored and never committed), so
-      # gradle-play-publisher uses Application Default Credentials instead — this step exchanges
-      # the job's OIDC token for the bare federated identity via Workload Identity Federation (no
-      # long-lived key, trust scoped to this exact repo; see docs/release-setup.md). Deliberately
-      # NOT impersonating play-publisher here: GPP does that hop itself (impersonateServiceAccount
-      # in app/build.gradle.kts), which is what correctly requests the androidpublisher scope —
-      # impersonating at both layers double-hops and the resulting token gets rejected.
+      # this step exchanges the job's OIDC token for short-lived credentials impersonating
+      # play-publisher via Workload Identity Federation (no long-lived key, trust scoped to this
+      # exact repo; see docs/release-setup.md). The generated credentials file's path is exported
+      # as GOOGLE_APPLICATION_CREDENTIALS, which app/build.gradle.kts feeds directly to GPP's
+      # serviceAccountCredentials.
       - id: auth
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/502845055894/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: play-publisher@macaco-499016.iam.gserviceaccount.com
 
       - name: Build and publish to Play internal testing
         run: |

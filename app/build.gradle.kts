@@ -79,19 +79,18 @@ android {
 // Google Play publishing (Triple-T gradle-play-publisher). Locally, the credential is a Play
 // Developer API service-account key kept in a git-ignored play-service-account.json at the repo
 // root — see docs/release-setup.md for how to create it. In CI (GitHub Actions), that file isn't
-// present; the plugin instead uses Application Default Credentials (the bare Workload Identity
-// Federation principal the workflow sets up) and impersonates play-publisher itself, requesting
-// the androidpublisher scope explicitly — GPP's own impersonation path (see its
-// createPublisher(impersonateServiceAccount) in AndroidPublisher.kt) is what correctly scopes the
-// token; leaving the workflow's auth step to also impersonate produced an unscoped token that the
-// Android Publisher API rejected with 403.
+// present; instead the workflow's Workload Identity Federation auth step writes a short-lived
+// credentials file (impersonating play-publisher) and exports its path via
+// GOOGLE_APPLICATION_CREDENTIALS — feed that file straight to serviceAccountCredentials rather
+// than going through GPP's ADC auto-detection, which produced a 403 (unclear why; this is the
+// pattern documented as working by other Play-publishing GitHub Actions).
 play {
     val playServiceAccountFile = rootProject.file("play-service-account.json")
+    val ciCredentialsPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     if (playServiceAccountFile.exists()) {
         serviceAccountCredentials.set(playServiceAccountFile)
-    } else {
-        useApplicationDefaultCredentials = true
-        impersonateServiceAccount = "play-publisher@macaco-499016.iam.gserviceaccount.com"
+    } else if (ciCredentialsPath != null) {
+        serviceAccountCredentials.set(file(ciCredentialsPath))
     }
     track.set("internal")
     defaultToAppBundles.set(true)
