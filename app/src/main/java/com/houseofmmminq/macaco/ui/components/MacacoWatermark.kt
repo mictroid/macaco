@@ -85,9 +85,9 @@ fun MacacoWatermarkBackground(
 
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            val spacingX = 130.dp.toPx()
-            val spacingY = 90.dp.toPx()
-            val iconR = 52.dp.toPx() / 2f // radius = 26dp
+            val spacingX = 78.dp.toPx() // 130dp x 0.6
+            val spacingY = 54.dp.toPx() // 90dp x 0.6
+            val iconR = 32.dp.toPx() / 2f // radius = 16dp
             val alpha = 0.16f // 16% opacity — clearly visible, uniform
 
             var row = 0

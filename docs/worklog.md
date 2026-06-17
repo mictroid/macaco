@@ -2,12 +2,20 @@
 
 Running log of notable work sessions. Newest first.
 
-> **NEXT (2026-06-17):** vc13/1.4 shipped via CI and is live on **closed testing** (track switched
-> from internal — user moved testing there mid-session, manually released vc12 there before CI's
-> vc13 confirmed the pipeline targets it correctly) — **not yet installed/verified on a device**
-> (vc10 was the last build actually checked on the A53). Install vc13 and confirm nothing
-> regressed. Still open from earlier: enable **R8** with keep rules before production; the paused
-> **Galaxy S8+ ADB** setup (toggle USB debugging on the phone).
+> **NEXT (2026-06-17):** vc14/1.4 shipped via CI and is live on **closed testing** — **not yet
+> installed/verified on a device** (vc10 is still the last build actually checked on the A53,
+> three releases behind). Install vc14 and confirm nothing regressed, especially the watermark's
+> third sizing pass. Still open from earlier: enable **R8** with keep rules before production; the
+> paused **Galaxy S8+ ADB** setup (toggle USB debugging on the phone).
+
+## 2026-06-17 — Watermark v3 (tighter spacing) — vc14 build
+
+Third Cowork pass on the same brief (`watermark-v2.md`, updated in place again): spacing tightened
+another 40% (130dp×90dp → 78dp×54dp) and icon radius shrunk to a fixed 16dp (from 26dp); opacity
+unchanged at a fixed 16%. As with the previous two passes, the brief's prose note and summary table
+hadn't been updated to match the new code block (still said "3%"/"26dp"/"130dp×90dp") — went with
+the code block as authoritative, consistent with how the prior two stale-doc mismatches were
+resolved. Bumped `versionCode` **13→14**, shipped via the now-proven CI pipeline to closed testing.
 
 ## 2026-06-17 — Release pipeline moved to GitHub Actions via Workload Identity Federation (vc12 shipped)
 
