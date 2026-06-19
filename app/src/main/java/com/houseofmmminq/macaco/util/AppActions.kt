@@ -65,11 +65,11 @@ object AppActions {
         }
     }
 
-    /** Opens the user's email app with a pre-filled message to support. */
-    fun contactSupport(context: Context) {
+    /** Opens the user's email app with a pre-filled message to support, with an optional subject. */
+    fun contactSupport(context: Context, subjectRes: Int = R.string.help_contact_subject) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:$SUPPORT_EMAIL")
-            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.help_contact_subject))
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(subjectRes))
         }
         runCatching {
             context.startActivity(

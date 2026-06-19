@@ -296,7 +296,7 @@ fun JournalListScreen(
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
 
                 NavigationDrawerItem(
-                    label = { Text("Dark Mode") },
+                    label = { Text(stringResource(R.string.settings_dark_mode)) },
                     selected = false,
                     colors = drawerItemColors,
                     icon = {

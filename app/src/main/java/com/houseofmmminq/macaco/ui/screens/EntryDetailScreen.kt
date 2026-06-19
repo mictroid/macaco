@@ -1,5 +1,8 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -41,6 +44,7 @@ import androidx.core.content.FileProvider
 import java.io.File
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
@@ -68,6 +72,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -88,6 +93,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
+import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -102,7 +108,7 @@ fun EntryDetailScreen(
     onDelete: (String) -> Unit,
     onBack: () -> Unit,
     onTagClick: (String) -> Unit = {},
-    onSetCover: (TravelEntry) -> Unit = {},
+    onSaveEntry: (TravelEntry) -> Unit = {},
     cachedDrivePhotos: Map<String, String> = emptyMap()
 ) {
     val context = LocalContext.current
@@ -133,6 +139,22 @@ fun EntryDetailScreen(
     // Index of the photo to open the full-screen gallery at (null = gallery closed). Hoisted to the
     // screen so the overlay can cover everything, the app bar included.
     var galleryStartIndex by remember { mutableStateOf<Int?>(null) }
+
+    // "+" add-photo tile picker. Persists picked images into the Macaco gallery (same as the edit
+    // screen — the Photo Picker grant is temporary, so raw URIs wouldn't survive) then appends them
+    // to the current entry and saves. rememberUpdatedState keeps the callback on the latest entry.
+    val latestEntry = rememberUpdatedState(currentEntry)
+    val addPhotoLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia()
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            val stored = uris.mapNotNull { ImageStorage.persistToGallery(context, it) }
+            if (stored.isNotEmpty()) {
+                val e = latestEntry.value
+                onSaveEntry(e.copy(photoUris = (e.photoUris + stored).distinct()))
+            }
+        }
+    }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -258,12 +280,17 @@ fun EntryDetailScreen(
                 val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
                 // Promote the photo at [index] to the cover (hero) and confirm with a toast.
                 val setCover: (Int) -> Unit = { index ->
-                    onSetCover(entry.withCover(index))
+                    onSaveEntry(entry.withCover(index))
                     Toast.makeText(
                         context,
                         context.getString(R.string.entry_detail_set_cover),
                         Toast.LENGTH_SHORT
                     ).show()
+                }
+                val launchAddPhoto = {
+                    addPhotoLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
                 }
                 when {
                     photoCount == 0 -> Box(
@@ -283,48 +310,67 @@ fun EntryDetailScreen(
                         modifier = Modifier.fillMaxWidth().height(260.dp)
                     )
 
-                    // Editorial collage: hero (left, ~65%) + up to two thumbnails stacked on the
-                    // right (~35%), with a horizontally scrollable overflow strip for photos 4+.
-                    // Tapping any photo opens the gallery at that index; long-pressing a non-hero
-                    // thumbnail promotes it to the cover.
-                    else -> Column {
-                        Row(
-                            modifier = Modifier.fillMaxWidth().height(260.dp),
-                            horizontalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            JournalPhoto(
-                                data = entry.displayPhotoUri(0, cachedDrivePhotos),
-                                onClick = { galleryStartIndex = 0 },
-                                modifier = Modifier.weight(0.65f).fillMaxHeight()
-                            )
-                            Column(
-                                modifier = Modifier.weight(0.35f).fillMaxHeight(),
-                                verticalArrangement = Arrangement.spacedBy(2.dp)
-                            ) {
-                                for (index in 1..minOf(photoCount - 1, 2)) {
-                                    JournalThumb(
-                                        data = entry.displayPhotoUri(index, cachedDrivePhotos),
-                                        onClick = { galleryStartIndex = index },
-                                        onLongClick = { setCover(index) },
-                                        modifier = Modifier.weight(1f).fillMaxWidth()
-                                    )
-                                }
-                            }
-                        }
-                        if (photoCount > 3) {
-                            Spacer(Modifier.height(2.dp))
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
+                    // Editorial collage: hero (left, ~65%) + stacked thumbnails on the right (~35%).
+                    // The right column holds all remaining thumbnails when there are ≤4 photos (so a
+                    // 4th photo never sits alone in an overflow row); for 5+ it caps at 2 and the
+                    // rest flow into a horizontally scrollable overflow strip. A "+" tile to add more
+                    // photos is the last slot (in the right column for ≤4, in the overflow row for 5+).
+                    // Tap a photo → gallery at that index; long-press a thumbnail → set as cover.
+                    else -> {
+                        val rightCount = if (photoCount <= 4) photoCount - 1 else 2
+                        val overflowStart = 1 + rightCount
+                        Column {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().height(260.dp),
                                 horizontalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
-                                items(photoCount - 3) { j ->
-                                    val index = j + 3
-                                    JournalThumb(
-                                        data = entry.displayPhotoUri(index, cachedDrivePhotos),
-                                        onClick = { galleryStartIndex = index },
-                                        onLongClick = { setCover(index) },
-                                        modifier = Modifier.size(80.dp)
-                                    )
+                                JournalPhoto(
+                                    data = entry.displayPhotoUri(0, cachedDrivePhotos),
+                                    onClick = { galleryStartIndex = 0 },
+                                    modifier = Modifier.weight(0.65f).fillMaxHeight()
+                                )
+                                Column(
+                                    modifier = Modifier.weight(0.35f).fillMaxHeight(),
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    for (index in 1..rightCount) {
+                                        JournalThumb(
+                                            data = entry.displayPhotoUri(index, cachedDrivePhotos),
+                                            onClick = { galleryStartIndex = index },
+                                            onLongClick = { setCover(index) },
+                                            modifier = Modifier.weight(1f).fillMaxWidth()
+                                        )
+                                    }
+                                    // "+" lives here only when there's no overflow row (≤4 photos).
+                                    if (photoCount <= 4) {
+                                        AddPhotoTile(
+                                            onClick = launchAddPhoto,
+                                            modifier = Modifier.weight(1f).fillMaxWidth()
+                                        )
+                                    }
+                                }
+                            }
+                            if (photoCount > 4) {
+                                Spacer(Modifier.height(2.dp))
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    items(photoCount - overflowStart) { j ->
+                                        val index = j + overflowStart
+                                        JournalThumb(
+                                            data = entry.displayPhotoUri(index, cachedDrivePhotos),
+                                            onClick = { galleryStartIndex = index },
+                                            onLongClick = { setCover(index) },
+                                            modifier = Modifier.size(80.dp)
+                                        )
+                                    }
+                                    item {
+                                        AddPhotoTile(
+                                            onClick = launchAddPhoto,
+                                            modifier = Modifier.size(80.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -586,6 +632,24 @@ private fun JournalPhoto(data: String?, onClick: () -> Unit, modifier: Modifier)
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick)
     )
+}
+
+/** A "+" tile matching the thumbnail slots, opening the photo picker to add photos to the entry. */
+@Composable
+private fun AddPhotoTile(onClick: () -> Unit, modifier: Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick)
+    ) {
+        Icon(
+            Icons.Filled.Add,
+            contentDescription = stringResource(R.string.entry_detail_add_photo),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(28.dp)
+        )
+    }
 }
 
 /** A non-hero photo thumbnail: tap opens the gallery, long-press promotes it to the cover. */

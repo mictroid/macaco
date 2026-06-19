@@ -31,11 +31,22 @@ android {
         applicationId = "com.houseofmmminq.macaco"
         minSdk = 24
         targetSdk = 36
-        versionCode = 17
+        versionCode = 18
         versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
+    }
+
+    // Ship every translated language in the base AAB rather than as per-language splits. With
+    // splitting on (the default), Play only delivers the device's configured language, so the
+    // in-app language picker falls back to English for any other language until its split is
+    // downloaded — manifesting as "needs a restart / only works for languages used before". The
+    // 11 string-only locales add negligible size, so bundling them all is the simpler correct fix.
+    bundle {
+        language {
+            enableSplit = false
+        }
     }
 
     signingConfigs {

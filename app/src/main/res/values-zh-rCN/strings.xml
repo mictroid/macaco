@@ -13,6 +13,7 @@
     <string name="common_sign_in">登录</string>
     <string name="common_sign_out">退出登录</string>
     <string name="common_profile">个人资料</string>
+    <string name="nav_journal">日志</string>
     <string name="common_settings">设置</string>
     <string name="common_new_entry">新建日记</string>
     <string name="common_edit_entry">编辑日记</string>
@@ -65,6 +66,7 @@
     <string name="entry_detail_delete_cd">删除</string>
     <string name="entry_detail_add_story">写下你的故事…</string>
     <string name="entry_detail_set_cover">设为封面</string>
+    <string name="entry_detail_add_photo">添加照片</string>
     <string name="entry_detail_delete_title">删除日记</string>
     <string name="entry_detail_delete_message">删除 &quot;%s&quot;？此操作无法撤销。</string>
 
@@ -214,6 +216,26 @@
     <string name="help_faq_a_lock">可以 — 在菜单或“设置”中开启应用锁，打开 Macaco 时即需指纹、面容或屏幕锁验证。</string>
     <string name="help_faq_q_billing">如何取消或申请退款？</string>
     <string name="help_faq_a_billing">订阅和购买由 Google Play 计费。打开“订阅”可管理您的方案，或前往 Play 商店 → 付款和订阅进行取消。如需退款，请在 48 小时内通过 Play 商店的订单记录办理，或联系我们。</string>
+    <string name="help_request_feature">建议功能</string>
+    <string name="help_report_issue">报告问题</string>
+    <string name="help_section_getting_started">入门</string>
+    <string name="help_section_photos">照片</string>
+    <string name="help_section_sync">同步与设备</string>
+    <string name="help_section_privacy">隐私与安全</string>
+    <string name="help_section_premium">高级版</string>
+    <string name="help_faq_create_entry_q">如何创建条目？</string>
+    <string name="help_faq_create_entry_a">在日志界面点按 + 按钮。添加标题、地点、日期、照片、心情和标签，或只写标题和几句话。所有内容都会自动保存。</string>
+    <string name="help_faq_swipe_entries_q">如何在条目之间切换？</string>
+    <string name="help_faq_swipe_entries_a">在日志列表中，在条目卡片上向左或向右滑动即可切换到下一条或上一条回忆。顶部的计数器显示当前位置。</string>
+    <string name="help_faq_adventures_map_q">什么是探险地图？</string>
+    <string name="help_faq_adventures_map_a">探险地图会在世界地图上标出你在日志中记录过的每个地点。点按日志界面的地球图标即可打开。标记按城市分组，点按聚合即可放大。</string>
+    <string name="help_faq_transfer_device_q">转移到新设备</string>
+    <string name="help_faq_transfer_device_a">在新设备上使用相同的 Google 或邮箱账号登录。你的条目会在几秒内自动同步。通过备份与恢复保存的照片，在你重新导入备份文件后也会恢复。</string>
+    <string name="help_faq_premium_benefits_q">高级版有什么？</string>
+    <string name="help_faq_premium_benefits_a">高级版解锁完整的 Macaco 体验：无限日志条目、探险地图、条目间滑动、自定义主题和优先支持。提供月付、年付或终身版。</string>
+    <string name="help_faq_premium_broken_q">高级版无法使用？</string>
+    <string name="help_faq_premium_broken_a">请尝试恢复购买：前往 设置 → 高级版，点按 恢复购买。确保你使用购买时的同一账号登录。如果仍然无法使用，请通过 houseofmmminq@gmail.com 联系我们。</string>
+    <string name="help_faq_cancel_plan_q">更改或取消套餐</string>
     <string name="help_get_in_touch">联系我们</string>
     <string name="help_contact">联系支持</string>
     <string name="help_contact_subject">Macaco 支持</string>

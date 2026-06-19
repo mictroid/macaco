@@ -13,6 +13,7 @@
     <string name="common_sign_in">Se connecter</string>
     <string name="common_sign_out">Se déconnecter</string>
     <string name="common_profile">Profil</string>
+    <string name="nav_journal">Journal</string>
     <string name="common_settings">Paramètres</string>
     <string name="common_new_entry">Nouvelle entrée</string>
     <string name="common_edit_entry">Modifier l\'entrée</string>
@@ -67,6 +68,7 @@
     <string name="entry_detail_delete_cd">Supprimer</string>
     <string name="entry_detail_add_story">Racontez votre histoire…</string>
     <string name="entry_detail_set_cover">Définir comme couverture</string>
+    <string name="entry_detail_add_photo">Ajouter une photo</string>
     <string name="entry_detail_delete_title">Supprimer l\'entrée</string>
     <string name="entry_detail_delete_message">Supprimer &quot;%s&quot; ? Cette action est irréversible.</string>
 
@@ -218,6 +220,26 @@
     <string name="help_faq_a_lock">Oui – activez le verrouillage de l\'appli depuis le menu ou les réglages pour exiger votre empreinte, votre visage ou le verrouillage de l\'écran à l\'ouverture de Macaco.</string>
     <string name="help_faq_q_billing">Comment annuler ou obtenir un remboursement ?</string>
     <string name="help_faq_a_billing">Les abonnements et achats sont facturés par Google Play. Ouvrez Abonnement pour gérer votre formule, ou allez dans Play Store → Paiements &amp; abonnements pour annuler. Pour un remboursement, utilisez l\'historique des commandes du Play Store dans les 48 heures, ou contactez-nous.</string>
+    <string name="help_request_feature">Proposer une fonctionnalité</string>
+    <string name="help_report_issue">Signaler un problème</string>
+    <string name="help_section_getting_started">Premiers pas</string>
+    <string name="help_section_photos">Photos</string>
+    <string name="help_section_sync">Synchro &amp; appareils</string>
+    <string name="help_section_privacy">Confidentialité &amp; sécurité</string>
+    <string name="help_section_premium">Premium</string>
+    <string name="help_faq_create_entry_q">Comment créer une entrée ?</string>
+    <string name="help_faq_create_entry_a">Appuyez sur le bouton + sur l\'écran du journal. Ajoutez un titre, un lieu, une date, des photos, une humeur et des tags — ou juste un titre et quelques mots. Tout est enregistré automatiquement.</string>
+    <string name="help_faq_swipe_entries_q">Comment passer d\'une entrée à l\'autre ?</string>
+    <string name="help_faq_swipe_entries_a">Dans la liste du journal, balayez vers la gauche ou la droite sur une carte d\'entrée pour aller au souvenir suivant ou précédent. Le compteur en haut indique votre position.</string>
+    <string name="help_faq_adventures_map_q">Qu\'est-ce que la carte Aventures ?</string>
+    <string name="help_faq_adventures_map_a">La carte Aventures place sur une carte du monde chaque lieu que vous avez consigné dans le journal. Appuyez sur l\'icône du globe sur l\'écran du journal pour l\'ouvrir. Les repères sont regroupés par ville — appuyez sur un groupe pour zoomer.</string>
+    <string name="help_faq_transfer_device_q">Transférer vers un nouvel appareil</string>
+    <string name="help_faq_transfer_device_a">Connectez-vous avec le même compte Google ou e-mail sur votre nouvel appareil. Vos entrées se synchronisent automatiquement en quelques secondes. Les photos enregistrées via Sauvegarde &amp; restauration seront aussi restaurées une fois le fichier de sauvegarde réimporté.</string>
+    <string name="help_faq_premium_benefits_q">Qu\'est-ce que premium m\'apporte ?</string>
+    <string name="help_faq_premium_benefits_a">Premium débloque toute l\'expérience Macaco : entrées de journal illimitées, carte Aventures, navigation par balayage entre les entrées, thèmes personnalisés et assistance prioritaire. Disponible en formule mensuelle, annuelle ou à vie.</string>
+    <string name="help_faq_premium_broken_q">Premium ne fonctionne pas ?</string>
+    <string name="help_faq_premium_broken_a">Essayez de restaurer votre achat : allez dans Paramètres → Premium et appuyez sur Restaurer les achats. Vérifiez que vous êtes connecté avec le compte utilisé lors de l\'achat. Si cela ne fonctionne toujours pas, écrivez-nous à houseofmmminq@gmail.com.</string>
+    <string name="help_faq_cancel_plan_q">Modifier ou annuler l\'abonnement</string>
     <string name="help_get_in_touch">Nous contacter</string>
     <string name="help_contact">Contacter le support</string>
     <string name="help_contact_subject">Support Macaco</string>

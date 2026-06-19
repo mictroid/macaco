@@ -13,6 +13,7 @@
     <string name="common_sign_in">Logga in</string>
     <string name="common_sign_out">Logga ut</string>
     <string name="common_profile">Profil</string>
+    <string name="nav_journal">Dagbok</string>
     <string name="common_settings">Inställningar</string>
     <string name="common_new_entry">Ny anteckning</string>
     <string name="common_edit_entry">Redigera anteckning</string>
@@ -67,6 +68,7 @@
     <string name="entry_detail_delete_cd">Radera</string>
     <string name="entry_detail_add_story">Berätta din historia…</string>
     <string name="entry_detail_set_cover">Använd som omslag</string>
+    <string name="entry_detail_add_photo">Lägg till foto</string>
     <string name="entry_detail_delete_title">Radera anteckning</string>
     <string name="entry_detail_delete_message">Radera &quot;%s&quot;? Detta kan inte ångras.</string>
 
@@ -218,6 +220,26 @@
     <string name="help_faq_a_lock">Ja – aktivera Applås från menyn eller Inställningar för att kräva ditt fingeravtryck, ansikte eller skärmlås för att öppna Macaco.</string>
     <string name="help_faq_q_billing">Hur avslutar jag eller får återbetalning?</string>
     <string name="help_faq_a_billing">Prenumerationer och köp faktureras av Google Play. Öppna Prenumeration för att hantera ditt abonnemang, eller gå till Play Butik → Betalningar &amp; prenumerationer för att avsluta. För återbetalning, använd orderhistoriken i Play Butik inom 48 timmar, eller kontakta oss.</string>
+    <string name="help_request_feature">Föreslå en funktion</string>
+    <string name="help_report_issue">Rapportera ett problem</string>
+    <string name="help_section_getting_started">Kom igång</string>
+    <string name="help_section_photos">Foton</string>
+    <string name="help_section_sync">Synk &amp; enheter</string>
+    <string name="help_section_privacy">Integritet &amp; säkerhet</string>
+    <string name="help_section_premium">Premium</string>
+    <string name="help_faq_create_entry_q">Hur skapar jag ett inlägg?</string>
+    <string name="help_faq_create_entry_a">Tryck på +-knappen på dagboksskärmen. Lägg till titel, plats, datum, foton, humör och taggar — eller bara en titel och några ord. Allt sparas automatiskt.</string>
+    <string name="help_faq_swipe_entries_q">Hur växlar jag mellan inlägg?</string>
+    <string name="help_faq_swipe_entries_a">Svep åt vänster eller höger på ett inläggskort i dagbokslistan för att gå till nästa eller föregående minne. Räknaren högst upp visar din position.</string>
+    <string name="help_faq_adventures_map_q">Vad är Äventyrskartan?</string>
+    <string name="help_faq_adventures_map_a">Äventyrskartan visar varje plats du har antecknat i dagboken på en världskarta. Tryck på jordglobsikonen på dagboksskärmen för att öppna den. Nålar grupperas efter stad — tryck på en grupp för att zooma in.</string>
+    <string name="help_faq_transfer_device_q">Överför till en ny enhet</string>
+    <string name="help_faq_transfer_device_a">Logga in med samma Google- eller e-postkonto på din nya enhet. Dina inlägg synkroniseras automatiskt inom några sekunder. Foton som sparats via Säkerhetskopiering &amp; återställning återställs också när du importerar säkerhetskopian igen.</string>
+    <string name="help_faq_premium_benefits_q">Vad får jag med premium?</string>
+    <string name="help_faq_premium_benefits_a">Premium låser upp hela Macaco-upplevelsen: obegränsat antal dagboksinlägg, Äventyrskartan, svep mellan inlägg, egna teman och prioriterad support. Tillgängligt som månads-, års- eller livstidsplan.</string>
+    <string name="help_faq_premium_broken_q">Fungerar inte premium?</string>
+    <string name="help_faq_premium_broken_a">Försök återställa ditt köp: gå till Inställningar → Premium och tryck på Återställ köp. Se till att du är inloggad med samma konto som du använde vid köpet. Om det fortfarande inte fungerar, kontakta oss på houseofmmminq@gmail.com.</string>
+    <string name="help_faq_cancel_plan_q">Ändra eller avsluta plan</string>
     <string name="help_get_in_touch">Kontakta oss</string>
     <string name="help_contact">Kontakta support</string>
     <string name="help_contact_subject">Macaco-support</string>

@@ -13,6 +13,7 @@
     <string name="common_sign_in">サインイン</string>
     <string name="common_sign_out">サインアウト</string>
     <string name="common_profile">プロフィール</string>
+    <string name="nav_journal">ジャーナル</string>
     <string name="common_settings">設定</string>
     <string name="common_new_entry">新しい記録</string>
     <string name="common_edit_entry">記録を編集</string>
@@ -65,6 +66,7 @@
     <string name="entry_detail_delete_cd">削除</string>
     <string name="entry_detail_add_story">あなたの物語を書く…</string>
     <string name="entry_detail_set_cover">カバーに設定</string>
+    <string name="entry_detail_add_photo">写真を追加</string>
     <string name="entry_detail_delete_title">記録を削除</string>
     <string name="entry_detail_delete_message">&quot;%s&quot; を削除しますか？この操作は取り消せません。</string>
 
@@ -214,6 +216,26 @@
     <string name="help_faq_a_lock">はい。メニューまたは設定からアプリロックを有効にすると、Macaco を開く際に指紋・顔・画面ロックが必要になります。</string>
     <string name="help_faq_q_billing">解約や返金はどうすればよいですか？</string>
     <string name="help_faq_a_billing">サブスクリプションと購入は Google Play が請求します。「サブスクリプション」を開いてプランを管理するか、Play ストア → お支払いと定期購入から解約できます。返金は 48 時間以内に Play ストアの注文履歴から行うか、当社にお問い合わせください。</string>
+    <string name="help_request_feature">機能をリクエスト</string>
+    <string name="help_report_issue">問題を報告</string>
+    <string name="help_section_getting_started">はじめに</string>
+    <string name="help_section_photos">写真</string>
+    <string name="help_section_sync">同期とデバイス</string>
+    <string name="help_section_privacy">プライバシーとセキュリティ</string>
+    <string name="help_section_premium">プレミアム</string>
+    <string name="help_faq_create_entry_q">エントリーはどう作成しますか？</string>
+    <string name="help_faq_create_entry_a">ジャーナル画面で + ボタンをタップします。タイトル、場所、日付、写真、気分、タグを追加できます。タイトルと数語だけでも構いません。すべて自動的に保存されます。</string>
+    <string name="help_faq_swipe_entries_q">エントリー間はどう移動しますか？</string>
+    <string name="help_faq_swipe_entries_a">ジャーナル一覧でエントリーカードを左右にスワイプすると、次または前の思い出に移動します。上部のカウンターで現在の位置がわかります。</string>
+    <string name="help_faq_adventures_map_q">アドベンチャーマップとは？</string>
+    <string name="help_faq_adventures_map_a">アドベンチャーマップは、ジャーナルに記録したすべての場所を世界地図上に表示します。ジャーナル画面の地球儀アイコンをタップして開きます。ピンは都市ごとにまとめられ、グループをタップするとズームインします。</string>
+    <string name="help_faq_transfer_device_q">新しいデバイスへの移行</string>
+    <string name="help_faq_transfer_device_a">新しいデバイスで同じ Google またはメールアカウントでサインインしてください。エントリーは数秒で自動的に同期されます。バックアップと復元で保存した写真も、バックアップファイルを再インポートすると復元されます。</string>
+    <string name="help_faq_premium_benefits_q">プレミアムで何ができますか？</string>
+    <string name="help_faq_premium_benefits_a">プレミアムは Macaco のすべての機能を解放します。無制限のジャーナルエントリー、アドベンチャーマップ、エントリー間のスワイプ、カスタムテーマ、優先サポート。月額・年額・買い切りプランから選べます。</string>
+    <string name="help_faq_premium_broken_q">プレミアムが動作しませんか？</string>
+    <string name="help_faq_premium_broken_a">購入を復元してみてください。設定 → プレミアム を開き、購入を復元 をタップします。購入時と同じアカウントでサインインしているか確認してください。それでも解決しない場合は houseofmmminq@gmail.com までご連絡ください。</string>
+    <string name="help_faq_cancel_plan_q">プランの変更・解約</string>
     <string name="help_get_in_touch">お問い合わせ</string>
     <string name="help_contact">サポートに連絡</string>
     <string name="help_contact_subject">Macaco サポート</string>

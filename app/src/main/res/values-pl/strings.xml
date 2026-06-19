@@ -13,6 +13,7 @@
     <string name="common_sign_in">Zaloguj się</string>
     <string name="common_sign_out">Wyloguj się</string>
     <string name="common_profile">Profil</string>
+    <string name="nav_journal">Dziennik</string>
     <string name="common_settings">Ustawienia</string>
     <string name="common_new_entry">Nowy wpis</string>
     <string name="common_edit_entry">Edytuj wpis</string>
@@ -71,6 +72,7 @@
     <string name="entry_detail_delete_cd">Usuń</string>
     <string name="entry_detail_add_story">Opowiedz swoją historię…</string>
     <string name="entry_detail_set_cover">Ustaw jako okładkę</string>
+    <string name="entry_detail_add_photo">Dodaj zdjęcie</string>
     <string name="entry_detail_delete_title">Usuń wpis</string>
     <string name="entry_detail_delete_message">Usunąć &quot;%s&quot;? Tej operacji nie można cofnąć.</string>
 
@@ -226,6 +228,26 @@
     <string name="help_faq_a_lock">Tak – włącz Blokadę aplikacji z menu lub Ustawień, aby otwarcie Macaco wymagało odcisku palca, twarzy lub blokady ekranu.</string>
     <string name="help_faq_q_billing">Jak anulować lub uzyskać zwrot?</string>
     <string name="help_faq_a_billing">Subskrypcje i zakupy rozlicza Google Play. Otwórz Subskrypcję, aby zarządzać planem, lub przejdź do Sklepu Play → Płatności i subskrypcje, aby anulować. Po zwrot zgłoś się w ciągu 48 godzin przez historię zamówień w Sklepie Play lub skontaktuj się z nami.</string>
+    <string name="help_request_feature">Zaproponuj funkcję</string>
+    <string name="help_report_issue">Zgłoś problem</string>
+    <string name="help_section_getting_started">Pierwsze kroki</string>
+    <string name="help_section_photos">Zdjęcia</string>
+    <string name="help_section_sync">Synchronizacja i urządzenia</string>
+    <string name="help_section_privacy">Prywatność i bezpieczeństwo</string>
+    <string name="help_section_premium">Premium</string>
+    <string name="help_faq_create_entry_q">Jak utworzyć wpis?</string>
+    <string name="help_faq_create_entry_a">Naciśnij przycisk + na ekranie dziennika. Dodaj tytuł, lokalizację, datę, zdjęcia, nastrój i tagi — albo tylko tytuł i kilka słów. Wszystko zapisuje się automatycznie.</string>
+    <string name="help_faq_swipe_entries_q">Jak przełączać się między wpisami?</string>
+    <string name="help_faq_swipe_entries_a">Na liście dziennika przesuń palcem w lewo lub w prawo na karcie wpisu, aby przejść do następnego lub poprzedniego wspomnienia. Licznik u góry pokazuje twoją pozycję.</string>
+    <string name="help_faq_adventures_map_q">Czym jest mapa Przygody?</string>
+    <string name="help_faq_adventures_map_a">Mapa Przygody pokazuje na mapie świata każde miejsce zapisane w dzienniku. Naciśnij ikonę globusa na ekranie dziennika, aby ją otworzyć. Pinezki są grupowane według miast — naciśnij grupę, aby przybliżyć.</string>
+    <string name="help_faq_transfer_device_q">Przeniesienie na nowe urządzenie</string>
+    <string name="help_faq_transfer_device_a">Zaloguj się na nowym urządzeniu tym samym kontem Google lub e-mail. Twoje wpisy synchronizują się automatycznie w kilka sekund. Zdjęcia zapisane przez Kopię zapasową i przywracanie również zostaną przywrócone po ponownym zaimportowaniu pliku kopii.</string>
+    <string name="help_faq_premium_benefits_q">Co daje premium?</string>
+    <string name="help_faq_premium_benefits_a">Premium odblokowuje pełne możliwości Macaco: nieograniczone wpisy w dzienniku, mapę Przygody, przewijanie między wpisami, własne motywy i priorytetowe wsparcie. Dostępne w planie miesięcznym, rocznym lub dożywotnim.</string>
+    <string name="help_faq_premium_broken_q">Premium nie działa?</string>
+    <string name="help_faq_premium_broken_a">Spróbuj przywrócić zakup: przejdź do Ustawienia → Premium i naciśnij Przywróć zakupy. Upewnij się, że logujesz się tym samym kontem, którego użyto przy zakupie. Jeśli nadal nie działa, napisz do nas na houseofmmminq@gmail.com.</string>
+    <string name="help_faq_cancel_plan_q">Zmień lub anuluj plan</string>
     <string name="help_get_in_touch">Kontakt</string>
     <string name="help_contact">Skontaktuj się z pomocą</string>
     <string name="help_contact_subject">Pomoc Macaco</string>

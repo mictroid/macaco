@@ -19,7 +19,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,18 +45,54 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.util.AppActions
 
-/** Q&A pairs shown in the FAQ section. String ids kept in sync with strings.xml. */
-private val FAQ = listOf(
-    R.string.help_faq_q_sync to R.string.help_faq_a_sync,
-    R.string.help_faq_q_photos to R.string.help_faq_a_photos,
-    R.string.help_faq_q_backup to R.string.help_faq_a_backup,
-    R.string.help_faq_q_lock to R.string.help_faq_a_lock,
-    R.string.help_faq_q_billing to R.string.help_faq_a_billing,
+/** A named FAQ section: a teal section label and its Q&A pairs (question id to answer id). */
+private data class FaqSection(val titleRes: Int, val items: List<Pair<Int, Int>>)
+
+/** FAQ grouped into named sections. String ids kept in sync with strings.xml. */
+private val FAQ_SECTIONS = listOf(
+    FaqSection(
+        R.string.help_section_getting_started,
+        listOf(
+            R.string.help_faq_create_entry_q to R.string.help_faq_create_entry_a,
+            R.string.help_faq_swipe_entries_q to R.string.help_faq_swipe_entries_a,
+            R.string.help_faq_adventures_map_q to R.string.help_faq_adventures_map_a,
+        )
+    ),
+    FaqSection(
+        R.string.help_section_photos,
+        listOf(
+            R.string.help_faq_q_photos to R.string.help_faq_a_photos,
+            R.string.help_faq_q_backup to R.string.help_faq_a_backup,
+        )
+    ),
+    FaqSection(
+        R.string.help_section_sync,
+        listOf(
+            R.string.help_faq_q_sync to R.string.help_faq_a_sync,
+            R.string.help_faq_transfer_device_q to R.string.help_faq_transfer_device_a,
+        )
+    ),
+    FaqSection(
+        R.string.help_section_privacy,
+        listOf(
+            R.string.help_faq_q_lock to R.string.help_faq_a_lock,
+        )
+    ),
+    FaqSection(
+        R.string.help_section_premium,
+        listOf(
+            R.string.help_faq_premium_benefits_q to R.string.help_faq_premium_benefits_a,
+            R.string.help_faq_premium_broken_q to R.string.help_faq_premium_broken_a,
+            // Question renamed; the existing billing/cancel answer copy is reused unchanged.
+            R.string.help_faq_cancel_plan_q to R.string.help_faq_a_billing,
+        )
+    ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -134,10 +172,31 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                 }
             }
 
-            // ── FAQ ──
-            SectionHeader(stringResource(R.string.help_faq))
-            FAQ.forEach { (q, a) ->
-                FaqCard(question = stringResource(q), answer = stringResource(a))
+            // ── Feedback CTAs: quick paths to request a feature or report an issue ──
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                FeedbackCard(
+                    icon = Icons.Filled.Lightbulb,
+                    label = stringResource(R.string.help_request_feature),
+                    modifier = Modifier.weight(1f),
+                    onClick = { AppActions.contactSupport(context, R.string.help_feedback_feature_subject) }
+                )
+                FeedbackCard(
+                    icon = Icons.Filled.BugReport,
+                    label = stringResource(R.string.help_report_issue),
+                    modifier = Modifier.weight(1f),
+                    onClick = { AppActions.contactSupport(context, R.string.help_feedback_issue_subject) }
+                )
+            }
+
+            // ── FAQ, grouped into named sections ──
+            FAQ_SECTIONS.forEach { section ->
+                SectionHeader(stringResource(section.titleRes))
+                section.items.forEach { (q, a) ->
+                    FaqCard(question = stringResource(q), answer = stringResource(a))
+                }
             }
 
             // ── Get in touch ──
@@ -175,6 +234,37 @@ private fun SectionHeader(text: String) {
         fontWeight = FontWeight.SemiBold,
         modifier = Modifier.padding(top = 4.dp, start = 4.dp)
     )
+}
+
+@Composable
+private fun FeedbackCard(
+    icon: ImageVector,
+    label: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier.clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(icon, contentDescription = null, modifier = Modifier.size(24.dp))
+            Text(
+                label,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }
 
 @Composable

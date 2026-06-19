@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -41,6 +42,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
 import com.houseofmmminq.macaco.ui.screens.MapScreen
@@ -248,7 +250,7 @@ fun NavGraph(
                             viewModel.setTagFilter(tag)
                             navController.popBackStack(Screen.JournalList.route, inclusive = false)
                         },
-                        onSetCover = { viewModel.saveEntry(it) },
+                        onSaveEntry = { viewModel.saveEntry(it) },
                         cachedDrivePhotos = cachedDrivePhotos
                     )
                 }
@@ -351,7 +353,7 @@ private fun MacacoBottomNavBar(navController: NavController, currentRoute: Strin
                     contentDescription = null
                 )
             },
-            label = { Text("Journal") }
+            label = { Text(stringResource(R.string.nav_journal)) }
         )
         NavigationBarItem(
             selected = currentRoute == Screen.Adventures.route,
@@ -364,7 +366,7 @@ private fun MacacoBottomNavBar(navController: NavController, currentRoute: Strin
                     contentDescription = null
                 )
             },
-            label = { Text("Adventures") }
+            label = { Text(stringResource(R.string.drawer_adventures)) }
         )
         NavigationBarItem(
             selected = currentRoute == Screen.Profile.route,
@@ -377,7 +379,7 @@ private fun MacacoBottomNavBar(navController: NavController, currentRoute: Strin
                     contentDescription = null
                 )
             },
-            label = { Text("Profile") }
+            label = { Text(stringResource(R.string.common_profile)) }
         )
     }
 }

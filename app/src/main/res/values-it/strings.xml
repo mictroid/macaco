@@ -13,6 +13,7 @@
     <string name="common_sign_in">Accedi</string>
     <string name="common_sign_out">Esci</string>
     <string name="common_profile">Profilo</string>
+    <string name="nav_journal">Diario</string>
     <string name="common_settings">Impostazioni</string>
     <string name="common_new_entry">Nuovo ricordo</string>
     <string name="common_edit_entry">Modifica ricordo</string>
@@ -67,6 +68,7 @@
     <string name="entry_detail_delete_cd">Elimina</string>
     <string name="entry_detail_add_story">Racconta la tua storia…</string>
     <string name="entry_detail_set_cover">Imposta come copertina</string>
+    <string name="entry_detail_add_photo">Aggiungi foto</string>
     <string name="entry_detail_delete_title">Elimina ricordo</string>
     <string name="entry_detail_delete_message">Eliminare &quot;%s&quot;? Questa azione non può essere annullata.</string>
 
@@ -218,6 +220,26 @@
     <string name="help_faq_a_lock">Sì: attiva il Blocco app dal menu o dalle Impostazioni per richiedere impronta, volto o blocco schermo all\'apertura di Macaco.</string>
     <string name="help_faq_q_billing">Come annullo o ottengo un rimborso?</string>
     <string name="help_faq_a_billing">Abbonamenti e acquisti sono addebitati da Google Play. Apri Abbonamento per gestire il piano, oppure vai su Play Store → Pagamenti e abbonamenti per annullare. Per i rimborsi, usa la cronologia ordini del Play Store entro 48 ore, o contattaci.</string>
+    <string name="help_request_feature">Proponi una funzione</string>
+    <string name="help_report_issue">Segnala un problema</string>
+    <string name="help_section_getting_started">Per iniziare</string>
+    <string name="help_section_photos">Foto</string>
+    <string name="help_section_sync">Sincronizzazione e dispositivi</string>
+    <string name="help_section_privacy">Privacy e sicurezza</string>
+    <string name="help_section_premium">Premium</string>
+    <string name="help_faq_create_entry_q">Come creo una voce?</string>
+    <string name="help_faq_create_entry_a">Tocca il pulsante + nella schermata del diario. Aggiungi titolo, luogo, data, foto, umore e tag, oppure solo un titolo e qualche parola. Tutto viene salvato automaticamente.</string>
+    <string name="help_faq_swipe_entries_q">Come passo da una voce all\'altra?</string>
+    <string name="help_faq_swipe_entries_a">Nell\'elenco del diario, scorri a sinistra o a destra su una scheda per andare al ricordo successivo o precedente. Il contatore in alto mostra la tua posizione.</string>
+    <string name="help_faq_adventures_map_q">Cos\'è la mappa Avventure?</string>
+    <string name="help_faq_adventures_map_a">La mappa Avventure mostra su un planisfero ogni luogo che hai annotato nel diario. Tocca l\'icona del globo nella schermata del diario per aprirla. I segnaposto sono raggruppati per città: tocca un gruppo per ingrandire.</string>
+    <string name="help_faq_transfer_device_q">Trasferisci su un nuovo dispositivo</string>
+    <string name="help_faq_transfer_device_a">Accedi con lo stesso account Google o e-mail sul nuovo dispositivo. Le tue voci si sincronizzano automaticamente in pochi secondi. Anche le foto salvate tramite Backup e ripristino verranno ripristinate dopo aver reimportato il file di backup.</string>
+    <string name="help_faq_premium_benefits_q">Cosa include premium?</string>
+    <string name="help_faq_premium_benefits_a">Premium sblocca l\'esperienza completa di Macaco: voci di diario illimitate, mappa Avventure, scorrimento tra le voci, temi personalizzati e supporto prioritario. Disponibile come piano mensile, annuale o a vita.</string>
+    <string name="help_faq_premium_broken_q">Premium non funziona?</string>
+    <string name="help_faq_premium_broken_a">Prova a ripristinare l\'acquisto: vai su Impostazioni → Premium e tocca Ripristina acquisti. Assicurati di aver effettuato l\'accesso con lo stesso account usato per l\'acquisto. Se ancora non funziona, scrivici a houseofmmminq@gmail.com.</string>
+    <string name="help_faq_cancel_plan_q">Cambia o annulla il piano</string>
     <string name="help_get_in_touch">Contattaci</string>
     <string name="help_contact">Contatta l\'assistenza</string>
     <string name="help_contact_subject">Assistenza Macaco</string>

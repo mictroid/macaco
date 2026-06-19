@@ -13,6 +13,7 @@
     <string name="common_sign_in">Inloggen</string>
     <string name="common_sign_out">Uitloggen</string>
     <string name="common_profile">Profiel</string>
+    <string name="nav_journal">Dagboek</string>
     <string name="common_settings">Instellingen</string>
     <string name="common_new_entry">Nieuwe herinnering</string>
     <string name="common_edit_entry">Herinnering bewerken</string>
@@ -67,6 +68,7 @@
     <string name="entry_detail_delete_cd">Verwijderen</string>
     <string name="entry_detail_add_story">Vertel je verhaal…</string>
     <string name="entry_detail_set_cover">Als omslag instellen</string>
+    <string name="entry_detail_add_photo">Foto toevoegen</string>
     <string name="entry_detail_delete_title">Herinnering verwijderen</string>
     <string name="entry_detail_delete_message">&quot;%s&quot; verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
 
@@ -218,6 +220,26 @@
     <string name="help_faq_a_lock">Ja – schakel App-vergrendeling in via het menu of Instellingen om je vingerafdruk, gezicht of schermvergrendeling te vereisen bij het openen van Macaco.</string>
     <string name="help_faq_q_billing">Hoe zeg ik op of vraag ik terugbetaling aan?</string>
     <string name="help_faq_a_billing">Abonnementen en aankopen worden door Google Play afgehandeld. Open Abonnement om je plan te beheren, of ga naar Play Store → Betalingen &amp; abonnementen om op te zeggen. Voor terugbetaling gebruik je binnen 48 uur de bestelgeschiedenis in de Play Store, of neem contact met ons op.</string>
+    <string name="help_request_feature">Functie voorstellen</string>
+    <string name="help_report_issue">Probleem melden</string>
+    <string name="help_section_getting_started">Aan de slag</string>
+    <string name="help_section_photos">Foto\'s</string>
+    <string name="help_section_sync">Synchronisatie &amp; apparaten</string>
+    <string name="help_section_privacy">Privacy &amp; beveiliging</string>
+    <string name="help_section_premium">Premium</string>
+    <string name="help_faq_create_entry_q">Hoe maak ik een vermelding?</string>
+    <string name="help_faq_create_entry_a">Tik op de knop + in het dagboekscherm. Voeg een titel, locatie, datum, foto\'s, stemming en tags toe — of alleen een titel en een paar woorden. Alles wordt automatisch opgeslagen.</string>
+    <string name="help_faq_swipe_entries_q">Hoe blader ik tussen vermeldingen?</string>
+    <string name="help_faq_swipe_entries_a">Veeg in de dagboeklijst op een kaart naar links of rechts om naar de volgende of vorige herinnering te gaan. De teller bovenaan toont je positie.</string>
+    <string name="help_faq_adventures_map_q">Wat is de Avonturen-kaart?</string>
+    <string name="help_faq_adventures_map_a">De Avonturen-kaart toont elke locatie die je in je dagboek hebt vastgelegd op een wereldkaart. Tik op het wereldbolpictogram in het dagboekscherm om hem te openen. Markeringen worden per stad gegroepeerd — tik op een groep om in te zoomen.</string>
+    <string name="help_faq_transfer_device_q">Overzetten naar een nieuw apparaat</string>
+    <string name="help_faq_transfer_device_a">Meld je op je nieuwe apparaat aan met hetzelfde Google- of e-mailaccount. Je vermeldingen synchroniseren automatisch binnen enkele seconden. Foto\'s die via Back-up &amp; herstel zijn opgeslagen, worden ook hersteld zodra je het back-upbestand opnieuw importeert.</string>
+    <string name="help_faq_premium_benefits_q">Wat krijg ik met premium?</string>
+    <string name="help_faq_premium_benefits_a">Premium ontgrendelt de volledige Macaco-ervaring: onbeperkte dagboekvermeldingen, de Avonturen-kaart, vegen tussen vermeldingen, aangepaste thema\'s en prioriteitsondersteuning. Beschikbaar als maand-, jaar- of levenslang abonnement.</string>
+    <string name="help_faq_premium_broken_q">Werkt premium niet?</string>
+    <string name="help_faq_premium_broken_a">Probeer je aankoop te herstellen: ga naar Instellingen → Premium en tik op Aankopen herstellen. Zorg dat je bent aangemeld met hetzelfde account dat je bij de aankoop gebruikte. Werkt het nog steeds niet, neem dan contact op via houseofmmminq@gmail.com.</string>
+    <string name="help_faq_cancel_plan_q">Abonnement wijzigen of opzeggen</string>
     <string name="help_get_in_touch">Contact</string>
     <string name="help_contact">Contact met support</string>
     <string name="help_contact_subject">Macaco-ondersteuning</string>
