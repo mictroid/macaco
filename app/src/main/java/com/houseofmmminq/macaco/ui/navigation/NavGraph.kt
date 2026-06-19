@@ -248,6 +248,7 @@ fun NavGraph(
                             viewModel.setTagFilter(tag)
                             navController.popBackStack(Screen.JournalList.route, inclusive = false)
                         },
+                        onSetCover = { viewModel.saveEntry(it) },
                         cachedDrivePhotos = cachedDrivePhotos
                     )
                 }

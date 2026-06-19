@@ -102,6 +102,7 @@
     <string name="entry_detail_edit_cd">Edit</string>
     <string name="entry_detail_delete_cd">Delete</string>
     <string name="entry_detail_add_story">Add your story…</string>
+    <string name="entry_detail_set_cover">Set as cover</string>
     <string name="entry_detail_delete_title">Delete Entry</string>
     <string name="entry_detail_delete_message">Delete \"%s\"? This cannot be undone.</string>
 

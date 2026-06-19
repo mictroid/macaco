@@ -66,6 +66,7 @@
     <string name="entry_detail_edit_cd">Modifier</string>
     <string name="entry_detail_delete_cd">Supprimer</string>
     <string name="entry_detail_add_story">Racontez votre histoire…</string>
+    <string name="entry_detail_set_cover">Définir comme couverture</string>
     <string name="entry_detail_delete_title">Supprimer l\'entrée</string>
     <string name="entry_detail_delete_message">Supprimer &quot;%s&quot; ? Cette action est irréversible.</string>
 

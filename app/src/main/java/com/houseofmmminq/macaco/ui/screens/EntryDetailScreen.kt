@@ -5,10 +5,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +22,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -38,6 +40,7 @@ import androidx.core.content.FileProvider
 import java.io.File
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -89,7 +92,7 @@ import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun EntryDetailScreen(
     entries: List<TravelEntry>,
@@ -98,6 +101,7 @@ fun EntryDetailScreen(
     onDelete: (String) -> Unit,
     onBack: () -> Unit,
     onTagClick: (String) -> Unit = {},
+    onSetCover: (TravelEntry) -> Unit = {},
     cachedDrivePhotos: Map<String, String> = emptyMap()
 ) {
     val context = LocalContext.current
@@ -125,6 +129,9 @@ fun EntryDetailScreen(
     }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+    // Index of the photo to open the full-screen gallery at (null = gallery closed). Hoisted to the
+    // screen so the overlay can cover everything, the app bar included.
+    var galleryStartIndex by remember { mutableStateOf<Int?>(null) }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -144,6 +151,7 @@ fun EntryDetailScreen(
         )
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -160,7 +168,9 @@ fun EntryDetailScreen(
                             Text(
                                 text = "$pageNumber / ${entries.size}",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.secondary
+                                // Match the header's back/share/edit/delete icons (onPrimary) so the
+                                // counter is legible on the teal header across all themes.
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -245,53 +255,7 @@ fun EntryDetailScreen(
                         .graphicsLayer { translationX = pageOffset * size.width * 0.4f }
                 ) {
                 val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
-                if (photoCount > 0) {
-                    val pagerState = rememberPagerState(pageCount = { photoCount })
-                    Box {
-                        HorizontalPager(state = pagerState) { photoPage ->
-                            // Prefer cached Drive photo (downloaded on this device); fall back to
-                            // local URI (may fail on a device that didn't add the photo).
-                            val displayUri = entry.driveFileIds.getOrNull(photoPage)
-                                ?.takeIf { it.isNotEmpty() }
-                                ?.let { cachedDrivePhotos[it] }
-                                ?: entry.photoUris.getOrNull(photoPage)
-                            AsyncImage(
-                                model = ImageRequest.Builder(context)
-                                    .data(displayUri)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(340.dp)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                                // Fit (not Crop) so the whole photo is visible; the box background
-                                // fills any letterbox space when the aspect ratio doesn't match.
-                                contentScale = ContentScale.Fit
-                            )
-                        }
-                        if (photoCount > 1) {
-                            Row(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .padding(bottom = 10.dp),
-                                horizontalArrangement = Arrangement.spacedBy(5.dp)
-                            ) {
-                                repeat(photoCount) { index ->
-                                    Box(
-                                        modifier = Modifier
-                                            .size(if (pagerState.currentPage == index) 8.dp else 6.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                if (pagerState.currentPage == index) Color.White
-                                                else Color.White.copy(alpha = 0.5f)
-                                            )
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
+                if (photoCount == 0) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -300,6 +264,50 @@ fun EntryDetailScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(entry.mood.ifBlank { "🗺️" }, fontSize = 72.sp)
+                    }
+                } else {
+                    // Hero (first photo) + a horizontally scrollable strip of the rest. Tapping any
+                    // photo opens the full-screen gallery at that index; long-pressing a thumbnail
+                    // promotes it to the hero (cover) and saves the new order.
+                    Column {
+                        JournalPhoto(
+                            data = entry.displayPhotoUri(0, cachedDrivePhotos),
+                            onClick = { galleryStartIndex = 0 },
+                            modifier = Modifier.fillMaxWidth().height(220.dp)
+                        )
+                        if (photoCount > 1) {
+                            Spacer(Modifier.height(2.dp))
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                items(photoCount - 1) { i ->
+                                    val index = i + 1
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(context)
+                                            .data(entry.displayPhotoUri(index, cachedDrivePhotos))
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(80.dp)
+                                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                                            .combinedClickable(
+                                                onClick = { galleryStartIndex = index },
+                                                onLongClick = {
+                                                    onSetCover(entry.withCover(index))
+                                                    Toast.makeText(
+                                                        context,
+                                                        context.getString(R.string.entry_detail_set_cover),
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
                 }
@@ -318,10 +326,12 @@ fun EntryDetailScreen(
                         fontWeight = FontWeight.Bold
                     )
 
-                    // Single metadata row: mood · location · date
-                    Row(
-                        modifier = Modifier.horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    // Metadata chips: mood · location · date. FlowRow wraps to a second line when
+                    // the row runs out of width, so the date chip is never truncated.
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         // Mood + date are filled accent chips (secondaryContainer = the amber accent
                         // in the Macaco theme, matching the journal-list date pill and adapting per
@@ -432,13 +442,15 @@ fun EntryDetailScreen(
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             entry.tags.forEach { tag ->
+                                // Teal-tinted (primaryContainer) so tags read as a distinct group
+                                // from the amber (secondaryContainer) mood/date chips above.
                                 AssistChip(
                                     onClick = { onTagClick(tag) },
                                     label = { Text("#$tag") },
                                     border = null,
                                     colors = AssistChipDefaults.assistChipColors(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                 )
                             }
@@ -449,9 +461,111 @@ fun EntryDetailScreen(
                 }
             }
             }
+
+            // Soft fade into the background at the very bottom, giving the scroll visual closure
+            // regardless of theme (uses the active background colour, not a hardcoded grey).
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Color.Transparent, MaterialTheme.colorScheme.background)
+                        )
+                    )
+            )
         }
         }
     }
+
+        // Full-screen swipeable gallery over the current entry's photos, layered above the whole
+        // screen (app bar included). Opens at the tapped index; tap a photo or the close button to
+        // dismiss.
+        galleryStartIndex?.let { startIndex ->
+            val count = maxOf(currentEntry.photoUris.size, currentEntry.driveFileIds.size)
+            val galleryPagerState = rememberPagerState(
+                initialPage = startIndex.coerceIn(0, (count - 1).coerceAtLeast(0)),
+                pageCount = { count }
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+            ) {
+                HorizontalPager(state = galleryPagerState, modifier = Modifier.fillMaxSize()) { page ->
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(currentEntry.displayPhotoUri(page, cachedDrivePhotos))
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { galleryStartIndex = null }
+                    )
+                }
+                if (count > 1) {
+                    Text(
+                        text = "${galleryPagerState.currentPage + 1} / $count",
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .statusBarsPadding()
+                            .padding(top = 12.dp)
+                    )
+                }
+                IconButton(
+                    onClick = { galleryStartIndex = null },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .statusBarsPadding()
+                ) {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = stringResource(R.string.common_close),
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Resolves the URI to display for the photo at [index]: prefers the cached Drive copy (downloaded
+ * on this device), falling back to the local URI (which may be unreadable on a device that didn't
+ * add the photo).
+ */
+private fun TravelEntry.displayPhotoUri(index: Int, cached: Map<String, String>): String? =
+    driveFileIds.getOrNull(index)?.takeIf { it.isNotEmpty() }?.let { cached[it] }
+        ?: photoUris.getOrNull(index)
+
+/**
+ * A copy of this entry with the photo at [index] moved to the front (the cover/hero). Moves the
+ * parallel [TravelEntry.driveFileIds] entry too so the two lists stay aligned.
+ */
+private fun TravelEntry.withCover(index: Int): TravelEntry {
+    if (index <= 0 || index >= photoUris.size) return this
+    val photos = photoUris.toMutableList().apply { add(0, removeAt(index)) }
+    val driveIds = driveFileIds.toMutableList().apply { if (index < size) add(0, removeAt(index)) }
+    return copy(photoUris = photos, driveFileIds = driveIds)
+}
+
+/** A single journal photo, cropped to fill its slot, tappable to open the full-screen viewer. */
+@Composable
+private fun JournalPhoto(data: String?, onClick: () -> Unit, modifier: Modifier) {
+    val context = LocalContext.current
+    AsyncImage(
+        model = ImageRequest.Builder(context).data(data).crossfade(true).build(),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick)
+    )
 }
 
 private fun shareEntry(context: Context, entry: TravelEntry) {

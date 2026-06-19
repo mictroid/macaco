@@ -144,13 +144,14 @@ fun JournalListScreen(
     // Month sections: when trips are active, covers only entries with no trip; otherwise all entries.
     val monthSections = remember(visibleEntries, hasTrips) {
         val source = if (hasTrips) visibleEntries.filter { it.tripName.isNullOrBlank() } else visibleEntries
-        val out = mutableListOf<Pair<String, MutableList<TravelEntry>>>()
-        source.forEach { e ->
-            val key = monthYear(e.dateMillis)
-            if (out.isEmpty() || out.last().first != key) out.add(key to mutableListOf(e))
-            else out.last().second.add(e)
-        }
-        out
+        // Group all entries of the same month into one section (keyed by year+month so the
+        // section key is unique even when the source list isn't strictly date-ordered), then
+        // order sections newest-first and entries within each section newest-first.
+        source
+            .groupBy { monthYear(it.dateMillis) }
+            .entries
+            .sortedByDescending { (_, list) -> list.maxOf { it.dateMillis } }
+            .map { (month, list) -> month to list.sortedByDescending { it.dateMillis } }
     }
 
     // "On This Day" — entries from the same month+day in prior years.

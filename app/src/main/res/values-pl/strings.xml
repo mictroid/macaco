@@ -70,6 +70,7 @@
     <string name="entry_detail_edit_cd">Edytuj</string>
     <string name="entry_detail_delete_cd">Usuń</string>
     <string name="entry_detail_add_story">Opowiedz swoją historię…</string>
+    <string name="entry_detail_set_cover">Ustaw jako okładkę</string>
     <string name="entry_detail_delete_title">Usuń wpis</string>
     <string name="entry_detail_delete_message">Usunąć &quot;%s&quot;? Tej operacji nie można cofnąć.</string>
 
