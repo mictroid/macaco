@@ -109,40 +109,70 @@ is accepted:
 ## Automated upload (gradle-play-publisher)
 
 The Triple-T **gradle-play-publisher** plugin (`com.github.triplet.play`, v4.0.0 — 3.x doesn't
-support AGP 9) is applied in `app/build.gradle.kts`, configured to push the signed AAB to the
-**internal** track:
+support AGP 9) is applied in `app/build.gradle.kts` and pushes the signed AAB to the **`alpha`**
+track (which the Play Console UI calls **Closed testing**):
 
 ```kotlin
 play {
-    serviceAccountCredentials.set(rootProject.file("play-service-account.json"))
-    track.set("internal")
+    // Local key if present, else the CI WIF credential file (GOOGLE_APPLICATION_CREDENTIALS).
+    val playServiceAccountFile = rootProject.file("play-service-account.json")
+    val ciCredentialsPath = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    if (playServiceAccountFile.exists()) {
+        serviceAccountCredentials.set(playServiceAccountFile)
+    } else if (ciCredentialsPath != null) {
+        serviceAccountCredentials.set(file(ciCredentialsPath))
+    }
+    track.set("alpha")
     defaultToAppBundles.set(true)
 }
 ```
 
-**One-time credential setup** (the only missing piece — the JSON is git-ignored and not in Drive yet):
+### Canonical path: the WIF GitHub Actions workflow
+
+**Publish via the `release.yml` GitHub Actions workflow, not a local key.** This is the path that
+actually works on a fresh machine — no `play-service-account.json` needs to exist locally (it's
+git-ignored and is *not* mirrored to `G:\My Drive\Macaco-backup\`).
+
+The workflow (`.github/workflows/release.yml`) is **manual-dispatch only** and authenticates to
+Google with **Workload Identity Federation** instead of a long-lived key: it fetches a GitHub OIDC
+token, builds an `external_account` credential config impersonating
+`play-publisher@macaco-499016.iam.gserviceaccount.com`, points `GOOGLE_APPLICATION_CREDENTIALS` at
+it, and runs `./gradlew publishReleaseBundle`. Trust is scoped to this exact repo via the
+`github-pool` / `github-provider` Workload Identity Pool (GCP project number `502845055894`). It
+decodes the release keystore and signing secrets from GitHub Actions secrets (`RELEASE_KEYSTORE_*`,
+`MAPS_API_KEY`).
+
+**To cut a release:**
+
+1. Commit + push the version bump to `master` (**bump `versionCode`** every upload).
+2. Trigger the workflow — either:
+   - GitHub → repo **Actions → "Release to Play Store" → Run workflow → branch `master`**, or
+   - `gh workflow run release.yml --ref master` (then `gh run watch` to follow it).
+3. On success the bundle lands on the **closed testing** track; add/confirm testers and the opt-in
+   link in Play Console → Testing → Closed testing.
+
+### Fallback: local service-account key
+
+Only if you can't use CI. Requires `play-service-account.json` at the repo root (git-ignored) —
+which is currently **absent on this machine and not in the Drive backup**, so this path needs the
+key re-minted first:
 
 1. **Google Cloud Console** (project `macaco-499016`) → enable the **Google Play Android Developer API**.
-2. **APIs & Services → Credentials → Create credentials → Service account.** Name it e.g.
-   `play-publisher`. No project roles needed.
-3. On the service account → **Keys → Add key → JSON**. Download it and save as
-   `play-service-account.json` at the **repo root** (git-ignored; also back it up to
-   `G:\My Drive\Macaco-backup\`).
-4. **Play Console → Users and permissions → Invite new user**, enter the service-account email
-   (`…@macaco-499016.iam.gserviceaccount.com`). Grant app access to **Macaco** with at least
-   *Release to testing tracks* (Releases) permission. (First invite can take a few minutes to
-   propagate.)
+2. **APIs & Services → Credentials → Create credentials → Service account** (e.g. `play-publisher`).
+3. Service account → **Keys → Add key → JSON** → save as `play-service-account.json` at the repo
+   root. Back it up to `G:\My Drive\Macaco-backup\` so this gap doesn't recur.
+4. **Play Console → Users and permissions → Invite new user** → the service-account email → grant
+   **Macaco** at least *Release to testing tracks*.
 
-**Then, to build + upload to internal testing in one shot:**
+Then build + upload in one shot:
 
 ```bash
 JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew publishReleaseBundle
 ```
 
-This signs the release AAB (via `keystore.properties`) and uploads it to the internal track. Still
-**bump `versionCode`** before each run. `track`/`releaseStatus` can be overridden per-run with
-`--track` / `--release-status`. The very first upload of an app must still be done manually in the
-Console (the API can't create the app), but Macaco is already past that.
+This signs the release AAB (via `keystore.properties`) and uploads it. `track`/`releaseStatus` can
+be overridden per-run with `--track` / `--release-status`. The very first upload of an app must be
+done manually in the Console (the API can't create the app), but Macaco is past that.
 
 ## Related
 
