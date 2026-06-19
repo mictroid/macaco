@@ -175,9 +175,11 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
                     listOf(
                         stringResource(R.string.subscription_feature_unlimited),
                         stringResource(R.string.subscription_feature_photos),
-                        stringResource(R.string.subscription_feature_no_ads),
-                        stringResource(R.string.subscription_feature_local),
+                        stringResource(R.string.subscription_feature_map),
+                        stringResource(R.string.subscription_feature_sync),
                         stringResource(R.string.subscription_feature_offline),
+                        stringResource(R.string.subscription_feature_private),
+                        stringResource(R.string.subscription_feature_no_ads),
                         stringResource(R.string.subscription_feature_no_sub),
                         stringResource(R.string.subscription_feature_updates)
                     ).forEach { feature ->

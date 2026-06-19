@@ -3,6 +3,7 @@ package com.houseofmmminq.macaco.data.storage
 import com.houseofmmminq.macaco.data.auth.AuthRepository
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class CloudEntrySync(
     private val authRepository: AuthRepository
@@ -53,7 +53,13 @@ class CloudEntrySync(
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    _errors.trySend("Couldn't sync your entries. Changes are saved and will catch up when you're back online.")
+                    // Going offline fires UNAVAILABLE; entries are still served from cache, so don't
+                    // alarm the user — only surface non-connectivity errors.
+                    val isOffline = (error as? FirebaseFirestoreException)?.code ==
+                        FirebaseFirestoreException.Code.UNAVAILABLE
+                    if (!isOffline) {
+                        _errors.trySend("Couldn't sync your entries. Changes are saved and will catch up when you're back online.")
+                    }
                     return@addSnapshotListener
                 }
                 if (snapshot == null) return@addSnapshotListener
@@ -73,30 +79,32 @@ class CloudEntrySync(
                                 ?.filterIsInstance<String>() ?: emptyList(),
                             createdAt = doc.getLong("createdAt") ?: 0L,
                             driveFileIds = (doc.get("driveFileIds") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList()
+                                ?.filterIsInstance<String>() ?: emptyList(),
+                            tripName = doc.getString("tripName")
                         )
                     }.getOrNull()
                 }
             }
     }
 
+    // No .await() on the writes below: Firestore queues them to its local cache and syncs when
+    // connectivity returns, so saving/deleting works offline. The failure listener fires only on a
+    // genuine server rejection (e.g. permission), not a connectivity gap, so offline writes don't
+    // surface a false error.
     suspend fun save(entry: TravelEntry) {
         val uid = authRepository.currentUser.value?.uid ?: return
-        runCatching {
-            firestore.collection("users").document(uid)
-                .collection("entries").document(entry.id)
-                .set(entry.toMap())
-                .await()
-        }.onFailure { _errors.trySend("Couldn't save your entry. Please try again.") }
+        firestore.collection("users").document(uid)
+            .collection("entries").document(entry.id)
+            .set(entry.toMap())
+            .addOnFailureListener { _errors.trySend("Couldn't save your entry. Please try again.") }
     }
 
     suspend fun delete(id: String) {
         val uid = authRepository.currentUser.value?.uid ?: return
-        runCatching {
-            firestore.collection("users").document(uid)
-                .collection("entries").document(id)
-                .delete().await()
-        }.onFailure { _errors.trySend("Couldn't delete the entry. Please try again.") }
+        firestore.collection("users").document(uid)
+            .collection("entries").document(id)
+            .delete()
+            .addOnFailureListener { _errors.trySend("Couldn't delete the entry. Please try again.") }
     }
 
     private fun TravelEntry.toMap(): Map<String, Any?> = mapOf(
@@ -109,6 +117,7 @@ class CloudEntrySync(
         "photoUris" to photoUris,
         "tags" to tags,
         "createdAt" to createdAt,
-        "driveFileIds" to driveFileIds
+        "driveFileIds" to driveFileIds,
+        "tripName" to tripName
     )
 }

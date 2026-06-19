@@ -22,6 +22,7 @@ import com.houseofmmminq.macaco.util.ReminderScheduler
 import android.location.Geocoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,6 +57,16 @@ class JournalViewModel(
     // detail screen can set it (tap a tag → list filtered by that tag).
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
     val selectedTags: StateFlow<Set<String>> = _selectedTags.asStateFlow()
+
+    /**
+     * Entries after applying the active tag filter — the single source of truth for what the user
+     * sees. Used by both the journal list and the entry-detail swipe pager, so swiping in the
+     * detail screen stays within the same filtered set (never lands on a filtered-out entry).
+     */
+    val visibleEntries: StateFlow<List<TravelEntry>> =
+        combine(entries, selectedTags) { list, tags ->
+            if (tags.isEmpty()) list else list.filter { entry -> entry.tags.any { it in tags } }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     // null = loading, false = not purchased, true = purchased (sourced from RevenueCat)
     val isPurchased: StateFlow<Boolean?> = billingManager.isPremium

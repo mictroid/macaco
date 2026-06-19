@@ -174,8 +174,10 @@
     <string name="subscription_feature_unlimited">Nieograniczona liczba wpisów</string>
     <string name="subscription_feature_photos">Dołącz zdjęcia do każdego wspomnienia</string>
     <string name="subscription_feature_no_ads">Zero reklam — na zawsze</string>
-    <string name="subscription_feature_local">Twoje dane pozostają na urządzeniu</string>
-    <string name="subscription_feature_offline">Działa w pełni offline</string>
+    <string name="subscription_feature_sync">Synchronizacja w chmurze na wszystkich urządzeniach</string>
+    <string name="subscription_feature_offline">Działa offline — odczyty i zapisy synchronizują się po powrocie online</string>
+    <string name="subscription_feature_private">Twoje dane są prywatne — nigdy nie sprzedawane ani udostępniane</string>
+    <string name="subscription_feature_map">Mapa Przygody — wszystkie Twoje miejsca w jednym widoku</string>
     <string name="subscription_feature_no_sub">Bez subskrypcji, bez cyklicznych opłat</string>
     <string name="subscription_feature_updates">Przyszłe aktualizacje w cenie</string>
     <string name="subscription_thank_you">Dziękujemy za wsparcie Macaco! 🙏\nTwój zakup pozwala utrzymać aplikację niezależną i wolną od reklam.</string>

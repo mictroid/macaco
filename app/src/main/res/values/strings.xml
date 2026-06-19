@@ -261,8 +261,10 @@
     <string name="subscription_feature_unlimited">Unlimited journal entries</string>
     <string name="subscription_feature_photos">Attach photos to every memory</string>
     <string name="subscription_feature_no_ads">Zero ads — ever</string>
-    <string name="subscription_feature_local">Your data stays on your device</string>
-    <string name="subscription_feature_offline">Works fully offline</string>
+    <string name="subscription_feature_sync">Cloud sync across all your devices</string>
+    <string name="subscription_feature_offline">Works offline — reads and writes sync when back online</string>
+    <string name="subscription_feature_private">Your data is private — never sold, never shared</string>
+    <string name="subscription_feature_map">Adventures map — all your places in one view</string>
     <string name="subscription_feature_no_sub">Lifetime: no subscription, no recurring fees</string>
     <string name="subscription_feature_updates">Future updates included</string>
     <string name="subscription_thank_you">Thank you for supporting Macaco! 🙏\nYour purchase keeps the app independent and ad-free.</string>

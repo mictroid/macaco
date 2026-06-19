@@ -235,7 +235,8 @@ fun NavGraph(
                     arguments = listOf(navArgument("entryId") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val id = backStackEntry.arguments?.getString("entryId") ?: return@composable
-                    val entries by viewModel.entries.collectAsState()
+                    // Swipe through the same tag-filtered set the list shows, not all entries.
+                    val entries by viewModel.visibleEntries.collectAsState()
                     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
                     if (entries.none { it.id == id }) {
                         LaunchedEffect(Unit) { navController.popBackStack() }

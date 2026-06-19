@@ -165,8 +165,10 @@
     <string name="subscription_feature_unlimited">無制限の日記エントリー</string>
     <string name="subscription_feature_photos">すべての思い出に写真を添付</string>
     <string name="subscription_feature_no_ads">広告ゼロ — 永久に</string>
-    <string name="subscription_feature_local">データはデバイスに保存</string>
-    <string name="subscription_feature_offline">完全オフライン対応</string>
+    <string name="subscription_feature_sync">すべてのデバイスでクラウド同期</string>
+    <string name="subscription_feature_offline">オフラインでも動作 — オンラインに戻ると読み書きが同期されます</string>
+    <string name="subscription_feature_private">あなたのデータは非公開 — 販売も共有もされません</string>
+    <string name="subscription_feature_map">アドベンチャーマップ — すべての場所を一目で</string>
     <string name="subscription_feature_no_sub">サブスクなし、定期費用なし</string>
     <string name="subscription_feature_updates">将来のアップデートも含む</string>
     <string name="subscription_thank_you">Macaco をご支援いただきありがとうございます！ 🙏\nあなたの購入がアプリの独立性と広告フリーを支えています。</string>

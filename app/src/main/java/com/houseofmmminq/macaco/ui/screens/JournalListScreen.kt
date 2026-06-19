@@ -124,10 +124,8 @@ fun JournalListScreen(
     // State lives in the ViewModel so the detail screen can set it too.
     val selectedTags by viewModel.selectedTags.collectAsState()
     val allTags = remember(entries) { entries.tagsByFrequency() }
-    val visibleEntries = remember(entries, selectedTags) {
-        if (selectedTags.isEmpty()) entries
-        else entries.filter { entry -> entry.tags.any { it in selectedTags } }
-    }
+    // Filtered set is owned by the ViewModel so the entry-detail swipe pager shares it exactly.
+    val visibleEntries by viewModel.visibleEntries.collectAsState()
     // Trips: when any visible entry has a tripName, switch to trip grouping.
     val hasTrips = remember(visibleEntries) { visibleEntries.any { !it.tripName.isNullOrBlank() } }
 

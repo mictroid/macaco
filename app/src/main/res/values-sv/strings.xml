@@ -168,8 +168,10 @@
     <string name="subscription_feature_unlimited">Obegränsat antal dagboksanteckningar</string>
     <string name="subscription_feature_photos">Bifoga foton till varje minne</string>
     <string name="subscription_feature_no_ads">Noll annonser — för alltid</string>
-    <string name="subscription_feature_local">Din data stannar på din enhet</string>
-    <string name="subscription_feature_offline">Fungerar helt offline</string>
+    <string name="subscription_feature_sync">Molnsynk på alla dina enheter</string>
+    <string name="subscription_feature_offline">Fungerar offline — läsning och skrivning synkas när du är online igen</string>
+    <string name="subscription_feature_private">Din data är privat — säljs aldrig, delas aldrig</string>
+    <string name="subscription_feature_map">Äventyrskartan — alla dina platser i en vy</string>
     <string name="subscription_feature_no_sub">Ingen prenumeration, inga återkommande avgifter</string>
     <string name="subscription_feature_updates">Framtida uppdateringar ingår</string>
     <string name="subscription_thank_you">Tack för att du stödjer Macaco! 🙏\nDitt köp håller appen oberoende och reklamfri.</string>

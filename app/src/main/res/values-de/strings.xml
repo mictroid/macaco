@@ -178,8 +178,10 @@
     <string name="subscription_feature_unlimited">Unbegrenzte Tagebucheinträge</string>
     <string name="subscription_feature_photos">Fotos zu jeder Erinnerung hinzufügen</string>
     <string name="subscription_feature_no_ads">Null Werbung — für immer</string>
-    <string name="subscription_feature_local">Deine Daten bleiben auf deinem Gerät</string>
-    <string name="subscription_feature_offline">Funktioniert vollständig offline</string>
+    <string name="subscription_feature_sync">Cloud-Sync auf allen deinen Geräten</string>
+    <string name="subscription_feature_offline">Funktioniert offline — Lese- und Schreibvorgänge werden synchronisiert, sobald du wieder online bist</string>
+    <string name="subscription_feature_private">Deine Daten sind privat — nie verkauft, nie weitergegeben</string>
+    <string name="subscription_feature_map">Abenteuer-Karte — alle deine Orte auf einen Blick</string>
     <string name="subscription_feature_no_sub">Kein Abonnement, keine wiederkehrenden Kosten</string>
     <string name="subscription_feature_updates">Zukünftige Updates inklusive</string>
     <string name="subscription_thank_you">Danke, dass du Macaco unterstützt! 🙏\nDein Kauf hält die App unabhängig und werbefrei.</string>

@@ -165,8 +165,10 @@
     <string name="subscription_feature_unlimited">无限量日记条目</string>
     <string name="subscription_feature_photos">为每段回忆附上照片</string>
     <string name="subscription_feature_no_ads">永久零广告</string>
-    <string name="subscription_feature_local">数据保存在您的设备上</string>
-    <string name="subscription_feature_offline">完全支持离线使用</string>
+    <string name="subscription_feature_sync">在所有设备间云同步</string>
+    <string name="subscription_feature_offline">离线也能使用 — 重新联网后读写自动同步</string>
+    <string name="subscription_feature_private">你的数据是私密的 — 绝不出售，绝不共享</string>
+    <string name="subscription_feature_map">探险地图 — 一览你去过的所有地方</string>
     <string name="subscription_feature_no_sub">无订阅，无循环费用</string>
     <string name="subscription_feature_updates">包含未来更新</string>
     <string name="subscription_thank_you">感谢您支持 Macaco！🙏\n您的购买让这款应用保持独立运营，永无广告。</string>

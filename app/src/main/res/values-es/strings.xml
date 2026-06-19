@@ -168,8 +168,10 @@
     <string name="subscription_feature_unlimited">Entradas de diario ilimitadas</string>
     <string name="subscription_feature_photos">Añade fotos a cada recuerdo</string>
     <string name="subscription_feature_no_ads">Sin anuncios, nunca</string>
-    <string name="subscription_feature_local">Tus datos se quedan en tu dispositivo</string>
-    <string name="subscription_feature_offline">Funciona completamente sin conexión</string>
+    <string name="subscription_feature_sync">Sincronización en la nube en todos tus dispositivos</string>
+    <string name="subscription_feature_offline">Funciona sin conexión: las lecturas y escrituras se sincronizan al volver a estar en línea</string>
+    <string name="subscription_feature_private">Tus datos son privados: nunca se venden ni se comparten</string>
+    <string name="subscription_feature_map">Mapa de Aventuras: todos tus lugares en una vista</string>
     <string name="subscription_feature_no_sub">Sin suscripción ni cargos recurrentes</string>
     <string name="subscription_feature_updates">Actualizaciones futuras incluidas</string>
     <string name="subscription_thank_you">¡Gracias por apoyar Macaco! 🙏\nTu compra mantiene la app independiente y sin anuncios.</string>

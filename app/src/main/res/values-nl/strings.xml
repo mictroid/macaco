@@ -168,8 +168,10 @@
     <string name="subscription_feature_unlimited">Onbeperkte dagboekvermeldingen</string>
     <string name="subscription_feature_photos">Voeg foto\'s toe aan elke herinnering</string>
     <string name="subscription_feature_no_ads">Geen advertenties — ooit</string>
-    <string name="subscription_feature_local">Je gegevens blijven op je apparaat</string>
-    <string name="subscription_feature_offline">Werkt volledig offline</string>
+    <string name="subscription_feature_sync">Cloudsynchronisatie op al je apparaten</string>
+    <string name="subscription_feature_offline">Werkt offline — lezen en schrijven synchroniseren zodra je weer online bent</string>
+    <string name="subscription_feature_private">Je gegevens zijn privé — nooit verkocht, nooit gedeeld</string>
+    <string name="subscription_feature_map">Avonturen-kaart — al je plekken in één overzicht</string>
     <string name="subscription_feature_no_sub">Geen abonnement, geen terugkerende kosten</string>
     <string name="subscription_feature_updates">Toekomstige updates inbegrepen</string>
     <string name="subscription_thank_you">Bedankt voor je steun aan Macaco! 🙏\nJouw aankoop houdt de app onafhankelijk en advertentievrij.</string>
