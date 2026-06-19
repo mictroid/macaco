@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -255,8 +256,17 @@ fun EntryDetailScreen(
                         .graphicsLayer { translationX = pageOffset * size.width * 0.4f }
                 ) {
                 val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
-                if (photoCount == 0) {
-                    Box(
+                // Promote the photo at [index] to the cover (hero) and confirm with a toast.
+                val setCover: (Int) -> Unit = { index ->
+                    onSetCover(entry.withCover(index))
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.entry_detail_set_cover),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                when {
+                    photoCount == 0 -> Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(180.dp)
@@ -265,45 +275,55 @@ fun EntryDetailScreen(
                     ) {
                         Text(entry.mood.ifBlank { "🗺️" }, fontSize = 72.sp)
                     }
-                } else {
-                    // Hero (first photo) + a horizontally scrollable strip of the rest. Tapping any
-                    // photo opens the full-screen gallery at that index; long-pressing a thumbnail
-                    // promotes it to the hero (cover) and saves the new order.
-                    Column {
-                        JournalPhoto(
-                            data = entry.displayPhotoUri(0, cachedDrivePhotos),
-                            onClick = { galleryStartIndex = 0 },
-                            modifier = Modifier.fillMaxWidth().height(220.dp)
-                        )
-                        if (photoCount > 1) {
+
+                    // Single photo — full-width hero.
+                    photoCount == 1 -> JournalPhoto(
+                        data = entry.displayPhotoUri(0, cachedDrivePhotos),
+                        onClick = { galleryStartIndex = 0 },
+                        modifier = Modifier.fillMaxWidth().height(260.dp)
+                    )
+
+                    // Editorial collage: hero (left, ~65%) + up to two thumbnails stacked on the
+                    // right (~35%), with a horizontally scrollable overflow strip for photos 4+.
+                    // Tapping any photo opens the gallery at that index; long-pressing a non-hero
+                    // thumbnail promotes it to the cover.
+                    else -> Column {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().height(260.dp),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            JournalPhoto(
+                                data = entry.displayPhotoUri(0, cachedDrivePhotos),
+                                onClick = { galleryStartIndex = 0 },
+                                modifier = Modifier.weight(0.65f).fillMaxHeight()
+                            )
+                            Column(
+                                modifier = Modifier.weight(0.35f).fillMaxHeight(),
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                for (index in 1..minOf(photoCount - 1, 2)) {
+                                    JournalThumb(
+                                        data = entry.displayPhotoUri(index, cachedDrivePhotos),
+                                        onClick = { galleryStartIndex = index },
+                                        onLongClick = { setCover(index) },
+                                        modifier = Modifier.weight(1f).fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+                        if (photoCount > 3) {
                             Spacer(Modifier.height(2.dp))
                             LazyRow(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
-                                items(photoCount - 1) { i ->
-                                    val index = i + 1
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(context)
-                                            .data(entry.displayPhotoUri(index, cachedDrivePhotos))
-                                            .crossfade(true)
-                                            .build(),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(80.dp)
-                                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                                            .combinedClickable(
-                                                onClick = { galleryStartIndex = index },
-                                                onLongClick = {
-                                                    onSetCover(entry.withCover(index))
-                                                    Toast.makeText(
-                                                        context,
-                                                        context.getString(R.string.entry_detail_set_cover),
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            )
+                                items(photoCount - 3) { j ->
+                                    val index = j + 3
+                                    JournalThumb(
+                                        data = entry.displayPhotoUri(index, cachedDrivePhotos),
+                                        onClick = { galleryStartIndex = index },
+                                        onLongClick = { setCover(index) },
+                                        modifier = Modifier.size(80.dp)
                                     )
                                 }
                             }
@@ -565,6 +585,21 @@ private fun JournalPhoto(data: String?, onClick: () -> Unit, modifier: Modifier)
         modifier = modifier
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick)
+    )
+}
+
+/** A non-hero photo thumbnail: tap opens the gallery, long-press promotes it to the cover. */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun JournalThumb(data: String?, onClick: () -> Unit, onLongClick: () -> Unit, modifier: Modifier) {
+    val context = LocalContext.current
+    AsyncImage(
+        model = ImageRequest.Builder(context).data(data).crossfade(true).build(),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
     )
 }
 
