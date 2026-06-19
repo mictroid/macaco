@@ -98,7 +98,10 @@ fun NavGraph(
                 Lifecycle.Event.ON_PAUSE -> pauseTime[0] = System.currentTimeMillis()
                 Lifecycle.Event.ON_RESUME -> {
                     val elapsed = System.currentTimeMillis() - pauseTime[0]
-                    if (pauseTime[0] > 0 && elapsed > LOCK_TIMEOUT_MS && appLockEnabled) {
+                    // Skip the re-lock when we left for our own picker/camera/voice flow — otherwise
+                    // a long photo selection (> timeout) locks the user out mid-entry.
+                    val suppressed = viewModel.consumeSuppressAutoLock()
+                    if (!suppressed && pauseTime[0] > 0 && elapsed > LOCK_TIMEOUT_MS && appLockEnabled) {
                         viewModel.lock()
                     }
                 }
@@ -222,7 +225,8 @@ fun NavGraph(
                         onBack = { navController.popBackStack() },
                         locationSuggestions = entries.toLocationSuggestions(),
                         tagSuggestions = entries.tagsByFrequency(),
-                        tripSuggestions = entries.toTripSuggestions()
+                        tripSuggestions = entries.toTripSuggestions(),
+                        onSuppressAutoLock = { viewModel.suppressAutoLockOnce() }
                     )
                 }
 
@@ -251,6 +255,7 @@ fun NavGraph(
                             navController.popBackStack(Screen.JournalList.route, inclusive = false)
                         },
                         onSaveEntry = { viewModel.saveEntry(it) },
+                        onSuppressAutoLock = { viewModel.suppressAutoLockOnce() },
                         cachedDrivePhotos = cachedDrivePhotos
                     )
                 }
@@ -271,7 +276,8 @@ fun NavGraph(
                         onBack = { navController.popBackStack() },
                         locationSuggestions = entries.toLocationSuggestions(),
                         tagSuggestions = entries.tagsByFrequency(),
-                        tripSuggestions = entries.toTripSuggestions()
+                        tripSuggestions = entries.toTripSuggestions(),
+                        onSuppressAutoLock = { viewModel.suppressAutoLockOnce() }
                     )
                 }
 

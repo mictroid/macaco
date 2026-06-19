@@ -63,6 +63,18 @@ class DrivePhotoSync(private val context: Context) {
         return GoogleSignIn.hasPermissions(account, Scope(DriveScopes.DRIVE_FILE))
     }
 
+    /**
+     * Resets per-account cached state. The "Macaco" Drive folder id and the downloaded-photo cache
+     * belong to the previously signed-in account; without clearing them, uploads after an account
+     * switch target the old account's folder (which the new account can't access) and fail with a
+     * "couldn't back up" error. Call whenever the signed-in user changes.
+     */
+    fun onAccountChanged() {
+        driveFolderId = null
+        _cachedPhotoUris.value = emptyMap()
+        _syncState.value = DrivePhotoSyncState.Idle
+    }
+
     private fun getDriveService(): Drive {
         val account = GoogleSignIn.getLastSignedInAccount(context)
             ?: throw IllegalStateException("No Google account signed in")

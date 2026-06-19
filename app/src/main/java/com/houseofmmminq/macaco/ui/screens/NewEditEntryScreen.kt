@@ -101,7 +101,8 @@ fun NewEditEntryScreen(
     onBack: () -> Unit,
     locationSuggestions: List<String> = emptyList(),
     tagSuggestions: List<String> = emptyList(),
-    tripSuggestions: List<String> = emptyList()
+    tripSuggestions: List<String> = emptyList(),
+    onSuppressAutoLock: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -153,6 +154,7 @@ fun NewEditEntryScreen(
     val launchCamera = {
         ImageStorage.newCameraTempUri(context)?.let { uri ->
             pendingCameraUri = uri
+            onSuppressAutoLock()
             cameraLauncher.launch(uri)
         }
     }
@@ -204,6 +206,7 @@ fun NewEditEntryScreen(
                             .fillMaxWidth()
                             .clickable {
                                 showPhotoSourceDialog = false
+                                onSuppressAutoLock()
                                 photoPicker.launch(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
@@ -477,6 +480,7 @@ fun NewEditEntryScreen(
                                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                                 putExtra(RecognizerIntent.EXTRA_PROMPT, context.getString(R.string.new_entry_dictate_prompt))
                             }
+                            onSuppressAutoLock()
                             speechLauncher.launch(intent)
                         }) {
                             Icon(

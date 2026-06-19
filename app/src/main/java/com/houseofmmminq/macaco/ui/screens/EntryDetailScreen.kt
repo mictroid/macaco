@@ -109,6 +109,7 @@ fun EntryDetailScreen(
     onBack: () -> Unit,
     onTagClick: (String) -> Unit = {},
     onSaveEntry: (TravelEntry) -> Unit = {},
+    onSuppressAutoLock: () -> Unit = {},
     cachedDrivePhotos: Map<String, String> = emptyMap()
 ) {
     val context = LocalContext.current
@@ -288,6 +289,7 @@ fun EntryDetailScreen(
                     ).show()
                 }
                 val launchAddPhoto = {
+                    onSuppressAutoLock()
                     addPhotoLauncher.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )

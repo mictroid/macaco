@@ -1,0 +1,7 @@
+What's new:
+• Languages now apply instantly — no restart, and all 11 languages always available
+• Fixed: app lock no longer triggers while you're adding photos to an entry
+• Fixed: Google Drive photo backup when switching accounts
+• Entry photos: full-screen gallery, set any photo as the cover, and a quick + to add more
+• Refreshed Help & About with quick feedback options and clearer FAQs
+• Bottom tabs and menu now translate with your language

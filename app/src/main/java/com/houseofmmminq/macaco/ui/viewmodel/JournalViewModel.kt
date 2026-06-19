@@ -101,6 +101,14 @@ class JournalViewModel(
     fun lock() { _isAppLocked.value = true }
     fun unlock() { _isAppLocked.value = false }
 
+    // Set just before launching one of our own activity-for-result flows (photo picker, camera,
+    // voice input) that legitimately backgrounds the app, so the return trip doesn't trip the
+    // re-lock timer. Consumed once on the next resume.
+    @Volatile private var suppressAutoLockOnce = false
+    fun suppressAutoLockOnce() { suppressAutoLockOnce = true }
+    /** Returns whether the next auto-lock should be skipped, clearing the flag. */
+    fun consumeSuppressAutoLock(): Boolean = suppressAutoLockOnce.also { suppressAutoLockOnce = false }
+
     // null = DataStore loading; false = first install (show onboarding); true = already seen
     val onboardingComplete: StateFlow<Boolean?> = preferencesManager.onboardingComplete
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -134,7 +142,14 @@ class JournalViewModel(
         // Once a user is signed in, import any leftover entries from the legacy on-device store
         // into their cloud account (one-time; the migration renames the file when done).
         viewModelScope.launch {
+            var lastUid: String? = null
             authRepository.currentUser.collect { user ->
+                // On any account change (including sign-out), drop the Drive sync's per-account
+                // cached folder id + photo cache so backups don't target the previous account.
+                if (user?.uid != lastUid) {
+                    drivePhotoSync.onAccountChanged()
+                    lastUid = user?.uid
+                }
                 if (user != null) LegacyEntryMigration.run(appContext, cloudEntrySync)
             }
         }
