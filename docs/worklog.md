@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+> **NEXT (2026-06-20):** vc21/1.5 is **published to closed testing** — install it from the Play
+> closed-testing link on the A53 (not a sideloaded debug — paywall) and verify the six briefs:
+> custom-mood "+" dialog, photo-row + button now last, profile Trips stat, restore-purchase row,
+> templated feedback emails. **Most-wanted device check:** the API<30 biometric fix on the **Galaxy
+> S8** — its ADB setup is still paused, and that's the only way to confirm App Lock now works there.
+> Still open from before: enable **R8** with keep rules before production.
+
+## 2026-06-20 — vc21 published to closed testing (six briefs)
+
+Committed the six 2026-06-20 Cowork briefs (`508d732`) + versionCode 20→21 (`65e8a51`, versionName
+stays 1.5), pushed `master` (`origin` was actually at `7cd1eec` — `49f7fa4` hadn't been pushed
+either, so all three local commits went up together), and dispatched the WIF `release.yml` workflow
+**without watching** (per the user's "minimal push" convention — see [[play-publish-wif]]). Run
+`27866944480` completed **success** in 5m45s → vc21 bundle on the `alpha` (closed-testing) track.
+Release backlog clear; not yet device-verified.
+
 ## 2026-06-20 — Two more Cowork briefs: API<30 biometrics + mood-selector refresh
 
 Two further briefs, both verified against the live repo before implementing (build green).
