@@ -249,4 +249,13 @@
     <string name="help_privacy_policy_subtitle">Come vengono trattati i tuoi dati</string>
     <string name="help_open_listing">Macaco su Google Play</string>
     <string name="help_open_listing_subtitle">Visualizza o aggiorna l\'app</string>
+    <string name="profile_trips">Viaggi</string>
+    <string name="settings_subscription">Abbonamento</string>
+    <string name="settings_restore_purchase">Ripristina acquisto</string>
+    <string name="settings_restore_success">Acquisto ripristinato correttamente</string>
+    <string name="settings_restore_not_found">Nessun acquisto precedente trovato per questo account</string>
+    <string name="settings_restore_error">Ripristino non riuscito — riprova</string>
+    <string name="mood_add_custom_title">Aggiungi il tuo stato d\'animo</string>
+    <string name="mood_add_custom_placeholder">Incolla un emoji…</string>
+    <string name="mood_add_custom_cd">Aggiungi stato d\'animo personalizzato</string>
 </resources>

@@ -106,6 +106,14 @@ class JournalViewModel(
     val appLockEnabled: StateFlow<Boolean> = preferencesManager.appLockEnabled
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    // User-added emoji moods, shown alongside the preset MOODS in the entry mood picker.
+    val customMoods: StateFlow<List<String>> = preferencesManager.customMoods
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun addCustomMood(emoji: String) {
+        viewModelScope.launch { preferencesManager.addCustomMood(emoji) }
+    }
+
     private val _isAppLocked = MutableStateFlow(false)
     val isAppLocked: StateFlow<Boolean> = _isAppLocked.asStateFlow()
 

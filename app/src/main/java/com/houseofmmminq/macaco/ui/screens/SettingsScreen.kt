@@ -46,6 +46,7 @@ import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -633,6 +634,39 @@ fun SettingsScreen(
                 onImport = {
                     if (isPurchased == true) backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
                     else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
+                }
+            )
+
+            // ── Subscription ──────────────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+            SettingsSectionHeader(stringResource(R.string.settings_subscription))
+
+            // Restore is reachable here once past PurchaseScreen — needed after a reinstall or
+            // device switch. Toast feedback matches how BackupFileCard reports its results.
+            SettingsClickRow(
+                icon = Icons.Filled.Restore,
+                title = stringResource(R.string.settings_restore_purchase),
+                value = "",
+                onClick = {
+                    viewModel.restorePurchase { result ->
+                        result.fold(
+                            onSuccess = { restored ->
+                                Toast.makeText(
+                                    context,
+                                    if (restored) context.getString(R.string.settings_restore_success)
+                                    else context.getString(R.string.settings_restore_not_found),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            },
+                            onFailure = {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.settings_restore_error),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        )
+                    }
                 }
             )
 

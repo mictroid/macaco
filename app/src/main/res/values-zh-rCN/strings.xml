@@ -245,4 +245,13 @@
     <string name="help_privacy_policy_subtitle">您的数据如何被处理</string>
     <string name="help_open_listing">在 Google Play 查看 Macaco</string>
     <string name="help_open_listing_subtitle">查看或更新应用</string>
+    <string name="profile_trips">行程</string>
+    <string name="settings_subscription">订阅</string>
+    <string name="settings_restore_purchase">恢复购买</string>
+    <string name="settings_restore_success">购买已成功恢复</string>
+    <string name="settings_restore_not_found">未找到此账号的历史购买记录</string>
+    <string name="settings_restore_error">无法恢复，请重试</string>
+    <string name="mood_add_custom_title">添加你的心情</string>
+    <string name="mood_add_custom_placeholder">粘贴一个表情符号…</string>
+    <string name="mood_add_custom_cd">添加自定义心情</string>
 </resources>

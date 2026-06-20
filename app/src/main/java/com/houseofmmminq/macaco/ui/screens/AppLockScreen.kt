@@ -104,15 +104,32 @@ fun showBiometricPrompt(context: android.content.Context, onSuccess: () -> Unit)
     val info = BiometricPrompt.PromptInfo.Builder()
         .setTitle(context.getString(R.string.app_lock_biometric_title))
         .setSubtitle(context.getString(R.string.app_lock_biometric_subtitle))
-        .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+        .apply {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                // API 30+: fingerprint OR device PIN/pattern as fallback (combined mask is valid).
+                setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+            } else {
+                // API < 30: the combined mask is unsupported; fingerprint only, and the library
+                // then requires a negative (cancel) button.
+                setAllowedAuthenticators(BIOMETRIC_STRONG)
+                setNegativeButtonText(context.getString(R.string.common_cancel))
+            }
+        }
         .build()
     prompt.authenticate(info)
 }
 
 /** Returns true if the device has any usable authentication method (biometric or screen lock). */
-fun isBiometricAvailable(context: android.content.Context): Boolean =
-    BiometricManager.from(context)
-        .canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL) == BiometricManager.BIOMETRIC_SUCCESS
+fun isBiometricAvailable(context: android.content.Context): Boolean {
+    val manager = BiometricManager.from(context)
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+        manager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL) == BiometricManager.BIOMETRIC_SUCCESS
+    } else {
+        // API < 30: combining the two masks returns ERROR_UNSUPPORTED even with a fingerprint
+        // enrolled (e.g. Galaxy S8), so check for a strong biometric only.
+        manager.canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+    }
+}
 
 /** Unwraps a Compose ContextWrapper chain to find the underlying FragmentActivity. */
 private fun android.content.Context.findFragmentActivity(): FragmentActivity? {

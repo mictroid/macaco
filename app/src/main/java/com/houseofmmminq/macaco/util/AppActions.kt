@@ -78,6 +78,79 @@ object AppActions {
         }
     }
 
+    /** Opens the user's email app pre-filled with a feature-request template + device footer. */
+    fun requestFeature(context: Context) {
+        val body = buildString {
+            appendLine("Hi Macaco team,")
+            appendLine()
+            appendLine("I'd like to suggest a feature:")
+            appendLine()
+            appendLine("[Describe your idea here]")
+            appendLine()
+            appendLine("Why it would be helpful:")
+            appendLine("[Explain how this would improve your experience]")
+            appendLine()
+            append(deviceFooter(context))
+        }
+        sendEmail(
+            context = context,
+            subjectRes = R.string.help_feedback_feature_subject,
+            body = body,
+            chooserTitleRes = R.string.help_request_feature
+        )
+    }
+
+    /** Opens the user's email app pre-filled with a bug-report template + device footer. */
+    fun reportIssue(context: Context) {
+        val body = buildString {
+            appendLine("Hi Macaco team,")
+            appendLine()
+            appendLine("I found an issue:")
+            appendLine()
+            appendLine("[Describe the problem here]")
+            appendLine()
+            appendLine("Steps to reproduce:")
+            appendLine("1. ")
+            appendLine("2. ")
+            appendLine("3. ")
+            appendLine()
+            appendLine("Expected: [what should happen]")
+            appendLine("Actual: [what you see instead]")
+            appendLine()
+            append(deviceFooter(context))
+        }
+        sendEmail(
+            context = context,
+            subjectRes = R.string.help_feedback_issue_subject,
+            body = body,
+            chooserTitleRes = R.string.help_report_issue
+        )
+    }
+
+    private fun sendEmail(context: Context, subjectRes: Int, body: String, chooserTitleRes: Int) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:$SUPPORT_EMAIL")
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(subjectRes))
+            putExtra(Intent.EXTRA_TEXT, body)
+        }
+        runCatching {
+            context.startActivity(Intent.createChooser(intent, context.getString(chooserTitleRes)))
+        }
+    }
+
+    /** Device/app diagnostics appended to feedback emails so support doesn't have to ask. */
+    private fun deviceFooter(context: Context): String {
+        val versionName = runCatching {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        }.getOrDefault("?")
+        return buildString {
+            appendLine("___")
+            appendLine("App: $versionName")
+            appendLine("Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
+            append("Android: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
+        }
+    }
+
     /**
      * Opens the Play Store subscription-management page for this app, where the user can cancel or
      * change their plan. Falls back to the web URL if the Play Store app can't handle the intent.

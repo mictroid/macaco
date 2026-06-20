@@ -27,6 +27,7 @@ class PreferencesManager(private val context: Context) {
     private val KEY_REMINDER_INTERVAL = intPreferencesKey("reminder_interval_days")
     private val KEY_APP_LOCK = booleanPreferencesKey("app_lock_enabled")
     private val KEY_ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
+    private val KEY_CUSTOM_MOODS = stringPreferencesKey("custom_moods")
 
     companion object {
         const val DEFAULT_REMINDER_INTERVAL_DAYS = 4
@@ -40,6 +41,23 @@ class PreferencesManager(private val context: Context) {
     val isDarkMode: Flow<Boolean> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
         .map { prefs -> prefs[KEY_DARK_MODE] ?: false }
+
+    // Custom moods the user added via the mood picker, stored as a "|"-delimited string. Emoji
+    // never contain "|", so the delimiter is safe.
+    val customMoods: Flow<List<String>> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs ->
+            prefs[KEY_CUSTOM_MOODS]?.split("|")?.filter { it.isNotBlank() } ?: emptyList()
+        }
+
+    suspend fun addCustomMood(emoji: String) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[KEY_CUSTOM_MOODS]?.split("|")?.filter { it.isNotBlank() } ?: emptyList()
+            if (emoji !in current) {
+                prefs[KEY_CUSTOM_MOODS] = (current + emoji).joinToString("|")
+            }
+        }
+    }
 
     suspend fun setPurchased(value: Boolean) {
         context.dataStore.edit { it[KEY_PURCHASED] = value }

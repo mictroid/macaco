@@ -249,4 +249,13 @@
     <string name="help_privacy_policy_subtitle">Hur dina data hanteras</string>
     <string name="help_open_listing">Macaco på Google Play</string>
     <string name="help_open_listing_subtitle">Visa eller uppdatera appen</string>
+    <string name="profile_trips">Resor</string>
+    <string name="settings_subscription">Prenumeration</string>
+    <string name="settings_restore_purchase">Återställ köp</string>
+    <string name="settings_restore_success">Köpet återställdes</string>
+    <string name="settings_restore_not_found">Inget tidigare köp hittades för detta konto</string>
+    <string name="settings_restore_error">Det gick inte att återställa — försök igen</string>
+    <string name="mood_add_custom_title">Lägg till ditt eget humör</string>
+    <string name="mood_add_custom_placeholder">Klistra in en emoji…</string>
+    <string name="mood_add_custom_cd">Lägg till eget humör</string>
 </resources>

@@ -286,6 +286,13 @@ fun ProfileScreen(
 
                 Spacer(Modifier.height(32.dp))
 
+                // Number of distinct named trips; the Trips stat is hidden when this is 0 so
+                // users who never name a trip aren't shown an empty counter.
+                val tripCount = entries
+                    .mapNotNull { it.tripName?.trim()?.ifBlank { null } }
+                    .distinct()
+                    .size
+
                 // Stats card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -301,6 +308,17 @@ fun ProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         StatItem(value = "${entries.size}", label = stringResource(R.string.profile_memories))
+
+                        if (tripCount > 0) {
+                            Box(
+                                modifier = Modifier
+                                    .width(1.dp)
+                                    .height(48.dp)
+                                    .background(MaterialTheme.colorScheme.outlineVariant)
+                            )
+                            StatItem(value = tripCount.toString(), label = stringResource(R.string.profile_trips))
+                        }
+
                         Box(
                             modifier = Modifier
                                 .width(1.dp)

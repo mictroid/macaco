@@ -226,6 +226,8 @@ fun NavGraph(
                         locationSuggestions = entries.toLocationSuggestions(),
                         tagSuggestions = entries.tagsByFrequency(),
                         tripSuggestions = entries.toTripSuggestions(),
+                        customMoods = viewModel.customMoods.collectAsState().value,
+                        onAddCustomMood = { viewModel.addCustomMood(it) },
                         onSuppressAutoLock = { viewModel.suppressAutoLockOnce() }
                     )
                 }
@@ -278,6 +280,8 @@ fun NavGraph(
                         locationSuggestions = entries.toLocationSuggestions(),
                         tagSuggestions = entries.tagsByFrequency(),
                         tripSuggestions = entries.toTripSuggestions(),
+                        customMoods = viewModel.customMoods.collectAsState().value,
+                        onAddCustomMood = { viewModel.addCustomMood(it) },
                         onSuppressAutoLock = { viewModel.suppressAutoLockOnce() }
                     )
                 }

@@ -249,4 +249,13 @@
     <string name="help_privacy_policy_subtitle">Como seus dados são tratados</string>
     <string name="help_open_listing">Macaco no Google Play</string>
     <string name="help_open_listing_subtitle">Ver ou atualizar o app</string>
+    <string name="profile_trips">Viagens</string>
+    <string name="settings_subscription">Assinatura</string>
+    <string name="settings_restore_purchase">Restaurar compra</string>
+    <string name="settings_restore_success">Compra restaurada com sucesso</string>
+    <string name="settings_restore_not_found">Nenhuma compra anterior encontrada para esta conta</string>
+    <string name="settings_restore_error">Não foi possível restaurar — tente novamente</string>
+    <string name="mood_add_custom_title">Adicione o seu próprio humor</string>
+    <string name="mood_add_custom_placeholder">Cole um emoji…</string>
+    <string name="mood_add_custom_cd">Adicionar humor personalizado</string>
 </resources>

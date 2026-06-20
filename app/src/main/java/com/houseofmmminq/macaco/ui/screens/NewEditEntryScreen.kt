@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -91,7 +92,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-private val MOODS = listOf("😊", "🌟", "😎", "🏔️", "🌊", "🌺", "✨", "🎭", "🍜", "🏛️", "🌅", "❤️")
+private val MOODS = listOf(
+    "🤩", // Amazed
+    "😌", // Peaceful
+    "🥳", // Celebrating
+    "😍", // Loved it
+    "🫶", // Grateful
+    "🥹", // Moved / touched
+    "🤠", // Adventurous
+    "😤", // Challenged / tough day
+    "😴", // Exhausted
+    "🔥", // Thrilled / on fire
+    "💫", // Magical
+    "🌿", // In nature / grounded
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,6 +116,8 @@ fun NewEditEntryScreen(
     locationSuggestions: List<String> = emptyList(),
     tagSuggestions: List<String> = emptyList(),
     tripSuggestions: List<String> = emptyList(),
+    customMoods: List<String> = emptyList(),
+    onAddCustomMood: (String) -> Unit = {},
     onSuppressAutoLock: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -308,34 +324,13 @@ fun NewEditEntryScreen(
             item {
                 SectionLabel(stringResource(R.string.new_entry_photos_label))
                 Spacer(Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                // Photos first, the + button last, with trailing padding so the final item
+                // (the + button) is never clipped against the screen edge.
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(end = 16.dp)
                 ) {
-                    // Add button
-                    Box(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .clickable { showPhotoSourceDialog = true },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = stringResource(R.string.new_entry_add_photo_cd),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                stringResource(R.string.new_entry_add_photo),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-
-                    photoUris.forEachIndexed { index, uri ->
+                    itemsIndexed(photoUris) { index, uri ->
                         Box {
                             AsyncImage(
                                 model = uri,
@@ -369,6 +364,31 @@ fun NewEditEntryScreen(
                                     contentDescription = stringResource(R.string.new_entry_remove_photo_cd),
                                     tint = Color.White,
                                     modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    // Add button always last.
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .clickable { showPhotoSourceDialog = true },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(
+                                    Icons.Filled.Add,
+                                    contentDescription = stringResource(R.string.new_entry_add_photo_cd),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    stringResource(R.string.new_entry_add_photo),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             }
                         }
@@ -460,7 +480,12 @@ fun NewEditEntryScreen(
             item {
                 SectionLabel(stringResource(R.string.new_entry_mood_label))
                 Spacer(Modifier.height(8.dp))
-                MoodSelector(selectedMood = mood, onMoodSelected = { mood = it })
+                MoodSelector(
+                    selectedMood = mood,
+                    customMoods = customMoods,
+                    onMoodSelected = { mood = it },
+                    onAddCustomMood = onAddCustomMood
+                )
             }
 
             // Description
@@ -857,22 +882,98 @@ private fun SectionLabel(text: String) {
 }
 
 @Composable
-private fun MoodSelector(selectedMood: String, onMoodSelected: (String) -> Unit) {
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+private fun MoodSelector(
+    selectedMood: String,
+    customMoods: List<String>,
+    onMoodSelected: (String) -> Unit,
+    onAddCustomMood: (String) -> Unit
+) {
+    var showAddDialog by remember { mutableStateOf(false) }
+    var pendingEmoji by remember { mutableStateOf("") }
+
+    if (showAddDialog) {
+        AlertDialog(
+            onDismissRequest = { showAddDialog = false; pendingEmoji = "" },
+            title = { Text(stringResource(R.string.mood_add_custom_title)) },
+            text = {
+                OutlinedTextField(
+                    value = pendingEmoji,
+                    onValueChange = { pendingEmoji = it },
+                    placeholder = { Text(stringResource(R.string.mood_add_custom_placeholder)) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp)
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val emoji = pendingEmoji.trim()
+                        if (emoji.isNotBlank()) {
+                            onAddCustomMood(emoji)
+                            onMoodSelected(emoji)
+                        }
+                        showAddDialog = false
+                        pendingEmoji = ""
+                    }
+                ) { Text(stringResource(R.string.common_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAddDialog = false; pendingEmoji = "" }) {
+                    Text(stringResource(R.string.common_cancel))
+                }
+            }
+        )
+    }
+
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(end = 8.dp)
+    ) {
+        // Preset moods
         items(MOODS) { m ->
+            MoodChip(m, selectedMood == m) { onMoodSelected(if (selectedMood == m) "" else m) }
+        }
+
+        // User-added custom moods
+        items(customMoods) { m ->
+            MoodChip(m, selectedMood == m) { onMoodSelected(if (selectedMood == m) "" else m) }
+        }
+
+        // Add custom mood button — gold-tinted to match the selected chip style.
+        item {
             Box(
                 modifier = Modifier
                     .size(52.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(
-                        if (selectedMood == m) MaterialTheme.colorScheme.primaryContainer
-                        else MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    .clickable { onMoodSelected(if (selectedMood == m) "" else m) },
+                    .background(SplashGold.copy(alpha = 0.18f))
+                    .clickable { showAddDialog = true },
                 contentAlignment = Alignment.Center
             ) {
-                Text(m, fontSize = 22.sp)
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.mood_add_custom_cd),
+                    tint = SplashGold,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun MoodChip(emoji: String, selected: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(52.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(
+                // Selected: Macaco gold — consistent with splash, nav bar, and brand moments.
+                // Unselected: neutral surface so the emoji reads clearly at rest.
+                if (selected) SplashGold else MaterialTheme.colorScheme.surfaceVariant
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(emoji, fontSize = 26.sp)
     }
 }

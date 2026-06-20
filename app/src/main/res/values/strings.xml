@@ -69,7 +69,7 @@
     <string name="help_faq_premium_benefits_q">What do I get with premium?</string>
     <string name="help_faq_premium_benefits_a">Premium unlocks the full Macaco experience: unlimited journal entries, the Adventures map, swipe between entries, custom themes, and priority support. Available as Monthly, Annual, or Lifetime.</string>
     <string name="help_faq_premium_broken_q">Premium not working?</string>
-    <string name="help_faq_premium_broken_a">Try restoring your purchase: go to Settings → Premium and tap Restore purchases. Make sure you\'re signed in with the same account used when you bought. If it still doesn\'t work, contact us at houseofmmminq@gmail.com.</string>
+    <string name="help_faq_premium_broken_a">Try restoring your purchase: open Settings, scroll to Subscription, and tap Restore purchase. Make sure you\'re signed in with the same account used when you bought. If it still doesn\'t work, contact us at houseofmmminq@gmail.com.</string>
     <string name="help_faq_cancel_plan_q">Change or cancel plan</string>
     <string name="help_get_in_touch">Get in touch</string>
     <string name="help_contact">Contact support</string>
@@ -108,6 +108,9 @@
     <string name="new_entry_location_placeholder">Paris, France</string>
     <string name="new_entry_date_label">Date</string>
     <string name="new_entry_mood_label">Mood</string>
+    <string name="mood_add_custom_title">Add your own mood</string>
+    <string name="mood_add_custom_placeholder">Paste an emoji…</string>
+    <string name="mood_add_custom_cd">Add custom mood</string>
     <string name="new_entry_description_label">Your story</string>
     <string name="new_entry_description_placeholder">Write about your experience, the sights, sounds, and feelings…</string>
     <string name="new_entry_dictate_cd">Dictate</string>
@@ -186,6 +189,11 @@
     <string name="settings_drive_disconnect">Disconnect</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_system_default">System default</string>
+    <string name="settings_subscription">Subscription</string>
+    <string name="settings_restore_purchase">Restore purchase</string>
+    <string name="settings_restore_success">Purchase restored successfully</string>
+    <string name="settings_restore_not_found">No previous purchase found for this account</string>
+    <string name="settings_restore_error">Couldn\'t restore — please try again</string>
     <string name="settings_about">About</string>
     <string name="settings_version_value">Macaco %s</string>
 
@@ -217,6 +225,7 @@
     <string name="profile_email_account">Email Account</string>
     <string name="profile_guest">Guest</string>
     <string name="profile_memories">Memories</string>
+    <string name="profile_trips">Trips</string>
     <string name="profile_locations">Locations</string>
     <string name="profile_photos">Photos</string>
     <string name="profile_no_account_title">No account connected</string>

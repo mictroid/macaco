@@ -249,4 +249,13 @@
     <string name="help_privacy_policy_subtitle">Hoe je gegevens worden verwerkt</string>
     <string name="help_open_listing">Macaco in Google Play</string>
     <string name="help_open_listing_subtitle">App bekijken of bijwerken</string>
+    <string name="profile_trips">Reizen</string>
+    <string name="settings_subscription">Abonnement</string>
+    <string name="settings_restore_purchase">Aankoop herstellen</string>
+    <string name="settings_restore_success">Aankoop succesvol hersteld</string>
+    <string name="settings_restore_not_found">Geen eerdere aankoop gevonden voor dit account</string>
+    <string name="settings_restore_error">Herstellen mislukt — probeer het opnieuw</string>
+    <string name="mood_add_custom_title">Eigen stemming toevoegen</string>
+    <string name="mood_add_custom_placeholder">Plak een emoji…</string>
+    <string name="mood_add_custom_cd">Eigen stemming toevoegen</string>
 </resources>

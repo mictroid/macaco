@@ -181,13 +181,13 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                     icon = Icons.Filled.Lightbulb,
                     label = stringResource(R.string.help_request_feature),
                     modifier = Modifier.weight(1f),
-                    onClick = { AppActions.contactSupport(context, R.string.help_feedback_feature_subject) }
+                    onClick = { AppActions.requestFeature(context) }
                 )
                 FeedbackCard(
                     icon = Icons.Filled.BugReport,
                     label = stringResource(R.string.help_report_issue),
                     modifier = Modifier.weight(1f),
-                    onClick = { AppActions.contactSupport(context, R.string.help_feedback_issue_subject) }
+                    onClick = { AppActions.reportIssue(context) }
                 )
             }
 

@@ -257,4 +257,13 @@
     <string name="help_privacy_policy_subtitle">Jak przetwarzane są Twoje dane</string>
     <string name="help_open_listing">Macaco w Google Play</string>
     <string name="help_open_listing_subtitle">Zobacz lub zaktualizuj aplikację</string>
+    <string name="profile_trips">Podróże</string>
+    <string name="settings_subscription">Subskrypcja</string>
+    <string name="settings_restore_purchase">Przywróć zakup</string>
+    <string name="settings_restore_success">Zakup przywrócony pomyślnie</string>
+    <string name="settings_restore_not_found">Nie znaleziono wcześniejszego zakupu dla tego konta</string>
+    <string name="settings_restore_error">Nie udało się przywrócić — spróbuj ponownie</string>
+    <string name="mood_add_custom_title">Dodaj własny nastrój</string>
+    <string name="mood_add_custom_placeholder">Wklej emoji…</string>
+    <string name="mood_add_custom_cd">Dodaj własny nastrój</string>
 </resources>

@@ -2,6 +2,59 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-20 — Two more Cowork briefs: API<30 biometrics + mood-selector refresh
+
+Two further briefs, both verified against the live repo before implementing (build green).
+
+- **Biometrics on API < 30** (`AppLockScreen`): `isBiometricAvailable()` and `showBiometricPrompt()`
+  used the combined `BIOMETRIC_STRONG or DEVICE_CREDENTIAL` authenticator mask, which is only valid
+  on API 30+ — on the Galaxy S8 (API 28) `canAuthenticate` returns `ERROR_UNSUPPORTED` even with a
+  fingerprint enrolled, permanently blocking the App Lock toggle. Both functions now branch on
+  `Build.VERSION.SDK_INT >= R`: 30+ keeps the combined mask; below 30 falls back to `BIOMETRIC_STRONG`
+  only, with a mandatory `setNegativeButtonText` (cancel) on the prompt. The 30+ path is unchanged,
+  so no regression to current devices. **Not device-verified** — the S8 ADB setup is still paused.
+- **Mood selector refresh** (`NewEditEntryScreen` + `PreferencesManager` + `JournalViewModel` +
+  `NavGraph`): replaced the place/feeling-mixed `MOODS` set with a feeling-first set (shipped the
+  brief's emojis as-is per the user), and added user-defined custom moods — a gold "+" chip opens a
+  dialog to paste an emoji, persisted in DataStore (`custom_moods`, "|"-delimited) via new
+  `PreferencesManager.customMoods`/`addCustomMood` and `JournalViewModel.customMoods`/`addCustomMood`.
+  **Deviation from the brief:** the brief collected `viewModel.customMoods` inside `NewEditEntryScreen`,
+  but that screen takes no `viewModel` (state is passed from `NavGraph`, like `tripSuggestions`); wired
+  `customMoods` + `onAddCustomMood` as screen params instead, fed from both NavGraph call sites. Also
+  kept the existing tap-to-deselect behaviour in the new `MoodChip` (the brief's version dropped it)
+  and used `SharingStarted.Eagerly` to match the codebase (brief said `WhileSubscribed`). Old presets
+  still render on existing entries but aren't selectable chips; custom moods cover re-adding them.
+  3 new `mood_add_custom_*` strings (×11). **Backward-compatible** — `mood` is still a plain emoji
+  string in Firestore.
+
+## 2026-06-20 — Four Cowork code briefs implemented
+
+Implemented four independent UI/UX briefs that Cowork authored. Root issue surfaced first: Cowork's
+mounted folder is the **stale `AndroidStudioProjects\MyApplication` clone**, so the first draft of
+each brief used the old `com.example.myapplication` package and guessed-wrong signatures
+(`SettingsRow`, `viewModel.restorePurchase()` as suspend, `StatItem(count=…)`, `VerticalDivider()`).
+Verified every assumption against the live `macaco` repo, fed corrections back, and Cowork re-issued
+the briefs against the live code before implementation. Also fixed stale claims in `CLAUDE.md`
+(package is `com.houseofmmminq.macaco`, remote is `mictroid/macaco`) — commit `49f7fa4`.
+
+- **Feedback emails** (`AppActions` + `HelpAboutScreen`): "Request a feature" / "Report an issue"
+  now open with a templated body + an auto-appended device footer (app version, manufacturer/model,
+  Android version) via new `requestFeature()`/`reportIssue()`/`sendEmail()`/`deviceFooter()`. The
+  distinct subject lines already existed, so the brief was re-scoped from subjects → bodies.
+- **Photo row clipping** (`NewEditEntryScreen`): swapped the `Row + horizontalScroll` for a
+  `LazyRow(contentPadding = PaddingValues(end = 16.dp))` and moved the + button to the end, so the
+  last item is no longer flush against the screen edge.
+- **Trips counter** (`ProfileScreen`): added a Trips stat (distinct non-blank `tripName`) between
+  Memories and Locations, hidden when 0 — builds on the v1.5 `tripName` field.
+- **Restore purchase** (`SettingsScreen`): added a Subscription section with a "Restore purchase"
+  `SettingsClickRow` calling the existing `viewModel.restorePurchase { … }` callback (Toast
+  feedback), so premium is recoverable after a reinstall without going through PurchaseScreen.
+  Updated the `help_faq_premium_broken_a` FAQ to point at Settings → Subscription.
+
+Strings: added `profile_trips` + 5 `settings_*` keys to the default and all 10 locales (real
+translations, since locales translate UI chrome); the FAQ string stays English-only like the rest
+of the help section. `./gradlew assembleDebug` is green. **Not yet committed or device-verified.**
+
 > **NEXT (2026-06-17):** vc15/1.4 shipping via CI, live on **closed testing** once that run
 > completes — **not yet installed/verified on a device** (vc10 is still the last build actually
 > checked on the A53, four releases behind). Install vc15 and confirm nothing regressed —
