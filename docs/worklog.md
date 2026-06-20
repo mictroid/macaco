@@ -9,6 +9,40 @@ Running log of notable work sessions. Newest first.
 > S8** — its ADB setup is still paused, and that's the only way to confirm App Lock now works there.
 > Still open from before: enable **R8** with keep rules before production.
 
+## 2026-06-20 — Fix: App Lock bypassed on cold start (OEM background-kill)
+
+Tester on the A53 reported reopening Macaco didn't trigger the biometric lock. Root cause (not a
+regression from the API<30 biometric work — that only touched `AppLockScreen`, and the A53 is API
+30+): App Lock only engaged on a **warm resume**. `JournalViewModel._isAppLocked` is in-memory and
+starts `false`, and NavGraph's re-lock fires on `ON_RESUME` only if the same process survived
+backgrounded (`pauseTime > 0 && elapsed > 30s`). On a Samsung-style background-kill, reopening is a
+**cold start** — fresh process, `pauseTime` reset, `isAppLocked=false` — so the app came up unlocked
+and the lock was bypassed entirely. Fix: in the ViewModel `init`, read the persisted `appLockEnabled`
+once (`first()`) and set `_isAppLocked = true` if enabled, so a fresh process comes up locked. Runs
+once per process (ViewModel survives config changes); the lock screen still shows only after the
+login + purchase gate. Build green; not yet released.
+
+## 2026-06-20 — Fix: onboarding Skip button was dead (z-order)
+
+A closed-testing user reported the intro **Skip** button doesn't work. Root cause: in
+`OnboardingScreen`'s `Box`, the Skip `TextButton` (TopEnd) was declared **before** the full-screen
+`HorizontalPager`, so the pager was drawn on top in the Box z-order and intercepted the taps — Skip
+was visible (pager pages are transparent) but never received touches. The bottom Next/Get-Started
+button worked precisely because it's declared *after* the pager. Fix: moved the Skip block to be the
+**last** child of the `Box` so it sits on top; no logic change. Note: Skip ends the intro slides
+only — it doesn't bypass sign-in (last slide says "Sign in to start"). Build green; not yet released.
+
+## 2026-06-20 — Firebase Dynamic Links shutdown: confirmed no-op for Macaco
+
+Firebase console surfaced the Dynamic Links shutdown notice (the FAQ section on *email link
+authentication* impacts). **Checked — Macaco is unaffected, no action needed.** The app uses classic
+email/password auth (`signInWithEmailAndPassword` / `createUserWithEmailAndPassword` in
+`FirebaseAuthRepository.kt`), **not** the passwordless email-link flow (`sendSignInLinkToEmail` /
+`signInWithEmailLink`) that relied on Dynamic Links. There's no `firebase-dynamic-links` dependency,
+no `ActionCodeSettings`/`DynamicLink` usage anywhere, and the app never calls `sendPasswordReset` or
+`sendEmailVerification` (so no email *action* links either). All three sign-in paths (Google, Apple,
+email/password) keep working. The console message is a generic project-wide notice — safe to dismiss.
+
 ## 2026-06-20 — vc21 published to closed testing (six briefs)
 
 Committed the six 2026-06-20 Cowork briefs (`508d732`) + versionCode 20→21 (`65e8a51`, versionName

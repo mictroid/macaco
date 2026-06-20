@@ -60,22 +60,6 @@ fun OnboardingScreen(onComplete: () -> Unit) {
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        if (!isLastPage) {
-            TextButton(
-                onClick = onComplete,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                Text(
-                    "Skip",
-                    color = SplashGold.copy(alpha = 0.7f),
-                    fontSize = 14.sp,
-                    fontFamily = MacacoFontFamily
-                )
-            }
-        }
-
         HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
             Column(
                 modifier = Modifier
@@ -178,6 +162,25 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                     if (isLastPage) "Get Started" else "Next",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
+                    fontFamily = MacacoFontFamily
+                )
+            }
+        }
+
+        // Skip — declared last so it sits on top of the full-screen pager in the Box's z-order
+        // and actually receives taps. When declared before the pager it was drawn behind it, so
+        // the pager intercepted the touches and Skip appeared dead.
+        if (!isLastPage) {
+            TextButton(
+                onClick = onComplete,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    "Skip",
+                    color = SplashGold.copy(alpha = 0.7f),
+                    fontSize = 14.sp,
                     fontFamily = MacacoFontFamily
                 )
             }

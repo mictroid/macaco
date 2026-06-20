@@ -23,6 +23,7 @@ import android.location.Geocoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -158,6 +159,14 @@ class JournalViewModel(
     }
 
     init {
+        // Cold-start lock: if App Lock is enabled, come up locked. The warm-resume re-lock in
+        // NavGraph only fires while the same process survives in the background; an OEM
+        // background-kill (common on Samsung) would otherwise relaunch the app unlocked and bypass
+        // the lock. Runs once per process (ViewModel survives config changes), before the gate that
+        // also requires login + purchase, so the lock screen shows as soon as those are satisfied.
+        viewModelScope.launch {
+            if (preferencesManager.appLockEnabled.first()) _isAppLocked.value = true
+        }
         // Once a user is signed in, import any leftover entries from the legacy on-device store
         // into their cloud account (one-time; the migration renames the file when done).
         viewModelScope.launch {
