@@ -202,10 +202,10 @@
     <string name="drawer_share_app">App delen</string>
     <string name="drawer_rate_us">Beoordelen</string>
     <string name="drawer_help">Help &amp; info</string>
-    <string name="share_app_subject">Macaco – Reisdagboek</string>
+    <string name="share_app_subject">🐒 Macaco – Reisdagboek</string>
     <plurals name="share_app_text">
-        <item quantity="one">Ik heb %d reisherinnering vastgelegd in Macaco — de beste manier om je avonturen bij te houden.</item>
-        <item quantity="other">Ik heb %d reisherinneringen vastgelegd in Macaco — de beste manier om je avonturen bij te houden.</item>
+        <item quantity="one">🐒 Ik houd een reisdagboek bij in Macaco en heb al %d herinnering vastgelegd!\n\nLeg je avonturen, stemmingen en favoriete momenten vast — allemaal op één plek. 🌍✈️📖</item>
+        <item quantity="other">🐒 Ik houd een reisdagboek bij in Macaco en heb al %d herinneringen vastgelegd!\n\nLeg je avonturen, stemmingen en favoriete momenten vast — allemaal op één plek. 🌍✈️📖</item>
     </plurals>
     <string name="share_app_chooser">Macaco delen via</string>
 

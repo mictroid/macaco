@@ -208,12 +208,12 @@
     <string name="drawer_share_app">Udostępnij aplikację</string>
     <string name="drawer_rate_us">Oceń</string>
     <string name="drawer_help">Pomoc i informacje</string>
-    <string name="share_app_subject">Macaco – Dziennik podróży</string>
+    <string name="share_app_subject">🐒 Macaco – Dziennik podróży</string>
     <plurals name="share_app_text">
-        <item quantity="one">%d wspomnienie z podróży zapisane w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
-        <item quantity="few">%d wspomnienia z podróży zapisane w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
-        <item quantity="many">%d wspomnień z podróży zapisanych w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
-        <item quantity="other">%d wspomnień z podróży zapisanych w Macaco — najlepszy sposób na prowadzenie dziennika podróży.</item>
+        <item quantity="one">🐒 Prowadzę dziennik podróży w Macaco i zapisałem już %d wspomnienie!\n\nZapisuj swoje przygody, nastroje i ulubione chwile — wszystko w jednym miejscu. 🌍✈️📖</item>
+        <item quantity="few">🐒 Prowadzę dziennik podróży w Macaco i zapisałem już %d wspomnienia!\n\nZapisuj swoje przygody, nastroje i ulubione chwile — wszystko w jednym miejscu. 🌍✈️📖</item>
+        <item quantity="many">🐒 Prowadzę dziennik podróży w Macaco i zapisałem już %d wspomnień!\n\nZapisuj swoje przygody, nastroje i ulubione chwile — wszystko w jednym miejscu. 🌍✈️📖</item>
+        <item quantity="other">🐒 Prowadzę dziennik podróży w Macaco i zapisałem już %d wspomnień!\n\nZapisuj swoje przygody, nastroje i ulubione chwile — wszystko w jednym miejscu. 🌍✈️📖</item>
     </plurals>
     <string name="share_app_chooser">Udostępnij Macaco przez</string>
 

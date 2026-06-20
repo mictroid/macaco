@@ -213,10 +213,10 @@
     <string name="drawer_share_app">App teilen</string>
     <string name="drawer_rate_us">Bewerten</string>
     <string name="drawer_help">Hilfe &amp; Info</string>
-    <string name="share_app_subject">Macaco – Reisetagebuch</string>
+    <string name="share_app_subject">🐒 Macaco – Reisetagebuch</string>
     <plurals name="share_app_text">
-        <item quantity="one">Ich habe %d Reiseerinnerung in Macaco festgehalten – die beste Art, deine Abenteuer festzuhalten.</item>
-        <item quantity="other">Ich habe %d Reiseerinnerungen in Macaco festgehalten – die beste Art, deine Abenteuer festzuhalten.</item>
+        <item quantity="one">🐒 Ich führe ein Reisetagebuch in Macaco und habe bisher %d Erinnerung festgehalten!\n\nHalte deine Abenteuer, Stimmungen und schönsten Momente fest – alles an einem Ort. 🌍✈️📖</item>
+        <item quantity="other">🐒 Ich führe ein Reisetagebuch in Macaco und habe bisher %d Erinnerungen festgehalten!\n\nHalte deine Abenteuer, Stimmungen und schönsten Momente fest – alles an einem Ort. 🌍✈️📖</item>
     </plurals>
     <string name="share_app_chooser">Macaco teilen über</string>
 

@@ -77,6 +77,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
@@ -858,10 +861,16 @@ private fun SuggestedTagsRow(
  */
 @Composable
 private fun HintRow(icon: ImageVector?, text: String) {
-    val tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+    // onSurfaceVariant (full opacity) over a translucent surface pill so hints stay legible on top
+    // of the tiled macaco watermark on every theme, instead of fading into it.
+    val tint = MaterialTheme.colorScheme.onSurfaceVariant
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(top = 8.dp, start = 4.dp)
+        modifier = Modifier
+            .padding(top = 6.dp, start = 4.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.75f))
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         if (icon != null) {
             Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
@@ -890,8 +899,12 @@ private fun MoodSelector(
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
     var pendingEmoji by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
 
     if (showAddDialog) {
+        // Open the keyboard the moment the dialog appears so the user can switch straight to the
+        // emoji panel without an extra tap on the field.
+        LaunchedEffect(Unit) { focusRequester.requestFocus() }
         AlertDialog(
             onDismissRequest = { showAddDialog = false; pendingEmoji = "" },
             title = { Text(stringResource(R.string.mood_add_custom_title)) },
@@ -901,7 +914,11 @@ private fun MoodSelector(
                     onValueChange = { pendingEmoji = it },
                     placeholder = { Text(stringResource(R.string.mood_add_custom_placeholder)) },
                     singleLine = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
                 )
             },
             confirmButton = {

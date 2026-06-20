@@ -202,10 +202,10 @@
     <string name="drawer_share_app">Partager l\'appli</string>
     <string name="drawer_rate_us">Noter l\'appli</string>
     <string name="drawer_help">Aide &amp; à propos</string>
-    <string name="share_app_subject">Macaco – Journal de voyage</string>
+    <string name="share_app_subject">🐒 Macaco – Journal de voyage</string>
     <plurals name="share_app_text">
-        <item quantity="one">J\'ai enregistré %d souvenir de voyage dans Macaco — la meilleure façon de raconter vos aventures.</item>
-        <item quantity="other">J\'ai enregistré %d souvenirs de voyage dans Macaco — la meilleure façon de raconter vos aventures.</item>
+        <item quantity="one">🐒 Je tiens un journal de voyage dans Macaco et j\'ai déjà enregistré %d souvenir !\n\nCapture tes aventures, tes humeurs et tes moments préférés — le tout au même endroit. 🌍✈️📖</item>
+        <item quantity="other">🐒 Je tiens un journal de voyage dans Macaco et j\'ai déjà enregistré %d souvenirs !\n\nCapture tes aventures, tes humeurs et tes moments préférés — le tout au même endroit. 🌍✈️📖</item>
     </plurals>
     <string name="share_app_chooser">Partager Macaco via</string>
 

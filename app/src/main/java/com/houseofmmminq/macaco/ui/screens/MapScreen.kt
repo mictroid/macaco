@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -122,6 +123,9 @@ fun MapScreen(
     }
     var mapLoaded by remember { mutableStateOf(false) }
     var hasAnimated by remember { mutableStateOf(false) }
+    // True once we have a geocoded point to fly to, or there are no locations to geocode at all.
+    // Until then a scrim hides the arbitrary default camera position.
+    val geocodingReady = geocodedLocations.isNotEmpty() || locations.isEmpty()
 
     LaunchedEffect(mapLoaded, geocodedLocations) {
         if (mapLoaded && !hasAnimated && geocodedLocations.isNotEmpty()) {
@@ -241,6 +245,20 @@ fun MapScreen(
                         textAlign = TextAlign.Center,
                         lineHeight = 22.sp
                     )
+                }
+            }
+
+            // Loading scrim — opaque, so the arbitrary default camera position is never seen.
+            // Drops away once the first location is geocoded and the camera flies to the user's
+            // places. (When there are no locations, the empty-state above covers the map instead.)
+            if (!geocodingReady) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(MaterialTheme.colorScheme.background),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
         }

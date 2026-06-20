@@ -78,10 +78,10 @@
     <string name="help_privacy_policy_subtitle">How your data is handled</string>
     <string name="help_open_listing">Macaco on Google Play</string>
     <string name="help_open_listing_subtitle">View or update the app</string>
-    <string name="share_app_subject">Macaco — Travel Journal</string>
+    <string name="share_app_subject">🐒 Macaco — Travel Journal</string>
     <plurals name="share_app_text">
-        <item quantity="one">I\'ve logged %d travel memory in Macaco — the best way to journal your adventures.</item>
-        <item quantity="other">I\'ve logged %d travel memories in Macaco — the best way to journal your adventures.</item>
+        <item quantity="one">🐒 I\'ve been keeping a travel journal in Macaco and logged %d memory so far!\n\nCapture your adventures, moods, and favourite moments — all in one place. 🌍✈️📖</item>
+        <item quantity="other">🐒 I\'ve been keeping a travel journal in Macaco and logged %d memories so far!\n\nCapture your adventures, moods, and favourite moments — all in one place. 🌍✈️📖</item>
     </plurals>
     <string name="share_app_chooser">Share Macaco via</string>
     <string name="journal_list_empty_title">Your journey begins here</string>

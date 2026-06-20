@@ -249,8 +249,12 @@ fun NavGraph(
                         initialEntryId = id,
                         onEdit = { entryId -> navController.navigate(Screen.EditEntry.createRoute(entryId)) },
                         onDelete = { entryId ->
-                            viewModel.deleteEntry(entryId)
+                            // Navigate away first: once EntryDetail leaves the back stack its
+                            // composable is disposed, so the `entries.none { it.id == id }`
+                            // LaunchedEffect can't fire a second pop when Firestore's local cache
+                            // drops the entry. Deleting first caused a double-pop → blank screen.
                             navController.popBackStack()
+                            viewModel.deleteEntry(entryId)
                         },
                         onBack = { navController.popBackStack() },
                         onTagClick = { tag ->

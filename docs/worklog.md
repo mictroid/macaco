@@ -9,6 +9,32 @@ Running log of notable work sessions. Newest first.
 > S8** — its ADB setup is still paused, and that's the only way to confirm App Lock now works there.
 > Still open from before: enable **R8** with keep rules before production.
 
+## 2026-06-20 — Four more Cowork briefs (delete blank-screen, map flash, hint readability, mood keyboard)
+
+All four verified against live code first, build green.
+
+- **Delete → blank screen** (`NavGraph`): `EntryDetail.onDelete` did `deleteEntry()` then
+  `popBackStack()`, but Firestore's local cache drops the entry so fast the
+  `entries.none { it.id == id }` `LaunchedEffect` popped first → the explicit pop then removed
+  `JournalListScreen` too → blank screen. Fix: pop **before** deleting (composable leaves the stack,
+  so the LaunchedEffect can't fire a second pop). One-line reorder.
+- **Map opens on default position** (`MapScreen`): camera inits at `LatLng(20.0, 0.0)` zoom 2 and the
+  arbitrary default was visible until geocoding finished. Added `geocodingReady` flag + an opaque
+  scrim with a `CircularProgressIndicator` over the map until the first geocoded point arrives.
+  (Brief's geography label was wrong — 20°N/0°E is the Sahara, not "ocean" — cosmetic, fix unaffected.)
+- **Hint readability** (`NewEditEntryScreen.HintRow`): `primary.copy(alpha=0.6f)` faded into the
+  watermark; switched to `onSurfaceVariant` over a translucent `surface` pill. Imports already present.
+- **Mood dialog keyboard** (`MoodSelector`): the custom-mood `AlertDialog` field didn't auto-focus;
+  added a `FocusRequester` + `LaunchedEffect { requestFocus() }` so the keyboard (and emoji panel)
+  opens immediately.
+
+**`code-brief-share-app-branding.md`** (#5) — user chose **copy only**: refreshed `share_app_subject`
+(🐒 prefix) + `share_app_text` plural blurb (chattier, travel emoji) across all 11 locales. The
+brief's second half — switching the share intent from `text/plain` to a generated icon-on-teal
+image card (+ FileProvider `cache-path`) — was **declined** (flat-icon card, modest payoff, and
+`image/png` shares degrade on non-chat targets); revisit later with a properly designed card if
+wanted. `shareApp()`/`file_paths.xml` unchanged. Build green; none of these five committed/released.
+
 ## 2026-06-20 — Fix: feedback email body/subject empty in Gmail (Cowork brief)
 
 Follow-up to the vc21 templated-email feature: on Gmail the feature/bug-report (and plain contact)

@@ -202,10 +202,10 @@
     <string name="drawer_share_app">Dela appen</string>
     <string name="drawer_rate_us">Betygsätt</string>
     <string name="drawer_help">Hjälp &amp; om</string>
-    <string name="share_app_subject">Macaco – Resedagbok</string>
+    <string name="share_app_subject">🐒 Macaco – Resedagbok</string>
     <plurals name="share_app_text">
-        <item quantity="one">Jag har loggat %d reseminne i Macaco — det bästa sättet att dokumentera dina äventyr.</item>
-        <item quantity="other">Jag har loggat %d reseminnen i Macaco — det bästa sättet att dokumentera dina äventyr.</item>
+        <item quantity="one">🐒 Jag för en resedagbok i Macaco och har redan loggat %d minne!\n\nFånga dina äventyr, känslor och favoritögonblick — allt på ett ställe. 🌍✈️📖</item>
+        <item quantity="other">🐒 Jag för en resedagbok i Macaco och har redan loggat %d minnen!\n\nFånga dina äventyr, känslor och favoritögonblick — allt på ett ställe. 🌍✈️📖</item>
     </plurals>
     <string name="share_app_chooser">Dela Macaco via</string>
 
