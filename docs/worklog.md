@@ -9,6 +9,15 @@ Running log of notable work sessions. Newest first.
 > S8** — its ADB setup is still paused, and that's the only way to confirm App Lock now works there.
 > Still open from before: enable **R8** with keep rules before production.
 
+## 2026-06-20 — Fix: feedback email body/subject empty in Gmail (Cowork brief)
+
+Follow-up to the vc21 templated-email feature: on Gmail the feature/bug-report (and plain contact)
+emails opened blank. Cause: **Gmail ignores `EXTRA_SUBJECT`/`EXTRA_TEXT` on `ACTION_SENDTO`** and
+only reads `mailto:` URI query params (other clients honour the extras, which is why it looked fine
+elsewhere). Fix (`AppActions.kt`): `sendEmail()` and `contactSupport()` now encode subject (and body)
+directly into the `mailto:` URI via `Uri.encode`, dropping the extras — the URI form populates all
+clients. Bodies are short templates so URI length isn't a concern. Build green. Ships as vc23.
+
 ## 2026-06-20 — Fix: App Lock bypassed on cold start (OEM background-kill)
 
 Tester on the A53 reported reopening Macaco didn't trigger the biometric lock. Root cause (not a

@@ -67,10 +67,11 @@ object AppActions {
 
     /** Opens the user's email app with a pre-filled message to support, with an optional subject. */
     fun contactSupport(context: Context, subjectRes: Int = R.string.help_contact_subject) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:$SUPPORT_EMAIL")
-            putExtra(Intent.EXTRA_SUBJECT, context.getString(subjectRes))
-        }
+        // Encode the subject in the mailto: URI rather than EXTRA_SUBJECT — Gmail ignores the extras
+        // on ACTION_SENDTO and only reads the URI query params. The URI form works for all clients.
+        val uriString = "mailto:$SUPPORT_EMAIL" +
+            "?subject=${Uri.encode(context.getString(subjectRes))}"
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse(uriString))
         runCatching {
             context.startActivity(
                 Intent.createChooser(intent, context.getString(R.string.help_contact))
@@ -128,11 +129,13 @@ object AppActions {
     }
 
     private fun sendEmail(context: Context, subjectRes: Int, body: String, chooserTitleRes: Int) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:$SUPPORT_EMAIL")
-            putExtra(Intent.EXTRA_SUBJECT, context.getString(subjectRes))
-            putExtra(Intent.EXTRA_TEXT, body)
-        }
+        // Encode subject + body in the mailto: URI instead of EXTRA_SUBJECT/EXTRA_TEXT — Gmail
+        // ignores those extras on ACTION_SENDTO and only populates from the URI query params. The
+        // URI form fills all clients; bodies here are short templates so URI length isn't a concern.
+        val uriString = "mailto:$SUPPORT_EMAIL" +
+            "?subject=${Uri.encode(context.getString(subjectRes))}" +
+            "&body=${Uri.encode(body)}"
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse(uriString))
         runCatching {
             context.startActivity(Intent.createChooser(intent, context.getString(chooserTitleRes)))
         }
