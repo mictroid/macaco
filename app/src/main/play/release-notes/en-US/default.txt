@@ -1,9 +1,4 @@
 What's new:
-• Delete your account and all your data right from your profile
-• Terms of Service & Privacy Policy now linked on the sign-in screen
-• Updates now install in-app — no need to open the Play Store
-• Voice dictation follows your chosen app language
-• Manage your subscription from your profile
-• Smoother map that frames your places correctly
-• Instant, flash-free language switching
-• Fixed a blank screen that could appear after deleting an entry
+• Contacting support now opens a pre-filled email template, so it's quicker to get help
+• Added a Terms of Service link in Help & About
+• Smaller fixes and polish
