@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import java.io.File
@@ -17,7 +18,7 @@ import java.io.File
  *
  *  - [persist] copies into the app's `filesDir` and returns a `file://` URI. Used for local-only
  *    personalization (profile photo, theme background) that doesn't need to outlive the app.
- *  - [persistToGallery] copies into the shared **Pictures/Wanderlog** collection via MediaStore and
+ *  - [persistToGallery] copies into the shared **Pictures/Macaco** collection via MediaStore and
  *    returns a `content://` URI. Used for entry photos: shared media is NOT deleted on uninstall, so
  *    after a reinstall (and re-login) the cloud-synced entries can show their photos again — as long
  *    as the app has been granted media-read permission.
@@ -46,40 +47,59 @@ object ImageStorage {
     }.getOrNull()
 
     /**
-     * Copies [source] into the device's shared Pictures/Wanderlog collection and returns the
+     * Copies [source] into the device's shared Pictures/Macaco collection and returns the
      * resulting `content://` URI string, or null on failure. The file lives outside app storage, so
      * it survives an uninstall (reading it again later requires media-read permission).
+     *
+     * On API ≤ 28 we write the file to disk *first* and then register it with MediaStore via the
+     * `DATA` column: Samsung's Android 8.x MediaStore silently returns `null` from
+     * `openOutputStream()` for an entry whose backing file doesn't exist yet, which would drop the
+     * photo. On API 29+ the IS_PENDING insert → stream → commit flow is used.
      */
     fun persistToGallery(context: Context, source: Uri): String? = runCatching {
         val resolver = context.contentResolver
-        val name = "wanderlog_${System.currentTimeMillis()}_${source.hashCode().toUInt()}.jpg"
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, name)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val name = "macaco_${System.currentTimeMillis()}_${source.hashCode().toUInt()}.jpg"
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, name)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Macaco")
                 put(MediaStore.Images.Media.IS_PENDING, 1)
             }
-        }
-        val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-        } else {
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        }
-        val uri = resolver.insert(collection, values) ?: return null
-        val ok = resolver.openOutputStream(uri)?.use { output ->
-            resolver.openInputStream(source)?.use { input -> input.copyTo(output); true } ?: false
-        } ?: false
-        if (!ok) {
-            runCatching { resolver.delete(uri, null, null) }
-            return null
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val uri = resolver.insert(
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values
+            ) ?: return null
+            val ok = resolver.openOutputStream(uri)?.use { output ->
+                resolver.openInputStream(source)?.use { input -> input.copyTo(output); true } ?: false
+            } ?: false
+            if (!ok) {
+                runCatching { resolver.delete(uri, null, null) }
+                return null
+            }
             values.clear()
             values.put(MediaStore.Images.Media.IS_PENDING, 0)
             resolver.update(uri, values, null, null)
+            uri.toString()
+        } else {
+            // API ≤ 28: write to disk first to avoid Samsung's openOutputStream-null bug.
+            val dir = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                "Macaco"
+            ).also { it.mkdirs() }
+            val file = File(dir, name)
+            resolver.openInputStream(source)?.use { input ->
+                file.outputStream().use { output -> input.copyTo(output) }
+            } ?: return null
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, name)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                @Suppress("DEPRECATION")
+                put(MediaStore.Images.Media.DATA, file.absolutePath)
+            }
+            val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            (uri ?: Uri.fromFile(file)).toString()
         }
-        uri.toString()
     }.getOrNull()
 
     /**
@@ -89,31 +109,43 @@ object ImageStorage {
     fun persistBytesToGallery(context: Context, bytes: ByteArray): String? = runCatching {
         val resolver = context.contentResolver
         val name = "macaco_${System.currentTimeMillis()}_${bytes.size}.jpg"
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, name)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, name)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Macaco")
                 put(MediaStore.Images.Media.IS_PENDING, 1)
             }
-        }
-        val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-        } else {
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        }
-        val uri = resolver.insert(collection, values) ?: return null
-        val ok = resolver.openOutputStream(uri)?.use { output -> output.write(bytes); true } ?: false
-        if (!ok) {
-            runCatching { resolver.delete(uri, null, null) }
-            return null
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val uri = resolver.insert(
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values
+            ) ?: return null
+            val ok = resolver.openOutputStream(uri)?.use { output -> output.write(bytes); true } ?: false
+            if (!ok) {
+                runCatching { resolver.delete(uri, null, null) }
+                return null
+            }
             values.clear()
             values.put(MediaStore.Images.Media.IS_PENDING, 0)
             resolver.update(uri, values, null, null)
+            uri.toString()
+        } else {
+            // API ≤ 28: write to disk first to avoid Samsung's openOutputStream-null bug.
+            val dir = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                "Macaco"
+            ).also { it.mkdirs() }
+            val file = File(dir, name)
+            file.writeBytes(bytes)
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, name)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                @Suppress("DEPRECATION")
+                put(MediaStore.Images.Media.DATA, file.absolutePath)
+            }
+            val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            (uri ?: Uri.fromFile(file)).toString()
         }
-        uri.toString()
     }.getOrNull()
 
     /** Deletes everything stored under `filesDir/[subDir]`. */
