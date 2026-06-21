@@ -21,6 +21,8 @@ object AppActions {
     const val SUPPORT_EMAIL = "houseofmmminq@gmail.com"
     // Hosted on GitHub Pages from privacy-policy.html at the repo root.
     const val PRIVACY_POLICY_URL = "https://mictroid.github.io/macaco/privacy-policy.html"
+    // Hosted on GitHub Pages from terms-of-service.html at the repo root.
+    const val TERMS_URL = "https://mictroid.github.io/macaco/terms-of-service.html"
 
     /**
      * Opens the system share sheet with a personalized blurb (entry count) and a link to the

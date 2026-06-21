@@ -214,6 +214,11 @@
     <string name="login_google_error_network">Google sign-in failed. Check your internet connection.</string>
     <string name="login_google_error_sha1">Google sign-in not configured. Verify the SHA-1 fingerprint in Firebase.</string>
     <string name="login_google_error_code">Google sign-in failed (%s)</string>
+    <string name="login_tos_prefix">"By continuing you agree to our "</string>
+    <string name="login_tos_link">Terms of Service</string>
+    <string name="login_tos_and">" and "</string>
+    <string name="login_pp_link">Privacy Policy</string>
+    <string name="login_tos_suffix">.</string>
 
     <!-- Profile -->
     <string name="profile_photo_cd">Profile photo</string>

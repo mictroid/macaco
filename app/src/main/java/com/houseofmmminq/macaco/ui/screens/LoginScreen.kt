@@ -57,8 +57,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.res.painterResource
@@ -68,6 +75,7 @@ import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.auth.FirebaseConfig
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import com.houseofmmminq.macaco.util.AppActions
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -348,6 +356,38 @@ fun LoginScreen(
                         else stringResource(R.string.login_no_account)
                     )
                 }
+
+                Spacer(Modifier.height(24.dp))
+
+                // Passive Terms/Privacy acknowledgement (no checkbox) — required for Play
+                // production + establishes the GDPR contract basis at sign-up.
+                val linkStyles = TextLinkStyles(
+                    SpanStyle(
+                        color = MaterialTheme.colorScheme.primary,
+                        textDecoration = TextDecoration.Underline
+                    )
+                )
+                val tosText = buildAnnotatedString {
+                    append(stringResource(R.string.login_tos_prefix))
+                    withLink(LinkAnnotation.Clickable("tos", linkStyles) {
+                        AppActions.openUrl(context, AppActions.TERMS_URL)
+                    }) { append(stringResource(R.string.login_tos_link)) }
+                    append(stringResource(R.string.login_tos_and))
+                    withLink(LinkAnnotation.Clickable("pp", linkStyles) {
+                        AppActions.openUrl(context, AppActions.PRIVACY_POLICY_URL)
+                    }) { append(stringResource(R.string.login_pp_link)) }
+                    append(stringResource(R.string.login_tos_suffix))
+                }
+                Text(
+                    text = tosText,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                )
 
                 Spacer(Modifier.height(24.dp))
             }
