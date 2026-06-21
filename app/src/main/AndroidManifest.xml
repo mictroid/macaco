@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Firebase Analytics auto-injects the advertising-ID permission. Macaco does no ads and our
+         Play "advertising ID" declaration says we don't use it, so strip it to keep them in sync
+         (Play rejects the upload otherwise). -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
     <!-- Travel reminder notifications (runtime-requested on Android 13+). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission
