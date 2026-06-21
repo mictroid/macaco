@@ -1,5 +1,6 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,7 +29,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AlertDialog
@@ -38,9 +42,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -90,6 +97,9 @@ fun ProfileScreen(
     var deleteError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
+    var showPhotoSourceSheet by remember { mutableStateOf(false) }
+    var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
+
     val photoPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -98,6 +108,81 @@ fun ProfileScreen(
             // grant is temporary). See ImageStorage.
             ImageStorage.persist(context, uri, ImageStorage.PROFILE, replaceExisting = true)
                 ?.let { viewModel.setProfilePhoto(it) }
+        }
+    }
+
+    // Browse Files — ACTION_OPEN_DOCUMENT with image/* opens the system file picker, which
+    // includes Google Drive and other cloud providers (the Photo Picker above does not).
+    val documentPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            ImageStorage.persist(context, uri, ImageStorage.PROFILE, replaceExisting = true)
+                ?.let { viewModel.setProfilePhoto(it) }
+        }
+    }
+
+    // Camera — captures into the FileProvider temp URI from ImageStorage.
+    val cameraPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            pendingCameraUri?.let { uri ->
+                ImageStorage.persist(context, uri, ImageStorage.PROFILE, replaceExisting = true)
+                    ?.let { viewModel.setProfilePhoto(it) }
+            }
+        }
+        pendingCameraUri = null
+    }
+
+    if (showPhotoSourceSheet) {
+        ModalBottomSheet(onDismissRequest = { showPhotoSourceSheet = false }) {
+            Text(
+                text = stringResource(R.string.profile_change_photo_title),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                textAlign = TextAlign.Center
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Gallery — Android system photo picker (device gallery + Google Photos).
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.profile_photo_source_gallery)) },
+                leadingContent = { Icon(Icons.Outlined.PhotoLibrary, contentDescription = null) },
+                modifier = Modifier.clickable {
+                    showPhotoSourceSheet = false
+                    photoPicker.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+            )
+
+            // Browse Files — includes Google Drive and other cloud providers.
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.profile_photo_source_files)) },
+                leadingContent = { Icon(Icons.Outlined.Folder, contentDescription = null) },
+                modifier = Modifier.clickable {
+                    showPhotoSourceSheet = false
+                    documentPicker.launch(arrayOf("image/*"))
+                }
+            )
+
+            // Camera — capture a new photo.
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.profile_photo_source_camera)) },
+                leadingContent = { Icon(Icons.Outlined.CameraAlt, contentDescription = null) },
+                modifier = Modifier.clickable {
+                    showPhotoSourceSheet = false
+                    val uri = ImageStorage.newCameraTempUri(context)
+                    pendingCameraUri = uri
+                    uri?.let { cameraPicker.launch(it) }
+                }
+            )
+
+            Spacer(Modifier.height(24.dp))
         }
     }
 
@@ -254,11 +339,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
-                        .clickable {
-                            photoPicker.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        },
+                        .clickable { showPhotoSourceSheet = true },
                     contentAlignment = Alignment.Center
                 ) {
                     if (profilePhotoUri != null) {
