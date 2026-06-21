@@ -95,6 +95,7 @@ import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import java.util.UUID
 
 // Savers so the form's List/Set state survives process death (phone lock → low-memory kill →
@@ -557,6 +558,10 @@ fun NewEditEntryScreen(
                             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                                 putExtra(RecognizerIntent.EXTRA_PROMPT, context.getString(R.string.new_entry_dictate_prompt))
+                                // Match dictation language to the in-app locale (set via
+                                // AppCompatDelegate.setApplicationLocales), not just the system default.
+                                putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
+                                putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, Locale.getDefault().toLanguageTag())
                             }
                             onSuppressAutoLock()
                             speechLauncher.launch(intent)
