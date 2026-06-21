@@ -256,4 +256,16 @@
     <string name="mood_add_custom_title">Eigen stemming toevoegen</string>
     <string name="mood_add_custom_placeholder">Plak een emoji…</string>
     <string name="mood_add_custom_cd">Eigen stemming toevoegen</string>
+    <string name="profile_delete_account">Account verwijderen</string>
+    <string name="profile_delete_account_title">Account verwijderen?</string>
+    <string name="profile_delete_account_body">Hiermee worden je Macaco-account en al je dagboeknotities permanent verwijderd. Foto\'s die in je apparaatgalerij en Google Drive zijn opgeslagen, blijven ongewijzigd. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="profile_delete_account_confirm">Verwijderen</string>
+    <string name="profile_delete_account_error">Kan account niet verwijderen. Log uit, log opnieuw in en probeer het opnieuw.</string>
+    <string name="login_tos_prefix">"Door door te gaan ga je akkoord met onze "</string>
+    <string name="login_tos_link">Servicevoorwaarden</string>
+    <string name="login_tos_and">" en ons "</string>
+    <string name="login_pp_link">Privacybeleid</string>
+    <string name="login_tos_suffix">.</string>
+    <string name="update_ready_message">Er is een update klaar om te installeren</string>
+    <string name="update_ready_action">Opnieuw starten</string>
 </resources>

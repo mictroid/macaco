@@ -256,4 +256,16 @@
     <string name="mood_add_custom_title">Adicione o seu próprio humor</string>
     <string name="mood_add_custom_placeholder">Cole um emoji…</string>
     <string name="mood_add_custom_cd">Adicionar humor personalizado</string>
+    <string name="profile_delete_account">Excluir conta</string>
+    <string name="profile_delete_account_title">Excluir sua conta?</string>
+    <string name="profile_delete_account_body">Isso exclui permanentemente sua conta Macaco e todas as suas entradas do diário. As fotos salvas na galeria do dispositivo e no Google Drive não são afetadas. Esta ação não pode ser desfeita.</string>
+    <string name="profile_delete_account_confirm">Excluir</string>
+    <string name="profile_delete_account_error">Não foi possível excluir a conta. Saia, entre novamente e tente outra vez.</string>
+    <string name="login_tos_prefix">"Ao continuar, você concorda com nossos "</string>
+    <string name="login_tos_link">Termos de Serviço</string>
+    <string name="login_tos_and">" e nossa "</string>
+    <string name="login_pp_link">Política de Privacidade</string>
+    <string name="login_tos_suffix">.</string>
+    <string name="update_ready_message">Uma atualização está pronta para instalar</string>
+    <string name="update_ready_action">Reiniciar</string>
 </resources>

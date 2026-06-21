@@ -267,4 +267,16 @@
     <string name="mood_add_custom_title">Eigene Stimmung hinzufügen</string>
     <string name="mood_add_custom_placeholder">Emoji einfügen…</string>
     <string name="mood_add_custom_cd">Eigene Stimmung hinzufügen</string>
+    <string name="profile_delete_account">Konto löschen</string>
+    <string name="profile_delete_account_title">Konto löschen?</string>
+    <string name="profile_delete_account_body">Dadurch werden dein Macaco-Konto und alle deine Tagebucheinträge dauerhaft gelöscht. In deiner Gerätegalerie und in Google Drive gespeicherte Fotos sind nicht betroffen. Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="profile_delete_account_confirm">Löschen</string>
+    <string name="profile_delete_account_error">Konto konnte nicht gelöscht werden. Bitte melde dich ab, wieder an und versuche es erneut.</string>
+    <string name="login_tos_prefix">"Mit der Fortsetzung akzeptierst du unsere "</string>
+    <string name="login_tos_link">Nutzungsbedingungen</string>
+    <string name="login_tos_and">" und "</string>
+    <string name="login_pp_link">Datenschutzrichtlinie</string>
+    <string name="login_tos_suffix">.</string>
+    <string name="update_ready_message">Ein Update ist installationsbereit</string>
+    <string name="update_ready_action">Neu starten</string>
 </resources>

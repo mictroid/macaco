@@ -256,4 +256,16 @@
     <string name="mood_add_custom_title">Lägg till ditt eget humör</string>
     <string name="mood_add_custom_placeholder">Klistra in en emoji…</string>
     <string name="mood_add_custom_cd">Lägg till eget humör</string>
+    <string name="profile_delete_account">Radera konto</string>
+    <string name="profile_delete_account_title">Radera ditt konto?</string>
+    <string name="profile_delete_account_body">Detta raderar permanent ditt Macaco-konto och alla dina dagboksinlägg. Foton som sparats i enhetens galleri och Google Drive påverkas inte. Detta kan inte ångras.</string>
+    <string name="profile_delete_account_confirm">Radera</string>
+    <string name="profile_delete_account_error">Det gick inte att radera kontot. Logga ut, logga in igen och försök på nytt.</string>
+    <string name="login_tos_prefix">"Genom att fortsätta godkänner du våra "</string>
+    <string name="login_tos_link">Användarvillkor</string>
+    <string name="login_tos_and">" och vår "</string>
+    <string name="login_pp_link">Integritetspolicy</string>
+    <string name="login_tos_suffix">.</string>
+    <string name="update_ready_message">En uppdatering är redo att installeras</string>
+    <string name="update_ready_action">Starta om</string>
 </resources>

@@ -252,4 +252,16 @@
     <string name="mood_add_custom_title">自分の気分を追加</string>
     <string name="mood_add_custom_placeholder">絵文字を貼り付け…</string>
     <string name="mood_add_custom_cd">カスタム気分を追加</string>
+    <string name="profile_delete_account">アカウントを削除</string>
+    <string name="profile_delete_account_title">アカウントを削除しますか？</string>
+    <string name="profile_delete_account_body">これにより、Macaco アカウントとすべての日記エントリーが完全に削除されます。デバイスのギャラリーや Google ドライブに保存された写真は影響を受けません。この操作は元に戻せません。</string>
+    <string name="profile_delete_account_confirm">削除</string>
+    <string name="profile_delete_account_error">アカウントを削除できませんでした。サインアウトしてから再度サインインし、もう一度お試しください。</string>
+    <string name="login_tos_prefix">続行すると、</string>
+    <string name="login_tos_link">利用規約</string>
+    <string name="login_tos_and">および</string>
+    <string name="login_pp_link">プライバシーポリシー</string>
+    <string name="login_tos_suffix">に同意したものとみなされます。</string>
+    <string name="update_ready_message">アップデートをインストールする準備ができました</string>
+    <string name="update_ready_action">再起動</string>
 </resources>

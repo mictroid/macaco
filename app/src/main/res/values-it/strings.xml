@@ -256,4 +256,16 @@
     <string name="mood_add_custom_title">Aggiungi il tuo stato d\'animo</string>
     <string name="mood_add_custom_placeholder">Incolla un emoji…</string>
     <string name="mood_add_custom_cd">Aggiungi stato d\'animo personalizzato</string>
+    <string name="profile_delete_account">Elimina account</string>
+    <string name="profile_delete_account_title">Eliminare il tuo account?</string>
+    <string name="profile_delete_account_body">Questa operazione elimina definitivamente il tuo account Macaco e tutte le voci del diario. Le foto salvate nella galleria del dispositivo e su Google Drive non vengono modificate. Questa azione non può essere annullata.</string>
+    <string name="profile_delete_account_confirm">Elimina</string>
+    <string name="profile_delete_account_error">Impossibile eliminare l\'account. Esci, accedi di nuovo e riprova.</string>
+    <string name="login_tos_prefix">"Continuando, accetti i nostri "</string>
+    <string name="login_tos_link">Termini di servizio</string>
+    <string name="login_tos_and">" e la nostra "</string>
+    <string name="login_pp_link">Informativa sulla privacy</string>
+    <string name="login_tos_suffix">.</string>
+    <string name="update_ready_message">Un aggiornamento è pronto per l\'installazione</string>
+    <string name="update_ready_action">Riavvia</string>
 </resources>

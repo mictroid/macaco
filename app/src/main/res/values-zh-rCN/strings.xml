@@ -252,4 +252,16 @@
     <string name="mood_add_custom_title">添加你的心情</string>
     <string name="mood_add_custom_placeholder">粘贴一个表情符号…</string>
     <string name="mood_add_custom_cd">添加自定义心情</string>
+    <string name="profile_delete_account">删除账户</string>
+    <string name="profile_delete_account_title">删除您的账户？</string>
+    <string name="profile_delete_account_body">这将永久删除您的 Macaco 账户和所有日记条目。保存在设备相册和 Google 云端硬盘中的照片不受影响。此操作无法撤销。</string>
+    <string name="profile_delete_account_confirm">删除</string>
+    <string name="profile_delete_account_error">无法删除账户。请退出登录后重新登录，然后再试一次。</string>
+    <string name="login_tos_prefix">继续即表示您同意我们的</string>
+    <string name="login_tos_link">服务条款</string>
+    <string name="login_tos_and">和</string>
+    <string name="login_pp_link">隐私政策</string>
+    <string name="login_tos_suffix">。</string>
+    <string name="update_ready_message">更新已准备好安装</string>
+    <string name="update_ready_action">重启</string>
 </resources>

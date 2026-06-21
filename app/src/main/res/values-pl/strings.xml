@@ -264,4 +264,16 @@
     <string name="mood_add_custom_title">Dodaj własny nastrój</string>
     <string name="mood_add_custom_placeholder">Wklej emoji…</string>
     <string name="mood_add_custom_cd">Dodaj własny nastrój</string>
+    <string name="profile_delete_account">Usuń konto</string>
+    <string name="profile_delete_account_title">Usunąć konto?</string>
+    <string name="profile_delete_account_body">Spowoduje to trwałe usunięcie konta Macaco i wszystkich wpisów w dzienniku. Zdjęcia zapisane w galerii urządzenia i na Dysku Google nie zostaną naruszone. Tej operacji nie można cofnąć.</string>
+    <string name="profile_delete_account_confirm">Usuń</string>
+    <string name="profile_delete_account_error">Nie można usunąć konta. Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.</string>
+    <string name="login_tos_prefix">"Kontynuując, akceptujesz nasze "</string>
+    <string name="login_tos_link">Warunki korzystania z usługi</string>
+    <string name="login_tos_and">" oraz "</string>
+    <string name="login_pp_link">Politykę prywatności</string>
+    <string name="login_tos_suffix">.</string>
+    <string name="update_ready_message">Aktualizacja jest gotowa do zainstalowania</string>
+    <string name="update_ready_action">Uruchom ponownie</string>
 </resources>
