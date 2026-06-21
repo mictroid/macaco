@@ -212,13 +212,13 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                 icon = Icons.Filled.PrivacyTip,
                 title = stringResource(R.string.help_privacy_policy),
                 subtitle = stringResource(R.string.help_privacy_policy_subtitle),
-                onClick = { AppActions.openUrl(context, AppActions.PRIVACY_POLICY_URL) }
+                onClick = { AppActions.openUrl(context, AppActions.legalUrl(AppActions.PRIVACY_POLICY_URL)) }
             )
             HelpActionRow(
                 icon = Icons.Outlined.Gavel,
                 title = stringResource(R.string.help_terms_of_service),
                 subtitle = stringResource(R.string.help_terms_of_service_subtitle),
-                onClick = { AppActions.openUrl(context, AppActions.TERMS_URL) }
+                onClick = { AppActions.openUrl(context, AppActions.legalUrl(AppActions.TERMS_URL)) }
             )
             HelpActionRow(
                 icon = Icons.AutoMirrored.Filled.HelpOutline,

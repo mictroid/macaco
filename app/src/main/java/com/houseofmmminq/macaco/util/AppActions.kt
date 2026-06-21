@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
 import com.houseofmmminq.macaco.R
 import com.google.android.play.core.review.ReviewManagerFactory
+import java.util.Locale
 
 /**
  * Growth/feedback actions backed by the Play Store: sharing the app and asking for a rating.
@@ -23,6 +25,22 @@ object AppActions {
     const val PRIVACY_POLICY_URL = "https://mictroid.github.io/macaco/privacy-policy.html"
     // Hosted on GitHub Pages from terms-of-service.html at the repo root.
     const val TERMS_URL = "https://mictroid.github.io/macaco/terms-of-service.html"
+
+    /**
+     * Appends the current in-app locale as a `?lang=` query param so the multilingual legal pages
+     * (ToS / Privacy Policy) open in the user's chosen language rather than the browser's. Uses the
+     * primary subtag only (e.g. "de" from "de-DE", "zh" from "zh-Hans-CN") to match the page's
+     * supported codes; the page itself falls back to English for any unsupported code.
+     */
+    internal fun legalUrl(baseUrl: String): String {
+        val locales = AppCompatDelegate.getApplicationLocales()
+        val lang = if (locales.isEmpty) {
+            Locale.getDefault().language
+        } else {
+            locales[0]?.language ?: Locale.getDefault().language
+        }
+        return if (lang.isBlank()) baseUrl else "$baseUrl?lang=$lang"
+    }
 
     /**
      * Opens the system share sheet with a personalized blurb (entry count) and a link to the

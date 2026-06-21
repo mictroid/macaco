@@ -370,11 +370,11 @@ fun LoginScreen(
                 val tosText = buildAnnotatedString {
                     append(stringResource(R.string.login_tos_prefix))
                     withLink(LinkAnnotation.Clickable("tos", linkStyles) {
-                        AppActions.openUrl(context, AppActions.TERMS_URL)
+                        AppActions.openUrl(context, AppActions.legalUrl(AppActions.TERMS_URL))
                     }) { append(stringResource(R.string.login_tos_link)) }
                     append(stringResource(R.string.login_tos_and))
                     withLink(LinkAnnotation.Clickable("pp", linkStyles) {
-                        AppActions.openUrl(context, AppActions.PRIVACY_POLICY_URL)
+                        AppActions.openUrl(context, AppActions.legalUrl(AppActions.PRIVACY_POLICY_URL))
                     }) { append(stringResource(R.string.login_pp_link)) }
                     append(stringResource(R.string.login_tos_suffix))
                 }
