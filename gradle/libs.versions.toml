@@ -16,6 +16,7 @@ workManager = "2.10.0"
 kotlinxSerializationJson = "1.7.3"
 kotlinxCoroutines = "1.9.0"
 firebaseBom = "33.7.0"
+firebaseCrashlyticsPlugin = "3.0.3"
 playServicesAuth = "21.3.0"
 googleServices = "4.4.2"
 revenueCat = "8.10.0"
@@ -58,6 +59,8 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 revenuecat-purchases = { group = "com.revenuecat.purchases", name = "purchases", version.ref = "revenueCat" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
@@ -74,3 +77,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 play-publisher = { id = "com.github.triplet.play", version.ref = "playPublisher" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
