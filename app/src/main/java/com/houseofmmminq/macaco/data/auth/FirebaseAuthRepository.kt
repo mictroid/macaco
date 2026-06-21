@@ -15,9 +15,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthRepository(appContext: Context) : AuthRepository {
@@ -30,9 +34,18 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
     // google-services.json + plugin initialises Firebase automatically at app start
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    private val repositoryScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
     init {
         _currentUser.value = auth.currentUser?.toUserProfile()
         auth.addAuthStateListener { _currentUser.value = it.currentUser?.toUserProfile() }
+        // Reload once at startup to pick up any Google Account name changes since last sign-in.
+        // reload() refreshes the FirebaseUser object in-place but does not trigger the auth
+        // listener, so _currentUser must be updated manually afterwards. Offline → keeps cached name.
+        repositoryScope.launch {
+            runCatching { auth.currentUser?.reload()?.await() }
+            auth.currentUser?.let { _currentUser.value = it.toUserProfile() }
+        }
     }
 
     // ── Google ────────────────────────────────────────────────────────────────
