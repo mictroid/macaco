@@ -264,4 +264,7 @@
     <string name="login_tos_suffix">に同意したものとみなされます。</string>
     <string name="update_ready_message">アップデートをインストールする準備ができました</string>
     <string name="update_ready_action">再起動</string>
+    <string name="help_terms_of_service">利用規約</string>
+    <string name="help_terms_of_service_subtitle">Macaco との利用規約を確認</string>
+    <string name="help_contact_template">Macaco チームへ、\n\n[ここにメッセージを入力してください]</string>
 </resources>

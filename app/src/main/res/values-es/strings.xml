@@ -268,4 +268,7 @@
     <string name="login_tos_suffix">.</string>
     <string name="update_ready_message">Hay una actualización lista para instalar</string>
     <string name="update_ready_action">Reiniciar</string>
+    <string name="help_terms_of_service">Condiciones de servicio</string>
+    <string name="help_terms_of_service_subtitle">Consulta tu acuerdo con Macaco</string>
+    <string name="help_contact_template">Hola equipo de Macaco,\n\n[Escribe tu mensaje aquí]</string>
 </resources>

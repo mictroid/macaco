@@ -297,4 +297,9 @@
     <!-- In-app update -->
     <string name="update_ready_message">An update is ready to install</string>
     <string name="update_ready_action">Restart</string>
+
+    <!-- Help: Terms of Service row + contact template -->
+    <string name="help_terms_of_service">Terms of Service</string>
+    <string name="help_terms_of_service_subtitle">Review your agreement with Macaco</string>
+    <string name="help_contact_template">Hi Macaco team,\n\n[Write your message here]</string>
 </resources>

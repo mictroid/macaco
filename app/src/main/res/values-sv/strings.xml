@@ -268,4 +268,7 @@
     <string name="login_tos_suffix">.</string>
     <string name="update_ready_message">En uppdatering är redo att installeras</string>
     <string name="update_ready_action">Starta om</string>
+    <string name="help_terms_of_service">Användarvillkor</string>
+    <string name="help_terms_of_service_subtitle">Granska ditt avtal med Macaco</string>
+    <string name="help_contact_template">Hej Macaco-teamet,\n\n[Skriv ditt meddelande här]</string>
 </resources>

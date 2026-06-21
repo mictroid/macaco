@@ -69,16 +69,19 @@ object AppActions {
 
     /** Opens the user's email app with a pre-filled message to support, with an optional subject. */
     fun contactSupport(context: Context, subjectRes: Int = R.string.help_contact_subject) {
-        // Encode the subject in the mailto: URI rather than EXTRA_SUBJECT — Gmail ignores the extras
-        // on ACTION_SENDTO and only reads the URI query params. The URI form works for all clients.
-        val uriString = "mailto:$SUPPORT_EMAIL" +
-            "?subject=${Uri.encode(context.getString(subjectRes))}"
-        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse(uriString))
-        runCatching {
-            context.startActivity(
-                Intent.createChooser(intent, context.getString(R.string.help_contact))
-            )
+        // Route through sendEmail() so the body (template + device footer) is encoded in the URI —
+        // the manual mailto: form used to open a blank compose window in Gmail.
+        val body = buildString {
+            appendLine(context.getString(R.string.help_contact_template))
+            appendLine()
+            append(deviceFooter(context))
         }
+        sendEmail(
+            context = context,
+            subjectRes = subjectRes,
+            body = body,
+            chooserTitleRes = R.string.help_contact
+        )
     }
 
     /** Opens the user's email app pre-filled with a feature-request template + device footer. */

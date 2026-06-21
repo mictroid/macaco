@@ -264,4 +264,7 @@
     <string name="login_tos_suffix">。</string>
     <string name="update_ready_message">更新已准备好安装</string>
     <string name="update_ready_action">重启</string>
+    <string name="help_terms_of_service">服务条款</string>
+    <string name="help_terms_of_service_subtitle">查看您与 Macaco 的协议</string>
+    <string name="help_contact_template">Macaco 团队，您好，\n\n[在此处输入您的留言]</string>
 </resources>

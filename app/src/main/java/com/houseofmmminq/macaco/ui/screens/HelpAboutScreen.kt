@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -212,6 +213,12 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                 title = stringResource(R.string.help_privacy_policy),
                 subtitle = stringResource(R.string.help_privacy_policy_subtitle),
                 onClick = { AppActions.openUrl(context, AppActions.PRIVACY_POLICY_URL) }
+            )
+            HelpActionRow(
+                icon = Icons.Outlined.Gavel,
+                title = stringResource(R.string.help_terms_of_service),
+                subtitle = stringResource(R.string.help_terms_of_service_subtitle),
+                onClick = { AppActions.openUrl(context, AppActions.TERMS_URL) }
             )
             HelpActionRow(
                 icon = Icons.AutoMirrored.Filled.HelpOutline,

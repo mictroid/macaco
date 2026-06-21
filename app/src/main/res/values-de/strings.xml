@@ -279,4 +279,7 @@
     <string name="login_tos_suffix">.</string>
     <string name="update_ready_message">Ein Update ist installationsbereit</string>
     <string name="update_ready_action">Neu starten</string>
+    <string name="help_terms_of_service">Nutzungsbedingungen</string>
+    <string name="help_terms_of_service_subtitle">Überprüfe deine Vereinbarung mit Macaco</string>
+    <string name="help_contact_template">Hallo Macaco-Team,\n\n[Schreibe hier deine Nachricht]</string>
 </resources>
