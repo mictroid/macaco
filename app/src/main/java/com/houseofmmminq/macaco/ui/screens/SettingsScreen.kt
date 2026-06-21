@@ -242,13 +242,16 @@ fun SettingsScreen(
     val isPurchased by viewModel.isPurchased.collectAsState()
     val backupScope = rememberCoroutineScope()
     var backupBusy by remember { mutableStateOf(false) }
+    var showExportDialog by remember { mutableStateOf(false) }
+    var pendingCompact by remember { mutableStateOf(false) }
     val backupExportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/zip")
     ) { uri ->
         if (uri != null) {
+            val isCompact = pendingCompact // capture before the coroutine
             backupBusy = true
             backupScope.launch {
-                val result = viewModel.exportBackup(uri)
+                val result = viewModel.exportBackup(uri, compact = isCompact)
                 backupBusy = false
                 Toast.makeText(
                     context,
@@ -628,7 +631,7 @@ fun SettingsScreen(
                 premium = isPurchased == true,
                 busy = backupBusy,
                 onExport = {
-                    if (isPurchased == true) backupExportLauncher.launch("macaco-backup.zip")
+                    if (isPurchased == true) showExportDialog = true
                     else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
                 },
                 onImport = {
@@ -636,6 +639,33 @@ fun SettingsScreen(
                     else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
                 }
             )
+
+            // Export quality must be chosen before the SAF picker opens (it can't be asked after).
+            if (showExportDialog) {
+                AlertDialog(
+                    onDismissRequest = { showExportDialog = false },
+                    title = { Text(stringResource(R.string.settings_backup_export_quality_title)) },
+                    text = { Text(stringResource(R.string.settings_backup_export_quality_body)) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showExportDialog = false
+                            pendingCompact = true
+                            backupExportLauncher.launch("macaco-backup-compact.zip")
+                        }) {
+                            Text(stringResource(R.string.settings_backup_export_compact))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showExportDialog = false
+                            pendingCompact = false
+                            backupExportLauncher.launch("macaco-backup.zip")
+                        }) {
+                            Text(stringResource(R.string.settings_backup_export_full))
+                        }
+                    }
+                )
+            }
 
             // ── Subscription ──────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))
