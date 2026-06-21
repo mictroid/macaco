@@ -39,7 +39,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.StarRate
-import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -106,7 +105,6 @@ fun JournalListScreen(
     onEntryClick: (String) -> Unit,
     onProfile: () -> Unit,
     onSettings: () -> Unit,
-    onSubscription: () -> Unit,
     onLogin: () -> Unit,
     onHelp: () -> Unit,
     // True when returning from a drawer-launched screen: reopen the menu so back lands on it.
@@ -277,17 +275,6 @@ fun JournalListScreen(
                     onClick = {
                         scope.launch { drawerState.close() }
                         onSettings()
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.common_subscription)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Outlined.WorkspacePremium, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        onSubscription()
                     }
                 )
 

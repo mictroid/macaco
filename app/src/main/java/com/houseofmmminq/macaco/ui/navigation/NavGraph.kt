@@ -201,7 +201,6 @@ fun NavGraph(
                         },
                         onProfile = { navController.navigateToTab(Screen.Profile.route) },
                         onSettings = { reopenDrawer = true; navController.navigate(Screen.Settings.route) },
-                        onSubscription = { reopenDrawer = true; navController.navigate(Screen.Subscription.route) },
                         onLogin = { navController.navigate(Screen.Login.route) },
                         onHelp = { reopenDrawer = true; navController.navigate(Screen.HelpAbout.route) }
                     )
@@ -310,7 +309,8 @@ fun NavGraph(
                         onLogin = {
                             navController.popBackStack()
                             navController.navigate(Screen.Login.route)
-                        }
+                        },
+                        onSubscription = { navController.navigate(Screen.Subscription.route) }
                     )
                 }
 

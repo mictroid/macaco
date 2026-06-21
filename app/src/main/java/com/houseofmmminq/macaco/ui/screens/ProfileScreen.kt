@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -74,7 +75,8 @@ fun ProfileScreen(
     viewModel: JournalViewModel,
     onBack: () -> Unit,
     onSignOut: () -> Unit,
-    onLogin: () -> Unit
+    onLogin: () -> Unit,
+    onSubscription: () -> Unit
 ) {
     val currentUser by viewModel.currentUser.collectAsState()
     val entries by viewModel.entries.collectAsState()
@@ -377,8 +379,26 @@ fun ProfileScreen(
         } // scrollable content Column
         } // weight(1f) Box
 
-            // Action button pinned above the footer — no gap possible.
+            // Action buttons pinned above the footer — no gap possible.
             if (currentUser != null) {
+                // Subscription management lives here (moved out of the journal drawer so the
+                // paywall isn't constantly in the user's face during normal journaling).
+                OutlinedButton(
+                    onClick = onSubscription,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 12.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.WorkspacePremium,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.common_subscription))
+                }
                 OutlinedButton(
                     onClick = { showSignOutDialog = true },
                     modifier = Modifier
