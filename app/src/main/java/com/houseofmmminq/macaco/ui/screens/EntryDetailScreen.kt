@@ -119,10 +119,18 @@ fun EntryDetailScreen(
         entries.indexOfFirst { it.id == initialEntryId }.coerceAtLeast(0)
     }
     val entriesPagerState = rememberPagerState(initialPage = initialIndex) { entries.size }
+    // Set when the user deletes from this screen. onDelete (in NavGraph) already pops the back
+    // stack, so once Firestore drops the entry and currentEntry goes null we must NOT pop again
+    // here — a second pop falls past the list to a blank screen (the bug delete-blank-screen-v2
+    // missed: this is a third pop trigger beyond the two NavGraph ones).
+    var isDeleting by remember { mutableStateOf(false) }
     val currentEntry = entries.getOrNull(entriesPagerState.currentPage)
     if (currentEntry == null) {
-        // List emptied out from under us (e.g. the last entry was deleted) — return to the list.
-        LaunchedEffect(Unit) { onBack() }
+        // List emptied out from under us (e.g. deleted from another device) — return to the list,
+        // unless our own delete already initiated the pop.
+        if (!isDeleting) {
+            LaunchedEffect(Unit) { onBack() }
+        }
         return
     }
 
@@ -165,7 +173,11 @@ fun EntryDetailScreen(
                 Text(stringResource(R.string.entry_detail_delete_message, currentEntry.title))
             },
             confirmButton = {
-                TextButton(onClick = { onDelete(currentEntry.id) }) {
+                TextButton(onClick = {
+                    isDeleting = true
+                    showDeleteDialog = false
+                    onDelete(currentEntry.id)
+                }) {
                     Text(stringResource(R.string.common_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
