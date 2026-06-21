@@ -219,6 +219,11 @@
     <string name="profile_photo_cd">Profile photo</string>
     <string name="profile_change_photo_cd">Change photo</string>
     <string name="profile_sign_out_message">Your memories will remain on this device. Sign back in anytime to access your account.</string>
+    <string name="profile_delete_account">Delete Account</string>
+    <string name="profile_delete_account_title">Delete your account?</string>
+    <string name="profile_delete_account_body">This permanently deletes your Macaco account and all your journal entries. Photos saved to your device gallery and Google Drive are not affected. This cannot be undone.</string>
+    <string name="profile_delete_account_confirm">Delete</string>
+    <string name="profile_delete_account_error">Could not delete account. Please sign out, sign back in, and try again.</string>
     <string name="profile_google_account">Google Account</string>
     <string name="profile_email_account">Email Account</string>
     <string name="profile_guest">Guest</string>

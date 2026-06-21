@@ -310,7 +310,8 @@ fun NavGraph(
                             navController.popBackStack()
                             navController.navigate(Screen.Login.route)
                         },
-                        onSubscription = { navController.navigate(Screen.Subscription.route) }
+                        onSubscription = { navController.navigate(Screen.Subscription.route) },
+                        onDeleteAccount = { callback -> viewModel.deleteAccount(callback) }
                     )
                 }
 

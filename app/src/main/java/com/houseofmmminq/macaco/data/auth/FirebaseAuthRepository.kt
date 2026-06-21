@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -85,6 +86,32 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
             GoogleSignIn.getClient(appContext, gso).signOut().await()
         }
         _currentUser.value = null
+    }
+
+    // ── Account deletion (GDPR) ─────────────────────────────────────────────────
+
+    override suspend fun deleteAccount(): Result<Unit> = runCatching {
+        val user = auth.currentUser ?: error("Not signed in")
+        val uid = user.uid
+        val db = FirebaseFirestore.getInstance()
+
+        // Delete all entries in the user's subcollection. Chunk under Firestore's 500-op batch
+        // limit in case a heavy user has many entries.
+        val entries = db.collection("users").document(uid).collection("entries").get().await()
+        entries.documents.chunked(450).forEach { chunk ->
+            val batch = db.batch()
+            chunk.forEach { batch.delete(it.reference) }
+            batch.commit().await()
+        }
+        // Delete the user document itself if present.
+        db.collection("users").document(uid).delete().await()
+
+        // Finally delete the Firebase Auth account. The auth state listener then emits null and
+        // NavGraph navigates back to LoginScreen.
+        user.delete().await()
+        Unit
+    }.mapFailure { e ->
+        Exception(e.localizedMessage ?: "Could not delete account")
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

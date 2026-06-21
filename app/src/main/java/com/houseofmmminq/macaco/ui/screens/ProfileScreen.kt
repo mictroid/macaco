@@ -28,12 +28,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -76,12 +78,16 @@ fun ProfileScreen(
     onBack: () -> Unit,
     onSignOut: () -> Unit,
     onLogin: () -> Unit,
-    onSubscription: () -> Unit
+    onSubscription: () -> Unit,
+    onDeleteAccount: ((Result<Unit>) -> Unit) -> Unit
 ) {
     val currentUser by viewModel.currentUser.collectAsState()
     val entries by viewModel.entries.collectAsState()
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
     var showSignOutDialog by remember { mutableStateOf(false) }
+    var showDeleteAccountDialog by remember { mutableStateOf(false) }
+    var deleteInProgress by remember { mutableStateOf(false) }
+    var deleteError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
     val photoPicker = rememberLauncherForActivityResult(
@@ -113,6 +119,53 @@ fun ProfileScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showSignOutDialog = false }) { Text(stringResource(R.string.common_cancel)) }
+            }
+        )
+    }
+
+    if (showDeleteAccountDialog) {
+        AlertDialog(
+            onDismissRequest = { if (!deleteInProgress) { showDeleteAccountDialog = false; deleteError = null } },
+            title = { Text(stringResource(R.string.profile_delete_account_title)) },
+            text = {
+                Column {
+                    Text(stringResource(R.string.profile_delete_account_body))
+                    deleteError?.let {
+                        Spacer(Modifier.height(12.dp))
+                        Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        deleteInProgress = true
+                        deleteError = null
+                        onDeleteAccount { result ->
+                            deleteInProgress = false
+                            result.fold(
+                                // On success the auth listener nulls currentUser → NavGraph shows
+                                // LoginScreen; no explicit navigation needed.
+                                onSuccess = { showDeleteAccountDialog = false },
+                                onFailure = { deleteError = it.message ?: context.getString(R.string.profile_delete_account_error) }
+                            )
+                        }
+                    },
+                    enabled = !deleteInProgress,
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                ) {
+                    if (deleteInProgress) {
+                        CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp)
+                    } else {
+                        Text(stringResource(R.string.profile_delete_account_confirm))
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteAccountDialog = false; deleteError = null },
+                    enabled = !deleteInProgress
+                ) { Text(stringResource(R.string.common_cancel)) }
             }
         )
     }
@@ -417,6 +470,24 @@ fun ProfileScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.common_sign_out))
+                }
+                // GDPR/Play-required in-app account deletion. Sits below sign-out, de-emphasised
+                // as a text button so it isn't an easy mis-tap.
+                TextButton(
+                    onClick = { showDeleteAccountDialog = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 8.dp),
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Icon(
+                        Icons.Outlined.DeleteForever,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.profile_delete_account))
                 }
             } else {
                 Button(
