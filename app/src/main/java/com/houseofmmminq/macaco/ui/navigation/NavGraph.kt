@@ -240,7 +240,13 @@ fun NavGraph(
                     // Swipe through the same tag-filtered set the list shows, not all entries.
                     val entries by viewModel.visibleEntries.collectAsState()
                     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
-                    if (entries.none { it.id == id }) {
+                    // Tracks that onDelete has already fired a popBackStack(), so the
+                    // entries-change guard below doesn't fire a second one. On slower devices
+                    // (S8, Android 8.1) the composable survives an extra recomposition frame after
+                    // the pop, during which Firestore's local cache drops the entry and the guard
+                    // would otherwise pop again → past the NavHost root → blank screen.
+                    var isBeingDeleted by remember { mutableStateOf(false) }
+                    if (!isBeingDeleted && entries.none { it.id == id }) {
                         LaunchedEffect(Unit) { navController.popBackStack() }
                         return@composable
                     }
@@ -249,10 +255,8 @@ fun NavGraph(
                         initialEntryId = id,
                         onEdit = { entryId -> navController.navigate(Screen.EditEntry.createRoute(entryId)) },
                         onDelete = { entryId ->
-                            // Navigate away first: once EntryDetail leaves the back stack its
-                            // composable is disposed, so the `entries.none { it.id == id }`
-                            // LaunchedEffect can't fire a second pop when Firestore's local cache
-                            // drops the entry. Deleting first caused a double-pop → blank screen.
+                            // Block the entries-change guard before popping (see isBeingDeleted).
+                            isBeingDeleted = true
                             navController.popBackStack()
                             viewModel.deleteEntry(entryId)
                         },
