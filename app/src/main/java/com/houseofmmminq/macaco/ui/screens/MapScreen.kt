@@ -135,14 +135,40 @@ fun MapScreen(
 
     LaunchedEffect(mapLoaded, geocodedLocations) {
         if (mapLoaded && !cameraPositioned && geocodedLocations.isNotEmpty()) {
-            val latlngs = geocodedLocations.values.map { LatLng(it.first, it.second) }
+            // Exclude Null Island (0.0, 0.0) — geocoding failures land there and drag the
+            // bounds south to equatorial Africa.
+            val nullFiltered = geocodedLocations.values
+                .map { LatLng(it.first, it.second) }
+                .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
+            if (nullFiltered.isEmpty()) return@LaunchedEffect
+
+            // Outlier rejection: drop any point >30° from the geographic median, catching a
+            // location name that geocodes to the wrong continent. Fall back to the null-filtered
+            // set if the places genuinely span >30°.
+            val medianLat = nullFiltered.map { it.latitude }.sorted()[nullFiltered.size / 2]
+            val medianLng = nullFiltered.map { it.longitude }.sorted()[nullFiltered.size / 2]
+            val latlngs = nullFiltered.filter { pt ->
+                Math.abs(pt.latitude - medianLat) <= 30.0 && Math.abs(pt.longitude - medianLng) <= 30.0
+            }.ifEmpty { nullFiltered }
+
             val update = if (latlngs.size == 1) {
-                CameraUpdateFactory.newLatLngZoom(latlngs[0], 8f)
+                CameraUpdateFactory.newLatLngZoom(latlngs[0], 5f)
             } else {
                 val bounds = LatLngBounds.builder().apply { latlngs.forEach { include(it) } }.build()
                 CameraUpdateFactory.newLatLngBounds(bounds, 80)
             }
-            cameraPositionState.move(update)
+
+            // newLatLngBounds throws if the map hasn't completed a layout pass (happens when
+            // returning to this screen). Give it a frame, then retry once before giving up — and
+            // always clear the scrim so a failed move can't strand the user on the default
+            // North-Atlantic position behind the spinner.
+            delay(100)
+            try {
+                cameraPositionState.move(update)
+            } catch (_: Exception) {
+                delay(400)
+                runCatching { cameraPositionState.move(update) }
+            }
             cameraPositioned = true
         }
     }
