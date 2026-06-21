@@ -142,6 +142,10 @@
     <string name="login_google_error_code">Logowanie przez Google nie powiodło się (%s)</string>
 
     <string name="profile_photo_cd">Zdjęcie profilowe</string>
+    <string name="profile_change_photo_title">Zmień zdjęcie profilowe</string>
+    <string name="profile_photo_source_gallery">Galeria</string>
+    <string name="profile_photo_source_files">Przeglądaj pliki</string>
+    <string name="profile_photo_source_camera">Zrób zdjęcie</string>
     <string name="profile_change_photo_cd">Zmień zdjęcie</string>
     <string name="profile_sign_out_message">Twoje wspomnienia pozostaną na tym urządzeniu. Zaloguj się ponownie w dowolnym momencie, aby uzyskać dostęp do konta.</string>
     <string name="profile_google_account">Konto Google</string>
@@ -198,6 +202,10 @@
     <string name="settings_backup_export">Eksportuj</string>
     <string name="settings_backup_import">Importuj</string>
     <string name="settings_backup_export_done">Zapisano %1$d wpisów do pliku</string>
+    <string name="settings_backup_export_quality_title">Jakość eksportu</string>
+    <string name="settings_backup_export_quality_body">Tryb kompaktowy ponownie koduje zdjęcia w jakości 80% — zwykle o 40–60% mniejszy plik przy minimalnej widocznej różnicy. Pełna jakość zachowuje oryginalne zdjęcia bez zmian.</string>
+    <string name="settings_backup_export_compact">Kompaktowy</string>
+    <string name="settings_backup_export_full">Pełna jakość</string>
     <string name="settings_backup_import_done">Przywrócono %1$d wpisów z pliku</string>
     <string name="settings_backup_failed">Tworzenie kopii nie powiodło się. Spróbuj ponownie.</string>
 

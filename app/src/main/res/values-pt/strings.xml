@@ -136,6 +136,10 @@
     <string name="login_google_error_code">Falha no login com Google (%s)</string>
 
     <string name="profile_photo_cd">Foto do perfil</string>
+    <string name="profile_change_photo_title">Alterar foto do perfil</string>
+    <string name="profile_photo_source_gallery">Galeria</string>
+    <string name="profile_photo_source_files">Procurar ficheiros</string>
+    <string name="profile_photo_source_camera">Tirar foto</string>
     <string name="profile_change_photo_cd">Alterar foto</string>
     <string name="profile_sign_out_message">Suas lembranças permanecerão neste dispositivo. Entre novamente a qualquer momento para acessar sua conta.</string>
     <string name="profile_google_account">Conta Google</string>
@@ -192,6 +196,10 @@
     <string name="settings_backup_export">Exportar</string>
     <string name="settings_backup_import">Importar</string>
     <string name="settings_backup_export_done">%1$d entradas salvas no arquivo</string>
+    <string name="settings_backup_export_quality_title">Qualidade de exportação</string>
+    <string name="settings_backup_export_quality_body">Compacto recodifica as fotos com 80% de qualidade — normalmente 40–60% menor com diferença visível mínima. Qualidade total preserva as fotos originais exatamente.</string>
+    <string name="settings_backup_export_compact">Compacto</string>
+    <string name="settings_backup_export_full">Qualidade total</string>
     <string name="settings_backup_import_done">%1$d entradas restauradas do arquivo</string>
     <string name="settings_backup_failed">Falha no backup. Tente novamente.</string>
 

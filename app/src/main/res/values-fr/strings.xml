@@ -136,6 +136,10 @@
     <string name="login_google_error_code">Connexion Google échouée (%s)</string>
 
     <string name="profile_photo_cd">Photo de profil</string>
+    <string name="profile_change_photo_title">Changer la photo de profil</string>
+    <string name="profile_photo_source_gallery">Galerie</string>
+    <string name="profile_photo_source_files">Parcourir les fichiers</string>
+    <string name="profile_photo_source_camera">Prendre une photo</string>
     <string name="profile_change_photo_cd">Changer la photo</string>
     <string name="profile_sign_out_message">Vos souvenirs resteront sur cet appareil. Reconnectez-vous à tout moment pour accéder à votre compte.</string>
     <string name="profile_google_account">Compte Google</string>
@@ -192,6 +196,10 @@
     <string name="settings_backup_export">Exporter</string>
     <string name="settings_backup_import">Importer</string>
     <string name="settings_backup_export_done">%1$d entrées sauvegardées dans le fichier</string>
+    <string name="settings_backup_export_quality_title">Qualité d\'exportation</string>
+    <string name="settings_backup_export_quality_body">Le mode compact réencode les photos à 80 % de qualité — généralement 40–60 % plus petit avec une différence visible minime. La qualité complète conserve les photos originales à l\'identique.</string>
+    <string name="settings_backup_export_compact">Compact</string>
+    <string name="settings_backup_export_full">Qualité complète</string>
     <string name="settings_backup_import_done">%1$d entrées restaurées depuis le fichier</string>
     <string name="settings_backup_failed">Échec de la sauvegarde. Veuillez réessayer.</string>
 

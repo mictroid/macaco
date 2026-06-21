@@ -136,6 +136,10 @@
     <string name="login_google_error_code">Google-inloggning misslyckades (%s)</string>
 
     <string name="profile_photo_cd">Profilfoto</string>
+    <string name="profile_change_photo_title">Ändra profilbild</string>
+    <string name="profile_photo_source_gallery">Galleri</string>
+    <string name="profile_photo_source_files">Bläddra bland filer</string>
+    <string name="profile_photo_source_camera">Ta foto</string>
     <string name="profile_change_photo_cd">Byt foto</string>
     <string name="profile_sign_out_message">Dina minnen finns kvar på den här enheten. Logga in igen när som helst för att komma åt ditt konto.</string>
     <string name="profile_google_account">Google-konto</string>
@@ -192,6 +196,10 @@
     <string name="settings_backup_export">Exportera</string>
     <string name="settings_backup_import">Importera</string>
     <string name="settings_backup_export_done">%1$d inlägg säkerhetskopierade till fil</string>
+    <string name="settings_backup_export_quality_title">Exportkvalitet</string>
+    <string name="settings_backup_export_quality_body">Kompakt omkodar foton med 80% kvalitet — vanligtvis 40–60% mindre med minimal synlig skillnad. Full kvalitet bevarar originalfotona exakt.</string>
+    <string name="settings_backup_export_compact">Kompakt</string>
+    <string name="settings_backup_export_full">Full kvalitet</string>
     <string name="settings_backup_import_done">%1$d inlägg återställda från fil</string>
     <string name="settings_backup_failed">Säkerhetskopieringen misslyckades. Försök igen.</string>
 

@@ -136,6 +136,10 @@
     <string name="login_google_error_code">Accesso con Google non riuscito (%s)</string>
 
     <string name="profile_photo_cd">Foto profilo</string>
+    <string name="profile_change_photo_title">Cambia foto del profilo</string>
+    <string name="profile_photo_source_gallery">Galleria</string>
+    <string name="profile_photo_source_files">Sfoglia file</string>
+    <string name="profile_photo_source_camera">Scatta foto</string>
     <string name="profile_change_photo_cd">Cambia foto</string>
     <string name="profile_sign_out_message">I tuoi ricordi rimarranno su questo dispositivo. Accedi di nuovo in qualsiasi momento per ritrovare il tuo account.</string>
     <string name="profile_google_account">Account Google</string>
@@ -192,6 +196,10 @@
     <string name="settings_backup_export">Esporta</string>
     <string name="settings_backup_import">Importa</string>
     <string name="settings_backup_export_done">%1$d voci salvate nel file</string>
+    <string name="settings_backup_export_quality_title">Qualità di esportazione</string>
+    <string name="settings_backup_export_quality_body">Compatto ricodifica le foto all\'80% di qualità — in genere 40–60% più piccolo con differenze visibili minime. Qualità piena conserva le foto originali esattamente.</string>
+    <string name="settings_backup_export_compact">Compatto</string>
+    <string name="settings_backup_export_full">Qualità piena</string>
     <string name="settings_backup_import_done">%1$d voci ripristinate dal file</string>
     <string name="settings_backup_failed">Backup non riuscito. Riprova.</string>
 

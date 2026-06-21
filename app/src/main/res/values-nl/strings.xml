@@ -136,6 +136,10 @@
     <string name="login_google_error_code">Google-inloggen mislukt (%s)</string>
 
     <string name="profile_photo_cd">Profielfoto</string>
+    <string name="profile_change_photo_title">Profielfoto wijzigen</string>
+    <string name="profile_photo_source_gallery">Galerij</string>
+    <string name="profile_photo_source_files">Bestanden bladeren</string>
+    <string name="profile_photo_source_camera">Foto maken</string>
     <string name="profile_change_photo_cd">Foto wijzigen</string>
     <string name="profile_sign_out_message">Je herinneringen blijven op dit apparaat. Log op elk moment in om je account te openen.</string>
     <string name="profile_google_account">Google-account</string>
@@ -192,6 +196,10 @@
     <string name="settings_backup_export">Exporteren</string>
     <string name="settings_backup_import">Importeren</string>
     <string name="settings_backup_export_done">%1$d items naar bestand geback-upt</string>
+    <string name="settings_backup_export_quality_title">Exportkwaliteit</string>
+    <string name="settings_backup_export_quality_body">Compact codeert foto\'s opnieuw op 80% kwaliteit — doorgaans 40–60% kleiner met minimaal zichtbaar verschil. Volledige kwaliteit behoudt de originele foto\'s exact.</string>
+    <string name="settings_backup_export_compact">Compact</string>
+    <string name="settings_backup_export_full">Volledige kwaliteit</string>
     <string name="settings_backup_import_done">%1$d items uit bestand hersteld</string>
     <string name="settings_backup_failed">Back-up mislukt. Probeer het opnieuw.</string>
 

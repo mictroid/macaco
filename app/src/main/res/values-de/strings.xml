@@ -144,6 +144,10 @@
 
     <!-- Profile -->
     <string name="profile_photo_cd">Profilfoto</string>
+    <string name="profile_change_photo_title">Profilfoto ändern</string>
+    <string name="profile_photo_source_gallery">Galerie</string>
+    <string name="profile_photo_source_files">Dateien durchsuchen</string>
+    <string name="profile_photo_source_camera">Foto aufnehmen</string>
     <string name="profile_change_photo_cd">Foto ändern</string>
     <string name="profile_sign_out_message">Deine Erinnerungen bleiben auf diesem Gerät. Du kannst dich jederzeit wieder anmelden.</string>
     <string name="profile_google_account">Google-Konto</string>
@@ -203,6 +207,10 @@
     <string name="settings_backup_export">Exportieren</string>
     <string name="settings_backup_import">Importieren</string>
     <string name="settings_backup_export_done">%1$d Einträge in Datei gesichert</string>
+    <string name="settings_backup_export_quality_title">Exportqualität</string>
+    <string name="settings_backup_export_quality_body">Kompakt kodiert Fotos mit 80 % Qualität neu — typischerweise 40–60 % kleiner bei minimal sichtbarem Unterschied. Volle Qualität bewahrt die Originalfotos exakt.</string>
+    <string name="settings_backup_export_compact">Kompakt</string>
+    <string name="settings_backup_export_full">Volle Qualität</string>
     <string name="settings_backup_import_done">%1$d Einträge aus Datei wiederhergestellt</string>
     <string name="settings_backup_failed">Sicherung fehlgeschlagen. Bitte versuche es erneut.</string>
 

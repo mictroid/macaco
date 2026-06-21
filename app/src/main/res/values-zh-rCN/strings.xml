@@ -133,6 +133,10 @@
     <string name="login_google_error_code">Google 登录失败（%s）</string>
 
     <string name="profile_photo_cd">个人头像</string>
+    <string name="profile_change_photo_title">更改头像</string>
+    <string name="profile_photo_source_gallery">相册</string>
+    <string name="profile_photo_source_files">浏览文件</string>
+    <string name="profile_photo_source_camera">拍照</string>
     <string name="profile_change_photo_cd">更换头像</string>
     <string name="profile_sign_out_message">您的回忆将保留在此设备上。随时重新登录即可访问您的账号。</string>
     <string name="profile_google_account">Google 账号</string>
@@ -189,6 +193,10 @@
     <string name="settings_backup_export">导出</string>
     <string name="settings_backup_import">导入</string>
     <string name="settings_backup_export_done">已将 %1$d 条记录备份到文件</string>
+    <string name="settings_backup_export_quality_title">导出质量</string>
+    <string name="settings_backup_export_quality_body">紧凑模式以80%质量重新编码照片——通常缩小40–60%，视觉差异极小。完整质量将原样保留原始照片。</string>
+    <string name="settings_backup_export_compact">紧凑</string>
+    <string name="settings_backup_export_full">完整质量</string>
     <string name="settings_backup_import_done">已从文件恢复 %1$d 条记录</string>
     <string name="settings_backup_failed">备份失败，请重试。</string>
 

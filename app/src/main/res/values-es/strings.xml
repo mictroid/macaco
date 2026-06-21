@@ -136,6 +136,10 @@
     <string name="login_google_error_code">Error al iniciar sesión con Google (%s)</string>
 
     <string name="profile_photo_cd">Foto de perfil</string>
+    <string name="profile_change_photo_title">Cambiar foto de perfil</string>
+    <string name="profile_photo_source_gallery">Galería</string>
+    <string name="profile_photo_source_files">Explorar archivos</string>
+    <string name="profile_photo_source_camera">Tomar foto</string>
     <string name="profile_change_photo_cd">Cambiar foto</string>
     <string name="profile_sign_out_message">Tus recuerdos permanecerán en este dispositivo. Inicia sesión cuando quieras para acceder a tu cuenta.</string>
     <string name="profile_google_account">Cuenta de Google</string>
@@ -192,6 +196,10 @@
     <string name="settings_backup_export">Exportar</string>
     <string name="settings_backup_import">Importar</string>
     <string name="settings_backup_export_done">%1$d entradas guardadas en el archivo</string>
+    <string name="settings_backup_export_quality_title">Calidad de exportación</string>
+    <string name="settings_backup_export_quality_body">Compacto vuelve a codificar las fotos al 80 % de calidad — normalmente entre un 40–60 % más pequeño con una diferencia visible mínima. Calidad completa conserva las fotos originales exactamente.</string>
+    <string name="settings_backup_export_compact">Compacto</string>
+    <string name="settings_backup_export_full">Calidad completa</string>
     <string name="settings_backup_import_done">%1$d entradas restauradas desde el archivo</string>
     <string name="settings_backup_failed">Error en la copia. Inténtalo de nuevo.</string>
 
