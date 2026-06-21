@@ -121,7 +121,6 @@
     <string name="login_sign_in_subtitle">Log in om je herinneringen te synchroniseren</string>
     <string name="login_create_account_subtitle">Maak je account aan</string>
     <string name="login_google">G  Doorgaan met Google</string>
-    <string name="login_apple">  Doorgaan met Apple</string>
     <string name="login_full_name">Volledige naam</string>
     <string name="login_email">E-mailadres</string>
     <string name="login_password">Wachtwoord</string>
@@ -140,7 +139,6 @@
     <string name="profile_change_photo_cd">Foto wijzigen</string>
     <string name="profile_sign_out_message">Je herinneringen blijven op dit apparaat. Log op elk moment in om je account te openen.</string>
     <string name="profile_google_account">Google-account</string>
-    <string name="profile_apple_account">Apple-account</string>
     <string name="profile_email_account">E-mailaccount</string>
     <string name="profile_guest">Gast</string>
     <string name="profile_memories">Herinneringen</string>

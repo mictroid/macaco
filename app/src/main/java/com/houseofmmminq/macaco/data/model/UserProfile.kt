@@ -9,4 +9,4 @@ data class UserProfile(
     val createdAt: Long? = null
 )
 
-enum class AuthProvider { Google, Apple, Email, Guest }
+enum class AuthProvider { Google, Email, Guest }

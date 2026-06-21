@@ -1,6 +1,5 @@
 package com.houseofmmminq.macaco.data.auth
 
-import android.app.Activity
 import android.content.Context
 import com.houseofmmminq.macaco.data.model.AuthProvider
 import com.houseofmmminq.macaco.data.model.UserProfile
@@ -14,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,21 +43,6 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
         }.mapFailure { e ->
             Exception(e.localizedMessage ?: "Google sign-in failed")
         }
-
-    // ── Apple ─────────────────────────────────────────────────────────────────
-
-    override suspend fun signInWithApple(context: Context): Result<UserProfile> {
-        val activity = context as? Activity
-            ?: return Result.failure(Exception("Activity context required for Apple Sign-In"))
-        return runCatching {
-            val provider = OAuthProvider.newBuilder("apple.com")
-                .setScopes(listOf("email", "name"))
-                .build()
-            auth.startActivityForSignInWithProvider(activity, provider).await().user!!.toUserProfile()
-        }.mapFailure { e ->
-            Exception(e.localizedMessage ?: "Apple sign-in failed")
-        }
-    }
 
     // ── Email / Password ──────────────────────────────────────────────────────
 
@@ -109,7 +92,6 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
     private fun FirebaseUser.toUserProfile(): UserProfile {
         val provider = when {
             providerData.any { it.providerId == GoogleAuthProvider.PROVIDER_ID } -> AuthProvider.Google
-            providerData.any { it.providerId == "apple.com" } -> AuthProvider.Apple
             providerData.any { it.providerId == EmailAuthProvider.PROVIDER_ID } -> AuthProvider.Email
             else -> AuthProvider.Email
         }

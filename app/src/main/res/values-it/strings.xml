@@ -121,7 +121,6 @@
     <string name="login_sign_in_subtitle">Accedi per sincronizzare i tuoi ricordi</string>
     <string name="login_create_account_subtitle">Crea il tuo account</string>
     <string name="login_google">G  Continua con Google</string>
-    <string name="login_apple">  Continua con Apple</string>
     <string name="login_full_name">Nome completo</string>
     <string name="login_email">Email</string>
     <string name="login_password">Password</string>
@@ -140,7 +139,6 @@
     <string name="profile_change_photo_cd">Cambia foto</string>
     <string name="profile_sign_out_message">I tuoi ricordi rimarranno su questo dispositivo. Accedi di nuovo in qualsiasi momento per ritrovare il tuo account.</string>
     <string name="profile_google_account">Account Google</string>
-    <string name="profile_apple_account">Account Apple</string>
     <string name="profile_email_account">Account email</string>
     <string name="profile_guest">Ospite</string>
     <string name="profile_memories">Ricordi</string>

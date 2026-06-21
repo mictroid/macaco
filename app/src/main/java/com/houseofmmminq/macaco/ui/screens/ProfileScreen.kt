@@ -274,7 +274,6 @@ fun ProfileScreen(
                     Text(
                         text = when (user.provider) {
                             AuthProvider.Google -> stringResource(R.string.profile_google_account)
-                            AuthProvider.Apple -> stringResource(R.string.profile_apple_account)
                             AuthProvider.Email -> stringResource(R.string.profile_email_account)
                             AuthProvider.Guest -> stringResource(R.string.profile_guest)
                         },

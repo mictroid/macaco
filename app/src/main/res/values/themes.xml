@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MyApplication" parent="Theme.AppCompat.DayNight.NoActionBar" />
+    <!-- windowBackground is the brand teal (matching the splash) so the brief window shown while the
+         activity is recreated — e.g. after a language change calls setApplicationLocales() — is branded
+         instead of the DayNight colorBackground (near-black in dark mode). -->
+    <style name="Theme.MyApplication" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
 
     <!-- Launch theme: shows the teal brand colour + monkey while the process starts, then
          hands off to the app theme. Prevents a blank/white cold-start flash. -->

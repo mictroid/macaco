@@ -127,7 +127,6 @@
     <string name="login_sign_in_subtitle">Zaloguj się, aby synchronizować wspomnienia</string>
     <string name="login_create_account_subtitle">Utwórz swoje konto</string>
     <string name="login_google">G  Kontynuuj z Google</string>
-    <string name="login_apple">  Kontynuuj z Apple</string>
     <string name="login_full_name">Imię i nazwisko</string>
     <string name="login_email">E-mail</string>
     <string name="login_password">Hasło</string>
@@ -146,7 +145,6 @@
     <string name="profile_change_photo_cd">Zmień zdjęcie</string>
     <string name="profile_sign_out_message">Twoje wspomnienia pozostaną na tym urządzeniu. Zaloguj się ponownie w dowolnym momencie, aby uzyskać dostęp do konta.</string>
     <string name="profile_google_account">Konto Google</string>
-    <string name="profile_apple_account">Konto Apple</string>
     <string name="profile_email_account">Konto e-mail</string>
     <string name="profile_guest">Gość</string>
     <string name="profile_memories">Wspomnienia</string>

@@ -12,13 +12,11 @@ package com.houseofmmminq.macaco.data.auth
  *                         (looks like  123456789-xxxx.apps.googleusercontent.com)
  *
  * After filling these in, also:
- *  • Enable Email/Password, Google, and Apple in Firebase Console →
+ *  • Enable Email/Password and Google in Firebase Console →
  *    Authentication → Sign-in method
  *  • For Google Sign-In: add your debug SHA-1 to Firebase Console →
  *    Project Settings → Your apps → Add fingerprint
  *    Run:  keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
- *  • For Apple Sign-In: requires an Apple Developer account and Service ID
- *    configured in both Firebase Console and Apple Developer Portal
  */
 object FirebaseConfig {
     const val PROJECT_ID = "macaco-499016"

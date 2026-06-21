@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -222,28 +221,6 @@ fun LoginScreen(
                         Spacer(Modifier.width(12.dp))
                         Text(stringResource(R.string.login_google), fontWeight = FontWeight.Medium)
                     }
-                }
-
-                Button(
-                    onClick = {
-                        isLoading = true
-                        errorMessage = null
-                        viewModel.signInWithApple(context) { result ->
-                            isLoading = false
-                            result.fold(onSuccess = { onBack() }, onFailure = { errorMessage = it.message })
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.inverseSurface,
-                        contentColor = MaterialTheme.colorScheme.inverseOnSurface
-                    ),
-                    enabled = !isLoading
-                ) {
-                    Text(stringResource(R.string.login_apple), fontWeight = FontWeight.Medium)
                 }
 
                 // Error shown right below social buttons — always visible

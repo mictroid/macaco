@@ -201,7 +201,6 @@
     <string name="login_sign_in_subtitle">Sign in to sync your memories</string>
     <string name="login_create_account_subtitle">Create your account</string>
     <string name="login_google">G  Continue with Google</string>
-    <string name="login_apple">  Continue with Apple</string>
     <string name="login_full_name">Full name</string>
     <string name="login_email">Email</string>
     <string name="login_password">Password</string>
@@ -221,7 +220,6 @@
     <string name="profile_change_photo_cd">Change photo</string>
     <string name="profile_sign_out_message">Your memories will remain on this device. Sign back in anytime to access your account.</string>
     <string name="profile_google_account">Google Account</string>
-    <string name="profile_apple_account">Apple Account</string>
     <string name="profile_email_account">Email Account</string>
     <string name="profile_guest">Guest</string>
     <string name="profile_memories">Memories</string>

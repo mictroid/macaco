@@ -118,7 +118,6 @@
     <string name="login_sign_in_subtitle">サインインして思い出を同期しよう</string>
     <string name="login_create_account_subtitle">アカウントを作成</string>
     <string name="login_google">G  Google で続ける</string>
-    <string name="login_apple">  Apple で続ける</string>
     <string name="login_full_name">フルネーム</string>
     <string name="login_email">メールアドレス</string>
     <string name="login_password">パスワード</string>
@@ -137,7 +136,6 @@
     <string name="profile_change_photo_cd">写真を変更</string>
     <string name="profile_sign_out_message">思い出はこのデバイスに保存されます。いつでもサインインしてアカウントにアクセスできます。</string>
     <string name="profile_google_account">Google アカウント</string>
-    <string name="profile_apple_account">Apple アカウント</string>
     <string name="profile_email_account">メールアカウント</string>
     <string name="profile_guest">ゲスト</string>
     <string name="profile_memories">思い出</string>

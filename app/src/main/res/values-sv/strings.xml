@@ -121,7 +121,6 @@
     <string name="login_sign_in_subtitle">Logga in för att synka dina minnen</string>
     <string name="login_create_account_subtitle">Skapa ditt konto</string>
     <string name="login_google">G  Fortsätt med Google</string>
-    <string name="login_apple">  Fortsätt med Apple</string>
     <string name="login_full_name">Fullständigt namn</string>
     <string name="login_email">E-post</string>
     <string name="login_password">Lösenord</string>
@@ -140,7 +139,6 @@
     <string name="profile_change_photo_cd">Byt foto</string>
     <string name="profile_sign_out_message">Dina minnen finns kvar på den här enheten. Logga in igen när som helst för att komma åt ditt konto.</string>
     <string name="profile_google_account">Google-konto</string>
-    <string name="profile_apple_account">Apple-konto</string>
     <string name="profile_email_account">E-postkonto</string>
     <string name="profile_guest">Gäst</string>
     <string name="profile_memories">Minnen</string>

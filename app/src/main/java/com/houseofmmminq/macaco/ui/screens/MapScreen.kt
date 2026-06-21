@@ -57,6 +57,7 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.theme.MacacoFontFamily
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import kotlinx.coroutines.delay
 
 private fun createTealMarkerBitmap(context: Context): Bitmap {
     val dp = context.resources.displayMetrics.density
@@ -122,13 +123,18 @@ fun MapScreen(
         position = CameraPosition.fromLatLngZoom(LatLng(20.0, 0.0), 2f)
     }
     var mapLoaded by remember { mutableStateOf(false) }
-    var hasAnimated by remember { mutableStateOf(false) }
-    // True once we have a geocoded point to fly to, or there are no locations to geocode at all.
-    // Until then a scrim hides the arbitrary default camera position.
-    val geocodingReady = geocodedLocations.isNotEmpty() || locations.isEmpty()
+    // True once the camera has actually been moved onto the user's places. The scrim stays up until
+    // then, so the arbitrary default position is never shown — including for returning users whose
+    // geocode cache is already populated when the screen opens (the camera is positioned instantly
+    // under the scrim rather than animated from the default, which is what made it fly across the
+    // Atlantic on every open).
+    var cameraPositioned by remember { mutableStateOf(false) }
+    // Safety net: if geocoding yields nothing (offline, or every lookup fails) the camera never
+    // moves — drop the scrim after a few seconds so the spinner can't trap the user forever.
+    var revealTimedOut by remember { mutableStateOf(false) }
 
     LaunchedEffect(mapLoaded, geocodedLocations) {
-        if (mapLoaded && !hasAnimated && geocodedLocations.isNotEmpty()) {
+        if (mapLoaded && !cameraPositioned && geocodedLocations.isNotEmpty()) {
             val latlngs = geocodedLocations.values.map { LatLng(it.first, it.second) }
             val update = if (latlngs.size == 1) {
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 8f)
@@ -136,8 +142,15 @@ fun MapScreen(
                 val bounds = LatLngBounds.builder().apply { latlngs.forEach { include(it) } }.build()
                 CameraUpdateFactory.newLatLngBounds(bounds, 80)
             }
-            cameraPositionState.animate(update, 1200)
-            hasAnimated = true
+            cameraPositionState.move(update)
+            cameraPositioned = true
+        }
+    }
+
+    LaunchedEffect(locations) {
+        if (locations.isNotEmpty()) {
+            delay(8000)
+            revealTimedOut = true
         }
     }
 
@@ -249,9 +262,9 @@ fun MapScreen(
             }
 
             // Loading scrim — opaque, so the arbitrary default camera position is never seen.
-            // Drops away once the first location is geocoded and the camera flies to the user's
-            // places. (When there are no locations, the empty-state above covers the map instead.)
-            if (!geocodingReady) {
+            // Drops away once the camera has been positioned over the user's places (or the timeout
+            // fires). (When there are no locations, the empty-state above covers the map instead.)
+            if (locations.isNotEmpty() && !cameraPositioned && !revealTimedOut) {
                 Box(
                     modifier = Modifier
                         .matchParentSize()

@@ -231,10 +231,6 @@ class JournalViewModel(
         viewModelScope.launch { onResult(authRepository.signInWithGoogleIdToken(idToken)) }
     }
 
-    fun signInWithApple(context: Context, onResult: (Result<UserProfile>) -> Unit) {
-        viewModelScope.launch { onResult(authRepository.signInWithApple(context)) }
-    }
-
     fun signInWithEmail(email: String, password: String, onResult: (Result<UserProfile>) -> Unit) {
         viewModelScope.launch { onResult(authRepository.signInWithEmail(email, password)) }
     }

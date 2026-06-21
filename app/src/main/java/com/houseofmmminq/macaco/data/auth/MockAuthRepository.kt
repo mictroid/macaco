@@ -1,6 +1,5 @@
 package com.houseofmmminq.macaco.data.auth
 
-import android.content.Context
 import com.houseofmmminq.macaco.data.model.AuthProvider
 import com.houseofmmminq.macaco.data.model.UserProfile
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,12 +11,6 @@ class MockAuthRepository : AuthRepository {
 
     override suspend fun signInWithGoogleIdToken(idToken: String): Result<UserProfile> {
         val user = UserProfile(uid = "mock_google", displayName = "Wanderer", email = "wanderer@gmail.com", provider = AuthProvider.Google)
-        _currentUser.value = user
-        return Result.success(user)
-    }
-
-    override suspend fun signInWithApple(context: Context): Result<UserProfile> {
-        val user = UserProfile(uid = "mock_apple", displayName = "Wanderer", email = "wanderer@icloud.com", provider = AuthProvider.Apple)
         _currentUser.value = user
         return Result.success(user)
     }

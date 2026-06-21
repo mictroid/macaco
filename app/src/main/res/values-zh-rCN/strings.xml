@@ -118,7 +118,6 @@
     <string name="login_sign_in_subtitle">登录以同步您的回忆</string>
     <string name="login_create_account_subtitle">创建您的账号</string>
     <string name="login_google">G  使用 Google 继续</string>
-    <string name="login_apple">  使用 Apple 继续</string>
     <string name="login_full_name">全名</string>
     <string name="login_email">电子邮箱</string>
     <string name="login_password">密码</string>
@@ -137,7 +136,6 @@
     <string name="profile_change_photo_cd">更换头像</string>
     <string name="profile_sign_out_message">您的回忆将保留在此设备上。随时重新登录即可访问您的账号。</string>
     <string name="profile_google_account">Google 账号</string>
-    <string name="profile_apple_account">Apple 账号</string>
     <string name="profile_email_account">邮箱账号</string>
     <string name="profile_guest">访客</string>
     <string name="profile_memories">回忆</string>

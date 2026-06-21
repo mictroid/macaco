@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -63,9 +64,10 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -94,6 +96,18 @@ import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
+
+// Savers so the form's List/Set state survives process death (phone lock → low-memory kill →
+// unlock recreates the Activity). Bundles can't serialise List/Set directly, so round-trip via List.
+private val StringListSaver = listSaver<List<String>, String>(
+    save = { it },
+    restore = { it }
+)
+
+private val StringSetSaver = listSaver<Set<String>, String>(
+    save = { it.toList() },
+    restore = { it.toSet() }
+)
 
 private val MOODS = listOf(
     "🤩", // Amazed
@@ -125,20 +139,28 @@ fun NewEditEntryScreen(
 ) {
     val context = LocalContext.current
 
-    var title by remember { mutableStateOf(existingEntry?.title ?: "") }
-    var location by remember { mutableStateOf(existingEntry?.location ?: "") }
-    var dateMillis by remember { mutableLongStateOf(existingEntry?.dateMillis ?: System.currentTimeMillis()) }
-    var mood by remember { mutableStateOf(existingEntry?.mood ?: "") }
-    var description by remember { mutableStateOf(existingEntry?.description ?: "") }
-    var photoUris by remember { mutableStateOf(existingEntry?.photoUris ?: emptyList()) }
-    var tags by remember { mutableStateOf(existingEntry?.tags ?: emptyList()) }
-    var tripName by remember { mutableStateOf(existingEntry?.tripName ?: "") }
-    var titleError by remember { mutableStateOf(false) }
+    // rememberSaveable so an in-progress draft survives process death (phone lock → low-memory kill).
+    var title by rememberSaveable { mutableStateOf(existingEntry?.title ?: "") }
+    var location by rememberSaveable { mutableStateOf(existingEntry?.location ?: "") }
+    var dateMillis by rememberSaveable { mutableStateOf(existingEntry?.dateMillis ?: System.currentTimeMillis()) }
+    var mood by rememberSaveable { mutableStateOf(existingEntry?.mood ?: "") }
+    var description by rememberSaveable { mutableStateOf(existingEntry?.description ?: "") }
+    var photoUris by rememberSaveable(stateSaver = StringListSaver) {
+        mutableStateOf(existingEntry?.photoUris ?: emptyList())
+    }
+    var tags by rememberSaveable(stateSaver = StringListSaver) {
+        mutableStateOf(existingEntry?.tags ?: emptyList())
+    }
+    var tripName by rememberSaveable { mutableStateOf(existingEntry?.tripName ?: "") }
+    var titleError by rememberSaveable { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     // Files we copied into storage this session. Any that aren't committed via Save (removed again,
     // or the screen is dismissed) must be deleted so picker copies don't leak. Committed-photo
-    // cleanup on edit/delete happens in the ViewModel instead.
-    var sessionAdded by remember { mutableStateOf(emptySet<String>()) }
+    // cleanup on edit/delete happens in the ViewModel instead. Saved across process death so those
+    // gallery copies don't become orphaned if the entry is later cancelled.
+    var sessionAdded by rememberSaveable(stateSaver = StringSetSaver) {
+        mutableStateOf(emptySet<String>())
+    }
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
 
@@ -319,7 +341,9 @@ fun NewEditEntryScreen(
                 .padding(padding)
         ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -491,7 +515,33 @@ fun NewEditEntryScreen(
                 )
             }
 
-            // Description
+            // Tags
+            item {
+                SectionLabel(stringResource(R.string.new_entry_tags_label))
+                Spacer(Modifier.height(8.dp))
+                TagsField(
+                    tags = tags,
+                    onTagsChange = { tags = it },
+                    suggestions = tagSuggestions
+                )
+                if (tags.isEmpty()) {
+                    HintRow(null, stringResource(R.string.new_entry_hint_tags))
+                }
+            }
+
+            // Suggested tag chips — tap to add; already-added chips are de-emphasised
+            item {
+                SuggestedTagsRow(
+                    currentTags = tags,
+                    onAdd = { raw ->
+                        val tag = normalizeTag(raw)
+                        if (tag.isNotEmpty() && tag !in tags) tags = tags + tag
+                    }
+                )
+            }
+
+            // Description — last so the keyboard rising on it never hides the fields below;
+            // imePadding() on the LazyColumn shrinks the scroll area by the keyboard height.
             item {
                 OutlinedTextField(
                     value = description,
@@ -528,31 +578,6 @@ fun NewEditEntryScreen(
                 if (description.isEmpty()) {
                     HintRow(Icons.Filled.Mic, stringResource(R.string.new_entry_hint_story))
                 }
-            }
-
-            // Tags
-            item {
-                SectionLabel(stringResource(R.string.new_entry_tags_label))
-                Spacer(Modifier.height(8.dp))
-                TagsField(
-                    tags = tags,
-                    onTagsChange = { tags = it },
-                    suggestions = tagSuggestions
-                )
-                if (tags.isEmpty()) {
-                    HintRow(null, stringResource(R.string.new_entry_hint_tags))
-                }
-            }
-
-            // Suggested tag chips — tap to add; already-added chips are de-emphasised
-            item {
-                SuggestedTagsRow(
-                    currentTags = tags,
-                    onAdd = { raw ->
-                        val tag = normalizeTag(raw)
-                        if (tag.isNotEmpty() && tag !in tags) tags = tags + tag
-                    }
-                )
             }
 
             item { Spacer(Modifier.height(24.dp)) }

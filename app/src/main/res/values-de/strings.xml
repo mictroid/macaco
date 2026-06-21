@@ -128,7 +128,6 @@
     <string name="login_sign_in_subtitle">Anmelden, um deine Erinnerungen zu synchronisieren</string>
     <string name="login_create_account_subtitle">Erstelle dein Konto</string>
     <string name="login_google">G  Weiter mit Google</string>
-    <string name="login_apple">  Weiter mit Apple</string>
     <string name="login_full_name">Vollständiger Name</string>
     <string name="login_email">E-Mail</string>
     <string name="login_password">Passwort</string>
@@ -148,7 +147,6 @@
     <string name="profile_change_photo_cd">Foto ändern</string>
     <string name="profile_sign_out_message">Deine Erinnerungen bleiben auf diesem Gerät. Du kannst dich jederzeit wieder anmelden.</string>
     <string name="profile_google_account">Google-Konto</string>
-    <string name="profile_apple_account">Apple-Konto</string>
     <string name="profile_email_account">E-Mail-Konto</string>
     <string name="profile_guest">Gast</string>
     <string name="profile_memories">Erinnerungen</string>
