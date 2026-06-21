@@ -293,4 +293,8 @@
     <string name="app_lock_unlock">Unlock</string>
     <string name="app_lock_biometric_title">Unlock Macaco</string>
     <string name="app_lock_biometric_subtitle">Verify your identity to access your journal</string>
+
+    <!-- In-app update -->
+    <string name="update_ready_message">An update is ready to install</string>
+    <string name="update_ready_action">Restart</string>
 </resources>

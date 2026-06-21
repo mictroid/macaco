@@ -141,6 +141,7 @@ dependencies {
     implementation(libs.google.api.client.android) { exclude(group = "org.apache.httpcomponents") }
     implementation(libs.google.api.services.drive) { exclude(group = "org.apache.httpcomponents") }
     implementation(libs.play.review.ktx)
+    implementation(libs.play.app.update.ktx)
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
