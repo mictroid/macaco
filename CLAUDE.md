@@ -165,8 +165,11 @@ separate routes (`NewEntry` / `EditEntry`) both rendered by `NewEditEntryScreen`
 `AuthRepository` interface with two implementations:
 
 - **`FirebaseAuthRepository`** (active) — Firebase Auth, auto-initialized via the
-  `google-services.json` + `com.google.gms.google-services` plugin. Supports Google, Apple
-  (OAuthProvider), and Email/Password.
+  `google-services.json` + `com.google.gms.google-services` plugin. Supports Google and
+  Email/Password. (**Apple Sign-In was removed in vc24** — ignore any lingering Apple references.)
+  Also exposes **`deleteAccount()`** (GDPR / Play requirement): deletes the user's Firestore
+  entries + user doc (chunked under the 500-op batch limit) then the Firebase Auth account; the
+  auth listener then routes back to LoginScreen. Surfaced via **Profile → Delete Account**.
 - **`MockAuthRepository`** — simulates auth locally; swap into `TravelJournalApp.kt` for
   development without Firebase. Currently **not** wired in.
 
@@ -176,7 +179,13 @@ builds a `GoogleSignInClient` with `requestIdToken(GOOGLE_WEB_CLIENT_ID)` **and*
 consent dialog as login; the returned idToken is handed to `FirebaseAuthRepository`. This path was
 chosen deliberately ("avoids Credential Manager cancellation issues") and is also what lets the one
 GMS account back both Firebase auth and `DrivePhotoSync.isDriveConnected()`. (See **Photos & sync**
-for how Apple/email users connect Drive separately via Settings.)
+for how email/password users connect Drive separately via Settings.)
+
+`LoginScreen` also shows a passive **Terms of Service / Privacy Policy** acknowledgement (linked
+text via `withLink`/`LinkAnnotation`). Both legal pages are hosted on **GitHub Pages**
+(`mictroid.github.io/macaco/{privacy-policy,terms-of-service}.html`; URLs in `AppActions` as
+`PRIVACY_POLICY_URL` / `TERMS_URL`, also linked from **Help & About**). Pages serves from
+**master root via legacy branch-deploy** (auto-builds on push to master).
 
 `google-services.json` is present (project `macaco-499016`) and the plugin is applied, so Firebase
 initializes automatically. `FirebaseConfig.kt` holds the project values (filled in) and is now used
@@ -200,6 +209,8 @@ SHA-1 to the Firebase console:
 | Drive backup | Google Drive REST API (`google-api-services-drive`) + Play Services Auth |
 | Billing | RevenueCat (`com.revenuecat.purchases`) over Google Play Billing |
 | Growth | Play In-App Review + share/support intents (`util/AppActions`) |
+| Analytics/Crash | Firebase Analytics + Crashlytics (auto-init via BOM; **AD_ID permission stripped** in the manifest with `tools:node="remove"` — no ads, keeps the Play advertising-ID declaration in sync) |
+| In-app updates | Play **flexible** in-app update (`app-update-ktx`, alias `play-app-update-ktx`); checked in `MainActivity.onResume`, prompts a Compose `SnackbarHost` "Restart" when downloaded |
 | Async | Kotlin Coroutines + coroutines-play-services |
 
 - **Min SDK:** 24 · **Target/Compile SDK:** 36
