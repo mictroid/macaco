@@ -1,5 +1,9 @@
 What's new:
-• Trips now save and group your entries the way you expect
-• Works offline — your entries save and sync when you're back online
-• Tag filter is respected when swiping between entries
-• Corrected the Premium feature list
+• Delete your account and all your data right from your profile
+• Terms of Service & Privacy Policy now linked on the sign-in screen
+• Updates now install in-app — no need to open the Play Store
+• Voice dictation follows your chosen app language
+• Manage your subscription from your profile
+• Smoother map that frames your places correctly
+• Instant, flash-free language switching
+• Fixed a blank screen that could appear after deleting an entry
