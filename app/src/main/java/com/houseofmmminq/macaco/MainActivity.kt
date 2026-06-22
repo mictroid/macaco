@@ -130,10 +130,18 @@ class MainActivity : AppCompatActivity() {
                         // fresh snackbar (LaunchedEffect only re-fires on a value change).
                         updateReady = false
                         if (result == SnackbarResult.ActionPerformed) {
-                            // Close the activity first so there's no black app window behind the
-                            // Play installer; Play relaunches us on the new version.
-                            finish()
+                            // Do NOT call finish() here. On Samsung One UI it races with
+                            // completeUpdate() — the activity is finishing when Play Core tries to
+                            // attach the installer overlay, so the install aborts silently and the
+                            // user has to tap "Restart" twice. The teal windowBackground
+                            // (@color/splash_background in themes.xml) already covers the transition,
+                            // so there's no black window to hide. Play relaunches us when done.
                             appUpdateManager.completeUpdate()
+                                .addOnFailureListener { e ->
+                                    // Rare. The updateReady=false reset above means the snackbar
+                                    // re-shows only when the next onResume sees DOWNLOADED again.
+                                    android.util.Log.e("MainActivity", "completeUpdate failed", e)
+                                }
                         }
                     }
                 }
