@@ -1,4 +1,8 @@
 What's new:
-• Contacting support now opens a pre-filled email template, so it's quicker to get help
-• Added a Terms of Service link in Help & About
-• Smaller fixes and polish
+• Importing a backup now shows download and restore progress
+• New profile photo picker — choose from gallery, files, or camera
+• Compact backup option for smaller backup files
+• More reliable photo saving on older devices
+• Privacy Policy and Terms now open in your language
+• Smoother app updates and Google Drive backups, including reconnect fixes
+• Bug fixes and polish
