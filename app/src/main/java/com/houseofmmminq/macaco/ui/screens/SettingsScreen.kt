@@ -247,40 +247,44 @@ fun SettingsScreen(
     val backupExportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/zip")
     ) { uri ->
-        if (uri != null) {
-            val isCompact = pendingCompact // capture before the coroutine
-            backupBusy = true
-            backupScope.launch {
-                val result = viewModel.exportBackup(uri, compact = isCompact)
-                backupBusy = false
-                Toast.makeText(
-                    context,
-                    result.fold(
-                        { context.getString(R.string.settings_backup_export_done, it) },
-                        { it.message ?: context.getString(R.string.settings_backup_failed) }
-                    ),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+        // backupBusy was set true before launch so the in-progress state covers the picker
+        // transition; clear it if the user cancelled.
+        if (uri == null) {
+            backupBusy = false
+            return@rememberLauncherForActivityResult
+        }
+        val isCompact = pendingCompact // capture before the coroutine
+        backupScope.launch {
+            val result = viewModel.exportBackup(uri, compact = isCompact)
+            backupBusy = false
+            Toast.makeText(
+                context,
+                result.fold(
+                    { context.getString(R.string.settings_backup_export_done, it) },
+                    { it.message ?: context.getString(R.string.settings_backup_failed) }
+                ),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
     val backupImportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
-        if (uri != null) {
-            backupBusy = true
-            backupScope.launch {
-                val result = viewModel.importBackup(uri)
-                backupBusy = false
-                Toast.makeText(
-                    context,
-                    result.fold(
-                        { context.getString(R.string.settings_backup_import_done, it) },
-                        { it.message ?: context.getString(R.string.settings_backup_failed) }
-                    ),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+        if (uri == null) {
+            backupBusy = false
+            return@rememberLauncherForActivityResult
+        }
+        backupScope.launch {
+            val result = viewModel.importBackup(uri)
+            backupBusy = false
+            Toast.makeText(
+                context,
+                result.fold(
+                    { context.getString(R.string.settings_backup_import_done, it) },
+                    { it.message ?: context.getString(R.string.settings_backup_failed) }
+                ),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -635,8 +639,10 @@ fun SettingsScreen(
                     else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
                 },
                 onImport = {
-                    if (isPurchased == true) backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
-                    else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
+                    if (isPurchased == true) {
+                        backupBusy = true
+                        backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
+                    } else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
                 }
             )
 
@@ -650,6 +656,7 @@ fun SettingsScreen(
                         TextButton(onClick = {
                             showExportDialog = false
                             pendingCompact = true
+                            backupBusy = true
                             backupExportLauncher.launch("macaco-backup-compact.zip")
                         }) {
                             Text(stringResource(R.string.settings_backup_export_compact))
@@ -659,6 +666,7 @@ fun SettingsScreen(
                         TextButton(onClick = {
                             showExportDialog = false
                             pendingCompact = false
+                            backupBusy = true
                             backupExportLauncher.launch("macaco-backup.zip")
                         }) {
                             Text(stringResource(R.string.settings_backup_export_full))

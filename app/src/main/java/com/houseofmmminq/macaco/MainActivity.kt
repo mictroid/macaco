@@ -51,6 +51,11 @@ class MainActivity : AppCompatActivity() {
     private val appUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
     private var updateReady by mutableStateOf(false)
 
+    // checkForUpdate() runs on every onResume, but the flexible-update confirmation overlay itself
+    // causes an onPause→onResume cycle — without this guard we'd start a second overlapping flow.
+    // Reset in onStop() so a fresh foreground session re-checks.
+    private var updateFlowStarted = false
+
     // Result of the flexible-update overlay. Nothing to do here — the download continues in the
     // background and the install-state listener tells us when it's ready.
     private val updateLauncher = registerForActivityResult(
@@ -121,7 +126,13 @@ class MainActivity : AppCompatActivity() {
                             actionLabel = updateAction,
                             duration = SnackbarDuration.Indefinite
                         )
+                        // Reset before acting so a later onResume can re-set it to true and show a
+                        // fresh snackbar (LaunchedEffect only re-fires on a value change).
+                        updateReady = false
                         if (result == SnackbarResult.ActionPerformed) {
+                            // Close the activity first so there's no black app window behind the
+                            // Play installer; Play relaunches us on the new version.
+                            finish()
                             appUpdateManager.completeUpdate()
                         }
                     }
@@ -161,12 +172,19 @@ class MainActivity : AppCompatActivity() {
         appUpdateManager.unregisterListener(installStateListener)
     }
 
+    override fun onStop() {
+        super.onStop()
+        updateFlowStarted = false
+    }
+
     private fun checkForUpdate() {
         appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
             when {
                 // A newer version is on Play — kick off a background (flexible) download.
                 info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    info.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) -> {
+                    info.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) &&
+                    !updateFlowStarted -> {
+                    updateFlowStarted = true
                     appUpdateManager.startUpdateFlowForResult(
                         info,
                         updateLauncher,
