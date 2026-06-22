@@ -32,7 +32,7 @@ android {
         applicationId = "com.houseofmmminq.macaco"
         minSdk = 24
         targetSdk = 36
-        versionCode = 30
+        versionCode = 31
         versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
