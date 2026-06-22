@@ -192,6 +192,9 @@
     <string name="settings_backup_premium_required">高级功能 — 请在订阅中解锁</string>
     <string name="settings_backup_export">导出</string>
     <string name="settings_backup_import">导入</string>
+    <string name="settings_import_downloading">正在下载备份…</string>
+    <string name="settings_import_downloading_mb">正在下载备份… %1$d MB / %2$d MB</string>
+    <string name="settings_import_restoring">正在恢复条目… %1$d / %2$d</string>
     <string name="settings_backup_export_done">已将 %1$d 条记录备份到文件</string>
     <string name="settings_backup_export_quality_title">导出质量</string>
     <string name="settings_backup_export_quality_body">紧凑模式以80%质量重新编码照片——通常缩小40–60%，视觉差异极小。完整质量将原样保留原始照片。</string>

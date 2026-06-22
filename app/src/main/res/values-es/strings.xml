@@ -195,6 +195,9 @@
     <string name="settings_backup_premium_required">Función Premium: desbloquéala desde la suscripción</string>
     <string name="settings_backup_export">Exportar</string>
     <string name="settings_backup_import">Importar</string>
+    <string name="settings_import_downloading">Descargando copia de seguridad…</string>
+    <string name="settings_import_downloading_mb">Descargando copia de seguridad… %1$d MB / %2$d MB</string>
+    <string name="settings_import_restoring">Restaurando entradas… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d entradas guardadas en el archivo</string>
     <string name="settings_backup_export_quality_title">Calidad de exportación</string>
     <string name="settings_backup_export_quality_body">Compacto vuelve a codificar las fotos al 80 % de calidad — normalmente entre un 40–60 % más pequeño con una diferencia visible mínima. Calidad completa conserva las fotos originales exactamente.</string>

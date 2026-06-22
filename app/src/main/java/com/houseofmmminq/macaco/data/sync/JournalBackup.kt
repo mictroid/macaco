@@ -11,6 +11,7 @@ import kotlinx.serialization.json.Json
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
+import java.io.InputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
@@ -103,7 +104,13 @@ class JournalBackup(private val context: Context) {
      * it into the user's store). Photos are re-materialized into the shared gallery and the URIs
      * re-pointed. Returns the number of entries imported.
      */
-    suspend fun importFrom(src: Uri, onEntry: suspend (TravelEntry) -> Unit): Result<Int> = runCatching {
+    suspend fun importFrom(
+        src: Uri,
+        onEntry: suspend (TravelEntry) -> Unit,
+        // Non-suspend on purpose: it's invoked from the synchronous CountingInputStream read
+        // callback as well as the suspend body. Callers just push the values into a StateFlow.
+        onProgress: (phase: ImportPhase, current: Int, total: Int) -> Unit = { _, _, _ -> }
+    ): Result<Int> = runCatching {
         val resolver = context.contentResolver
 
         // Stream photo bytes to temp files rather than holding the whole zip in memory.
@@ -113,10 +120,29 @@ class JournalBackup(private val context: Context) {
 
         var backupJson: String? = null
 
+        // Total download size in MB for pass-1 progress; -1 if the provider doesn't report a length
+        // (e.g. some Drive streams), in which case the UI shows an indeterminate bar with a label.
+        val totalMb: Int = runCatching {
+            resolver.openAssetFileDescriptor(src, "r")?.use { it.length }
+        }.getOrNull().let { if (it == null || it <= 0L) -1 else (it / 1024 / 1024).toInt() }
+
         try {
+            onProgress(ImportPhase.DOWNLOADING, 0, totalMb)
+
             // Pass 1: stream each zip entry to disk (backup.json is small enough to keep in memory).
-            resolver.openInputStream(src)?.use { ins ->
-                ZipInputStream(BufferedInputStream(ins)).use { zip ->
+            // A CountingInputStream reports bytes read so the UI can show download progress for a
+            // large (hundreds-of-MB) Drive-backed zip that streams in slowly through SAF.
+            resolver.openInputStream(src)?.use { rawIns ->
+                var lastReportedMb = -1
+                val counting = CountingInputStream(rawIns) { totalBytes ->
+                    // Report only on each new whole-MB boundary to avoid flooding the UI.
+                    val mb = (totalBytes / 1024 / 1024).toInt()
+                    if (mb != lastReportedMb) {
+                        lastReportedMb = mb
+                        onProgress(ImportPhase.DOWNLOADING, mb, totalMb)
+                    }
+                }
+                ZipInputStream(BufferedInputStream(counting)).use { zip ->
                     var entry = zip.nextEntry
                     while (entry != null) {
                         val name = entry.name
@@ -141,7 +167,9 @@ class JournalBackup(private val context: Context) {
             )
 
             // Pass 2: one photo at a time — read its temp file, write to gallery, delete it.
-            backup.entries.forEach { entry ->
+            onProgress(ImportPhase.RESTORING, 0, backup.entries.size)
+            backup.entries.forEachIndexed { index, entry ->
+                onProgress(ImportPhase.RESTORING, index + 1, backup.entries.size)
                 val newUris = entry.photoUris.mapNotNull { path ->
                     val tempFile = File(tempDir, path.replace("/", "_"))
                     if (!tempFile.exists()) return@mapNotNull null
@@ -156,6 +184,22 @@ class JournalBackup(private val context: Context) {
             // Always clean up temp files, even on failure.
             tempDir.deleteRecursively()
         }
+    }
+
+    /** Phase of a backup import, surfaced to the UI for a phase-aware progress label. */
+    enum class ImportPhase { DOWNLOADING, RESTORING }
+
+    /** Wraps an [InputStream] and reports the cumulative byte count read, so a slow SAF/Drive
+     *  stream can drive a determinate download progress bar. */
+    private class CountingInputStream(
+        private val wrapped: InputStream,
+        private val onRead: (totalBytes: Long) -> Unit
+    ) : InputStream() {
+        private var total = 0L
+        override fun read(): Int = wrapped.read().also { if (it >= 0) { total++; onRead(total) } }
+        override fun read(b: ByteArray, off: Int, len: Int): Int =
+            wrapped.read(b, off, len).also { if (it > 0) { total += it; onRead(total) } }
+        override fun close() = wrapped.close()
     }
 
     /** Reads the bytes behind a `file://` or `content://` URI, or null if unreadable. */

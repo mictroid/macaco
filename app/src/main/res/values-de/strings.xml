@@ -206,6 +206,9 @@
     <string name="settings_backup_premium_required">Eine Premium-Funktion – schalte sie im Abo frei</string>
     <string name="settings_backup_export">Exportieren</string>
     <string name="settings_backup_import">Importieren</string>
+    <string name="settings_import_downloading">Backup wird heruntergeladen…</string>
+    <string name="settings_import_downloading_mb">Backup wird heruntergeladen… %1$d MB / %2$d MB</string>
+    <string name="settings_import_restoring">Einträge werden wiederhergestellt… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d Einträge in Datei gesichert</string>
     <string name="settings_backup_export_quality_title">Exportqualität</string>
     <string name="settings_backup_export_quality_body">Kompakt kodiert Fotos mit 80 % Qualität neu — typischerweise 40–60 % kleiner bei minimal sichtbarem Unterschied. Volle Qualität bewahrt die Originalfotos exakt.</string>

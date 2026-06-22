@@ -199,6 +199,9 @@ fun SettingsScreen(
     ) {
         driveConnected = viewModel.isDriveConnected()
         if (driveConnected) {
+            // Clear any stale error banner (e.g. expired sign-in) the instant the user reconnects,
+            // before the sync runs — otherwise it lingers until the next successful sync.
+            viewModel.resetDriveSyncState()
             viewModel.refreshDriveDownloads()
             viewModel.syncPhotosToGoogleDrive()
         }
@@ -240,6 +243,7 @@ fun SettingsScreen(
 
     // Local file backup/restore (premium). SAF picks the destination/source; results via Toast.
     val isPurchased by viewModel.isPurchased.collectAsState()
+    val importProgress by viewModel.importProgress.collectAsState()
     val backupScope = rememberCoroutineScope()
     var backupBusy by remember { mutableStateOf(false) }
     var showExportDialog by remember { mutableStateOf(false) }
@@ -634,6 +638,7 @@ fun SettingsScreen(
             BackupFileCard(
                 premium = isPurchased == true,
                 busy = backupBusy,
+                importProgress = importProgress,
                 onExport = {
                     if (isPurchased == true) showExportDialog = true
                     else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
@@ -756,6 +761,7 @@ private fun ThemeSwatch(theme: AppTheme, selected: Boolean, onClick: () -> Unit)
 private fun BackupFileCard(
     premium: Boolean,
     busy: Boolean,
+    importProgress: JournalViewModel.ImportProgress?,
     onExport: () -> Unit,
     onImport: () -> Unit
 ) {
@@ -798,7 +804,35 @@ private fun BackupFileCard(
             }
 
             if (busy) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                // Import publishes phase/byte progress; export (and the pre-progress window) just
+                // shows an indeterminate bar.
+                val progress = importProgress
+                if (progress != null) {
+                    val label = when (progress.phase) {
+                        com.houseofmmminq.macaco.data.sync.JournalBackup.ImportPhase.DOWNLOADING ->
+                            if (progress.total > 0)
+                                stringResource(R.string.settings_import_downloading_mb, progress.current, progress.total)
+                            else
+                                stringResource(R.string.settings_import_downloading)
+                        com.houseofmmminq.macaco.data.sync.JournalBackup.ImportPhase.RESTORING ->
+                            stringResource(R.string.settings_import_restoring, progress.current, progress.total)
+                    }
+                    Text(
+                        label,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (progress.total > 0) {
+                        LinearProgressIndicator(
+                            progress = { progress.current.toFloat() / progress.total },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    }
+                } else {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {

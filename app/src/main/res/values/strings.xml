@@ -173,6 +173,9 @@
     <string name="settings_backup_premium_required">A Premium feature — unlock it from Subscription</string>
     <string name="settings_backup_export">Export</string>
     <string name="settings_backup_import">Import</string>
+    <string name="settings_import_downloading">Downloading backup…</string>
+    <string name="settings_import_downloading_mb">Downloading backup… %1$d MB / %2$d MB</string>
+    <string name="settings_import_restoring">Restoring entries… %1$d / %2$d</string>
     <string name="settings_backup_export_done">Backed up %1$d entries to file</string>
     <string name="settings_backup_export_quality_title">Export quality</string>
     <string name="settings_backup_export_quality_body">Compact re-encodes photos at 80% quality — typically 40–60% smaller with minimal visible difference. Full quality preserves the original photos exactly.</string>

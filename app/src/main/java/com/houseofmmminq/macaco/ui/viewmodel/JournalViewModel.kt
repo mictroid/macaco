@@ -54,6 +54,18 @@ class JournalViewModel(
     // Local file backup/restore (premium feature). Stateless helper — built from appContext.
     private val journalBackup = JournalBackup(appContext)
 
+    /** Progress of an in-flight backup import, or null when no import is running.
+     *  [current]/[total] are MB while [phase] is DOWNLOADING (total = -1 if size unknown) and
+     *  entry counts while RESTORING. */
+    data class ImportProgress(
+        val phase: JournalBackup.ImportPhase,
+        val current: Int,
+        val total: Int
+    )
+
+    private val _importProgress = MutableStateFlow<ImportProgress?>(null)
+    val importProgress: StateFlow<ImportProgress?> = _importProgress.asStateFlow()
+
     // Tags currently filtering the journal list (empty = show all). Lifted here so the entry
     // detail screen can set it (tap a tag → list filtered by that tag).
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
@@ -298,6 +310,13 @@ class JournalViewModel(
 
     fun isDriveConnected(): Boolean = drivePhotoSync.isDriveConnected()
 
+    /** Resets Drive sync state to Idle and clears the per-account folder cache. Call after the user
+     *  reconnects their Google account so a stale error banner (e.g. an expired-sign-in message)
+     *  clears immediately rather than lingering until the next successful sync. */
+    fun resetDriveSyncState() {
+        drivePhotoSync.onAccountChanged()
+    }
+
     fun syncPhotosToGoogleDrive() {
         drivePhotoSync.syncAll(entries.value) { updated ->
             cloudEntrySync.save(updated)
@@ -313,9 +332,18 @@ class JournalViewModel(
     suspend fun exportBackup(dest: android.net.Uri, compact: Boolean = false): Result<Int> =
         journalBackup.exportTo(dest, entries.value, compact)
 
-    /** Restores entries from a backup zip at [src], upserting each into the cloud store. */
-    suspend fun importBackup(src: android.net.Uri): Result<Int> =
-        journalBackup.importFrom(src) { cloudEntrySync.save(it) }
+    /** Restores entries from a backup zip at [src], upserting each into the cloud store. Publishes
+     *  phase/byte progress to [importProgress] so the UI can show a determinate bar, then clears it. */
+    suspend fun importBackup(src: android.net.Uri): Result<Int> {
+        _importProgress.value = null
+        return journalBackup.importFrom(
+            src = src,
+            onEntry = { cloudEntrySync.save(it) },
+            onProgress = { phase, current, total ->
+                _importProgress.value = ImportProgress(phase, current, total)
+            }
+        ).also { _importProgress.value = null }
+    }
 
     class Factory(
         private val appContext: Context,

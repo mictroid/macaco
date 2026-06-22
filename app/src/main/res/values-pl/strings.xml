@@ -201,6 +201,9 @@
     <string name="settings_backup_premium_required">Funkcja Premium – odblokuj ją w subskrypcji</string>
     <string name="settings_backup_export">Eksportuj</string>
     <string name="settings_backup_import">Importuj</string>
+    <string name="settings_import_downloading">Pobieranie kopii zapasowej…</string>
+    <string name="settings_import_downloading_mb">Pobieranie kopii zapasowej… %1$d MB / %2$d MB</string>
+    <string name="settings_import_restoring">Przywracanie wpisów… %1$d / %2$d</string>
     <string name="settings_backup_export_done">Zapisano %1$d wpisów do pliku</string>
     <string name="settings_backup_export_quality_title">Jakość eksportu</string>
     <string name="settings_backup_export_quality_body">Tryb kompaktowy ponownie koduje zdjęcia w jakości 80% — zwykle o 40–60% mniejszy plik przy minimalnej widocznej różnicy. Pełna jakość zachowuje oryginalne zdjęcia bez zmian.</string>

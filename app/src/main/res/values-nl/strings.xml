@@ -195,6 +195,9 @@
     <string name="settings_backup_premium_required">Een Premium-functie – ontgrendel deze via het abonnement</string>
     <string name="settings_backup_export">Exporteren</string>
     <string name="settings_backup_import">Importeren</string>
+    <string name="settings_import_downloading">Back-up downloaden…</string>
+    <string name="settings_import_downloading_mb">Back-up downloaden… %1$d MB / %2$d MB</string>
+    <string name="settings_import_restoring">Vermeldingen herstellen… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d items naar bestand geback-upt</string>
     <string name="settings_backup_export_quality_title">Exportkwaliteit</string>
     <string name="settings_backup_export_quality_body">Compact codeert foto\'s opnieuw op 80% kwaliteit — doorgaans 40–60% kleiner met minimaal zichtbaar verschil. Volledige kwaliteit behoudt de originele foto\'s exact.</string>

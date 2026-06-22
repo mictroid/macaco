@@ -195,6 +195,9 @@
     <string name="settings_backup_premium_required">En Premium-funktion – lås upp den via prenumerationen</string>
     <string name="settings_backup_export">Exportera</string>
     <string name="settings_backup_import">Importera</string>
+    <string name="settings_import_downloading">Laddar ner säkerhetskopia…</string>
+    <string name="settings_import_downloading_mb">Laddar ner säkerhetskopia… %1$d MB / %2$d MB</string>
+    <string name="settings_import_restoring">Återställer poster… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d inlägg säkerhetskopierade till fil</string>
     <string name="settings_backup_export_quality_title">Exportkvalitet</string>
     <string name="settings_backup_export_quality_body">Kompakt omkodar foton med 80% kvalitet — vanligtvis 40–60% mindre med minimal synlig skillnad. Full kvalitet bevarar originalfotona exakt.</string>
