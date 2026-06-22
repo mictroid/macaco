@@ -6,683 +6,533 @@
   <title>Macaco — Privacy Policy</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: #1a1a1a; background: #fff;
-      max-width: 720px; margin: 0 auto;
-      padding: 40px 24px 80px; line-height: 1.7; font-size: 16px;
-    }
-    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-    .brand-name { font-size: 24px; font-weight: 300; letter-spacing: 6px; color: #0E5A6B; }
-    .lang-switcher { margin-bottom: 24px; }
-    .lang-switcher select {
-      border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px;
-      font-size: 14px; color: #0E5A6B; background: #f0f8fa; cursor: pointer;
-    }
-    h1 { font-size: 28px; font-weight: 700; color: #0E5A6B; margin-bottom: 6px; }
-    .updated { color: #888; font-size: 14px; margin-bottom: 32px; }
-    h2 { font-size: 18px; font-weight: 600; color: #0E5A6B; margin-top: 36px; margin-bottom: 10px; }
-    p { margin-bottom: 14px; }
-    ul { margin: 10px 0 14px 20px; }
-    ul li { margin-bottom: 6px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; max-width: 720px; margin: 0 auto; padding-bottom: 80px; }
+    .hero { background: #0E5A6B; padding: 40px 32px 36px; border-radius: 0 0 24px 24px; }
+    .eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+    .wordmark { font-size: 28px; font-weight: 300; letter-spacing: 8px; color: #fff; margin-bottom: 8px; }
+    .hero-title { font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.85); margin-bottom: 20px; }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: rgba(255,255,255,0.75); }
+    .lang-bar { background: #f5f5f5; border-bottom: 1px solid #eaeaea; padding: 10px 32px; display: flex; align-items: center; gap: 8px; }
+    .lang-bar select { font-size: 13px; border: none; background: transparent; color: #0E5A6B; cursor: pointer; font-family: inherit; }
+    .lang-lbl { font-size: 12px; color: #aaa; }
+    .body-wrap { padding: 24px 32px 0; }
+    .intro { font-size: 15px; line-height: 1.75; color: #555; margin-bottom: 20px; }
+    .summary { border-left: 3px solid #0E5A6B; background: #f0f8fa; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 24px; }
+    .sum-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #0E5A6B; margin-bottom: 6px; }
+    .sum-text { font-size: 14px; line-height: 1.65; color: #1a5a6b; }
+    .sc { border: 1px solid #e8e8e8; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+    .sh { display: flex; align-items: center; gap: 10px; padding: 11px 16px; background: #fafafa; border-bottom: 1px solid #e8e8e8; }
+    .sn { width: 24px; height: 24px; background: #0E5A6B; color: #fff; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .st { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+    .sb { padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #555; }
+    .sb p { margin-bottom: 10px; }
+    .sb p:last-child { margin-bottom: 0; }
+    .sb ul { margin: 6px 0 10px 18px; }
+    .sb ul:last-child { margin-bottom: 0; }
+    .sb li { margin-bottom: 5px; }
+    .sb table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px; }
+    .sb th { text-align: left; padding: 7px 10px; background: #f0f8fa; border: 1px solid #d0e8ef; font-weight: 600; color: #0E5A6B; }
+    .sb td { padding: 7px 10px; border: 1px solid #e8e8e8; vertical-align: top; }
     a { color: #0E5A6B; }
-    .highlight {
-      background: #f0f8fa; border-left: 3px solid #0E5A6B;
-      padding: 14px 18px; border-radius: 4px; margin: 20px 0;
+    footer { margin: 32px 32px 0; padding-top: 20px; border-top: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #bbb; flex-wrap: wrap; gap: 8px; }
+    footer a { color: #0E5A6B; text-decoration: none; }
+    .lc { display: none; }
+    .lc.active { display: block; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #111; color: #ddd; }
+      .lang-bar { background: #1a1a1a; border-bottom-color: #2a2a2a; }
+      .lang-bar select { color: #5cc8df; }
+      .intro { color: #999; }
+      .summary { background: #08252c; border-left-color: #5cc8df; }
+      .sum-label { color: #5cc8df; }
+      .sum-text { color: #7dd4e6; }
+      .sc { border-color: #2a2a2a; }
+      .sh { background: #191919; border-bottom-color: #2a2a2a; }
+      .st { color: #ddd; }
+      .sb { color: #999; }
+      .sb th { background: #0a2830; border-color: #1a4555; color: #5cc8df; }
+      .sb td { border-color: #2a2a2a; }
+      footer { border-top-color: #2a2a2a; color: #555; }
     }
-    table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
-    th { background: #0E5A6B; color: #fff; text-align: left; padding: 10px 12px; }
-    td { padding: 9px 12px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
-    footer { margin-top: 48px; font-size: 13px; color: #aaa; border-top: 1px solid #eee; padding-top: 20px; }
-    .lang-content { display: none; }
-    .lang-content.active { display: block; }
+    @media (max-width: 480px) {
+      .hero { padding: 32px 20px 28px; border-radius: 0 0 18px 18px; }
+      .body-wrap { padding: 20px 16px 0; }
+      footer { margin: 24px 16px 0; }
+      .lang-bar { padding: 10px 16px; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="brand">
-    <span class="brand-name">macaco</span>
+<div class="hero">
+  <div class="eyebrow">Legal</div>
+  <div class="wordmark">macaco</div>
+  <div class="hero-title" id="hero-title">Privacy Policy</div>
+  <div class="badges">
+    <span class="badge" id="hero-date">Updated 21 June 2026</span>
+    <span class="badge">v1.0</span>
   </div>
+</div>
 
-  <div class="lang-switcher">
-    <select id="langSelect" onchange="setLang(this.value)">
-      <option value="en">English</option>
-      <option value="de">Deutsch</option>
-      <option value="fr">Français</option>
-      <option value="es">Español</option>
-      <option value="it">Italiano</option>
-      <option value="nl">Nederlands</option>
-      <option value="pt">Português</option>
-      <option value="pl">Polski</option>
-      <option value="sv">Svenska</option>
-      <option value="ja">日本語</option>
-      <option value="zh">中文（简体）</option>
-    </select>
-  </div>
+<div class="lang-bar">
+  <span class="lang-lbl">&#127760;</span>
+  <select id="langSelect" onchange="setLang(this.value)">
+    <option value="en">English</option>
+    <option value="de">Deutsch</option>
+    <option value="fr">Français</option>
+    <option value="es">Español</option>
+    <option value="it">Italiano</option>
+    <option value="nl">Nederlands</option>
+    <option value="pt">Português</option>
+    <option value="pl">Polski</option>
+    <option value="sv">Svenska</option>
+    <option value="ja">日本語</option>
+    <option value="zh">中文（简体）</option>
+  </select>
+</div>
 
-  <!-- ENGLISH -->
-  <div class="lang-content" data-lang="en">
-    <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: 21 June 2026</p>
-    <div class="highlight"><strong>Short version:</strong> Macaco stores your journal entries and account info securely in your own cloud account. We don't sell your data, show ads, or share your content with anyone. Your photos go to your own Google Drive — we never hold them on our servers.</div>
-    <h2>1. Who we are</h2>
-    <p>Macaco is a personal travel journal app developed by <strong>House of Mmminq</strong>. Questions? Contact us at <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>By using Macaco you also agree to our <a href="https://mictroid.github.io/macaco/terms-of-service.html">Terms of Service</a>.</p>
-    <h2>2. What data we collect</h2>
-    <table>
-      <tr><th>Data</th><th>Why</th><th>Where stored</th></tr>
-      <tr><td><strong>Account info</strong><br>Name, email, profile photo</td><td>To identify your account and sync entries across devices</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Journal entries</strong><br>Title, location, date, description, mood, tags</td><td>Your travel memories — the core purpose of the app</td><td>Firebase Firestore, in your personal subcollection</td></tr>
-      <tr><td><strong>Photos</strong></td><td>To attach memories to entries</td><td>Your device gallery (MediaStore) and optionally your own Google Drive</td></tr>
-      <tr><td><strong>Purchase status</strong></td><td>To verify your premium subscription</td><td>RevenueCat and Google Play — we never handle payment details directly</td></tr>
-    </table>
-    <p>We do <strong>not</strong> collect location data automatically. We use <strong>Firebase Analytics</strong> (Google LLC) to collect aggregate, anonymised usage data — such as app opens, session length, and feature engagement — to help us improve the app. This data is not linked to your identity. You can opt out via your device's "Opt out of Ads Personalisation" setting. We use <strong>Firebase Crashlytics</strong> (Google LLC) to capture crash and stability reports so we can fix problems.</p>
-    <h2>3. How we use your data</h2>
-    <ul>
-      <li>To sync your journal entries across devices you're signed in to</li>
-      <li>To back up and restore your photos via your connected Google Drive</li>
-      <li>To verify your premium subscription status</li>
-      <li>To send optional local reminders to write a new entry (no data leaves your device for this)</li>
-    </ul>
-    <p>We do not use your data for advertising, profiling, or any purpose beyond running the app for you.</p>
-    <h2>4. Third-party services</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — aggregate app usage insights — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — crash reporting — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — photos read/written to your own Drive. We request only the <code>drive.file</code> scope, limiting access to files created by Macaco.</li>
-      <li><strong>RevenueCat</strong> — subscription management — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — payment processing — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Data sharing</h2>
-    <p>We do not sell, rent, or share your personal data with third parties for their own purposes. Data transfers are limited to those described above.</p>
-    <h2>6. Data retention and deletion</h2>
-    <p>Your data remains in Firebase as long as your account exists. To delete:</p>
-    <ul>
-      <li><strong>Entries:</strong> Delete individually in the app, or delete all via Profile → Delete Account</li>
-      <li><strong>Photos:</strong> Removing a photo from an entry deletes it from your device gallery; Drive copies can be deleted from your own Google Drive</li>
-      <li><strong>Account:</strong> Profile → Delete Account permanently removes all entries from our servers and deletes your auth record. Photos in your gallery or Drive live in your own accounts and are unaffected.</li>
-    </ul>
-    <h2>7. Security</h2>
-    <p>All data in transit is encrypted via HTTPS/TLS. Data at rest is protected by Firebase security rules ensuring each user can only access their own entries. We never access your Google account credentials.</p>
-    <h2>8. Children's privacy</h2>
-    <p>Macaco is not directed at children under 13. We do not knowingly collect data from children under 13. Contact us if you believe a child has provided personal data and we will delete it.</p>
-    <h2>9. Your rights</h2>
-    <p>Depending on your location you may have rights to access, correct, or delete your data, or to object to its processing. Contact us at <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Changes</h2>
-    <p>We may update this policy. We will update the "Last updated" date above. Continued use constitutes acceptance.</p>
-    <h2>11. Contact</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- ENGLISH -->
+<div class="lc" data-lang="en">
+<div class="body-wrap">
+<p class="intro">This Privacy Policy explains how House of Mmminq ("we", "us", or "our") collects, uses, and protects information when you use the Macaco mobile application ("the App").</p>
+<div class="summary"><div class="sum-label">Summary</div><p class="sum-text">We collect only what is needed to run the app. Your journal entries are stored in your own cloud account and are never sold or used for advertising. You can delete everything at any time.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Information we collect</span></div><div class="sb">
+<table><tr><th>Data</th><th>Purpose</th></tr>
+<tr><td>Account info (email, display name, profile photo)</td><td>Authentication and profile display</td></tr>
+<tr><td>Journal entries (text, photos, locations, mood, tags)</td><td>Core app functionality — stored in your Firebase account</td></tr>
+<tr><td>Google Drive access (if connected)</td><td>Optional photo backup</td></tr>
+<tr><td>Analytics events and crash reports</td><td>App stability and usage insights (Firebase Analytics &amp; Crashlytics)</td></tr>
+<tr><td>Purchase status</td><td>Premium feature access via RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">We do not collect advertising identifiers (the AD_ID permission is explicitly removed from our app).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">How we use your information</span></div><div class="sb"><ul>
+<li>To provide and maintain the App and sync your entries across devices.</li>
+<li>To back up and restore photos via Google Drive (only if you connect it).</li>
+<li>To manage your premium subscription via RevenueCat and Google Play.</li>
+<li>To monitor app stability and fix crashes using anonymised analytics.</li>
+<li>To send optional reminder notifications if you enable them.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Data storage and security</span></div><div class="sb"><p>Journal entries are stored in Firebase Firestore under your unique user ID, accessible only by you. Photos are stored in your Google Drive (if connected) or your device gallery. We use industry-standard security measures and rely on Google's infrastructure security.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Third-party services</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — authentication, database, analytics, and crash reporting.</li>
+<li><strong>Google Drive</strong> — optional photo backup; governed by Google's privacy policy.</li>
+<li><strong>RevenueCat</strong> — subscription management. RevenueCat receives your user ID and purchase events.</li>
+<li><strong>Google Play</strong> — in-app purchases and app delivery.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Data sharing</span></div><div class="sb"><p>We do not sell, rent, or share your personal data with third parties for marketing purposes. Data is shared only with the service providers listed above, solely to operate the App.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Your rights</span></div><div class="sb"><p>You can access, export, or delete your data at any time. To delete all your data including entries and your account, go to Profile → Delete Account in the App. For other requests, contact us at <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Children's privacy</span></div><div class="sb"><p>The App is not directed at children under 13. We do not knowingly collect personal information from children under 13.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Changes to this policy</span></div><div class="sb"><p>We may update this Privacy Policy. We will update the date above. Continued use of the App after changes constitutes acceptance.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Contact</span></div><div class="sb"><p>Questions about privacy? Email us at <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Our <a href="https://mictroid.github.io/macaco/terms-of-service.html">Terms of Service</a> also apply.</p></div></div>
+</div>
+</div>
 
-  <!-- GERMAN -->
-  <div class="lang-content" data-lang="de">
-    <h1>Datenschutzerklärung</h1>
-    <p class="updated">Zuletzt aktualisiert: 21. Juni 2026</p>
-    <div class="highlight"><strong>Kurzfassung:</strong> Macaco speichert Ihre Tagebucheinträge und Kontoinformationen sicher in Ihrem eigenen Cloud-Konto. Wir verkaufen Ihre Daten nicht, zeigen keine Werbung und teilen Ihre Inhalte mit niemandem. Ihre Fotos gehen in Ihr eigenes Google Drive — wir speichern sie nie auf unseren Servern.</div>
-    <h2>1. Wer wir sind</h2>
-    <p>Macaco ist eine persönliche Reisetagebuch-App, entwickelt von <strong>House of Mmminq</strong>. Bei Fragen wenden Sie sich an <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>Mit der Nutzung von Macaco stimmen Sie auch unseren <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=de">Nutzungsbedingungen</a> zu.</p>
-    <h2>2. Welche Daten wir erheben</h2>
-    <table>
-      <tr><th>Daten</th><th>Zweck</th><th>Speicherort</th></tr>
-      <tr><td><strong>Kontoinformationen</strong><br>Name, E-Mail, Profilfoto</td><td>Zur Identifizierung Ihres Kontos und geräteübergreifenden Synchronisation</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Tagebucheinträge</strong><br>Titel, Ort, Datum, Beschreibung, Stimmung, Tags</td><td>Ihre Reiseerinnerungen — der Kernzweck der App</td><td>Firebase Firestore, in Ihrer persönlichen Untersammlung</td></tr>
-      <tr><td><strong>Fotos</strong></td><td>Zum Hinzufügen von Erinnerungen zu Einträgen</td><td>Ihre Gerätegalerie (MediaStore) und optional Ihr eigenes Google Drive</td></tr>
-      <tr><td><strong>Kaufstatus</strong></td><td>Zur Überprüfung Ihres Premium-Abonnements</td><td>RevenueCat und Google Play — Zahlungsdaten werden nie direkt von uns verarbeitet</td></tr>
-    </table>
-    <p>Wir erheben <strong>keine</strong> Standortdaten automatisch. Wir nutzen <strong>Firebase Analytics</strong> (Google LLC) zur Erfassung aggregierter, anonymisierter Nutzungsdaten — wie App-Öffnungen, Sitzungsdauer und Funktionsnutzung — zur Verbesserung der App. Diese Daten sind nicht mit Ihrer Identität verknüpft. Sie können dem widersprechen über die Einstellung „Personalisierte Werbung deaktivieren" auf Ihrem Gerät. Wir nutzen <strong>Firebase Crashlytics</strong> (Google LLC) zur Erfassung von Absturzberichten.</p>
-    <h2>3. Wie wir Ihre Daten verwenden</h2>
-    <ul>
-      <li>Zur geräteübergreifenden Synchronisation Ihrer Tagebucheinträge</li>
-      <li>Zur Sicherung und Wiederherstellung Ihrer Fotos über Ihr verbundenes Google Drive</li>
-      <li>Zur Überprüfung Ihres Premium-Abonnements</li>
-      <li>Zum Versand optionaler lokaler Erinnerungen (keine Datenübertragung für diese Funktion)</li>
-    </ul>
-    <p>Wir verwenden Ihre Daten nicht für Werbung, Profiling oder andere Zwecke als den Betrieb der App für Sie.</p>
-    <h2>4. Drittanbieter-Dienste</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — aggregierte Nutzungseinblicke — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — Absturzberichte — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — Fotos werden in Ihrem eigenen Drive gespeichert und abgerufen. Wir fordern nur den <code>drive.file</code>-Scope an, der den Zugriff auf von Macaco erstellte Dateien beschränkt.</li>
-      <li><strong>RevenueCat</strong> — Abonnementverwaltung — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — Zahlungsabwicklung — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Datenweitergabe</h2>
-    <p>Wir verkaufen, vermieten oder teilen Ihre personenbezogenen Daten nicht mit Dritten für deren eigene Zwecke. Datenübertragungen sind auf die oben beschriebenen beschränkt.</p>
-    <h2>6. Datenspeicherung und -löschung</h2>
-    <p>Ihre Daten verbleiben in Firebase, solange Ihr Konto besteht. So löschen Sie Ihre Daten:</p>
-    <ul>
-      <li><strong>Einträge:</strong> Einzeln in der App löschen oder alle über Profil → Konto löschen entfernen</li>
-      <li><strong>Fotos:</strong> Das Entfernen eines Fotos aus einem Eintrag löscht es aus Ihrer Gerätegalerie; Drive-Kopien können aus Ihrem Google Drive gelöscht werden</li>
-      <li><strong>Konto:</strong> Profil → Konto löschen entfernt dauerhaft alle Einträge von unseren Servern und löscht Ihr Authentifizierungskonto. Fotos in Ihrer Galerie oder auf Drive befinden sich in Ihren eigenen Konten und sind davon nicht betroffen.</li>
-    </ul>
-    <h2>7. Datensicherheit</h2>
-    <p>Alle Datenübertragungen sind via HTTPS/TLS verschlüsselt. Gespeicherte Daten sind durch Firebase-Sicherheitsregeln geschützt, die sicherstellen, dass jeder Nutzer nur auf seine eigenen Einträge zugreift. Wir haben keinen Zugriff auf Ihre Google-Kontodaten.</p>
-    <h2>8. Datenschutz für Kinder</h2>
-    <p>Macaco richtet sich nicht an Kinder unter 13 Jahren. Wir erheben wissentlich keine Daten von Kindern unter 13 Jahren. Kontaktieren Sie uns, wenn Sie vermuten, dass ein Kind personenbezogene Daten bereitgestellt hat.</p>
-    <h2>9. Ihre Rechte</h2>
-    <p>Je nach Ihrem Standort haben Sie möglicherweise das Recht auf Auskunft, Berichtigung oder Löschung Ihrer Daten oder auf Widerspruch gegen deren Verarbeitung. Kontaktieren Sie uns unter <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Änderungen</h2>
-    <p>Wir können diese Datenschutzerklärung aktualisieren. Das Datum „Zuletzt aktualisiert" wird entsprechend angepasst. Die weitere Nutzung gilt als Zustimmung.</p>
-    <h2>11. Kontakt</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- GERMAN -->
+<div class="lc" data-lang="de">
+<div class="body-wrap">
+<p class="intro">Diese Datenschutzerklärung erläutert, wie House of Mmminq („wir" oder „uns") Informationen erhebt, verwendet und schützt, wenn Sie die mobile App Macaco („die App") nutzen.</p>
+<div class="summary"><div class="sum-label">Zusammenfassung</div><p class="sum-text">Wir erheben nur, was für den Betrieb der App erforderlich ist. Ihre Tagebucheinträge werden in Ihrem eigenen Cloud-Konto gespeichert und niemals verkauft oder für Werbung genutzt. Sie können alles jederzeit löschen.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Erhobene Daten</span></div><div class="sb">
+<table><tr><th>Daten</th><th>Zweck</th></tr>
+<tr><td>Kontoinformationen (E-Mail, Anzeigename, Profilfoto)</td><td>Authentifizierung und Profilanzeige</td></tr>
+<tr><td>Tagebucheinträge (Text, Fotos, Orte, Stimmung, Tags)</td><td>Kernfunktionen der App – gespeichert in Ihrem Firebase-Konto</td></tr>
+<tr><td>Google-Drive-Zugriff (falls verbunden)</td><td>Optionale Foto-Sicherung</td></tr>
+<tr><td>Analyse-Events und Absturzberichte</td><td>App-Stabilität und Nutzungseinblicke (Firebase Analytics &amp; Crashlytics)</td></tr>
+<tr><td>Kaufstatus</td><td>Premium-Funktionszugang via RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">Wir erfassen keine Werbe-IDs (die AD_ID-Berechtigung wurde ausdrücklich aus unserer App entfernt).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Verwendung Ihrer Daten</span></div><div class="sb"><ul>
+<li>Bereitstellung und Betrieb der App sowie Synchronisierung Ihrer Einträge zwischen Geräten.</li>
+<li>Sicherung und Wiederherstellung von Fotos über Google Drive (nur wenn Sie es verbinden).</li>
+<li>Verwaltung Ihres Premium-Abonnements über RevenueCat und Google Play.</li>
+<li>Überwachung der App-Stabilität und Behebung von Abstürzen mittels anonymisierter Analysen.</li>
+<li>Versenden optionaler Erinnerungsbenachrichtigungen, falls Sie diese aktivieren.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Datenspeicherung und Sicherheit</span></div><div class="sb"><p>Tagebucheinträge werden in Firebase Firestore unter Ihrer eindeutigen Benutzer-ID gespeichert und sind nur für Sie zugänglich. Fotos werden in Ihrem Google Drive (falls verbunden) oder Ihrer Gerätegalerie gespeichert. Wir setzen branchenübliche Sicherheitsmaßnahmen ein und nutzen die Infrastruktursicherheit von Google.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Drittanbieter</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> – Authentifizierung, Datenbank, Analysen und Absturzberichte.</li>
+<li><strong>Google Drive</strong> – optionale Foto-Sicherung; unterliegt den Datenschutzbestimmungen von Google.</li>
+<li><strong>RevenueCat</strong> – Abonnementverwaltung. RevenueCat erhält Ihre Benutzer-ID und Kaufereignisse.</li>
+<li><strong>Google Play</strong> – In-App-Käufe und App-Auslieferung.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Datenweitergabe</span></div><div class="sb"><p>Wir verkaufen, vermieten oder geben Ihre personenbezogenen Daten nicht zu Marketingzwecken an Dritte weiter. Daten werden ausschließlich an die oben genannten Dienstleister weitergegeben, um den Betrieb der App zu ermöglichen.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Ihre Rechte</span></div><div class="sb"><p>Sie können Ihre Daten jederzeit einsehen, exportieren oder löschen. Um alle Daten einschließlich Einträgen und Konto zu löschen, gehen Sie in der App zu Profil → Konto löschen. Für weitere Anfragen kontaktieren Sie uns unter <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Datenschutz für Kinder</span></div><div class="sb"><p>Die App richtet sich nicht an Kinder unter 13 Jahren. Wir erheben wissentlich keine personenbezogenen Daten von Kindern unter 13 Jahren.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Änderungen</span></div><div class="sb"><p>Wir können diese Datenschutzerklärung aktualisieren. Das Datum oben wird entsprechend angepasst. Die weitere Nutzung der App nach Änderungen gilt als Zustimmung.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Kontakt</span></div><div class="sb"><p>Fragen zum Datenschutz? Schreiben Sie uns an <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Es gelten auch unsere <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=de">Nutzungsbedingungen</a>.</p></div></div>
+</div>
+</div>
 
-  <!-- FRENCH -->
-  <div class="lang-content" data-lang="fr">
-    <h1>Politique de confidentialité</h1>
-    <p class="updated">Dernière mise à jour : 21 juin 2026</p>
-    <div class="highlight"><strong>En bref :</strong> Macaco stocke vos entrées de journal et vos informations de compte en toute sécurité dans votre propre compte cloud. Nous ne vendons pas vos données, n'affichons pas de publicités et ne partageons pas votre contenu. Vos photos vont dans votre propre Google Drive — nous ne les stockons jamais sur nos serveurs.</div>
-    <h2>1. Qui nous sommes</h2>
-    <p>Macaco est une application de journal de voyage développée par <strong>House of Mmminq</strong>. Pour toute question : <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>En utilisant Macaco, vous acceptez également nos <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=fr">Conditions d'utilisation</a>.</p>
-    <h2>2. Données collectées</h2>
-    <table>
-      <tr><th>Données</th><th>Pourquoi</th><th>Où stockées</th></tr>
-      <tr><td><strong>Informations de compte</strong><br>Nom, e-mail, photo de profil</td><td>Pour identifier votre compte et synchroniser les entrées</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Entrées de journal</strong><br>Titre, lieu, date, description, humeur, tags</td><td>Vos souvenirs de voyage — la fonction principale de l'app</td><td>Firebase Firestore, dans votre sous-collection personnelle</td></tr>
-      <tr><td><strong>Photos</strong></td><td>Pour associer des souvenirs aux entrées</td><td>Galerie de votre appareil et optionnellement votre Google Drive</td></tr>
-      <tr><td><strong>Statut d'achat</strong></td><td>Pour vérifier votre abonnement premium</td><td>RevenueCat et Google Play — nous ne traitons jamais directement vos données de paiement</td></tr>
-    </table>
-    <p>Nous ne collectons <strong>pas</strong> de données de localisation automatiquement. Nous utilisons <strong>Firebase Analytics</strong> (Google LLC) pour collecter des données d'utilisation agrégées et anonymisées afin d'améliorer l'app. Ces données ne sont pas liées à votre identité. Vous pouvez vous désabonner via « Désactiver la personnalisation des annonces » sur votre appareil. Nous utilisons <strong>Firebase Crashlytics</strong> pour les rapports de plantage.</p>
-    <h2>3. Utilisation des données</h2>
-    <ul>
-      <li>Synchroniser vos entrées entre vos appareils connectés</li>
-      <li>Sauvegarder et restaurer vos photos via Google Drive</li>
-      <li>Vérifier votre statut d'abonnement premium</li>
-      <li>Envoyer des rappels locaux optionnels (aucune donnée ne quitte votre appareil)</li>
-    </ul>
-    <p>Nous n'utilisons pas vos données à des fins publicitaires, de profilage ou à d'autres fins que le fonctionnement de l'application.</p>
-    <h2>4. Services tiers</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — analyses d'utilisation agrégées — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — rapports de plantage — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — photos lues/écrites dans votre propre Drive. Nous demandons uniquement le scope <code>drive.file</code>, limitant l'accès aux fichiers créés par Macaco.</li>
-      <li><strong>RevenueCat</strong> — gestion des abonnements — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — traitement des paiements — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Partage des données</h2>
-    <p>Nous ne vendons, ne louons ni ne partageons vos données personnelles avec des tiers à leurs propres fins. Les transferts de données sont limités à ceux décrits ci-dessus.</p>
-    <h2>6. Conservation et suppression</h2>
-    <p>Vos données restent dans Firebase tant que votre compte existe.</p>
-    <ul>
-      <li><strong>Entrées :</strong> Supprimez-les individuellement ou toutes via Profil → Supprimer le compte</li>
-      <li><strong>Photos :</strong> Supprimer une photo d'une entrée la supprime de votre galerie ; les copies Drive peuvent être supprimées de votre Google Drive</li>
-      <li><strong>Compte :</strong> Profil → Supprimer le compte supprime définitivement toutes vos entrées de nos serveurs et efface votre authentification.</li>
-    </ul>
-    <h2>7. Sécurité</h2>
-    <p>Toutes les données en transit sont chiffrées via HTTPS/TLS. Les données au repos sont protégées par les règles de sécurité Firebase. Nous n'avons jamais accès à vos identifiants Google.</p>
-    <h2>8. Protection des mineurs</h2>
-    <p>Macaco n'est pas destiné aux enfants de moins de 13 ans. Nous ne collectons pas sciemment de données sur des enfants de moins de 13 ans.</p>
-    <h2>9. Vos droits</h2>
-    <p>Selon votre lieu de résidence, vous pouvez avoir des droits d'accès, de rectification, de suppression ou d'opposition. Contactez-nous : <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Modifications</h2>
-    <p>Nous pouvons mettre à jour cette politique. La date « Dernière mise à jour » sera modifiée. L'utilisation continue vaut acceptation.</p>
-    <h2>11. Contact</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- FRENCH -->
+<div class="lc" data-lang="fr">
+<div class="body-wrap">
+<p class="intro">La présente Politique de confidentialité explique comment House of Mmminq (« nous ») collecte, utilise et protège les informations lorsque vous utilisez l'application mobile Macaco (« l'Application »).</p>
+<div class="summary"><div class="sum-label">En résumé</div><p class="sum-text">Nous collectons uniquement ce qui est nécessaire au fonctionnement de l'application. Vos entrées sont stockées dans votre propre compte cloud et ne sont jamais vendues ni utilisées à des fins publicitaires. Vous pouvez tout supprimer à tout moment.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Informations collectées</span></div><div class="sb">
+<table><tr><th>Données</th><th>Finalité</th></tr>
+<tr><td>Informations de compte (e-mail, nom d'affichage, photo de profil)</td><td>Authentification et affichage du profil</td></tr>
+<tr><td>Entrées de journal (texte, photos, lieux, humeur, tags)</td><td>Fonctionnalité principale — stockée dans votre compte Firebase</td></tr>
+<tr><td>Accès Google Drive (si connecté)</td><td>Sauvegarde optionnelle des photos</td></tr>
+<tr><td>Événements analytiques et rapports de plantage</td><td>Stabilité et statistiques d'utilisation (Firebase Analytics &amp; Crashlytics)</td></tr>
+<tr><td>Statut d'achat</td><td>Accès aux fonctionnalités premium via RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">Nous ne collectons pas d'identifiants publicitaires (la permission AD_ID est explicitement supprimée de notre application).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Utilisation de vos informations</span></div><div class="sb"><ul>
+<li>Fournir et maintenir l'Application et synchroniser vos entrées entre appareils.</li>
+<li>Sauvegarder et restaurer des photos via Google Drive (uniquement si vous le connectez).</li>
+<li>Gérer votre abonnement premium via RevenueCat et Google Play.</li>
+<li>Surveiller la stabilité de l'Application et corriger les plantages grâce à des analyses anonymisées.</li>
+<li>Envoyer des notifications de rappel optionnelles si vous les activez.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Stockage et sécurité des données</span></div><div class="sb"><p>Les entrées de journal sont stockées dans Firebase Firestore sous votre identifiant utilisateur unique, accessible uniquement par vous. Les photos sont stockées dans votre Google Drive (si connecté) ou dans la galerie de votre appareil. Nous utilisons des mesures de sécurité conformes aux standards du secteur et nous appuyons sur l'infrastructure sécurisée de Google.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Services tiers</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — authentification, base de données, analyses et rapports de plantage.</li>
+<li><strong>Google Drive</strong> — sauvegarde optionnelle des photos ; régi par la politique de confidentialité de Google.</li>
+<li><strong>RevenueCat</strong> — gestion des abonnements. RevenueCat reçoit votre identifiant utilisateur et les événements d'achat.</li>
+<li><strong>Google Play</strong> — achats intégrés et distribution de l'Application.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Partage des données</span></div><div class="sb"><p>Nous ne vendons, ne louons ni ne partageons vos données personnelles avec des tiers à des fins marketing. Les données ne sont partagées qu'avec les prestataires listés ci-dessus, uniquement pour faire fonctionner l'Application.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Vos droits</span></div><div class="sb"><p>Vous pouvez accéder à vos données, les exporter ou les supprimer à tout moment. Pour supprimer toutes vos données, allez dans Profil → Supprimer le compte dans l'Application. Pour toute autre demande, contactez-nous à <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Protection des mineurs</span></div><div class="sb"><p>L'Application ne s'adresse pas aux enfants de moins de 13 ans. Nous ne collectons pas sciemment de données personnelles concernant des enfants de moins de 13 ans.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Modifications</span></div><div class="sb"><p>Nous pouvons mettre à jour cette Politique de confidentialité. La date ci-dessus sera modifiée en conséquence. L'utilisation continue de l'Application après les modifications vaut acceptation.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Contact</span></div><div class="sb"><p>Des questions sur la confidentialité ? Écrivez-nous à <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Nos <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=fr">Conditions d'utilisation</a> s'appliquent également.</p></div></div>
+</div>
+</div>
 
-  <!-- SPANISH -->
-  <div class="lang-content" data-lang="es">
-    <h1>Política de privacidad</h1>
-    <p class="updated">Última actualización: 21 de junio de 2026</p>
-    <div class="highlight"><strong>Resumen:</strong> Macaco almacena tus entradas de diario e información de cuenta de forma segura en tu propia cuenta en la nube. No vendemos tus datos, no mostramos anuncios y no compartimos tu contenido. Tus fotos van a tu propio Google Drive — nunca las almacenamos en nuestros servidores.</div>
-    <h2>1. Quiénes somos</h2>
-    <p>Macaco es una app de diario de viaje personal desarrollada por <strong>House of Mmminq</strong>. ¿Preguntas? <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>Al usar Macaco también aceptas nuestros <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=es">Términos de servicio</a>.</p>
-    <h2>2. Qué datos recopilamos</h2>
-    <table>
-      <tr><th>Datos</th><th>Por qué</th><th>Dónde se almacenan</th></tr>
-      <tr><td><strong>Información de cuenta</strong><br>Nombre, email, foto de perfil</td><td>Para identificar tu cuenta y sincronizar entradas</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Entradas del diario</strong><br>Título, lugar, fecha, descripción, estado de ánimo, etiquetas</td><td>Tus recuerdos de viaje — la función principal de la app</td><td>Firebase Firestore, en tu subcolección personal</td></tr>
-      <tr><td><strong>Fotos</strong></td><td>Para adjuntar recuerdos a las entradas</td><td>Galería del dispositivo y opcionalmente tu propio Google Drive</td></tr>
-      <tr><td><strong>Estado de compra</strong></td><td>Para verificar tu suscripción premium</td><td>RevenueCat y Google Play — nunca manejamos directamente los detalles de pago</td></tr>
-    </table>
-    <p>No recopilamos datos de ubicación automáticamente. Usamos <strong>Firebase Analytics</strong> (Google LLC) para recopilar datos de uso agregados y anónimos — como aperturas de la app, duración de sesión y uso de funciones — para mejorar la app. Estos datos no están vinculados a tu identidad. Puedes desactivarlo en «Inhabilitar personalización de anuncios» en tu dispositivo. Usamos <strong>Firebase Crashlytics</strong> para informes de fallos.</p>
-    <h2>3. Cómo usamos tus datos</h2>
-    <ul>
-      <li>Para sincronizar tus entradas entre dispositivos conectados</li>
-      <li>Para respaldar y restaurar tus fotos mediante Google Drive</li>
-      <li>Para verificar tu estado de suscripción premium</li>
-      <li>Para enviar recordatorios locales opcionales (ningún dato sale de tu dispositivo)</li>
-    </ul>
-    <p>No usamos tus datos para publicidad, creación de perfiles ni ningún otro propósito más allá de hacer funcionar la app.</p>
-    <h2>4. Servicios de terceros</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — análisis de uso agregado — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — informes de fallos — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — fotos leídas/escritas en tu propio Drive. Solo solicitamos el scope <code>drive.file</code>, limitando el acceso a archivos creados por Macaco.</li>
-      <li><strong>RevenueCat</strong> — gestión de suscripciones — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — procesamiento de pagos — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Compartir datos</h2>
-    <p>No vendemos, alquilamos ni compartimos tus datos personales con terceros para sus propios fines. Las transferencias se limitan a las descritas anteriormente.</p>
-    <h2>6. Retención y eliminación</h2>
-    <ul>
-      <li><strong>Entradas:</strong> Elimínalas individualmente o todas desde Perfil → Eliminar cuenta</li>
-      <li><strong>Fotos:</strong> Eliminar una foto de una entrada la borra de tu galería; las copias de Drive se borran desde tu Google Drive</li>
-      <li><strong>Cuenta:</strong> Perfil → Eliminar cuenta borra permanentemente todas las entradas de nuestros servidores.</li>
-    </ul>
-    <h2>7. Seguridad</h2>
-    <p>Todos los datos en tránsito están cifrados mediante HTTPS/TLS. Los datos en reposo están protegidos por las reglas de seguridad de Firebase. Nunca accedemos a tus credenciales de Google.</p>
-    <h2>8. Privacidad infantil</h2>
-    <p>Macaco no está dirigido a menores de 13 años. No recopilamos conscientemente datos de menores de 13 años.</p>
-    <h2>9. Tus derechos</h2>
-    <p>Según tu ubicación, puedes tener derechos de acceso, rectificación, eliminación u oposición. Contáctanos en <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Cambios</h2>
-    <p>Podemos actualizar esta política. Actualizaremos la fecha «Última actualización». El uso continuado implica aceptación.</p>
-    <h2>11. Contacto</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- SPANISH -->
+<div class="lc" data-lang="es">
+<div class="body-wrap">
+<p class="intro">Esta Política de privacidad explica cómo House of Mmminq («nosotros») recopila, usa y protege la información cuando utilizas la aplicación móvil Macaco («la App»).</p>
+<div class="summary"><div class="sum-label">Resumen</div><p class="sum-text">Solo recopilamos lo necesario para hacer funcionar la app. Tus entradas se almacenan en tu propia cuenta en la nube y nunca se venden ni se usan para publicidad. Puedes eliminar todo en cualquier momento.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Información que recopilamos</span></div><div class="sb">
+<table><tr><th>Datos</th><th>Finalidad</th></tr>
+<tr><td>Información de cuenta (correo, nombre, foto)</td><td>Autenticación y visualización del perfil</td></tr>
+<tr><td>Entradas del diario (texto, fotos, ubicaciones, estado de ánimo, etiquetas)</td><td>Funcionalidad principal, almacenada en tu cuenta de Firebase</td></tr>
+<tr><td>Acceso a Google Drive (si conectado)</td><td>Copia de seguridad opcional de fotos</td></tr>
+<tr><td>Eventos de análisis e informes de fallos</td><td>Estabilidad e información de uso (Firebase Analytics y Crashlytics)</td></tr>
+<tr><td>Estado de compra</td><td>Acceso a funciones premium vía RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">No recopilamos identificadores publicitarios (el permiso AD_ID está explícitamente eliminado de nuestra app).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Cómo usamos tu información</span></div><div class="sb"><ul>
+<li>Proporcionar y mantener la App y sincronizar tus entradas entre dispositivos.</li>
+<li>Hacer copias de seguridad y restaurar fotos mediante Google Drive (solo si lo conectas).</li>
+<li>Gestionar tu suscripción premium a través de RevenueCat y Google Play.</li>
+<li>Monitorear la estabilidad de la App y corregir fallos con análisis anonimizados.</li>
+<li>Enviar notificaciones de recordatorio opcionales si las activas.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Almacenamiento y seguridad</span></div><div class="sb"><p>Las entradas del diario se almacenan en Firebase Firestore bajo tu ID de usuario único, accesible solo por ti. Las fotos se guardan en tu Google Drive (si está conectado) o en la galería de tu dispositivo. Utilizamos medidas de seguridad estándar del sector y nos apoyamos en la infraestructura de seguridad de Google.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Servicios de terceros</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — autenticación, base de datos, análisis e informes de fallos.</li>
+<li><strong>Google Drive</strong> — copia de seguridad opcional de fotos; sujeto a la política de privacidad de Google.</li>
+<li><strong>RevenueCat</strong> — gestión de suscripciones. RevenueCat recibe tu ID de usuario y los eventos de compra.</li>
+<li><strong>Google Play</strong> — compras integradas y distribución de la App.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Compartición de datos</span></div><div class="sb"><p>No vendemos, alquilamos ni compartimos tus datos personales con terceros con fines de marketing. Los datos solo se comparten con los proveedores enumerados anteriormente, exclusivamente para operar la App.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Tus derechos</span></div><div class="sb"><p>Puedes acceder, exportar o eliminar tus datos en cualquier momento. Para eliminar todos tus datos incluidas las entradas y tu cuenta, ve a Perfil → Eliminar cuenta en la App. Para otras solicitudes, contáctanos en <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Privacidad infantil</span></div><div class="sb"><p>La App no está dirigida a menores de 13 años. No recopilamos a sabiendas información personal de niños menores de 13 años.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Cambios</span></div><div class="sb"><p>Podemos actualizar esta Política de privacidad. Actualizaremos la fecha indicada arriba. El uso continuado de la App tras los cambios implica aceptación.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Contacto</span></div><div class="sb"><p>¿Preguntas sobre privacidad? Escríbenos a <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. También se aplican nuestros <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=es">Términos de servicio</a>.</p></div></div>
+</div>
+</div>
 
-  <!-- ITALIAN -->
-  <div class="lang-content" data-lang="it">
-    <h1>Informativa sulla privacy</h1>
-    <p class="updated">Ultimo aggiornamento: 21 giugno 2026</p>
-    <div class="highlight"><strong>In breve:</strong> Macaco archivia le tue voci di diario e le informazioni dell'account in modo sicuro nel tuo account cloud. Non vendiamo i tuoi dati, non mostriamo annunci e non condividiamo i tuoi contenuti. Le tue foto vanno nel tuo Google Drive — non le archiviamo mai sui nostri server.</div>
-    <h2>1. Chi siamo</h2>
-    <p>Macaco è un'app di diario di viaggio personale sviluppata da <strong>House of Mmminq</strong>. Domande? <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>Utilizzando Macaco accetti anche i nostri <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=it">Termini di servizio</a>.</p>
-    <h2>2. Dati raccolti</h2>
-    <table>
-      <tr><th>Dati</th><th>Perché</th><th>Dove archiviati</th></tr>
-      <tr><td><strong>Informazioni account</strong><br>Nome, email, foto profilo</td><td>Per identificare il tuo account e sincronizzare le voci</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Voci del diario</strong><br>Titolo, luogo, data, descrizione, umore, tag</td><td>I tuoi ricordi di viaggio — lo scopo principale dell'app</td><td>Firebase Firestore, nella tua sotto-raccolta personale</td></tr>
-      <tr><td><strong>Foto</strong></td><td>Per allegare ricordi alle voci</td><td>Galleria del dispositivo e opzionalmente il tuo Google Drive</td></tr>
-      <tr><td><strong>Stato acquisto</strong></td><td>Per verificare il tuo abbonamento premium</td><td>RevenueCat e Google Play — non gestiamo mai i dettagli di pagamento direttamente</td></tr>
-    </table>
-    <p>Non raccogliamo dati di localizzazione automaticamente. Usiamo <strong>Firebase Analytics</strong> (Google LLC) per raccogliere dati di utilizzo aggregati e anonimizzati. Questi dati non sono collegati alla tua identità. Puoi disattivarli tramite «Disattiva personalizzazione annunci» sul tuo dispositivo. Usiamo <strong>Firebase Crashlytics</strong> per i report di crash.</p>
-    <h2>3. Come usiamo i tuoi dati</h2>
-    <ul>
-      <li>Per sincronizzare le voci tra i dispositivi collegati</li>
-      <li>Per eseguire backup e ripristino delle foto tramite Google Drive</li>
-      <li>Per verificare il tuo stato di abbonamento premium</li>
-      <li>Per inviare promemoria locali opzionali (nessun dato lascia il tuo dispositivo)</li>
-    </ul>
-    <p>Non utilizziamo i tuoi dati per pubblicità, profilazione o scopi diversi dal funzionamento dell'app.</p>
-    <h2>4. Servizi di terze parti</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — analisi di utilizzo aggregate — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — report di crash — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — foto lette/scritte nel tuo Drive. Richiediamo solo lo scope <code>drive.file</code>, limitando l'accesso ai file creati da Macaco.</li>
-      <li><strong>RevenueCat</strong> — gestione abbonamenti — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — elaborazione pagamenti — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Condivisione dati</h2>
-    <p>Non vendiamo, affittiamo né condividiamo i tuoi dati personali con terze parti per scopi propri. I trasferimenti di dati sono limitati a quelli descritti sopra.</p>
-    <h2>6. Conservazione ed eliminazione</h2>
-    <ul>
-      <li><strong>Voci:</strong> Eliminale singolarmente nell'app o tutte tramite Profilo → Elimina account</li>
-      <li><strong>Foto:</strong> Rimuovere una foto da una voce la elimina dalla galleria; le copie Drive si eliminano dal tuo Google Drive</li>
-      <li><strong>Account:</strong> Profilo → Elimina account rimuove definitivamente tutte le voci dai nostri server.</li>
-    </ul>
-    <h2>7. Sicurezza</h2>
-    <p>Tutti i dati in transito sono crittografati via HTTPS/TLS. I dati a riposo sono protetti dalle regole di sicurezza Firebase. Non accediamo mai alle tue credenziali Google.</p>
-    <h2>8. Privacy dei minori</h2>
-    <p>Macaco non è destinato a minori di 13 anni. Non raccogliamo consapevolmente dati da minori di 13 anni.</p>
-    <h2>9. I tuoi diritti</h2>
-    <p>A seconda della tua posizione potresti avere diritti di accesso, rettifica, cancellazione o opposizione. Contattaci: <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Modifiche</h2>
-    <p>Possiamo aggiornare questa informativa. Aggiorneremo la data «Ultimo aggiornamento». L'uso continuato costituisce accettazione.</p>
-    <h2>11. Contatti</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- ITALIAN -->
+<div class="lc" data-lang="it">
+<div class="body-wrap">
+<p class="intro">La presente Informativa sulla privacy spiega come House of Mmminq («noi») raccoglie, utilizza e protegge le informazioni quando utilizzi l'applicazione mobile Macaco («l'App»).</p>
+<div class="summary"><div class="sum-label">In sintesi</div><p class="sum-text">Raccogliamo solo ciò che è necessario per far funzionare l'app. Le tue voci sono archiviate nel tuo account cloud e non vengono mai vendute né utilizzate per la pubblicità. Puoi eliminare tutto in qualsiasi momento.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Informazioni raccolte</span></div><div class="sb">
+<table><tr><th>Dati</th><th>Finalità</th></tr>
+<tr><td>Informazioni account (e-mail, nome visualizzato, foto profilo)</td><td>Autenticazione e visualizzazione del profilo</td></tr>
+<tr><td>Voci del diario (testo, foto, luoghi, umore, tag)</td><td>Funzionalità principale — archiviata nel tuo account Firebase</td></tr>
+<tr><td>Accesso a Google Drive (se connesso)</td><td>Backup fotografico opzionale</td></tr>
+<tr><td>Eventi analitici e rapporti di arresto anomalo</td><td>Stabilità e statistiche d'uso (Firebase Analytics &amp; Crashlytics)</td></tr>
+<tr><td>Stato d'acquisto</td><td>Accesso alle funzionalità premium tramite RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">Non raccogliamo identificatori pubblicitari (il permesso AD_ID è esplicitamente rimosso dalla nostra app).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Come usiamo le tue informazioni</span></div><div class="sb"><ul>
+<li>Fornire e mantenere l'App e sincronizzare le tue voci tra i dispositivi.</li>
+<li>Eseguire il backup e ripristinare le foto tramite Google Drive (solo se lo colleghi).</li>
+<li>Gestire il tuo abbonamento premium tramite RevenueCat e Google Play.</li>
+<li>Monitorare la stabilità dell'App e correggere gli arresti anomali con analisi anonimizzate.</li>
+<li>Inviare notifiche di promemoria opzionali se le attivi.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Archiviazione e sicurezza dei dati</span></div><div class="sb"><p>Le voci del diario sono archiviate in Firebase Firestore sotto il tuo ID utente univoco, accessibile solo da te. Le foto sono archiviate nel tuo Google Drive (se connesso) o nella galleria del dispositivo. Utilizziamo misure di sicurezza standard del settore e ci affidiamo all'infrastruttura di sicurezza di Google.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Servizi di terze parti</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — autenticazione, database, analisi e rapporti di arresto anomalo.</li>
+<li><strong>Google Drive</strong> — backup fotografico opzionale; regolato dalla politica sulla privacy di Google.</li>
+<li><strong>RevenueCat</strong> — gestione degli abbonamenti. RevenueCat riceve il tuo ID utente e gli eventi di acquisto.</li>
+<li><strong>Google Play</strong> — acquisti in-app e distribuzione dell'App.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Condivisione dei dati</span></div><div class="sb"><p>Non vendiamo, affittiamo né condividiamo i tuoi dati personali con terze parti per scopi di marketing. I dati sono condivisi solo con i fornitori di servizi elencati sopra, esclusivamente per far funzionare l'App.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">I tuoi diritti</span></div><div class="sb"><p>Puoi accedere, esportare o eliminare i tuoi dati in qualsiasi momento. Per eliminare tutti i dati incluse le voci e il tuo account, vai su Profilo → Elimina account nell'App. Per altre richieste, contattaci a <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Privacy dei minori</span></div><div class="sb"><p>L'App non è destinata a bambini di età inferiore ai 13 anni. Non raccogliamo consapevolmente informazioni personali di bambini di età inferiore ai 13 anni.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Modifiche</span></div><div class="sb"><p>Potremmo aggiornare questa Informativa sulla privacy. Aggiorneremo la data sopra indicata. L'uso continuato dell'App dopo le modifiche costituisce accettazione.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Contatti</span></div><div class="sb"><p>Domande sulla privacy? Scrivici a <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Si applicano anche i nostri <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=it">Termini di servizio</a>.</p></div></div>
+</div>
+</div>
 
-  <!-- DUTCH -->
-  <div class="lang-content" data-lang="nl">
-    <h1>Privacybeleid</h1>
-    <p class="updated">Laatst bijgewerkt: 21 juni 2026</p>
-    <div class="highlight"><strong>Samengevat:</strong> Macaco slaat uw dagboekinvoeren en accountinformatie veilig op in uw eigen cloudaccount. We verkopen uw gegevens niet, tonen geen advertenties en delen uw inhoud niet. Uw foto's gaan naar uw eigen Google Drive — we slaan ze nooit op onze servers op.</div>
-    <h2>1. Wie we zijn</h2>
-    <p>Macaco is een persoonlijke reisdagboek-app ontwikkeld door <strong>House of Mmminq</strong>. Vragen? <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>Door Macaco te gebruiken stemt u ook in met onze <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=nl">Gebruiksvoorwaarden</a>.</p>
-    <h2>2. Welke gegevens we verzamelen</h2>
-    <table>
-      <tr><th>Gegevens</th><th>Waarom</th><th>Waar opgeslagen</th></tr>
-      <tr><td><strong>Accountinformatie</strong><br>Naam, e-mail, profielfoto</td><td>Om uw account te identificeren en invoeren te synchroniseren</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Dagboekinvoeren</strong><br>Titel, locatie, datum, beschrijving, stemming, tags</td><td>Uw reisherinneringen — de kernfunctie van de app</td><td>Firebase Firestore, in uw persoonlijke subcollectie</td></tr>
-      <tr><td><strong>Foto's</strong></td><td>Om herinneringen aan invoeren te koppelen</td><td>Uw apparaatgalerij en optioneel uw eigen Google Drive</td></tr>
-      <tr><td><strong>Aankoopstatus</strong></td><td>Om uw premium abonnement te verifiëren</td><td>RevenueCat en Google Play — we verwerken nooit direct betalingsgegevens</td></tr>
-    </table>
-    <p>We verzamelen <strong>geen</strong> locatiegegevens automatisch. We gebruiken <strong>Firebase Analytics</strong> (Google LLC) voor geaggregeerde, geanonimiseerde gebruiksgegevens. Deze zijn niet gekoppeld aan uw identiteit. U kunt zich afmelden via «Reclame personalisatie uitschakelen» op uw apparaat. We gebruiken <strong>Firebase Crashlytics</strong> voor crashrapporten.</p>
-    <h2>3. Hoe we uw gegevens gebruiken</h2>
-    <ul>
-      <li>Om uw invoeren tussen apparaten te synchroniseren</li>
-      <li>Om uw foto's te back-uppen en te herstellen via Google Drive</li>
-      <li>Om uw premium abonnementsstatus te verifiëren</li>
-      <li>Om optionele lokale herinneringen te sturen (geen gegevens verlaten uw apparaat)</li>
-    </ul>
-    <p>We gebruiken uw gegevens niet voor advertenties, profilering of andere doelen dan het uitvoeren van de app.</p>
-    <h2>4. Diensten van derden</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — geaggregeerde gebruiksanalyse — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — crashrapporten — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — foto's worden gelezen/geschreven in uw eigen Drive. We vragen alleen de scope <code>drive.file</code> aan, beperkt tot bestanden gemaakt door Macaco.</li>
-      <li><strong>RevenueCat</strong> — abonnementsbeheer — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — betalingsverwerking — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Gegevens delen</h2>
-    <p>We verkopen, verhuren of delen uw persoonsgegevens niet met derden voor hun eigen doelen. Gegevensoverdrachten zijn beperkt tot de hierboven beschreven.</p>
-    <h2>6. Bewaring en verwijdering</h2>
-    <ul>
-      <li><strong>Invoeren:</strong> Verwijder ze afzonderlijk of allemaal via Profiel → Account verwijderen</li>
-      <li><strong>Foto's:</strong> Een foto verwijderen uit een invoer verwijdert hem uit uw galerij; Drive-kopieën verwijdert u uit uw eigen Google Drive</li>
-      <li><strong>Account:</strong> Profiel → Account verwijderen verwijdert permanent alle invoeren van onze servers.</li>
-    </ul>
-    <h2>7. Beveiliging</h2>
-    <p>Alle gegevens in transit zijn versleuteld via HTTPS/TLS. Opgeslagen gegevens zijn beschermd door Firebase beveiligingsregels. We hebben nooit toegang tot uw Google-inloggegevens.</p>
-    <h2>8. Privacy van kinderen</h2>
-    <p>Macaco is niet gericht op kinderen onder de 13 jaar. We verzamelen niet bewust gegevens van kinderen onder de 13.</p>
-    <h2>9. Uw rechten</h2>
-    <p>Afhankelijk van uw locatie heeft u mogelijk rechten op inzage, correctie, verwijdering of bezwaar. Neem contact op via <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Wijzigingen</h2>
-    <p>We kunnen dit beleid bijwerken. De datum «Laatst bijgewerkt» wordt aangepast. Voortgezet gebruik geldt als aanvaarding.</p>
-    <h2>11. Contact</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- DUTCH -->
+<div class="lc" data-lang="nl">
+<div class="body-wrap">
+<p class="intro">Dit Privacybeleid legt uit hoe House of Mmminq («wij» of «ons») informatie verzamelt, gebruikt en beschermt wanneer u de mobiele app Macaco («de App») gebruikt.</p>
+<div class="summary"><div class="sum-label">Samenvatting</div><p class="sum-text">We verzamelen alleen wat nodig is om de app te laten werken. Uw invoeren worden opgeslagen in uw eigen cloudaccount en worden nooit verkocht of voor advertenties gebruikt. U kunt alles op elk moment verwijderen.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Verzamelde informatie</span></div><div class="sb">
+<table><tr><th>Gegevens</th><th>Doel</th></tr>
+<tr><td>Accountgegevens (e-mail, weergavenaam, profielfoto)</td><td>Authenticatie en profielweergave</td></tr>
+<tr><td>Dagboekinvoeren (tekst, foto's, locaties, stemming, tags)</td><td>Kernfunctionaliteit — opgeslagen in uw Firebase-account</td></tr>
+<tr><td>Google Drive-toegang (indien verbonden)</td><td>Optionele fotobak-up</td></tr>
+<tr><td>Analysegebeurtenissen en crashrapporten</td><td>App-stabiliteit en gebruiksinzichten (Firebase Analytics &amp; Crashlytics)</td></tr>
+<tr><td>Aankoopstatus</td><td>Premium-functietoegang via RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">Wij verzamelen geen reclame-ID's (de AD_ID-toestemming is expliciet verwijderd uit onze app).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Gebruik van uw gegevens</span></div><div class="sb"><ul>
+<li>De App aanbieden en onderhouden en uw invoeren synchroniseren tussen apparaten.</li>
+<li>Foto's back-uppen en herstellen via Google Drive (alleen als u dit verbindt).</li>
+<li>Uw premium abonnement beheren via RevenueCat en Google Play.</li>
+<li>De stabiliteit van de App bewaken en crashes oplossen met geanonimiseerde analyses.</li>
+<li>Optionele herinneringsmeldingen sturen als u deze inschakelt.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Gegevensopslag en beveiliging</span></div><div class="sb"><p>Dagboekinvoeren worden opgeslagen in Firebase Firestore onder uw unieke gebruikers-ID, alleen toegankelijk voor u. Foto's worden opgeslagen in uw Google Drive (indien verbonden) of in de galerij van uw apparaat. Wij hanteren industriestandaard beveiligingsmaatregelen en vertrouwen op de infrastructuurbeveiliging van Google.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Derde partijen</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — authenticatie, database, analyses en crashrapporten.</li>
+<li><strong>Google Drive</strong> — optionele foto-back-up; valt onder het privacybeleid van Google.</li>
+<li><strong>RevenueCat</strong> — abonnementsbeheer. RevenueCat ontvangt uw gebruikers-ID en aankoopgebeurtenissen.</li>
+<li><strong>Google Play</strong> — in-app-aankopen en app-distributie.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Gegevensdeling</span></div><div class="sb"><p>Wij verkopen, verhuren of delen uw persoonsgegevens niet met derden voor marketingdoeleinden. Gegevens worden alleen gedeeld met de bovengenoemde dienstverleners, uitsluitend om de App te laten werken.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Uw rechten</span></div><div class="sb"><p>U kunt uw gegevens op elk moment inzien, exporteren of verwijderen. Om alle gegevens te verwijderen, inclusief invoeren en uw account, gaat u naar Profiel → Account verwijderen in de App. Voor andere verzoeken kunt u contact opnemen via <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Privacy van kinderen</span></div><div class="sb"><p>De App is niet gericht op kinderen onder de 13 jaar. Wij verzamelen niet bewust persoonsgegevens van kinderen onder de 13 jaar.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Wijzigingen</span></div><div class="sb"><p>Wij kunnen dit Privacybeleid bijwerken. De datum hierboven wordt dan aangepast. Voortgezet gebruik van de App na wijzigingen geldt als aanvaarding.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Contact</span></div><div class="sb"><p>Vragen over privacy? Neem contact op via <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Onze <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=nl">Gebruiksvoorwaarden</a> zijn ook van toepassing.</p></div></div>
+</div>
+</div>
 
-  <!-- PORTUGUESE -->
-  <div class="lang-content" data-lang="pt">
-    <h1>Política de privacidade</h1>
-    <p class="updated">Última atualização: 21 de junho de 2026</p>
-    <div class="highlight"><strong>Resumo:</strong> O Macaco armazena suas entradas de diário e informações de conta com segurança na sua própria conta na nuvem. Não vendemos seus dados, não exibimos anúncios e não compartilhamos seu conteúdo. Suas fotos vão para o seu próprio Google Drive — nunca as armazenamos em nossos servidores.</div>
-    <h2>1. Quem somos</h2>
-    <p>Macaco é um aplicativo de diário de viagem pessoal desenvolvido pela <strong>House of Mmminq</strong>. Dúvidas? <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>Ao usar o Macaco você também concorda com nossos <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=pt">Termos de serviço</a>.</p>
-    <h2>2. Dados coletados</h2>
-    <table>
-      <tr><th>Dados</th><th>Por quê</th><th>Onde armazenados</th></tr>
-      <tr><td><strong>Informações de conta</strong><br>Nome, e-mail, foto de perfil</td><td>Para identificar sua conta e sincronizar entradas</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Entradas do diário</strong><br>Título, local, data, descrição, humor, tags</td><td>Suas memórias de viagem — a função principal do app</td><td>Firebase Firestore, na sua subcoleção pessoal</td></tr>
-      <tr><td><strong>Fotos</strong></td><td>Para associar memórias às entradas</td><td>Galeria do dispositivo e opcionalmente seu próprio Google Drive</td></tr>
-      <tr><td><strong>Status de compra</strong></td><td>Para verificar sua assinatura premium</td><td>RevenueCat e Google Play — nunca processamos detalhes de pagamento diretamente</td></tr>
-    </table>
-    <p>Não coletamos dados de localização automaticamente. Usamos o <strong>Firebase Analytics</strong> (Google LLC) para coletar dados de uso agregados e anônimos. Esses dados não estão vinculados à sua identidade. Você pode desativar em «Desativar personalização de anúncios» no seu dispositivo. Usamos o <strong>Firebase Crashlytics</strong> para relatórios de falhas.</p>
-    <h2>3. Como usamos seus dados</h2>
-    <ul>
-      <li>Para sincronizar suas entradas entre dispositivos conectados</li>
-      <li>Para fazer backup e restaurar fotos via Google Drive</li>
-      <li>Para verificar seu status de assinatura premium</li>
-      <li>Para enviar lembretes locais opcionais (nenhum dado sai do seu dispositivo)</li>
-    </ul>
-    <p>Não usamos seus dados para publicidade, criação de perfis ou qualquer finalidade além de executar o app.</p>
-    <h2>4. Serviços de terceiros</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — análises de uso agregadas — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — relatórios de falhas — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — fotos lidas/gravadas no seu próprio Drive. Solicitamos apenas o escopo <code>drive.file</code>, limitando o acesso a arquivos criados pelo Macaco.</li>
-      <li><strong>RevenueCat</strong> — gerenciamento de assinaturas — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — processamento de pagamentos — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Compartilhamento de dados</h2>
-    <p>Não vendemos, alugamos nem compartilhamos seus dados pessoais com terceiros para fins próprios. As transferências de dados limitam-se às descritas acima.</p>
-    <h2>6. Retenção e exclusão</h2>
-    <ul>
-      <li><strong>Entradas:</strong> Exclua individualmente ou todas via Perfil → Excluir conta</li>
-      <li><strong>Fotos:</strong> Remover uma foto de uma entrada a exclui da galeria; cópias do Drive são excluídas do seu Google Drive</li>
-      <li><strong>Conta:</strong> Perfil → Excluir conta remove permanentemente todas as entradas dos nossos servidores.</li>
-    </ul>
-    <h2>7. Segurança</h2>
-    <p>Todos os dados em trânsito são criptografados via HTTPS/TLS. Os dados em repouso são protegidos pelas regras de segurança do Firebase. Nunca acessamos suas credenciais do Google.</p>
-    <h2>8. Privacidade de crianças</h2>
-    <p>O Macaco não é destinado a crianças menores de 13 anos. Não coletamos conscientemente dados de menores de 13 anos.</p>
-    <h2>9. Seus direitos</h2>
-    <p>Dependendo da sua localização, você pode ter direitos de acesso, correção, exclusão ou oposição. Contate-nos: <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Alterações</h2>
-    <p>Podemos atualizar esta política. Atualizaremos a data «Última atualização». O uso continuado constitui aceitação.</p>
-    <h2>11. Contato</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- PORTUGUESE -->
+<div class="lc" data-lang="pt">
+<div class="body-wrap">
+<p class="intro">Esta Política de privacidade explica como a House of Mmminq («nós») coleta, usa e protege informações quando você usa o aplicativo móvel Macaco («o App»).</p>
+<div class="summary"><div class="sum-label">Resumo</div><p class="sum-text">Coletamos apenas o necessário para o funcionamento do app. Suas entradas são armazenadas na sua própria conta na nuvem e nunca são vendidas ou usadas para publicidade. Você pode excluir tudo a qualquer momento.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Informações coletadas</span></div><div class="sb">
+<table><tr><th>Dados</th><th>Finalidade</th></tr>
+<tr><td>Informações da conta (e-mail, nome de exibição, foto do perfil)</td><td>Autenticação e exibição do perfil</td></tr>
+<tr><td>Entradas do diário (texto, fotos, locais, humor, tags)</td><td>Funcionalidade principal — armazenada na sua conta do Firebase</td></tr>
+<tr><td>Acesso ao Google Drive (se conectado)</td><td>Backup opcional de fotos</td></tr>
+<tr><td>Eventos de análise e relatórios de falhas</td><td>Estabilidade e insights de uso (Firebase Analytics e Crashlytics)</td></tr>
+<tr><td>Status de compra</td><td>Acesso a recursos premium via RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">Não coletamos identificadores de publicidade (a permissão AD_ID foi explicitamente removida do nosso app).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Como usamos suas informações</span></div><div class="sb"><ul>
+<li>Fornecer e manter o App e sincronizar suas entradas entre dispositivos.</li>
+<li>Fazer backup e restaurar fotos via Google Drive (somente se você conectá-lo).</li>
+<li>Gerenciar sua assinatura premium via RevenueCat e Google Play.</li>
+<li>Monitorar a estabilidade do App e corrigir falhas com análises anonimizadas.</li>
+<li>Enviar notificações de lembrete opcionais se você as ativar.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Armazenamento e segurança</span></div><div class="sb"><p>As entradas do diário são armazenadas no Firebase Firestore sob seu ID de usuário exclusivo, acessível apenas por você. As fotos são armazenadas no seu Google Drive (se conectado) ou na galeria do seu dispositivo. Usamos medidas de segurança padrão do setor e contamos com a segurança da infraestrutura do Google.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Serviços de terceiros</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — autenticação, banco de dados, análises e relatórios de falhas.</li>
+<li><strong>Google Drive</strong> — backup opcional de fotos; regido pela política de privacidade do Google.</li>
+<li><strong>RevenueCat</strong> — gerenciamento de assinaturas. A RevenueCat recebe seu ID de usuário e eventos de compra.</li>
+<li><strong>Google Play</strong> — compras no app e distribuição do App.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Compartilhamento de dados</span></div><div class="sb"><p>Não vendemos, alugamos nem compartilhamos seus dados pessoais com terceiros para fins de marketing. Os dados são compartilhados apenas com os provedores listados acima, exclusivamente para operar o App.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Seus direitos</span></div><div class="sb"><p>Você pode acessar, exportar ou excluir seus dados a qualquer momento. Para excluir todos os seus dados, incluindo entradas e sua conta, acesse Perfil → Excluir conta no App. Para outras solicitações, entre em contato: <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Privacidade infantil</span></div><div class="sb"><p>O App não é destinado a crianças menores de 13 anos. Não coletamos intencionalmente informações pessoais de crianças menores de 13 anos.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Alterações</span></div><div class="sb"><p>Podemos atualizar esta Política de privacidade. Atualizaremos a data acima. O uso continuado do App após as alterações constitui aceitação.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Contato</span></div><div class="sb"><p>Dúvidas sobre privacidade? Fale conosco: <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Nossos <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=pt">Termos de serviço</a> também se aplicam.</p></div></div>
+</div>
+</div>
 
-  <!-- POLISH -->
-  <div class="lang-content" data-lang="pl">
-    <h1>Polityka prywatności</h1>
-    <p class="updated">Ostatnia aktualizacja: 21 czerwca 2026</p>
-    <div class="highlight"><strong>W skrócie:</strong> Macaco przechowuje Twoje wpisy w dzienniku i informacje o koncie bezpiecznie na Twoim własnym koncie w chmurze. Nie sprzedajemy Twoich danych, nie wyświetlamy reklam i nie udostępniamy Twoich treści. Twoje zdjęcia trafiają na Twój własny Dysk Google — nigdy nie przechowujemy ich na naszych serwerach.</div>
-    <h2>1. Kim jesteśmy</h2>
-    <p>Macaco to osobisty dziennik podróży opracowany przez <strong>House of Mmminq</strong>. Pytania? <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>Korzystając z Macaco, akceptujesz również nasze <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=pl">Warunki korzystania z usługi</a>.</p>
-    <h2>2. Jakie dane zbieramy</h2>
-    <table>
-      <tr><th>Dane</th><th>Dlaczego</th><th>Gdzie przechowywane</th></tr>
-      <tr><td><strong>Informacje o koncie</strong><br>Imię i nazwisko, e-mail, zdjęcie profilowe</td><td>Do identyfikacji konta i synchronizacji wpisów</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Wpisy w dzienniku</strong><br>Tytuł, lokalizacja, data, opis, nastrój, tagi</td><td>Twoje wspomnienia z podróży — główny cel aplikacji</td><td>Firebase Firestore, w Twojej osobistej kolekcji</td></tr>
-      <tr><td><strong>Zdjęcia</strong></td><td>Do dołączania wspomnień do wpisów</td><td>Galeria urządzenia i opcjonalnie Twój własny Dysk Google</td></tr>
-      <tr><td><strong>Status zakupu</strong></td><td>Do weryfikacji subskrypcji premium</td><td>RevenueCat i Google Play — nigdy nie przetwarzamy bezpośrednio danych płatniczych</td></tr>
-    </table>
-    <p>Nie zbieramy automatycznie danych lokalizacyjnych. Używamy <strong>Firebase Analytics</strong> (Google LLC) do zbierania zagregowanych, zanonimizowanych danych użytkowania. Dane te nie są powiązane z Twoją tożsamością. Możesz zrezygnować poprzez «Wyłącz personalizację reklam» na swoim urządzeniu. Używamy <strong>Firebase Crashlytics</strong> do raportów awarii.</p>
-    <h2>3. Jak używamy Twoich danych</h2>
-    <ul>
-      <li>Do synchronizacji wpisów między zalogowanymi urządzeniami</li>
-      <li>Do tworzenia kopii zapasowych i przywracania zdjęć przez Dysk Google</li>
-      <li>Do weryfikacji statusu subskrypcji premium</li>
-      <li>Do wysyłania opcjonalnych lokalnych przypomnień (żadne dane nie opuszczają urządzenia)</li>
-    </ul>
-    <p>Nie używamy Twoich danych do reklam, profilowania ani żadnych celów innych niż działanie aplikacji.</p>
-    <h2>4. Usługi podmiotów trzecich</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — zagregowane analizy użytkowania — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — raporty awarii — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — zdjęcia odczytywane/zapisywane na Twoim własnym Dysku. Żądamy tylko zakresu <code>drive.file</code>, ograniczonego do plików utworzonych przez Macaco.</li>
-      <li><strong>RevenueCat</strong> — zarządzanie subskrypcjami — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — przetwarzanie płatności — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Udostępnianie danych</h2>
-    <p>Nie sprzedajemy, nie wynajmujemy ani nie udostępniamy Twoich danych osobowych stronom trzecim do ich własnych celów.</p>
-    <h2>6. Przechowywanie i usuwanie</h2>
-    <ul>
-      <li><strong>Wpisy:</strong> Usuń pojedynczo lub wszystkie przez Profil → Usuń konto</li>
-      <li><strong>Zdjęcia:</strong> Usunięcie zdjęcia z wpisu usuwa je z galerii; kopie z Dysku usuń ze swojego Dysku Google</li>
-      <li><strong>Konto:</strong> Profil → Usuń konto trwale usuwa wszystkie wpisy z naszych serwerów.</li>
-    </ul>
-    <h2>7. Bezpieczeństwo</h2>
-    <p>Wszystkie dane w tranzycie są szyfrowane przez HTTPS/TLS. Dane w spoczynku są chronione regułami bezpieczeństwa Firebase. Nigdy nie mamy dostępu do Twoich danych logowania do Google.</p>
-    <h2>8. Prywatność dzieci</h2>
-    <p>Macaco nie jest przeznaczony dla dzieci poniżej 13. roku życia. Nie zbieramy świadomie danych od dzieci poniżej 13 lat.</p>
-    <h2>9. Twoje prawa</h2>
-    <p>W zależności od lokalizacji możesz mieć prawa dostępu, poprawienia, usunięcia danych lub sprzeciwu. Skontaktuj się: <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Zmiany</h2>
-    <p>Możemy aktualizować tę politykę. Data «Ostatnia aktualizacja» zostanie zmieniona. Dalsze korzystanie oznacza akceptację.</p>
-    <h2>11. Kontakt</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- POLISH -->
+<div class="lc" data-lang="pl">
+<div class="body-wrap">
+<p class="intro">Niniejsza Polityka prywatności wyjaśnia, w jaki sposób House of Mmminq («my») gromadzi, wykorzystuje i chroni informacje podczas korzystania z aplikacji mobilnej Macaco («Aplikacja»).</p>
+<div class="summary"><div class="sum-label">Podsumowanie</div><p class="sum-text">Zbieramy tylko to, co jest niezbędne do działania aplikacji. Twoje wpisy są przechowywane na Twoim własnym koncie w chmurze i nigdy nie są sprzedawane ani wykorzystywane do reklam. Możesz usunąć wszystko w dowolnym momencie.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Gromadzone informacje</span></div><div class="sb">
+<table><tr><th>Dane</th><th>Cel</th></tr>
+<tr><td>Informacje o koncie (e-mail, nazwa wyświetlana, zdjęcie profilowe)</td><td>Uwierzytelnianie i wyświetlanie profilu</td></tr>
+<tr><td>Wpisy dziennika (tekst, zdjęcia, lokalizacje, nastrój, tagi)</td><td>Podstawowa funkcjonalność — przechowywana na Twoim koncie Firebase</td></tr>
+<tr><td>Dostęp do Dysku Google (jeśli połączony)</td><td>Opcjonalna kopia zapasowa zdjęć</td></tr>
+<tr><td>Zdarzenia analityczne i raporty o awariach</td><td>Stabilność aplikacji i statystyki użytkowania (Firebase Analytics i Crashlytics)</td></tr>
+<tr><td>Status zakupu</td><td>Dostęp do funkcji premium przez RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">Nie zbieramy identyfikatorów reklamowych (uprawnienie AD_ID zostało wyraźnie usunięte z naszej aplikacji).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Jak używamy Twoich informacji</span></div><div class="sb"><ul>
+<li>Świadczenie i utrzymanie Aplikacji oraz synchronizowanie wpisów między urządzeniami.</li>
+<li>Tworzenie kopii zapasowej i przywracanie zdjęć przez Dysk Google (tylko jeśli go podłączysz).</li>
+<li>Zarządzanie subskrypcją premium przez RevenueCat i Google Play.</li>
+<li>Monitorowanie stabilności Aplikacji i naprawianie awarii za pomocą anonimowych analiz.</li>
+<li>Wysyłanie opcjonalnych powiadomień przypominających, jeśli je włączysz.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Przechowywanie i bezpieczeństwo danych</span></div><div class="sb"><p>Wpisy dziennika są przechowywane w Firebase Firestore pod Twoim unikalnym identyfikatorem użytkownika, dostępnym tylko dla Ciebie. Zdjęcia są przechowywane na Twoim Dysku Google (jeśli jest podłączony) lub w galerii urządzenia. Stosujemy standardowe branżowe środki bezpieczeństwa i polegamy na infrastrukturze Google.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Usługi podmiotów trzecich</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — uwierzytelnianie, baza danych, analizy i raporty o awariach.</li>
+<li><strong>Dysk Google</strong> — opcjonalna kopia zapasowa zdjęć; podlega polityce prywatności Google.</li>
+<li><strong>RevenueCat</strong> — zarządzanie subskrypcjami. RevenueCat otrzymuje Twój identyfikator użytkownika i zdarzenia zakupu.</li>
+<li><strong>Google Play</strong> — zakupy w aplikacji i dystrybucja Aplikacji.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Udostępnianie danych</span></div><div class="sb"><p>Nie sprzedajemy, nie wynajmujemy ani nie udostępniamy Twoich danych osobowych podmiotom trzecim w celach marketingowych. Dane są udostępniane wyłącznie wymienionym powyżej usługodawcom, jedynie w celu działania Aplikacji.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Twoje prawa</span></div><div class="sb"><p>Możesz uzyskać dostęp do swoich danych, wyeksportować je lub usunąć w dowolnym momencie. Aby usunąć wszystkie dane, w tym wpisy i konto, przejdź do Profil → Usuń konto w Aplikacji. W przypadku innych żądań skontaktuj się pod adresem <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Prywatność dzieci</span></div><div class="sb"><p>Aplikacja nie jest skierowana do dzieci poniżej 13. roku życia. Nie gromadzimy świadomie danych osobowych dzieci poniżej 13. roku życia.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Zmiany</span></div><div class="sb"><p>Możemy aktualizować niniejszą Politykę prywatności. Data powyżej zostanie odpowiednio zmieniona. Dalsze korzystanie z Aplikacji po zmianach oznacza akceptację.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Kontakt</span></div><div class="sb"><p>Masz pytania dotyczące prywatności? Napisz do nas: <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Obowiązują również nasze <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=pl">Warunki korzystania</a>.</p></div></div>
+</div>
+</div>
 
-  <!-- SWEDISH -->
-  <div class="lang-content" data-lang="sv">
-    <h1>Integritetspolicy</h1>
-    <p class="updated">Senast uppdaterad: 21 juni 2026</p>
-    <div class="highlight"><strong>Kortversion:</strong> Macaco lagrar dina dagboksposter och kontoinformation säkert i ditt eget molnkonto. Vi säljer inte dina data, visar inte annonser och delar inte ditt innehåll. Dina foton går till ditt eget Google Drive — vi lagrar dem aldrig på våra servrar.</div>
-    <h2>1. Vilka vi är</h2>
-    <p>Macaco är en personlig resedagboksapp utvecklad av <strong>House of Mmminq</strong>. Frågor? <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <p>Genom att använda Macaco godkänner du också våra <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=sv">Användarvillkor</a>.</p>
-    <h2>2. Vilka data vi samlar in</h2>
-    <table>
-      <tr><th>Data</th><th>Varför</th><th>Var lagras det</th></tr>
-      <tr><td><strong>Kontoinformation</strong><br>Namn, e-post, profilfoto</td><td>För att identifiera ditt konto och synkronisera poster</td><td>Firebase Authentication (Google)</td></tr>
-      <tr><td><strong>Dagboksposter</strong><br>Titel, plats, datum, beskrivning, stämning, taggar</td><td>Dina reseminnen — appens huvudsyfte</td><td>Firebase Firestore, i din personliga undersamling</td></tr>
-      <tr><td><strong>Foton</strong></td><td>För att koppla minnen till poster</td><td>Din enhets galleri och valfritt ditt eget Google Drive</td></tr>
-      <tr><td><strong>Köpstatus</strong></td><td>För att verifiera din premiumPrenumeration</td><td>RevenueCat och Google Play — vi hanterar aldrig betalningsuppgifter direkt</td></tr>
-    </table>
-    <p>Vi samlar <strong>inte</strong> in platsdata automatiskt. Vi använder <strong>Firebase Analytics</strong> (Google LLC) för aggregerade, anonymiserade användningsdata. Dessa är inte kopplade till din identitet. Du kan välja bort detta via «Avaktivera annonsanpassning» på din enhet. Vi använder <strong>Firebase Crashlytics</strong> för kraschrapporter.</p>
-    <h2>3. Hur vi använder dina data</h2>
-    <ul>
-      <li>För att synkronisera dina poster mellan inloggade enheter</li>
-      <li>För att säkerhetskopiera och återställa foton via Google Drive</li>
-      <li>För att verifiera din premiumPrenumerationsstatus</li>
-      <li>För att skicka valfria lokala påminnelser (inga data lämnar din enhet)</li>
-    </ul>
-    <p>Vi använder inte dina data för annonsering, profilering eller något annat syfte än att driva appen.</p>
-    <h2>4. Tredjepartstjänster</h2>
-    <ul>
-      <li><strong>Google Firebase</strong> (Auth, Firestore) — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — aggregerade användningsanalyser — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — kraschrapporter — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — foton läses/skrivs till ditt eget Drive. Vi begär bara <code>drive.file</code>-scopet, begränsat till filer skapade av Macaco.</li>
-      <li><strong>RevenueCat</strong> — prenumerationshantering — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — betalningsbearbetning — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. Datadelning</h2>
-    <p>Vi säljer, hyr ut eller delar inte dina personuppgifter med tredje parter för deras egna syften.</p>
-    <h2>6. Lagring och radering</h2>
-    <ul>
-      <li><strong>Poster:</strong> Ta bort enskilt i appen eller alla via Profil → Ta bort konto</li>
-      <li><strong>Foton:</strong> Att ta bort ett foto från en post raderar det från galleriet; Drive-kopior raderas från ditt Google Drive</li>
-      <li><strong>Konto:</strong> Profil → Ta bort konto tar permanent bort alla poster från våra servrar.</li>
-    </ul>
-    <h2>7. Säkerhet</h2>
-    <p>Alla data under överföring är krypterade via HTTPS/TLS. Lagrade data skyddas av Firebases säkerhetsregler. Vi har aldrig tillgång till dina Google-inloggningsuppgifter.</p>
-    <h2>8. Barns integritet</h2>
-    <p>Macaco riktar sig inte till barn under 13 år. Vi samlar inte medvetet in data från barn under 13.</p>
-    <h2>9. Dina rättigheter</h2>
-    <p>Beroende på din plats kan du ha rätt till åtkomst, rättelse, radering eller invändning. Kontakta oss: <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p>
-    <h2>10. Ändringar</h2>
-    <p>Vi kan uppdatera denna policy. Vi uppdaterar datumet «Senast uppdaterad». Fortsatt användning innebär godkännande.</p>
-    <h2>11. Kontakt</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- SWEDISH -->
+<div class="lc" data-lang="sv">
+<div class="body-wrap">
+<p class="intro">Denna Integritetspolicy förklarar hur House of Mmminq («vi» eller «oss») samlar in, använder och skyddar information när du använder mobilappen Macaco («Appen»).</p>
+<div class="summary"><div class="sum-label">Sammanfattning</div><p class="sum-text">Vi samlar bara in vad som behövs för att driva appen. Dina poster lagras i ditt eget molnkonto och säljs aldrig eller används för annonsering. Du kan radera allt när som helst.</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">Information vi samlar in</span></div><div class="sb">
+<table><tr><th>Data</th><th>Syfte</th></tr>
+<tr><td>Kontoinformation (e-post, visningsnamn, profilfoto)</td><td>Autentisering och profilvisning</td></tr>
+<tr><td>Dagboksposter (text, foton, platser, stämning, taggar)</td><td>Kärnfunktionalitet — lagras i ditt Firebase-konto</td></tr>
+<tr><td>Google Drive-åtkomst (om ansluten)</td><td>Valfri fotosäkerhetskopiering</td></tr>
+<tr><td>Analyshändelser och kraschrapporter</td><td>App-stabilitet och användningsinsikter (Firebase Analytics &amp; Crashlytics)</td></tr>
+<tr><td>Inköpsstatus</td><td>Tillgång till premiumfunktioner via RevenueCat</td></tr>
+</table>
+<p style="margin-top:10px">Vi samlar inte in reklamidentifierare (AD_ID-behörigheten är uttryckligen borttagen från vår app).</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">Hur vi använder din information</span></div><div class="sb"><ul>
+<li>Tillhandahålla och underhålla Appen och synkronisera dina poster mellan enheter.</li>
+<li>Säkerhetskopiera och återställa foton via Google Drive (endast om du ansluter det).</li>
+<li>Hantera din premiumprenumeration via RevenueCat och Google Play.</li>
+<li>Övervaka appens stabilitet och åtgärda krascher med anonymiserad analys.</li>
+<li>Skicka valfria påminnelsemeddelanden om du aktiverar dem.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">Datalagring och säkerhet</span></div><div class="sb"><p>Dagboksposter lagras i Firebase Firestore under ditt unika användar-ID, tillgängligt enbart av dig. Foton lagras i din Google Drive (om ansluten) eller i enhetens galleri. Vi använder branschstandard säkerhetsåtgärder och förlitar oss på Googles infrastruktursäkerhet.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">Tredjepartstjänster</span></div><div class="sb"><ul>
+<li><strong>Firebase (Google)</strong> — autentisering, databas, analys och kraschrapporter.</li>
+<li><strong>Google Drive</strong> — valfri fotosäkerhetskopiering; regleras av Googles integritetspolicy.</li>
+<li><strong>RevenueCat</strong> — prenumerationshantering. RevenueCat tar emot ditt användar-ID och köphändelser.</li>
+<li><strong>Google Play</strong> — köp i appen och appdistribution.</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">Datadelning</span></div><div class="sb"><p>Vi säljer, hyr ut eller delar inte dina personuppgifter med tredje part för marknadsföringsändamål. Data delas bara med ovanstående tjänsteleverantörer, uteslutande för att driva Appen.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">Dina rättigheter</span></div><div class="sb"><p>Du kan komma åt, exportera eller radera dina uppgifter när som helst. För att radera alla uppgifter inklusive poster och ditt konto, gå till Profil → Ta bort konto i Appen. För andra förfrågningar, kontakta oss på <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">Barns integritet</span></div><div class="sb"><p>Appen är inte riktad till barn under 13 år. Vi samlar inte medvetet in personuppgifter från barn under 13 år.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">Ändringar</span></div><div class="sb"><p>Vi kan uppdatera denna Integritetspolicy. Vi uppdaterar datumet ovan. Fortsatt användning av Appen efter ändringar innebär godkännande.</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">Kontakt</span></div><div class="sb"><p>Frågor om integritet? Kontakta oss på <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>. Våra <a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=sv">Användarvillkor</a> gäller också.</p></div></div>
+</div>
+</div>
 
-  <!-- JAPANESE -->
-  <div class="lang-content" data-lang="ja">
-    <h1>プライバシーポリシー</h1>
-    <p class="updated">最終更新日：2026年6月21日</p>
-    <div class="highlight"><strong>概要：</strong>Macacoは、あなたの日記とアカウント情報をご自身のクラウドアカウントに安全に保存します。データを販売したり、広告を表示したり、コンテンツを共有することはありません。写真はご自身のGoogle Driveに保存され、当社のサーバーには一切保存されません。</div>
-    <h2>1. 私たちについて</h2>
-    <p>Macacoは、<strong>House of Mmminq</strong>が開発した個人旅行日記アプリです。ご質問は <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a> までどうぞ。</p>
-    <p>Macacoをご利用いただくことで、<a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=ja">利用規約</a>にも同意したものとみなされます。</p>
-    <h2>2. 収集するデータ</h2>
-    <table>
-      <tr><th>データ</th><th>収集理由</th><th>保存場所</th></tr>
-      <tr><td><strong>アカウント情報</strong><br>氏名、メールアドレス、プロフィール写真</td><td>アカウントの識別とデバイス間の同期</td><td>Firebase Authentication（Google）</td></tr>
-      <tr><td><strong>日記エントリー</strong><br>タイトル、場所、日付、説明、気分、タグ</td><td>旅の思い出 — アプリの主な目的</td><td>Firebase Firestore、個人サブコレクション内</td></tr>
-      <tr><td><strong>写真</strong></td><td>エントリーに思い出を添付するため</td><td>デバイスのギャラリー（MediaStore）およびオプションでご自身のGoogle Drive</td></tr>
-      <tr><td><strong>購入状態</strong></td><td>プレミアムサブスクリプションの確認</td><td>RevenueCatおよびGoogle Play — 支払い情報は直接扱いません</td></tr>
-    </table>
-    <p>位置情報データは自動的に収集しません。<strong>Firebase Analytics</strong>（Google LLC）を使用して、アプリの起動数、セッション時間、機能の使用状況などの集計・匿名化された利用データを収集し、アプリ改善に役立てています。このデータはあなたの個人情報とは結びつきません。デバイスの「広告のカスタマイズをオプトアウト」設定から拒否できます。<strong>Firebase Crashlytics</strong>を使用してクラッシュレポートを収集しています。</p>
-    <h2>3. データの利用目的</h2>
-    <ul>
-      <li>サインイン済みデバイス間での日記の同期</li>
-      <li>Google Driveを通じた写真のバックアップと復元</li>
-      <li>プレミアムサブスクリプション状態の確認</li>
-      <li>任意のローカルリマインダーの送信（デバイス外へのデータ送信なし）</li>
-    </ul>
-    <p>広告、プロファイリング、アプリ運営以外の目的でデータを使用することはありません。</p>
-    <h2>4. サードパーティサービス</h2>
-    <ul>
-      <li><strong>Google Firebase</strong>（Auth、Firestore）— <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — 集計利用データ — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — クラッシュレポート — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — 写真はご自身のDriveに読み書きされます。Macacoが作成したファイルのみにアクセスを限定する<code>drive.file</code>スコープのみを要求します。</li>
-      <li><strong>RevenueCat</strong> — サブスクリプション管理 — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — 決済処理 — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. データの共有</h2>
-    <p>個人データを第三者に販売、貸与、共有することはありません。データの転送は上記で説明した範囲に限られます。</p>
-    <h2>6. データの保持と削除</h2>
-    <ul>
-      <li><strong>エントリー：</strong>アプリ内で個別削除、またはプロフィール→アカウント削除ですべて削除</li>
-      <li><strong>写真：</strong>エントリーから写真を削除するとデバイスのギャラリーから削除されます；Drive上のコピーはご自身のGoogle Driveから削除できます</li>
-      <li><strong>アカウント：</strong>プロフィール→アカウント削除で、すべてのエントリーがサーバーから完全に削除されます。</li>
-    </ul>
-    <h2>7. セキュリティ</h2>
-    <p>転送中のすべてのデータはHTTPS/TLSで暗号化されています。保存データはFirebaseのセキュリティルールで保護されています。Googleアカウントの認証情報にアクセスすることは一切ありません。</p>
-    <h2>8. 子どものプライバシー</h2>
-    <p>Macacoは13歳未満の子どもを対象としていません。13歳未満の子どもから個人データを意図的に収集することはありません。</p>
-    <h2>9. お客様の権利</h2>
-    <p>お客様の所在地によっては、個人データへのアクセス、訂正、削除、または処理への異議申し立ての権利を有する場合があります。<a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>までご連絡ください。</p>
-    <h2>10. ポリシーの変更</h2>
-    <p>本ポリシーを更新する場合があります。「最終更新日」を変更します。変更後も引き続きご利用いただく場合、変更に同意したものとみなされます。</p>
-    <h2>11. お問い合わせ</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- JAPANESE -->
+<div class="lc" data-lang="ja">
+<div class="body-wrap">
+<p class="intro">本プライバシーポリシーは、House of Mmminq（「当社」）がモバイルアプリMacaco（「本アプリ」）のご利用時に情報をどのように収集・使用・保護するかを説明するものです。</p>
+<div class="summary"><div class="sum-label">要約</div><p class="sum-text">当社はアプリの運用に必要な情報のみを収集します。日記はご自身のクラウドアカウントに保存され、販売されたり広告に使用されることはありません。いつでもすべて削除できます。</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">収集する情報</span></div><div class="sb">
+<table><tr><th>データ</th><th>目的</th></tr>
+<tr><td>アカウント情報（メールアドレス、表示名、プロフィール写真）</td><td>認証とプロフィール表示</td></tr>
+<tr><td>日記データ（テキスト、写真、場所、気分、タグ）</td><td>アプリの主要機能 — Firebaseアカウントに保存</td></tr>
+<tr><td>Googleドライブアクセス（接続時）</td><td>写真の任意バックアップ</td></tr>
+<tr><td>分析イベントおよびクラッシュレポート</td><td>アプリの安定性と使用状況の把握（Firebase Analytics・Crashlytics）</td></tr>
+<tr><td>購入状況</td><td>RevenueCatを通じたプレミアム機能へのアクセス</td></tr>
+</table>
+<p style="margin-top:10px">広告識別子は収集しません（AD_ID権限はアプリから明示的に削除されています）。</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">情報の使用目的</span></div><div class="sb"><ul>
+<li>アプリの提供・維持、およびデバイス間での日記の同期。</li>
+<li>Googleドライブを通じた写真のバックアップと復元（接続時のみ）。</li>
+<li>RevenueCatとGoogle Playを通じたプレミアムサブスクリプションの管理。</li>
+<li>匿名化された分析によるアプリの安定性監視とクラッシュ修正。</li>
+<li>有効化した場合の任意リマインダー通知の送信。</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">データの保存とセキュリティ</span></div><div class="sb"><p>日記データはお客様固有のユーザーIDのもとFirebase Firestoreに保存され、お客様のみがアクセスできます。写真はGoogleドライブ（接続時）またはデバイスのギャラリーに保存されます。業界標準のセキュリティ対策を使用し、Googleのインフラセキュリティに依拠しています。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">サードパーティサービス</span></div><div class="sb"><ul>
+<li><strong>Firebase（Google）</strong>— 認証、データベース、分析、クラッシュレポート。</li>
+<li><strong>Googleドライブ</strong>— 写真の任意バックアップ。Googleのプライバシーポリシーが適用されます。</li>
+<li><strong>RevenueCat</strong>— サブスクリプション管理。RevenueCatはユーザーIDと購入イベントを受け取ります。</li>
+<li><strong>Google Play</strong>— アプリ内購入とアプリの配信。</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">データの共有</span></div><div class="sb"><p>マーケティング目的で個人データを第三者に販売・貸与・提供することはありません。データはアプリ運用のためにのみ、上記のサービスプロバイダーと共有します。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">お客様の権利</span></div><div class="sb"><p>いつでもデータにアクセス、エクスポート、または削除できます。日記やアカウントを含むすべてのデータを削除するには、アプリのプロフィール → アカウントを削除をご利用ください。その他のご要望は <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a> までご連絡ください。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">子どものプライバシー</span></div><div class="sb"><p>本アプリは13歳未満のお子様を対象としていません。13歳未満のお子様の個人情報を意図的に収集することはありません。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">ポリシーの変更</span></div><div class="sb"><p>本プライバシーポリシーを更新する場合があります。上記の日付を変更します。変更後も引き続きご利用いただく場合、変更に同意したものとみなされます。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">お問い合わせ</span></div><div class="sb"><p>プライバシーに関するご質問は <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a> までどうぞ。<a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=ja">利用規約</a>も適用されます。</p></div></div>
+</div>
+</div>
 
-  <!-- CHINESE SIMPLIFIED -->
-  <div class="lang-content" data-lang="zh">
-    <h1>隐私政策</h1>
-    <p class="updated">最后更新：2026年6月21日</p>
-    <div class="highlight"><strong>简短说明：</strong>Macaco 将您的日记条目和账户信息安全地存储在您自己的云账户中。我们不出售您的数据，不显示广告，也不与任何人分享您的内容。您的照片将上传到您自己的 Google 云端硬盘——我们从不将其存储在我们的服务器上。</div>
-    <h2>1. 关于我们</h2>
-    <p>Macaco 是由 <strong>House of Mmminq</strong> 开发的个人旅行日记应用。有疑问请联系：<a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>。</p>
-    <p>使用 Macaco 即表示您同意我们的<a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=zh">服务条款</a>。</p>
-    <h2>2. 我们收集的数据</h2>
-    <table>
-      <tr><th>数据</th><th>原因</th><th>存储位置</th></tr>
-      <tr><td><strong>账户信息</strong><br>姓名、电子邮件、头像</td><td>识别您的账户并在设备间同步条目</td><td>Firebase Authentication（Google）</td></tr>
-      <tr><td><strong>日记条目</strong><br>标题、地点、日期、描述、心情、标签</td><td>您的旅行记忆——应用的核心用途</td><td>Firebase Firestore，在您的个人子集合中</td></tr>
-      <tr><td><strong>照片</strong></td><td>将记忆附加到条目</td><td>设备相册（MediaStore），以及可选的您自己的 Google 云端硬盘</td></tr>
-      <tr><td><strong>购买状态</strong></td><td>验证您的高级订阅</td><td>RevenueCat 和 Google Play——我们从不直接处理支付详情</td></tr>
-    </table>
-    <p>我们不会自动收集位置数据。我们使用 <strong>Firebase Analytics</strong>（Google LLC）收集聚合、匿名的使用数据——如应用打开次数、会话时长和功能使用情况——以改进应用。这些数据不与您的身份关联。您可通过设备上的"退出广告个性化"设置来选择退出。我们使用 <strong>Firebase Crashlytics</strong> 收集崩溃和稳定性报告。</p>
-    <h2>3. 我们如何使用您的数据</h2>
-    <ul>
-      <li>在您登录的设备间同步日记条目</li>
-      <li>通过您连接的 Google 云端硬盘备份和恢复照片</li>
-      <li>验证您的高级订阅状态</li>
-      <li>发送可选的本地提醒（不会有数据离开您的设备）</li>
-    </ul>
-    <p>我们不会将您的数据用于广告、用户画像或运营应用以外的任何目的。</p>
-    <h2>4. 第三方服务</h2>
-    <ul>
-      <li><strong>Google Firebase</strong>（Auth、Firestore）— <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Firebase Analytics</strong> — 聚合应用使用洞察 — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-      <li><strong>Firebase Crashlytics</strong> — 崩溃报告 — <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a></li>
-      <li><strong>Google Drive API</strong> — 照片在您自己的云端硬盘中读写。我们仅请求 <code>drive.file</code> 权限范围，将访问限制在 Macaco 创建的文件。</li>
-      <li><strong>RevenueCat</strong> — 订阅管理 — <a href="https://www.revenuecat.com/privacy">revenuecat.com/privacy</a></li>
-      <li><strong>Google Play Billing</strong> — 付款处理 — <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
-    </ul>
-    <h2>5. 数据共享</h2>
-    <p>我们不会为第三方自身目的而出售、出租或共享您的个人数据。数据传输仅限于上述所述内容。</p>
-    <h2>6. 数据保留与删除</h2>
-    <ul>
-      <li><strong>条目：</strong>在应用内逐条删除，或通过个人资料 → 删除账户删除全部</li>
-      <li><strong>照片：</strong>从条目中删除照片会将其从设备相册中删除；云端硬盘副本可从您自己的 Google 云端硬盘删除</li>
-      <li><strong>账户：</strong>个人资料 → 删除账户将从我们的服务器中永久删除所有条目。</li>
-    </ul>
-    <h2>7. 安全</h2>
-    <p>所有传输中的数据均通过 HTTPS/TLS 加密。存储的数据受 Firebase 安全规则保护，确保每位用户只能访问自己的条目。我们从不访问您的 Google 账户凭据。</p>
-    <h2>8. 儿童隐私</h2>
-    <p>Macaco 不面向 13 岁以下儿童。我们不会故意收集 13 岁以下儿童的个人信息。</p>
-    <h2>9. 您的权利</h2>
-    <p>根据您所在位置，您可能拥有访问、更正、删除数据或反对处理的权利。请联系：<a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>。</p>
-    <h2>10. 政策变更</h2>
-    <p>我们可能会更新本政策。我们将更新"最后更新"日期。变更后继续使用即视为接受。</p>
-    <h2>11. 联系我们</h2>
-    <p>House of Mmminq<br><a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a></p>
-  </div>
+<!-- CHINESE SIMPLIFIED -->
+<div class="lc" data-lang="zh">
+<div class="body-wrap">
+<p class="intro">本隐私政策说明 House of Mmminq（"我们"）在您使用移动应用程序 Macaco（"本应用"）时如何收集、使用和保护信息。</p>
+<div class="summary"><div class="sum-label">摘要</div><p class="sum-text">我们只收集运行应用所需的信息。您的日记条目存储在您自己的云账户中，永远不会被出售或用于广告。您可随时删除一切内容。</p></div>
+<div class="sc"><div class="sh"><span class="sn">1</span><span class="st">我们收集的信息</span></div><div class="sb">
+<table><tr><th>数据</th><th>目的</th></tr>
+<tr><td>账户信息（电子邮件、显示名称、头像）</td><td>身份验证和个人资料显示</td></tr>
+<tr><td>日记条目（文字、照片、地点、心情、标签）</td><td>核心功能 — 存储在您的 Firebase 账户中</td></tr>
+<tr><td>Google 云端硬盘访问权限（如已连接）</td><td>可选照片备份</td></tr>
+<tr><td>分析事件和崩溃报告</td><td>应用稳定性和使用洞察（Firebase Analytics 和 Crashlytics）</td></tr>
+<tr><td>购买状态</td><td>通过 RevenueCat 访问高级功能</td></tr>
+</table>
+<p style="margin-top:10px">我们不收集广告标识符（AD_ID 权限已从我们的应用中明确删除）。</p>
+</div></div>
+<div class="sc"><div class="sh"><span class="sn">2</span><span class="st">我们如何使用您的信息</span></div><div class="sb"><ul>
+<li>提供和维护本应用，并在设备间同步您的条目。</li>
+<li>通过 Google 云端硬盘备份和恢复照片（仅在您连接后）。</li>
+<li>通过 RevenueCat 和 Google Play 管理您的高级订阅。</li>
+<li>使用匿名分析监控应用稳定性并修复崩溃问题。</li>
+<li>在您启用的情况下发送可选的提醒通知。</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">3</span><span class="st">数据存储与安全</span></div><div class="sb"><p>日记条目存储在 Firebase Firestore 中您的唯一用户 ID 下，仅您可访问。照片存储在您的 Google 云端硬盘（如已连接）或设备相册中。我们采用行业标准安全措施，并依托 Google 的基础架构安全性。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">4</span><span class="st">第三方服务</span></div><div class="sb"><ul>
+<li><strong>Firebase（Google）</strong>— 身份验证、数据库、分析和崩溃报告。</li>
+<li><strong>Google 云端硬盘</strong>— 可选照片备份；受 Google 隐私政策约束。</li>
+<li><strong>RevenueCat</strong>— 订阅管理。RevenueCat 接收您的用户 ID 和购买事件。</li>
+<li><strong>Google Play</strong>— 应用内购买和应用分发。</li>
+</ul></div></div>
+<div class="sc"><div class="sh"><span class="sn">5</span><span class="st">数据共享</span></div><div class="sb"><p>我们不会出于营销目的向第三方出售、出租或共享您的个人数据。数据仅与上述服务提供商共享，且仅用于运营本应用。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">6</span><span class="st">您的权利</span></div><div class="sb"><p>您可随时访问、导出或删除您的数据。要删除所有数据（包括条目和账户），请在应用中转到个人资料 → 删除账户。如有其他请求，请联系 <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">7</span><span class="st">儿童隐私</span></div><div class="sb"><p>本应用不面向13岁以下儿童。我们不会故意收集13岁以下儿童的个人信息。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">8</span><span class="st">政策变更</span></div><div class="sb"><p>我们可能会更新本隐私政策。我们将更新上方日期。变更后继续使用本应用即视为接受。</p></div></div>
+<div class="sc"><div class="sh"><span class="sn">9</span><span class="st">联系我们</span></div><div class="sb"><p>有隐私问题？请发送电子邮件至 <a href="mailto:houseofmmminq@gmail.com">houseofmmminq@gmail.com</a>。我们的<a href="https://mictroid.github.io/macaco/terms-of-service.html?lang=zh">服务条款</a>也适用。</p></div></div>
+</div>
+</div>
 
-  <footer>
-    &copy; 2026 House of Mmminq &nbsp;·&nbsp;
-    <a href="https://mictroid.github.io/macaco/terms-of-service.html">Terms of Service</a>
-  </footer>
+<footer>
+  <span>&copy; 2026 House of Mmminq</span>
+  <a href="https://mictroid.github.io/macaco/terms-of-service.html">Terms of Service</a>
+</footer>
 
-  <script>
-    var SUPPORTED = ['en','de','fr','es','it','nl','pt','pl','sv','ja','zh'];
-
-    function setLang(lang) {
-      if (SUPPORTED.indexOf(lang) === -1) lang = 'en';
-      document.querySelectorAll('.lang-content').forEach(function(el) {
-        el.classList.toggle('active', el.dataset.lang === lang);
-      });
-      document.getElementById('langSelect').value = lang;
-      try { history.replaceState(null, '', '?lang=' + lang); } catch(e) {}
-    }
-
-    (function() {
-      var param = new URLSearchParams(window.location.search).get('lang');
-      var browser = (navigator.language || '').split('-')[0];
-      var lang = SUPPORTED.indexOf(param) !== -1 ? param
-               : SUPPORTED.indexOf(browser) !== -1 ? browser
-               : 'en';
-      setLang(lang);
-    })();
-  </script>
+<script>
+var S=['en','de','fr','es','it','nl','pt','pl','sv','ja','zh'];
+var M={
+  en:{t:'Privacy Policy',d:'Updated 21 June 2026'},
+  de:{t:'Datenschutzerklärung',d:'Aktualisiert: 21. Juni 2026'},
+  fr:{t:'Politique de confidentialité',d:'Mis à jour le 21 juin 2026'},
+  es:{t:'Política de privacidad',d:'Actualizado el 21 de junio de 2026'},
+  it:{t:'Informativa sulla privacy',d:'Aggiornato il 21 giugno 2026'},
+  nl:{t:'Privacybeleid',d:'Bijgewerkt op 21 juni 2026'},
+  pt:{t:'Política de privacidade',d:'Atualizado em 21 de junho de 2026'},
+  pl:{t:'Polityka prywatności',d:'Zaktualizowano 21 czerwca 2026'},
+  sv:{t:'Integritetspolicy',d:'Uppdaterad 21 juni 2026'},
+  ja:{t:'プライバシーポリシー',d:'最終更新：2026年6月21日'},
+  zh:{t:'隐私政策',d:'最后更新：2026年6月21日'}
+};
+function setLang(l){
+  if(S.indexOf(l)===-1)l='en';
+  document.querySelectorAll('.lc').forEach(function(e){e.classList.toggle('active',e.dataset.lang===l);});
+  document.getElementById('langSelect').value=l;
+  var m=M[l]||M.en;
+  document.getElementById('hero-title').textContent=m.t;
+  document.getElementById('hero-date').textContent=m.d;
+  try{history.replaceState(null,'','?lang='+l);}catch(e){}
+}
+(function(){
+  var p=new URLSearchParams(window.location.search).get('lang');
+  var b=(navigator.language||'').split('-')[0];
+  setLang(S.indexOf(p)!==-1?p:S.indexOf(b)!==-1?b:'en');
+})();
+</script>
 </body>
 </html>
