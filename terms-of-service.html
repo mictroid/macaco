@@ -308,7 +308,7 @@
 
 <footer>
   <span>&copy; 2026 House of Mmminq</span>
-  <a href="https://mictroid.github.io/macaco/privacy-policy.html">Privacy Policy</a>
+  <a id="ppLink" href="https://mictroid.github.io/macaco/privacy-policy.html">Privacy Policy</a>
 </footer>
 
 <script>
@@ -333,6 +333,7 @@ function setLang(l){
   var m=M[l]||M.en;
   document.getElementById('hero-title').textContent=m.t;
   document.getElementById('hero-date').textContent=m.d;
+  document.getElementById('ppLink').href='https://mictroid.github.io/macaco/privacy-policy.html'+(l!=='en'?'?lang='+l:'');
   try{history.replaceState(null,'','?lang='+l);}catch(e){}
 }
 (function(){

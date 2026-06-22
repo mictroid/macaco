@@ -501,7 +501,7 @@
 
 <footer>
   <span>&copy; 2026 House of Mmminq</span>
-  <a href="https://mictroid.github.io/macaco/terms-of-service.html">Terms of Service</a>
+  <a id="tosLink" href="https://mictroid.github.io/macaco/terms-of-service.html">Terms of Service</a>
 </footer>
 
 <script>
@@ -526,6 +526,7 @@ function setLang(l){
   var m=M[l]||M.en;
   document.getElementById('hero-title').textContent=m.t;
   document.getElementById('hero-date').textContent=m.d;
+  document.getElementById('tosLink').href='https://mictroid.github.io/macaco/terms-of-service.html'+(l!=='en'?'?lang='+l:'');
   try{history.replaceState(null,'','?lang='+l);}catch(e){}
 }
 (function(){
