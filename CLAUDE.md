@@ -254,8 +254,8 @@ account (`michaelmtromp@gmail.com`), NOT the dev/app account `michael.tromp78@gm
 wired into Firebase / the Drive API). Confirmed 2026-06-23: the Drive API on the dev account can't see
 `Macaco-backup` at all, and shows zero recent uploads, so `G:` is demonstrably not its My Drive.
 **Disaster recovery: restore from the personal account** — sign into `michaelmtromp@gmail.com` at
-drive.google.com → `Macaco-backup`. (Exact address inferred from DriveFS logs; confirm via the
-Drive-for-Desktop tray icon if it matters.)
+drive.google.com → `Macaco-backup`. (Account + "caught up" status confirmed 2026-06-23 via the
+Drive-for-Desktop tray icon.)
 
 Restore: clone the repo, drop `debug.keystore` into `~/.android/`, copy the `ssh/` keys into
 `~/.ssh/` (for push access), open in Android Studio (it regenerates `local.properties`).
