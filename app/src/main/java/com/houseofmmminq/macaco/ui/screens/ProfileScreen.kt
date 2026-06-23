@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Folder
@@ -64,6 +65,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -342,14 +344,18 @@ fun ProfileScreen(
                         .clickable { showPhotoSourceSheet = true },
                     contentAlignment = Alignment.Center
                 ) {
-                    if (profilePhotoUri != null) {
+                    // Custom local photo first, then the Google account avatar, then initials.
+                    val displayPhotoModel: Any? = profilePhotoUri ?: user.photoUrl
+                    if (displayPhotoModel != null) {
                         AsyncImage(
-                            model = profilePhotoUri,
+                            model = displayPhotoModel,
                             contentDescription = stringResource(R.string.profile_photo_cd),
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(CircleShape),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
+                            // If the Google URL fails to load (offline, revoked), fall through to a Person icon.
+                            error = rememberVectorPainter(Icons.Default.Person)
                         )
                     } else {
                         Box(

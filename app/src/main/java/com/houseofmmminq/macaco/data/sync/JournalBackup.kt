@@ -12,7 +12,6 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.InputStream
 import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 /**
@@ -152,23 +151,32 @@ class JournalBackup(private val context: Context) {
             } ?: error("Couldn't open the selected file.")
 
             // ── Phase 2: extract from the local zip ───────────────────────────────────────────────
-            ZipInputStream(srcZip.inputStream().buffered(65_536)).use { zip ->
-                var entry = zip.nextEntry
-                while (entry != null) {
-                    val name = entry.name
-                    when {
-                        name == "backup.json" -> backupJson = zip.readBytes().decodeToString()
-                        name.startsWith("photos/") -> {
-                            // Flatten "photos/foo.jpg" → "photos_foo.jpg" so it's a valid filename.
-                            File(tempDir, name.replace("/", "_"))
-                                .outputStream()
-                                .buffered()
-                                .use { out -> zip.copyTo(out, bufferSize = 65_536) }
-                        }
+            // ZipFile reads the central directory from the end of the file on open. A truncated
+            // download (Drive SAF returning premature EOF during the copy above) has no central
+            // directory → an immediate, clear ZipException rather than a confusing ZLIB error
+            // discovered mid-stream by ZipInputStream.
+            try {
+                java.util.zip.ZipFile(srcZip).use { zipFile ->
+                    val entries = zipFile.entries().toList()
+
+                    entries.find { it.name == "backup.json" }?.let { entry ->
+                        backupJson = zipFile.getInputStream(entry).use { it.readBytes().decodeToString() }
                     }
-                    zip.closeEntry()
-                    entry = zip.nextEntry
+
+                    // Flatten "photos/foo.jpg" → "photos_foo.jpg" so it's a valid filename.
+                    entries.filter { it.name.startsWith("photos/") }.forEach { entry ->
+                        File(tempDir, entry.name.replace("/", "_"))
+                            .outputStream()
+                            .buffered(65_536)
+                            .use { out -> zipFile.getInputStream(entry).copyTo(out, bufferSize = 65_536) }
+                    }
                 }
+            } catch (e: java.util.zip.ZipException) {
+                // Central directory missing → file was truncated during download.
+                error(
+                    "The backup file is incomplete — it may not have finished downloading from Drive. " +
+                    "Open the file in the Files app to force a full download, then try importing again."
+                )
             }
 
             srcZip.delete() // no longer needed; photos are extracted into tempDir

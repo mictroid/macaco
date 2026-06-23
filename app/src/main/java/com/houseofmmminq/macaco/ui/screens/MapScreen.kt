@@ -138,19 +138,10 @@ fun MapScreen(
         if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty()) {
             // Exclude Null Island (0.0, 0.0) — geocoding failures land there and drag the
             // bounds south to equatorial Africa.
-            val nullFiltered = geocodedLocations.values
+            val latlngs = geocodedLocations.values
                 .map { LatLng(it.first, it.second) }
                 .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
-            if (nullFiltered.isEmpty()) return@LaunchedEffect
-
-            // Outlier rejection: drop any point >30° from the geographic median, catching a
-            // location name that geocodes to the wrong continent. Fall back to the null-filtered
-            // set if the places genuinely span >30°.
-            val medianLat = nullFiltered.map { it.latitude }.sorted()[nullFiltered.size / 2]
-            val medianLng = nullFiltered.map { it.longitude }.sorted()[nullFiltered.size / 2]
-            val latlngs = nullFiltered.filter { pt ->
-                Math.abs(pt.latitude - medianLat) <= 30.0 && Math.abs(pt.longitude - medianLng) <= 30.0
-            }.ifEmpty { nullFiltered }
+            if (latlngs.isEmpty()) return@LaunchedEffect
 
             val update = if (latlngs.size == 1) {
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 5f)
