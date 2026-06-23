@@ -1,5 +1,6 @@
 What's new:
-• Fixed an error that could interrupt restoring a backup from Google Drive
-• The map now zooms to fit all your locations instead of just one
-• Your profile photo no longer carries over when switching accounts
+• Improved layouts on tablets and large screens
+• More reliable backup restore from Google Drive
+• The map now fits all your locations, even across continents
+• Your profile photo falls back to your Google account picture
 • Bug fixes and polish
