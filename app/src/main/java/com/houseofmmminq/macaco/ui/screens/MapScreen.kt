@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -136,30 +137,35 @@ fun MapScreen(
 
     LaunchedEffect(mapLoaded, geocodingComplete) {
         if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty()) {
+            // Only fit to locations that belong to current entries (geocodedLocations is an
+            // append-only cache; stale entries from deleted/edited entries are excluded here).
             // Exclude Null Island (0.0, 0.0) — geocoding failures land there and drag the
             // bounds south to equatorial Africa.
-            val latlngs = geocodedLocations.values
+            val latlngs = locations
+                .mapNotNull { geocodedLocations[it] }
                 .map { LatLng(it.first, it.second) }
                 .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
             if (latlngs.isEmpty()) return@LaunchedEffect
 
-            val update = if (latlngs.size == 1) {
+            // Build the camera update. newLatLngBounds requires a completed map layout pass —
+            // compute it inside the try block, after the delay, to avoid a premature throw that
+            // would escape the LaunchedEffect silently and strand the scrim until its timeout.
+            fun buildUpdate(): CameraUpdate = if (latlngs.size == 1) {
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 5f)
             } else {
                 val bounds = LatLngBounds.builder().apply { latlngs.forEach { include(it) } }.build()
                 CameraUpdateFactory.newLatLngBounds(bounds, 80)
             }
 
-            // newLatLngBounds throws if the map hasn't completed a layout pass (happens when
-            // returning to this screen). Give it a frame, then retry once before giving up — and
-            // always clear the scrim so a failed move can't strand the user on the default
+            // Give the map a frame to lay out, then retry once before giving up — and always
+            // clear the scrim so a failed move can't strand the user on the default
             // North-Atlantic position behind the spinner.
             delay(100)
             try {
-                cameraPositionState.move(update)
+                cameraPositionState.move(buildUpdate())
             } catch (_: Exception) {
                 delay(400)
-                runCatching { cameraPositionState.move(update) }
+                runCatching { cameraPositionState.move(buildUpdate()) }
             }
             cameraPositioned = true
         }

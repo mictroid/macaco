@@ -348,8 +348,9 @@ fun NewEditEntryScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .imePadding(),
-            contentPadding = PaddingValues(horizontal = formHorizontalPadding, vertical = 12.dp),
+                .imePadding()
+                .padding(horizontal = formHorizontalPadding),
+            contentPadding = PaddingValues(vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Photos row
