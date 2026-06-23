@@ -68,6 +68,12 @@ memory). Record the **local dispatch time** you printed above plus the run ID.
 - WIF is keyed to repo + ref + workflow, **not** commit SHAs — a force-push doesn't disrupt it.
 - Sideloaded debug APKs can't complete a real purchase (paywall) — verify on a Play-installed build.
 
+## Maintaining this skill
+Keep this SKILL.md current **deliberately, not automatically**. If the release path changes (workflow
+name, track, branch, a new required step) or you hit a new release-time gotcha, update this file in the
+same commit and note it in the worklog. Don't auto-rewrite on every ship — a successful release gives
+no signal that the procedure is stale.
+
 ## Related memory
 `play-publish-wif`, `play-release-notes-stale`, `wif-dispatch-timestamp`, `build-env`,
 `worklog-on-change`, `current-state`.

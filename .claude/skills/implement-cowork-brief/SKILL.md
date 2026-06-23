@@ -1,17 +1,27 @@
 ---
 name: implement-cowork-brief
-description: Implement a Cowork code brief (docs/code-brief-*.md) for the Macaco app. Use when a new brief is waiting in docs/ (the SessionStart/UserPromptSubmit hook flags them) or when the user says to implement/verify a brief. Enforces the critical "verify signatures against the live repo before implementing" rule because Cowork drafts off a stale clone and gets imports/signatures wrong.
+description: Implement a Cowork code brief (docs/code-brief-*.md) for the Macaco app. Use when a new brief is waiting in docs/ (the SessionStart/UserPromptSubmit hook flags them) or when the user says to implement/verify a brief. Enforces the critical "verify signatures against the live repo before implementing" rule — Cowork drafts from the correct repo now, but still makes import/signature mistakes.
 ---
 
 # Implement a Cowork brief
 
-Cowork writes implementation briefs as `docs/code-brief-*.md`. They are usually accurate on
-*intent* but **not trustworthy on signatures** — historically Cowork drafted against the stale
-`C:\Users\micke\AndroidStudioProjects\MyApplication` clone (`com.example.myapplication`), so package
-names, line numbers, "this is already imported" claims, and exact "BEFORE" snippets drift from the
-live repo (`…\wanderlog`, `com.houseofmmminq.macaco`). **Every brief must be verified against live
-source before you touch a file.** In one recent batch, three separate briefs each falsely claimed an
-import already existed (`DisposableEffect`, `CameraUpdate`, `JournalBackup.ImportPhase`).
+Cowork writes implementation briefs as `docs/code-brief-*.md`. As of 2026-06-21 it drafts from the
+**correct** repo (`mictroid/macaco`, package `com.houseofmmminq.macaco`) — it was given an explicit
+workspace directive + `docs/cowork-repo-source-of-truth.md`. (Historically it drafted off the stale
+`C:\Users\micke\AndroidStudioProjects\MyApplication` clone with package `com.example.myapplication`;
+that's fixed.)
+
+Briefs are reliably accurate on *intent, package, and paths* — but **still not fully trustworthy on
+signatures and imports**, even against the right repo. The most common error is a false "X is already
+imported / already in scope" claim. In one recent batch, three separate briefs each wrongly claimed an
+import already existed (`DisposableEffect`, `CameraUpdate`, `JournalBackup.ImportPhase`) — all three
+actually had to be added (or referenced fully-qualified). **So every brief must still be verified
+against live source before you touch a file** — the cost is one grep, the payoff is a clean build.
+
+**Quick "is Cowork on the right repo?" spot-check** (cheap insurance, especially for older briefs that
+may predate the switch): confirm the brief cites `com.houseofmmminq.macaco` + real dirs
+(`data/sync/`, `ui/screens/`), not `com/example/myapplication/`, and that one "BEFORE" snippet matches
+the live file. If a brief still references the stale package, treat the whole brief as suspect.
 
 ## Procedure
 
@@ -72,6 +82,14 @@ briefs ledger, and the `current-state` memory — note each brief, file(s), and 
 Implementing a brief does **not** publish it. If the user wants it released, use the `ship-to-play`
 skill to bump the versionCode, refresh release notes, push, and dispatch the WIF workflow. Multiple
 briefs are usually batched into one version bump.
+
+## Maintaining this skill
+Keep this SKILL.md current **deliberately, not automatically**. After a run, if you hit a *new* class
+of brief error (a new kind of wrong signature, a recurring deviation, a changed convention) or the
+procedure here was wrong, update this file **in the same commit as the work** and note it in the
+worklog. Do NOT auto-rewrite the skill on every use: most runs succeed and would add only churn, and
+a wrong *rationale* (like the old "stale clone" reason) won't surface from a successful run — it takes
+human judgment. Update on a real signal, with evidence, reviewed like code.
 
 ## Related memory
 `cowork-brief-workflow`, `brief-detection-hook`, `build-env`, `strings-localization`,

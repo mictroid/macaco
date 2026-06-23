@@ -60,5 +60,10 @@ Provide real translations for all 11 locales (don't leave English in non-English
 placeholders (`%1$d`, `%1$s`) identical across locales. Use the trailing ellipsis character `…` (not
 three dots) to match existing in-progress strings.
 
+## Maintaining this skill
+Keep this SKILL.md (and the template script) current **deliberately, not automatically**. If the
+locale set changes (a locale added/removed) or you find a better encoding-safe approach, update this
+file + `insert-strings.template.ps1` in the same commit. Don't auto-rewrite on every use.
+
 ## Related memory
 `strings-localization`, `build-env`.
