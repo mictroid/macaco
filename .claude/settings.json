@@ -1,0 +1,34 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" || exit 0; names=\"\"; for f in docs/code-brief-*.md; do [ -e \"$f\" ] || continue; names=\"$names${names:+, }$(basename \"$f\")\"; done; [ -n \"$names\" ] || exit 0; printf '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"New Cowork brief(s) waiting in docs/ (not yet moved to docs/DONE/): %s. Per the Cowork brief workflow, verify signatures against the live repo before implementing.\"}}\\n' \"$names\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" || exit 0; names=\"\"; for f in docs/code-brief-*.md; do [ -e \"$f\" ] || continue; names=\"$names${names:+, }$(basename \"$f\")\"; done; [ -n \"$names\" ] || exit 0; printf '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"New Cowork brief(s) waiting in docs/ (not yet moved to docs/DONE/): %s. Per the Cowork brief workflow, verify signatures against the live repo before implementing.\"}}\\n' \"$names\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/check-brief-done-contract.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
