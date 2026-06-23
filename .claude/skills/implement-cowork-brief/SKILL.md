@@ -23,6 +23,25 @@ may predate the switch): confirm the brief cites `com.houseofmmminq.macaco` + re
 (`data/sync/`, `ui/screens/`), not `com/example/myapplication/`, and that one "BEFORE" snippet matches
 the live file. If a brief still references the stale package, treat the whole brief as suspect.
 
+## How Cowork reads status — the done-contract
+
+Cowork reads the **filesystem and git history directly** (never Firestore). Its entire view of brief
+status comes from these places, so keeping them accurate IS how Cowork learns you're done:
+
+| Location | Meaning to Cowork |
+|----------|-------------------|
+| `docs/code-brief-*.md` (repo root) | **Pending** — not yet implemented. |
+| `docs/DONE/` | **Done** — Code moved the brief here after implementing it. |
+| `docs/worklog-YYYY-MM-DD.md` | The record: which versionCode it landed in, the commit hash, and any deviations from the brief. |
+| **git history** | Commit messages / diffs (Cowork added git-history reading — keep commit messages descriptive: name the brief, the files, and deviations). |
+
+The contract is satisfied only when **all** of these agree for a brief: it's out of `docs/`, into
+`docs/DONE/`, written up in the dated worklog (vc + commit + deviations), and committed with a clear
+message. A `Stop` hook (`.claude/hooks/check-brief-done-contract.sh`) blocks you from finishing if a
+brief reached `docs/DONE/` in unpushed/uncommitted work without a worklog entry — fix it before
+stopping. Note: `macaco-brief.skill` / `macaco-status.skill` at the repo root are **Cowork's** files
+(its own brief/status skills) — do not move or delete them.
+
 ## Procedure
 
 For **each** loose brief in `docs/` (not yet in `docs/DONE/`):
