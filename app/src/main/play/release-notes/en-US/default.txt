@@ -1,6 +1,6 @@
 What's new:
-• Larger photos are now kept in compact backups instead of being dropped
-• Backup import skips a damaged photo instead of failing the whole restore
-• The screen stays awake during long backup imports
-• Drive photo cache clears correctly when you switch Google accounts
+• Compact backups now keep all your photos reliably
+• A full-screen progress display during backup and restore
+• The map fits all your locations, even across continents
+• Polished form and profile layouts on tablets and large screens
 • Bug fixes and polish
