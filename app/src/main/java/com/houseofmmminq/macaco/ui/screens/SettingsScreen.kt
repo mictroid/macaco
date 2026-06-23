@@ -67,6 +67,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -246,6 +247,24 @@ fun SettingsScreen(
     val importProgress by viewModel.importProgress.collectAsState()
     val backupScope = rememberCoroutineScope()
     var backupBusy by remember { mutableStateOf(false) }
+
+    // Keep the screen on while a backup export or import is running. Large imports take several
+    // minutes to download; without this the device screen timeout fires mid-operation.
+    val activity = context as? android.app.Activity
+    DisposableEffect(backupBusy) {
+        if (backupBusy) {
+            activity?.window?.addFlags(
+                android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+            )
+        }
+        onDispose {
+            // Always clear the flag when backupBusy becomes false or the composable leaves.
+            activity?.window?.clearFlags(
+                android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+            )
+        }
+    }
+
     var showExportDialog by remember { mutableStateOf(false) }
     var pendingCompact by remember { mutableStateOf(false) }
     val backupExportLauncher = rememberLauncherForActivityResult(

@@ -39,6 +39,13 @@ class JournalBackup(private val context: Context) {
 
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
+    private companion object {
+        // Longest edge of decoded bitmap for compact export. At 2048 px and JPEG 80% the output
+        // is indistinguishable from the original at phone-screen sizes, and fits comfortably in
+        // heap even on low-RAM devices (2048 × 1536 × RGB_565 = ~6 MB).
+        private const val MAX_COMPACT_DIMENSION = 2048
+    }
+
     /**
      * Writes all [entries] (and their photo bytes) into a zip at [dest].
      * Returns the number of entries written, or a failure the caller can surface.
@@ -81,15 +88,45 @@ class JournalBackup(private val context: Context) {
     }
 
     /**
-     * Decodes the photo at [uriString] into a Bitmap, re-encodes at JPEG 80% quality directly
-     * into [out] (no intermediate ByteArray), then recycles the Bitmap. Returns false if the
-     * photo can't be read. One photo is decoded at a time, so peak memory stays bounded.
+     * Decodes the photo at [uriString] at a memory-safe resolution, re-encodes at JPEG 80%
+     * directly into [out], and recycles the bitmap. Returns false only if the photo is
+     * genuinely unreadable (revoked URI, deleted media) — OOM is prevented by subsampling.
      */
     private fun writeCompressed(uriString: String, out: java.io.OutputStream): Boolean {
+        val uri = Uri.parse(uriString)
+        val resolver = context.contentResolver
+
+        // Pass 1: read dimensions only — no bitmap allocation.
+        val boundsOpts = android.graphics.BitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        resolver.openInputStream(uri)?.use {
+            android.graphics.BitmapFactory.decodeStream(it, null, boundsOpts)
+        } ?: return false  // URI not readable
+
+        val rawW = boundsOpts.outWidth
+        val rawH = boundsOpts.outHeight
+        if (rawW <= 0 || rawH <= 0) return false  // unrecognised format
+
+        // Compute smallest power-of-2 sample that brings longest edge within MAX_COMPACT_DIMENSION.
+        var sampleSize = 1
+        var longestEdge = maxOf(rawW, rawH)
+        while (longestEdge > MAX_COMPACT_DIMENSION) {
+            sampleSize *= 2
+            longestEdge /= 2
+        }
+
+        // Pass 2: decode at subsampled size with RGB_565 (2 bytes/px instead of 4).
+        val decodeOpts = android.graphics.BitmapFactory.Options().apply {
+            inSampleSize = sampleSize
+            inPreferredConfig = android.graphics.Bitmap.Config.RGB_565
+        }
         val bitmap = runCatching {
-            context.contentResolver.openInputStream(Uri.parse(uriString))
-                ?.use { android.graphics.BitmapFactory.decodeStream(it) }
+            resolver.openInputStream(uri)?.use {
+                android.graphics.BitmapFactory.decodeStream(it, null, decodeOpts)
+            }
         }.getOrNull() ?: return false
+
         return runCatching {
             bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, out)
         }.also {
@@ -159,16 +196,24 @@ class JournalBackup(private val context: Context) {
                 java.util.zip.ZipFile(srcZip).use { zipFile ->
                     val entries = zipFile.entries().toList()
 
+                    // backup.json is not wrapped — if this fails the import cannot proceed.
                     entries.find { it.name == "backup.json" }?.let { entry ->
                         backupJson = zipFile.getInputStream(entry).use { it.readBytes().decodeToString() }
                     }
 
+                    // Each photo entry is extracted independently. A corrupt entry is skipped rather
+                    // than aborting the whole import. The RESTORING phase already handles a missing
+                    // temp file with: if (!tempFile.exists()) return@mapNotNull null.
                     // Flatten "photos/foo.jpg" → "photos_foo.jpg" so it's a valid filename.
                     entries.filter { it.name.startsWith("photos/") }.forEach { entry ->
-                        File(tempDir, entry.name.replace("/", "_"))
-                            .outputStream()
-                            .buffered(65_536)
-                            .use { out -> zipFile.getInputStream(entry).copyTo(out, bufferSize = 65_536) }
+                        runCatching {
+                            File(tempDir, entry.name.replace("/", "_"))
+                                .outputStream()
+                                .buffered(65_536)
+                                .use { out -> zipFile.getInputStream(entry).copyTo(out, bufferSize = 65_536) }
+                        }
+                        // Silently skip unreadable entries — the photo will be absent from the
+                        // restored entry rather than blocking restoration of every other entry.
                     }
                 }
             } catch (e: java.util.zip.ZipException) {

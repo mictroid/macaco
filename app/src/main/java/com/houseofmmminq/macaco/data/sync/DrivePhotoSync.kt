@@ -72,7 +72,13 @@ class DrivePhotoSync(private val context: Context) {
     fun onAccountChanged() {
         driveFolderId = null
         _cachedPhotoUris.value = emptyMap()
-        _syncState.value = DrivePhotoSyncState.Idle
+        // Delete cached Drive photo files from the previous account. The directory is re-created
+        // automatically when downloadMissingPhotos runs for the new account.
+        JavaFile(context.cacheDir, "drive_photos").listFiles()?.forEach { it.delete() }
+        // Show NotConnected immediately if the new account hasn't granted Drive scope yet,
+        // so SettingsScreen shows the reconnect prompt rather than a stale Idle state.
+        _syncState.value = if (isDriveConnected()) DrivePhotoSyncState.Idle
+                           else DrivePhotoSyncState.NotConnected
     }
 
     private fun getDriveService(): Drive {

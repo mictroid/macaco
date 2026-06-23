@@ -1,6 +1,6 @@
 What's new:
-• Improved layouts on tablets and large screens
-• More reliable backup restore from Google Drive
-• The map now fits all your locations, even across continents
-• Your profile photo falls back to your Google account picture
+• Larger photos are now kept in compact backups instead of being dropped
+• Backup import skips a damaged photo instead of failing the whole restore
+• The screen stays awake during long backup imports
+• Drive photo cache clears correctly when you switch Google accounts
 • Bug fixes and polish
