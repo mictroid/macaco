@@ -1,8 +1,5 @@
 What's new:
-• Importing a backup now shows download and restore progress
-• New profile photo picker — choose from gallery, files, or camera
-• Compact backup option for smaller backup files
-• More reliable photo saving on older devices
-• Privacy Policy and Terms now open in your language
-• Smoother app updates and Google Drive backups, including reconnect fixes
+• Fixed an error that could interrupt restoring a backup from Google Drive
+• The map now zooms to fit all your locations instead of just one
+• Your profile photo no longer carries over when switching accounts
 • Bug fixes and polish
