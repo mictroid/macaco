@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -70,10 +71,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -525,12 +526,20 @@ fun JournalListScreen(
                         onClear = { viewModel.clearTagFilter() }
                     )
                 }
+                // Wider side gutters on tablets (sw600dp+) so the single-column list doesn't stretch.
+                val listHorizontalPadding =
+                    if (LocalConfiguration.current.screenWidthDp >= 600) 80.dp else 16.dp
                 when {
                     entries.isEmpty() -> EmptyState(modifier = Modifier.fillMaxSize())
                     visibleEntries.isEmpty() -> NoMatchState(modifier = Modifier.fillMaxSize())
                     else -> LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(start = 16.dp, top = 10.dp, end = 16.dp, bottom = 96.dp),
+                        contentPadding = PaddingValues(
+                            start = listHorizontalPadding,
+                            top = 10.dp,
+                            end = listHorizontalPadding,
+                            bottom = 96.dp
+                        ),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         if (hasTrips) {
@@ -658,11 +667,14 @@ private fun EntryPhotoArea(
     mood: String
 ) {
     val topCorners = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+    // Taller photo area on tablets (sw600dp+) so the wide card isn't a squat landscape strip.
+    val isTablet = LocalConfiguration.current.screenWidthDp >= 600
+    val photoHeight = if (isTablet) 200.dp else 120.dp
     if (displayUris.isEmpty()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp)
+                .height(if (isTablet) 120.dp else 72.dp)
                 .clip(topCorners)
                 .background(Brush.horizontalGradient(heroGradientColors())),
             contentAlignment = Alignment.Center
@@ -674,7 +686,7 @@ private fun EntryPhotoArea(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(photoHeight)
             .clip(topCorners)
     ) {
         when (displayUris.size) {
@@ -886,7 +898,7 @@ private fun TagChips(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.clipToBounds(),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -899,7 +911,9 @@ private fun TagChips(
                 color = if (isSelected) MaterialTheme.colorScheme.onPrimary
                         else MaterialTheme.colorScheme.onSecondaryContainer,
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
+                    .widthIn(max = 100.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(
                         if (isSelected) MaterialTheme.colorScheme.primary

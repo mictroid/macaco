@@ -75,6 +75,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -341,11 +342,14 @@ fun NewEditEntryScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+        // Wider side gutters on tablets (sw600dp+) so the form fields don't stretch full-width.
+        val formHorizontalPadding =
+            if (LocalConfiguration.current.screenWidthDp >= 600) 100.dp else 16.dp
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+            contentPadding = PaddingValues(horizontal = formHorizontalPadding, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Photos row
