@@ -240,6 +240,14 @@ Machine-local files needed to rebuild on a fresh machine are mirrored to Google 
   manual dispatch → closed testing), which needs no local key. See `docs/release-setup.md` →
   **Automated upload**.
 
+The Drive backup also holds the **durable session worklog + Cowork briefs ledger** (dated
+`worklog-YYYY-MM-DD.md` files + `cowork-briefs-ledger.md`) — the canonical running record of what
+shipped per versionCode. These are **mirrored into the repo** under `docs/`: a rolling
+`docs/worklog.md` (newest-first prose summary) plus dated `docs/worklog-YYYY-MM-DD.md` copies of the
+Drive originals. The Drive copies are the source of truth; keep the repo mirror in sync when you fold
+in a session. (The rolling `docs/worklog.md` does not cover every versionCode — gaps are noted in it
+and the dated files fill them in.)
+
 Restore: clone the repo, drop `debug.keystore` into `~/.android/`, copy the `ssh/` keys into
 `~/.ssh/` (for push access), open in Android Studio (it regenerates `local.properties`).
 </content>
