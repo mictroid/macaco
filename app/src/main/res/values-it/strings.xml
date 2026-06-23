@@ -129,6 +129,9 @@
     <string name="login_create_account">Crea account</string>
     <string name="login_already_have_account">Hai già un account? Accedi</string>
     <string name="login_no_account">Non hai un account? Creane uno</string>
+    <string name="login_forgot_password">Password dimenticata?</string>
+    <string name="login_forgot_enter_email">Inserisci prima il tuo indirizzo email qui sopra</string>
+    <string name="login_forgot_sent">Se esiste un account per %1$s, è stato inviato un link per la reimpostazione</string>
     <string name="login_fill_fields">Compila tutti i campi</string>
     <string name="login_google_error_no_token">Accesso con Google non riuscito: nessun token ID restituito</string>
     <string name="login_google_error_network">Accesso con Google non riuscito. Controlla la connessione a Internet.</string>

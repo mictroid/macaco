@@ -129,6 +129,9 @@
     <string name="login_create_account">Skapa konto</string>
     <string name="login_already_have_account">Har du redan ett konto? Logga in</string>
     <string name="login_no_account">Har du inget konto? Skapa ett</string>
+    <string name="login_forgot_password">Glömt lösenordet?</string>
+    <string name="login_forgot_enter_email">Ange din e-postadress ovan först</string>
+    <string name="login_forgot_sent">Om ett konto finns för %1$s har en återställningslänk skickats</string>
     <string name="login_fill_fields">Vänligen fyll i alla fält</string>
     <string name="login_google_error_no_token">Google-inloggning misslyckades: inget ID-token returnerades</string>
     <string name="login_google_error_network">Google-inloggning misslyckades. Kontrollera din internetanslutning.</string>

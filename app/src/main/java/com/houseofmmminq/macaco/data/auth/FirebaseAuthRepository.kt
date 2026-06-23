@@ -87,6 +87,16 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
             }
         }
 
+    // ── Password Reset ────────────────────────────────────────────────────────
+
+    override suspend fun sendPasswordResetEmail(email: String): Result<Unit> =
+        runCatching {
+            auth.sendPasswordResetEmail(email.trim()).await()
+            Unit
+        }.mapFailure { e ->
+            Exception(e.localizedMessage ?: "Could not send reset email")
+        }
+
     // ── Sign Out ──────────────────────────────────────────────────────────────
 
     override suspend fun signOut() {

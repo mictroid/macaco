@@ -126,6 +126,9 @@
     <string name="login_create_account">アカウントを作成</string>
     <string name="login_already_have_account">すでにアカウントをお持ちの方はこちら</string>
     <string name="login_no_account">アカウントをお持ちでない方は新規登録</string>
+    <string name="login_forgot_password">パスワードをお忘れですか？</string>
+    <string name="login_forgot_enter_email">先に上記のメールアドレスを入力してください</string>
+    <string name="login_forgot_sent">%1$s のアカウントが存在する場合、リセットリンクが送信されました</string>
     <string name="login_fill_fields">すべての項目を入力してください</string>
     <string name="login_google_error_no_token">Google サインインに失敗しました：IDトークンが返されませんでした</string>
     <string name="login_google_error_network">Google サインインに失敗しました。インターネット接続を確認してください。</string>

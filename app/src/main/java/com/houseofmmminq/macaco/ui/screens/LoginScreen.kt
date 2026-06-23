@@ -97,6 +97,8 @@ fun LoginScreen(
     var showPassword by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
+    var resetEmailSent by remember { mutableStateOf(false) }
+    var resetSentTo by remember { mutableStateOf("") }
 
     // Standard Google Sign-In via intent — avoids Credential Manager cancellation issues.
     // DRIVE_FILE scope is requested here so photo sync is authorized on first sign-in.
@@ -307,6 +309,56 @@ fun LoginScreen(
                     shape = RoundedCornerShape(12.dp)
                 )
 
+                // "Forgot password?" — only shown in sign-in mode, not account creation
+                if (!isCreatingAccount) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        TextButton(
+                            onClick = {
+                                if (email.isBlank()) {
+                                    errorMessage = context.getString(R.string.login_forgot_enter_email)
+                                } else {
+                                    isLoading = true
+                                    errorMessage = null
+                                    viewModel.sendPasswordResetEmail(email.trim()) { result ->
+                                        isLoading = false
+                                        result.fold(
+                                            onSuccess = {
+                                                resetSentTo = email.trim()
+                                                resetEmailSent = true
+                                            },
+                                            onFailure = { errorMessage = it.message }
+                                        )
+                                    }
+                                }
+                            },
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            enabled = !isLoading
+                        ) {
+                            Text(
+                                stringResource(R.string.login_forgot_password),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+
+                // Reset-email confirmation banner — shown after successful send
+                if (resetEmailSent) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(10.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Text(
+                            stringResource(R.string.login_forgot_sent, resetSentTo),
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+
                 Button(
                     onClick = {
                         if (email.isBlank() || password.isBlank()) {
@@ -348,7 +400,11 @@ fun LoginScreen(
                 }
 
                 TextButton(
-                    onClick = { isCreatingAccount = !isCreatingAccount; errorMessage = null },
+                    onClick = {
+                        isCreatingAccount = !isCreatingAccount
+                        errorMessage = null
+                        resetEmailSent = false
+                    },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(

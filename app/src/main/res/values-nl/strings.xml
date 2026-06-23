@@ -129,6 +129,9 @@
     <string name="login_create_account">Account aanmaken</string>
     <string name="login_already_have_account">Al een account? Inloggen</string>
     <string name="login_no_account">Nog geen account? Maak er een aan</string>
+    <string name="login_forgot_password">Wachtwoord vergeten?</string>
+    <string name="login_forgot_enter_email">Voer eerst je e-mailadres hierboven in</string>
+    <string name="login_forgot_sent">Als er een account bestaat voor %1$s, is er een resetlink verzonden</string>
     <string name="login_fill_fields">Vul alle velden in</string>
     <string name="login_google_error_no_token">Google-inloggen mislukt: geen ID-token ontvangen</string>
     <string name="login_google_error_network">Google-inloggen mislukt. Controleer je internetverbinding.</string>

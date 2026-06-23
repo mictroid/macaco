@@ -220,6 +220,9 @@
     <string name="login_create_account">Create Account</string>
     <string name="login_already_have_account">Already have an account? Sign in</string>
     <string name="login_no_account">Don\'t have an account? Create one</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_forgot_enter_email">Enter your email address above first</string>
+    <string name="login_forgot_sent">If an account exists for %1$s, a reset link has been sent</string>
     <string name="login_fill_fields">Please fill in all fields</string>
     <string name="login_google_error_no_token">Google sign-in failed: no ID token returned</string>
     <string name="login_google_error_network">Google sign-in failed. Check your internet connection.</string>

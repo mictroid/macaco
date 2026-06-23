@@ -52,6 +52,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.houseofmmminq.macaco.R
 import androidx.compose.material3.AlertDialog
@@ -290,6 +291,12 @@ fun EntryDetailScreen(
                         .clipToBounds()
                         .graphicsLayer { translationX = pageOffset * size.width * 0.4f }
                 ) {
+                val configuration = LocalConfiguration.current
+                val heroHeight = if (configuration.screenWidthDp >= 600) {
+                    (configuration.screenHeightDp * 0.52f).dp
+                } else {
+                    260.dp
+                }
                 val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
                 // Promote the photo at [index] to the cover (hero) and confirm with a toast.
                 val setCover: (Int) -> Unit = { index ->
@@ -321,7 +328,7 @@ fun EntryDetailScreen(
                     photoCount == 1 -> JournalPhoto(
                         data = entry.displayPhotoUri(0, cachedDrivePhotos),
                         onClick = { galleryStartIndex = 0 },
-                        modifier = Modifier.fillMaxWidth().height(260.dp)
+                        modifier = Modifier.fillMaxWidth().height(heroHeight)
                     )
 
                     // Editorial collage: hero (left, ~65%) + stacked thumbnails on the right (~35%).
@@ -335,7 +342,7 @@ fun EntryDetailScreen(
                         val overflowStart = 1 + rightCount
                         Column {
                             Row(
-                                modifier = Modifier.fillMaxWidth().height(260.dp),
+                                modifier = Modifier.fillMaxWidth().height(heroHeight),
                                 horizontalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
                                 JournalPhoto(

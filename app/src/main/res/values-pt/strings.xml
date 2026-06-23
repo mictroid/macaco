@@ -129,6 +129,9 @@
     <string name="login_create_account">Criar Conta</string>
     <string name="login_already_have_account">Já tem uma conta? Entre</string>
     <string name="login_no_account">Não tem uma conta? Crie uma</string>
+    <string name="login_forgot_password">Esqueceu a senha?</string>
+    <string name="login_forgot_enter_email">Insira primeiro o seu endereço de e-mail acima</string>
+    <string name="login_forgot_sent">Se existir uma conta para %1$s, foi enviado um link de redefinição</string>
     <string name="login_fill_fields">Por favor, preencha todos os campos</string>
     <string name="login_google_error_no_token">Falha no login com Google: nenhum token de ID retornado</string>
     <string name="login_google_error_network">Falha no login com Google. Verifique sua conexão com a internet.</string>

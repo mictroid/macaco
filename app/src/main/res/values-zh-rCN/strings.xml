@@ -126,6 +126,9 @@
     <string name="login_create_account">创建账号</string>
     <string name="login_already_have_account">已有账号？立即登录</string>
     <string name="login_no_account">没有账号？立即注册</string>
+    <string name="login_forgot_password">忘记密码？</string>
+    <string name="login_forgot_enter_email">请先在上方输入您的电子邮件地址</string>
+    <string name="login_forgot_sent">如果 %1$s 存在账户，重置链接已发送</string>
     <string name="login_fill_fields">请填写所有字段</string>
     <string name="login_google_error_no_token">Google 登录失败：未返回 ID 令牌</string>
     <string name="login_google_error_network">Google 登录失败，请检查您的网络连接。</string>

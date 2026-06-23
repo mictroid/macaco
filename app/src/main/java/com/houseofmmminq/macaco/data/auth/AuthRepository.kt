@@ -18,4 +18,11 @@ interface AuthRepository {
      * session is stale; the Result captures it for the caller to surface.
      */
     suspend fun deleteAccount(): Result<Unit>
+
+    /**
+     * Sends a Firebase password-reset email. Firebase deliberately reports success even when no
+     * account exists for the address (to prevent email enumeration), so callers should use hedged
+     * confirmation language.
+     */
+    suspend fun sendPasswordResetEmail(email: String): Result<Unit>
 }

@@ -136,6 +136,9 @@
     <string name="login_create_account">Konto erstellen</string>
     <string name="login_already_have_account">Hast du bereits ein Konto? Anmelden</string>
     <string name="login_no_account">Noch kein Konto? Jetzt erstellen</string>
+    <string name="login_forgot_password">Passwort vergessen?</string>
+    <string name="login_forgot_enter_email">Gib zuerst oben deine E-Mail-Adresse ein</string>
+    <string name="login_forgot_sent">Wenn ein Konto für %1$s existiert, wurde ein Link zum Zurücksetzen gesendet</string>
     <string name="login_fill_fields">Bitte alle Felder ausfüllen</string>
     <string name="login_google_error_no_token">Google-Anmeldung fehlgeschlagen: Kein ID-Token zurückgegeben</string>
     <string name="login_google_error_network">Google-Anmeldung fehlgeschlagen. Überprüfe deine Internetverbindung.</string>

@@ -129,6 +129,9 @@
     <string name="login_create_account">Créer un compte</string>
     <string name="login_already_have_account">Vous avez déjà un compte ? Connectez-vous</string>
     <string name="login_no_account">Pas encore de compte ? Créez-en un</string>
+    <string name="login_forgot_password">Mot de passe oublié ?</string>
+    <string name="login_forgot_enter_email">Saisissez d\'abord votre adresse e-mail ci-dessus</string>
+    <string name="login_forgot_sent">Si un compte existe pour %1$s, un lien de réinitialisation a été envoyé</string>
     <string name="login_fill_fields">Veuillez remplir tous les champs</string>
     <string name="login_google_error_no_token">Connexion Google échouée : aucun jeton d\'identité retourné</string>
     <string name="login_google_error_network">Connexion Google échouée. Vérifiez votre connexion internet.</string>

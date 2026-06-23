@@ -147,27 +147,34 @@ fun MapScreen(
                 .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
             if (latlngs.isEmpty()) return@LaunchedEffect
 
-            // Build the camera update. newLatLngBounds requires a completed map layout pass —
-            // compute it inside the try block, after the delay, to avoid a premature throw that
-            // would escape the LaunchedEffect silently and strand the scrim until its timeout.
-            fun buildUpdate(): CameraUpdate = if (latlngs.size == 1) {
-                CameraUpdateFactory.newLatLngZoom(latlngs[0], 5f)
-            } else {
+            // Build the camera update without newLatLngBounds, which requires the map to be
+            // fully laid out (throws on slow/tablet devices even after delay). Instead, compute
+            // a center + approximate zoom from the bounds directly — newLatLngZoom never throws.
+            fun buildUpdate(): CameraUpdate {
+                if (latlngs.size == 1) return CameraUpdateFactory.newLatLngZoom(latlngs[0], 5f)
                 val bounds = LatLngBounds.builder().apply { latlngs.forEach { include(it) } }.build()
-                CameraUpdateFactory.newLatLngBounds(bounds, 80)
+                val center = bounds.center
+                val latSpan = bounds.northeast.latitude - bounds.southwest.latitude
+                val lngSpan = bounds.northeast.longitude - bounds.southwest.longitude
+                val zoom = when (maxOf(latSpan, lngSpan)) {
+                    in 0.0..0.5   -> 10f
+                    in 0.5..2.0   -> 8f
+                    in 2.0..8.0   -> 6f
+                    in 8.0..20.0  -> 5f
+                    in 20.0..50.0 -> 4f
+                    in 50.0..90.0 -> 3f
+                    else          -> 2f
+                }
+                return CameraUpdateFactory.newLatLngZoom(center, zoom)
             }
 
-            // Give the map a frame to lay out, then retry once before giving up — and always
-            // clear the scrim so a failed move can't strand the user on the default
-            // North-Atlantic position behind the spinner.
+            // newLatLngZoom never throws, but keep the gate so a hypothetical future failure
+            // doesn't clear the scrim with the camera stuck at the default world view.
             delay(100)
-            try {
-                cameraPositionState.move(buildUpdate())
-            } catch (_: Exception) {
-                delay(400)
-                runCatching { cameraPositionState.move(buildUpdate()) }
-            }
-            cameraPositioned = true
+            val moved = runCatching { cameraPositionState.move(buildUpdate()) }.isSuccess
+            if (moved) cameraPositioned = true
+            // If not moved, the 8-second revealTimedOut in the sibling LaunchedEffect will
+            // eventually drop the scrim so the user is never permanently trapped.
         }
     }
 

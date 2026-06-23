@@ -11,6 +11,21 @@ Running log of notable work sessions. Newest first.
 > (Per-vc detail lives in the dated `docs/worklog-2026-06-23.md` mirror + the Drive backup; this
 > rolling log skipped vc22–vc31 — see those files for the gap.)
 
+## 2026-06-23 — 3-brief batch #2 (local, NOT yet shipped)
+
+`entry-detail-image-height`, `forgot-password`, `map-camera-v5` implemented + committed to `master`
+(not yet bumped/pushed/published). All verified vs live source first; `assembleDebug` SUCCESSFUL.
+- **entry-detail-image-height** (`EntryDetailScreen`): hero photo now scales to 52% of screen height
+  on `sw600dp+` tablets (was hardcoded 260dp), phones unchanged.
+- **forgot-password** (`AuthRepository`/`FirebaseAuthRepository`/`MockAuthRepository`/`JournalViewModel`/
+  `LoginScreen` + strings ×11): Firebase password-reset flow — "Forgot password?" button in sign-in
+  mode + hedged success banner. Deviations: had to add the method to `MockAuthRepository` too (build
+  break), and escape the French apostrophe (`d\'abord`) for aapt.
+- **map-camera-v5** (`MapScreen`): replaced `newLatLngBounds` (threw on un-laid-out tablet maps) with
+  layout-independent center+zoom via `newLatLngZoom`; gated scrim-drop on move success.
+
+See `docs/worklog-2026-06-23.md` for full per-brief detail.
+
 ## 2026-06-23 — vc32 + vc33 shipped (6 Cowork briefs + tablet UI)
 
 Two release sessions, both via the WIF `release.yml` workflow (minimal-push: dispatch without

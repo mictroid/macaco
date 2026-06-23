@@ -45,4 +45,6 @@ class MockAuthRepository : AuthRepository {
         _currentUser.value = null
         return Result.success(Unit)
     }
+
+    override suspend fun sendPasswordResetEmail(email: String): Result<Unit> = Result.success(Unit)
 }

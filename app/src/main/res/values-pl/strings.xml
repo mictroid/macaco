@@ -135,6 +135,9 @@
     <string name="login_create_account">Utwórz konto</string>
     <string name="login_already_have_account">Masz już konto? Zaloguj się</string>
     <string name="login_no_account">Nie masz konta? Utwórz je</string>
+    <string name="login_forgot_password">Nie pamiętasz hasła?</string>
+    <string name="login_forgot_enter_email">Najpierw wpisz swój adres e-mail powyżej</string>
+    <string name="login_forgot_sent">Jeśli istnieje konto dla %1$s, wysłano link do resetowania</string>
     <string name="login_fill_fields">Proszę wypełnić wszystkie pola</string>
     <string name="login_google_error_no_token">Logowanie przez Google nie powiodło się: brak tokenu ID</string>
     <string name="login_google_error_network">Logowanie przez Google nie powiodło się. Sprawdź połączenie z internetem.</string>
