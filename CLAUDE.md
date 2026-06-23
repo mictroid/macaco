@@ -248,6 +248,15 @@ Drive originals. The Drive copies are the source of truth; keep the repo mirror 
 in a session. (The rolling `docs/worklog.md` does not cover every versionCode — gaps are noted in it
 and the dated files fill them in.)
 
+**⚠️ Which Google account owns `G:` is unconfirmed.** This machine has multiple Google accounts
+signed into Drive for Desktop, and the dev account `michael.tromp78@gmail.com` (the one wired into
+the app/Firebase and the Drive API integration) **cannot see the `Macaco-backup` folder in its
+cloud** — so `G:\My Drive\Macaco-backup` is very likely synced under a *different* account (logs also
+show `michaelmtromp@gmail.com`). The whole Drive backup — incl. the irreplaceable `debug.keystore` —
+therefore probably lives under that other account, and disaster recovery would restore from *it*.
+Confirm the owning account via the Drive-for-Desktop tray icon before relying on this as your offsite
+copy. (Flagged 2026-06-23; not yet resolved.)
+
 Restore: clone the repo, drop `debug.keystore` into `~/.android/`, copy the `ssh/` keys into
 `~/.ssh/` (for push access), open in Android Studio (it regenerates `local.properties`).
 </content>
