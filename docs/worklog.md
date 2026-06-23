@@ -2,12 +2,53 @@
 
 Running log of notable work sessions. Newest first.
 
-> **NEXT (2026-06-20):** vc21/1.5 is **published to closed testing** — install it from the Play
-> closed-testing link on the A53 (not a sideloaded debug — paywall) and verify the six briefs:
-> custom-mood "+" dialog, photo-row + button now last, profile Trips stat, restore-purchase row,
-> templated feedback emails. **Most-wanted device check:** the API<30 biometric fix on the **Galaxy
-> S8** — its ADB setup is still paused, and that's the only way to confirm App Lock now works there.
+> **NEXT (2026-06-23):** vc33/1.5 is **published to closed testing** (WIF run `28010450490`
+> SUCCESS). **Only open item is on-device verification** of the four shipped items: tablet-ui
+> `sw600dp+` layouts (needs the **Tab A9+**), backup ZipFile extraction (truncated-Drive-download
+> error path), map global fit (multi-continent zoom), and profile Google-photo fallback. Also still
+> unverified from vc31: large-backup import progress bar + Drive 401 banner clearing on reconnect.
 > Still open from before: enable **R8** with keep rules before production.
+> (Per-vc detail lives in the dated `docs/worklog-2026-06-23.md` mirror + the Drive backup; this
+> rolling log skipped vc22–vc31 — see those files for the gap.)
+
+## 2026-06-23 — vc32 + vc33 shipped (6 Cowork briefs + tablet UI)
+
+Two release sessions, both via the WIF `release.yml` workflow (minimal-push: dispatch without
+watching, confirm later with `gh run list`). All briefs verified vs live source first — clean, no
+stale-clone drift either round.
+
+**vc32** (run `28004897407`, SUCCESS) — 3-brief batch, commit `2bfd11a` + bump `2245c32`:
+- **backup-import-zlib-fix** (`JournalBackup`): two-phase import — download the SAF/Drive source to a
+  local `tempDir/source.zip` first (reusing `CountingInputStream`), then open *that* as
+  `ZipInputStream`. Fixes `ZLIB inflate error` from decompressing directly over a chunked Drive stream
+  (`closeEntry()` stalls mid-drain). Removed now-unused `BufferedInputStream` import.
+- **map-default-position-v2** (`JournalViewModel` + `MapScreen`): fixed v1 regression where the camera
+  locked onto the *first* geocoded result. Added `geocodingComplete: StateFlow<Boolean>`; camera
+  `LaunchedEffect` keys on it (not `geocodedLocations`) so it fits all locations once geocoding ends.
+- **profile-photo-account-switch** (`JournalViewModel`): one-liner — clear `profilePhotoUri` on
+  sign-out so a new account doesn't inherit the previous user's custom photo.
+
+**tablet-ui** (commit `4d2f41d`, rode along into vc33) — four `sw600dp+` layout fixes gated on
+`LocalConfiguration.current.screenWidthDp >= 600`: TagChips ellipsis + `widthIn(max=100.dp)`,
+entry-list 80dp horizontal pad, EntryPhotoArea 200dp, New/Edit form 100dp pad. No new deps.
+
+**vc33** (run `28010450490`, SUCCESS) — 3 follow-up briefs, commit `0188ade` + bump `a1b6fd2`,
+bundling the local-only tablet-ui commit:
+- **backup-import-zlib-fix-v2** (`JournalBackup`): switched extraction from `ZipInputStream` →
+  `java.util.zip.ZipFile`, which reads the central directory on open, so a truncated `source.zip`
+  throws `ZipException` *immediately* (clear "incomplete download — open in Files app" message) instead
+  of an opaque mid-stream ZLIB error. Removed now-unused `ZipInputStream` import.
+- **map-default-position-v3** (`MapScreen`): removed the ±30° geographic-median outlier-rejection
+  block — it dropped all-but-one location for globe-spanning travellers (Argentina/Iceland/Japan/
+  Germany → only Germany survived → zoom-to-single). `latlngs` now built straight from the Null-Island
+  filter.
+- **profile-google-photo-fallback** (`ProfileScreen`): three-tier avatar — `profilePhotoUri ?:
+  user.photoUrl` Coil model, initials only when both null; `error = rememberVectorPainter(Icons.
+  Default.Person)` for unreachable Google URLs (offline/revoked).
+
+`default.txt` refreshed for vc33 (tablet layouts / Drive restore / map fit / Google photo fallback).
+Nothing device-verified yet. The detailed dated worklog is `docs/worklog-2026-06-23.md` (+ Drive
+backup `worklog-2026-06-23.md`).
 
 ## 2026-06-20 — Four more Cowork briefs (delete blank-screen, map flash, hint readability, mood keyboard)
 
