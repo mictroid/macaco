@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.InputStream
@@ -127,11 +126,16 @@ class JournalBackup(private val context: Context) {
         }.getOrNull().let { if (it == null || it <= 0L) -1 else (it / 1024 / 1024).toInt() }
 
         try {
+            // ── Phase 1: download the entire SAF source to a local temp file ──────────────────────
+            // Opening ZipInputStream directly over a Drive-backed SAF stream causes ZLIB errors:
+            // closeEntry() tries to drain remaining compressed bytes, but Drive delivers data in
+            // network chunks and can stall mid-drain, desyncing the ZLIB decompressor. Copying to a
+            // local file first avoids this entirely — local file reads are always contiguous and
+            // never stall. A CountingInputStream reports bytes read so the UI can show download
+            // progress for a large (hundreds-of-MB) Drive-backed zip that streams in slowly.
             onProgress(ImportPhase.DOWNLOADING, 0, totalMb)
 
-            // Pass 1: stream each zip entry to disk (backup.json is small enough to keep in memory).
-            // A CountingInputStream reports bytes read so the UI can show download progress for a
-            // large (hundreds-of-MB) Drive-backed zip that streams in slowly through SAF.
+            val srcZip = File(tempDir, "source.zip")
             resolver.openInputStream(src)?.use { rawIns ->
                 var lastReportedMb = -1
                 val counting = CountingInputStream(rawIns) { totalBytes ->
@@ -142,31 +146,38 @@ class JournalBackup(private val context: Context) {
                         onProgress(ImportPhase.DOWNLOADING, mb, totalMb)
                     }
                 }
-                ZipInputStream(BufferedInputStream(counting)).use { zip ->
-                    var entry = zip.nextEntry
-                    while (entry != null) {
-                        val name = entry.name
-                        when {
-                            name == "backup.json" -> backupJson = zip.readBytes().decodeToString()
-                            name.startsWith("photos/") -> {
-                                // Flatten "photos/foo.jpg" → "photos_foo.jpg" so it's a valid filename.
-                                File(tempDir, name.replace("/", "_"))
-                                    .outputStream()
-                                    .buffered()
-                                    .use { out -> zip.copyTo(out) }
-                            }
-                        }
-                        zip.closeEntry()
-                        entry = zip.nextEntry
-                    }
+                srcZip.outputStream().buffered(65_536).use { out ->
+                    counting.copyTo(out, bufferSize = 65_536)
                 }
             } ?: error("Couldn't open the selected file.")
+
+            // ── Phase 2: extract from the local zip ───────────────────────────────────────────────
+            ZipInputStream(srcZip.inputStream().buffered(65_536)).use { zip ->
+                var entry = zip.nextEntry
+                while (entry != null) {
+                    val name = entry.name
+                    when {
+                        name == "backup.json" -> backupJson = zip.readBytes().decodeToString()
+                        name.startsWith("photos/") -> {
+                            // Flatten "photos/foo.jpg" → "photos_foo.jpg" so it's a valid filename.
+                            File(tempDir, name.replace("/", "_"))
+                                .outputStream()
+                                .buffered()
+                                .use { out -> zip.copyTo(out, bufferSize = 65_536) }
+                        }
+                    }
+                    zip.closeEntry()
+                    entry = zip.nextEntry
+                }
+            }
+
+            srcZip.delete() // no longer needed; photos are extracted into tempDir
 
             val backup = json.decodeFromString<BackupFile>(
                 backupJson ?: error("This doesn't look like a Macaco backup.")
             )
 
-            // Pass 2: one photo at a time — read its temp file, write to gallery, delete it.
+            // Pass 2 (restore): one photo at a time — read its temp file, write to gallery, delete it.
             onProgress(ImportPhase.RESTORING, 0, backup.entries.size)
             backup.entries.forEachIndexed { index, entry ->
                 onProgress(ImportPhase.RESTORING, index + 1, backup.entries.size)

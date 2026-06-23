@@ -87,6 +87,7 @@ fun MapScreen(
     val context = LocalContext.current
     val entries by viewModel.entries.collectAsState()
     val geocodedLocations by viewModel.geocodedLocations.collectAsState()
+    val geocodingComplete by viewModel.geocodingComplete.collectAsState()
     val mapTheme by viewModel.mapTheme.collectAsState()
 
     // BitmapDescriptorFactory requires the Maps SDK to be initialized, which happens when
@@ -133,8 +134,8 @@ fun MapScreen(
     // moves — drop the scrim after a few seconds so the spinner can't trap the user forever.
     var revealTimedOut by remember { mutableStateOf(false) }
 
-    LaunchedEffect(mapLoaded, geocodedLocations) {
-        if (mapLoaded && !cameraPositioned && geocodedLocations.isNotEmpty()) {
+    LaunchedEffect(mapLoaded, geocodingComplete) {
+        if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty()) {
             // Exclude Null Island (0.0, 0.0) — geocoding failures land there and drag the
             // bounds south to equatorial Africa.
             val nullFiltered = geocodedLocations.values

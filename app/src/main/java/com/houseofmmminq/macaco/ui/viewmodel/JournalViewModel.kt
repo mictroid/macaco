@@ -153,7 +153,18 @@ class JournalViewModel(
     private val _geocodedLocations = MutableStateFlow<Map<String, Pair<Double, Double>>>(emptyMap())
     val geocodedLocations: StateFlow<Map<String, Pair<Double, Double>>> = _geocodedLocations.asStateFlow()
 
+    // False while a geocoding pass is in flight, true once the loop finishes (all succeeded, some
+    // failed, or the list was empty). The map camera gates on this so it fits *all* locations once
+    // geocoding is done, rather than locking onto whichever result arrived first.
+    private val _geocodingComplete = MutableStateFlow(false)
+    val geocodingComplete: StateFlow<Boolean> = _geocodingComplete.asStateFlow()
+
     fun geocodeLocations(context: Context, locations: List<String>) {
+        if (locations.isEmpty()) {
+            _geocodingComplete.value = true
+            return
+        }
+        _geocodingComplete.value = false
         viewModelScope.launch(Dispatchers.IO) {
             val geocoder = Geocoder(context)
             locations.forEach { loc ->
@@ -167,6 +178,7 @@ class JournalViewModel(
                     } catch (_: Exception) { }
                 }
             }
+            _geocodingComplete.value = true
         }
     }
 
@@ -188,6 +200,12 @@ class JournalViewModel(
                 // cached folder id + photo cache so backups don't target the previous account.
                 if (user?.uid != lastUid) {
                     drivePhotoSync.onAccountChanged()
+                    // On sign-out, clear the locally stored profile photo so the next account that
+                    // signs in starts with a clean slate. setProfilePhotoUri(null) removes the
+                    // DataStore key; if no custom photo has ever been set this is a no-op.
+                    if (user == null) {
+                        preferencesManager.setProfilePhotoUri(null)
+                    }
                     lastUid = user?.uid
                 }
                 if (user != null) LegacyEntryMigration.run(appContext, cloudEntrySync)
