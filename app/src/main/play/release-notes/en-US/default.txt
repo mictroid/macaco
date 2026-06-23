@@ -1,6 +1,5 @@
 What's new:
-• Compact backups now keep all your photos reliably
-• A full-screen progress display during backup and restore
-• The map fits all your locations, even across continents
-• Polished form and profile layouts on tablets and large screens
+• Reset your password right from the sign-in screen
+• Larger, edge-to-edge entry photos on tablets and big screens
+• The map now reliably zooms to your trips on tablets
 • Bug fixes and polish
