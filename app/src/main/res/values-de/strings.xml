@@ -216,6 +216,10 @@
     <string name="settings_backup_export_full">Volle Qualität</string>
     <string name="settings_backup_import_done">%1$d Einträge aus Datei wiederhergestellt</string>
     <string name="settings_backup_failed">Sicherung fehlgeschlagen. Bitte versuche es erneut.</string>
+    <string name="settings_backup_status_exporting">Sicherung wird vorbereitet…</string>
+    <string name="settings_backup_status_importing">Sicherung wird wiederhergestellt…</string>
+    <string name="settings_backup_status_downloading">Sicherung wird heruntergeladen…</string>
+    <string name="settings_backup_status_restoring">Einträge werden wiederhergestellt…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">Abenteuer</string>

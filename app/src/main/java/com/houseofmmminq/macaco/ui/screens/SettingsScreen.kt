@@ -247,6 +247,8 @@ fun SettingsScreen(
     val importProgress by viewModel.importProgress.collectAsState()
     val backupScope = rememberCoroutineScope()
     var backupBusy by remember { mutableStateOf(false) }
+    // true = import is running; false = export is running. Used to tailor the overlay status text.
+    var backupIsImport by remember { mutableStateOf(false) }
 
     // Keep the screen on while a backup export or import is running. Large imports take several
     // minutes to download; without this the device screen timeout fires mid-operation.
@@ -274,12 +276,14 @@ fun SettingsScreen(
         // transition; clear it if the user cancelled.
         if (uri == null) {
             backupBusy = false
+            backupIsImport = false
             return@rememberLauncherForActivityResult
         }
         val isCompact = pendingCompact // capture before the coroutine
         backupScope.launch {
             val result = viewModel.exportBackup(uri, compact = isCompact)
             backupBusy = false
+            backupIsImport = false
             Toast.makeText(
                 context,
                 result.fold(
@@ -295,11 +299,13 @@ fun SettingsScreen(
     ) { uri ->
         if (uri == null) {
             backupBusy = false
+            backupIsImport = false
             return@rememberLauncherForActivityResult
         }
         backupScope.launch {
             val result = viewModel.importBackup(uri)
             backupBusy = false
+            backupIsImport = false
             Toast.makeText(
                 context,
                 result.fold(
@@ -311,6 +317,7 @@ fun SettingsScreen(
         }
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         // The branded teal header runs edge-to-edge under the status bar; opt out of the default
         // top inset and re-apply it inside the banner.
@@ -665,6 +672,7 @@ fun SettingsScreen(
                 onImport = {
                     if (isPurchased == true) {
                         backupBusy = true
+                        backupIsImport = true
                         backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
                     } else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
                 }
@@ -681,6 +689,7 @@ fun SettingsScreen(
                             showExportDialog = false
                             pendingCompact = true
                             backupBusy = true
+                            backupIsImport = false
                             backupExportLauncher.launch("macaco-backup-compact.zip")
                         }) {
                             Text(stringResource(R.string.settings_backup_export_compact))
@@ -691,6 +700,7 @@ fun SettingsScreen(
                             showExportDialog = false
                             pendingCompact = false
                             backupBusy = true
+                            backupIsImport = false
                             backupExportLauncher.launch("macaco-backup.zip")
                         }) {
                             Text(stringResource(R.string.settings_backup_export_full))
@@ -748,6 +758,62 @@ fun SettingsScreen(
             Spacer(Modifier.height(16.dp))
             }
         }
+    }
+
+    // Branded loading overlay — covers the entire screen during backup operations so a long
+    // export/import shows clear feedback instead of a frozen or black-looking settings screen.
+    if (backupBusy) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(macacoBrandBackground())
+                .statusBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(80.dp)
+                )
+                Text(
+                    text = "macaco",
+                    color = SplashGoldBright,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Light,
+                    letterSpacing = 5.sp
+                )
+                Spacer(Modifier.height(8.dp))
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(40.dp)
+                )
+                Spacer(Modifier.height(4.dp))
+                // Contextual status text: show import phase or generic export message.
+                val statusText = if (backupIsImport) {
+                    when (importProgress?.phase) {
+                        com.houseofmmminq.macaco.data.sync.JournalBackup.ImportPhase.DOWNLOADING ->
+                            stringResource(R.string.settings_backup_status_downloading)
+                        com.houseofmmminq.macaco.data.sync.JournalBackup.ImportPhase.RESTORING ->
+                            stringResource(R.string.settings_backup_status_restoring)
+                        else -> stringResource(R.string.settings_backup_status_importing)
+                    }
+                } else {
+                    stringResource(R.string.settings_backup_status_exporting)
+                }
+                Text(
+                    text = statusText,
+                    color = Color.White.copy(alpha = 0.85f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+            }
+        }
+    }
     }
 }
 

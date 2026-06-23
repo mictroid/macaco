@@ -183,6 +183,10 @@
     <string name="settings_backup_export_full">Full quality</string>
     <string name="settings_backup_import_done">Restored %1$d entries from file</string>
     <string name="settings_backup_failed">Backup failed. Please try again.</string>
+    <string name="settings_backup_status_exporting">Preparing your backup…</string>
+    <string name="settings_backup_status_importing">Restoring your backup…</string>
+    <string name="settings_backup_status_downloading">Downloading backup…</string>
+    <string name="settings_backup_status_restoring">Restoring entries…</string>
     <string name="settings_drive_backup">Google Drive Backup</string>
     <string name="settings_drive_connected">Connected to Google Drive</string>
     <string name="settings_drive_not_connected">Not connected</string>

@@ -205,6 +205,10 @@
     <string name="settings_backup_export_full">Volledige kwaliteit</string>
     <string name="settings_backup_import_done">%1$d items uit bestand hersteld</string>
     <string name="settings_backup_failed">Back-up mislukt. Probeer het opnieuw.</string>
+    <string name="settings_backup_status_exporting">Je back-up wordt voorbereid…</string>
+    <string name="settings_backup_status_importing">Je back-up wordt hersteld…</string>
+    <string name="settings_backup_status_downloading">Back-up downloaden…</string>
+    <string name="settings_backup_status_restoring">Items herstellen…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">Avonturen</string>

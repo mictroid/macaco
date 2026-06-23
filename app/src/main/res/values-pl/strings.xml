@@ -211,6 +211,10 @@
     <string name="settings_backup_export_full">Pełna jakość</string>
     <string name="settings_backup_import_done">Przywrócono %1$d wpisów z pliku</string>
     <string name="settings_backup_failed">Tworzenie kopii nie powiodło się. Spróbuj ponownie.</string>
+    <string name="settings_backup_status_exporting">Przygotowywanie kopii zapasowej…</string>
+    <string name="settings_backup_status_importing">Przywracanie kopii zapasowej…</string>
+    <string name="settings_backup_status_downloading">Pobieranie kopii zapasowej…</string>
+    <string name="settings_backup_status_restoring">Przywracanie wpisów…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">Przygody</string>

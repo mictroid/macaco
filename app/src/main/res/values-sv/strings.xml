@@ -205,6 +205,10 @@
     <string name="settings_backup_export_full">Full kvalitet</string>
     <string name="settings_backup_import_done">%1$d inlägg återställda från fil</string>
     <string name="settings_backup_failed">Säkerhetskopieringen misslyckades. Försök igen.</string>
+    <string name="settings_backup_status_exporting">Förbereder din säkerhetskopia…</string>
+    <string name="settings_backup_status_importing">Återställer din säkerhetskopia…</string>
+    <string name="settings_backup_status_downloading">Laddar ner säkerhetskopia…</string>
+    <string name="settings_backup_status_restoring">Återställer inlägg…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">Äventyr</string>

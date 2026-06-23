@@ -205,6 +205,10 @@
     <string name="settings_backup_export_full">Qualité complète</string>
     <string name="settings_backup_import_done">%1$d entrées restaurées depuis le fichier</string>
     <string name="settings_backup_failed">Échec de la sauvegarde. Veuillez réessayer.</string>
+    <string name="settings_backup_status_exporting">Préparation de votre sauvegarde…</string>
+    <string name="settings_backup_status_importing">Restauration de votre sauvegarde…</string>
+    <string name="settings_backup_status_downloading">Téléchargement de la sauvegarde…</string>
+    <string name="settings_backup_status_restoring">Restauration des entrées…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">Aventures</string>

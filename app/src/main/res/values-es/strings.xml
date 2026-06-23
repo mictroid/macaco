@@ -205,6 +205,10 @@
     <string name="settings_backup_export_full">Calidad completa</string>
     <string name="settings_backup_import_done">%1$d entradas restauradas desde el archivo</string>
     <string name="settings_backup_failed">Error en la copia. Inténtalo de nuevo.</string>
+    <string name="settings_backup_status_exporting">Preparando tu copia de seguridad…</string>
+    <string name="settings_backup_status_importing">Restaurando tu copia de seguridad…</string>
+    <string name="settings_backup_status_downloading">Descargando copia de seguridad…</string>
+    <string name="settings_backup_status_restoring">Restaurando entradas…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">Aventuras</string>

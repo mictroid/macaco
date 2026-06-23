@@ -205,6 +205,10 @@
     <string name="settings_backup_export_full">Qualità piena</string>
     <string name="settings_backup_import_done">%1$d voci ripristinate dal file</string>
     <string name="settings_backup_failed">Backup non riuscito. Riprova.</string>
+    <string name="settings_backup_status_exporting">Preparazione del backup…</string>
+    <string name="settings_backup_status_importing">Ripristino del backup…</string>
+    <string name="settings_backup_status_downloading">Download del backup…</string>
+    <string name="settings_backup_status_restoring">Ripristino delle voci…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">Avventure</string>

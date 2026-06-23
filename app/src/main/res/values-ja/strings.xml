@@ -202,6 +202,10 @@
     <string name="settings_backup_export_full">フル品質</string>
     <string name="settings_backup_import_done">%1$d 件の記録をファイルから復元しました</string>
     <string name="settings_backup_failed">バックアップに失敗しました。もう一度お試しください。</string>
+    <string name="settings_backup_status_exporting">バックアップを準備しています…</string>
+    <string name="settings_backup_status_importing">バックアップを復元しています…</string>
+    <string name="settings_backup_status_downloading">バックアップをダウンロードしています…</string>
+    <string name="settings_backup_status_restoring">記録を復元しています…</string>
 
     <!-- Drawer -->
     <string name="drawer_adventures">冒険</string>

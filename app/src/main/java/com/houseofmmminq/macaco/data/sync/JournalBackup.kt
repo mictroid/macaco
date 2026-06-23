@@ -127,11 +127,20 @@ class JournalBackup(private val context: Context) {
             }
         }.getOrNull() ?: return false
 
-        return runCatching {
-            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, out)
+        // Encode into a ByteArrayOutputStream first — keeps the JPEG encoder's chunked writes
+        // away from the ZipOutputStream's DEFLATE state, preventing IOException mid-entry.
+        val baos = java.io.ByteArrayOutputStream()
+        val encodeOk = runCatching {
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, baos)
         }.also {
             bitmap.recycle()
-        }.isSuccess
+        }.getOrDefault(false)
+
+        // Verify encode succeeded AND produced bytes (compress returning false = silent failure).
+        if (!encodeOk || baos.size() == 0) return false
+
+        // Write all JPEG bytes to the zip entry in one call — no chunked interaction with Deflater.
+        return runCatching { baos.writeTo(out) }.isSuccess
     }
 
     /**
