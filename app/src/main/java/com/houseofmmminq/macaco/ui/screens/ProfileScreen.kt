@@ -593,7 +593,7 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
+                    .height(80.dp)
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
@@ -622,7 +622,7 @@ fun ProfileScreen(
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = null,
-                    modifier = Modifier.size(120.dp)
+                    modifier = Modifier.size(64.dp)
                 )
             }
         }
