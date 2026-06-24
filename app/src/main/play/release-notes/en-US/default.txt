@@ -1,5 +1,5 @@
 What's new:
-• Reset your password right from the sign-in screen
-• Larger, edge-to-edge entry photos on tablets and big screens
-• The map now reliably zooms to your trips on tablets
+• Long-press any photo in an entry to reorder, set as cover, or remove it
+• A subtle hint appears to help you discover the long-press gesture
+• Settings page no longer cuts off content behind the navigation bar
 • Bug fixes and polish
