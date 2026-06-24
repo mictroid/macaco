@@ -77,6 +77,7 @@
     <string name="entry_detail_photo_move_left">Przesuń w lewo</string>
     <string name="entry_detail_photo_move_right">Przesuń w prawo</string>
     <string name="entry_detail_photo_remove">Usuń zdjęcie</string>
+    <string name="entry_detail_cover_hint">Przytrzymaj zdjęcie, aby zmienić kolejność lub usunąć</string>
     <string name="entry_detail_delete_title">Usuń wpis</string>
     <string name="entry_detail_delete_message">Usunąć &quot;%s&quot;? Tej operacji nie można cofnąć.</string>
 

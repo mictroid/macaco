@@ -73,6 +73,7 @@
     <string name="entry_detail_photo_move_left">Sposta a sinistra</string>
     <string name="entry_detail_photo_move_right">Sposta a destra</string>
     <string name="entry_detail_photo_remove">Rimuovi foto</string>
+    <string name="entry_detail_cover_hint">Tieni premuta una foto per riordinare o rimuovere</string>
     <string name="entry_detail_delete_title">Elimina ricordo</string>
     <string name="entry_detail_delete_message">Eliminare &quot;%s&quot;? Questa azione non può essere annullata.</string>
 

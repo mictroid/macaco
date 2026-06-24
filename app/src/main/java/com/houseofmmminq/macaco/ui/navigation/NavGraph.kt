@@ -239,6 +239,7 @@ fun NavGraph(
                     // Swipe through the same tag-filtered set the list shows, not all entries.
                     val entries by viewModel.visibleEntries.collectAsState()
                     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
+                    val coverHintCount by viewModel.coverHintCount.collectAsState()
                     // Tracks that onDelete has already fired a popBackStack(), so the
                     // entries-change guard below doesn't fire a second one. On slower devices
                     // (S8, Android 8.1) the composable survives an extra recomposition frame after
@@ -266,7 +267,9 @@ fun NavGraph(
                         },
                         onSaveEntry = { viewModel.saveEntry(it) },
                         onSuppressAutoLock = { viewModel.suppressAutoLockOnce() },
-                        cachedDrivePhotos = cachedDrivePhotos
+                        cachedDrivePhotos = cachedDrivePhotos,
+                        coverHintCount = coverHintCount,
+                        onIncrementCoverHintCount = { viewModel.incrementCoverHintCount() }
                     )
                 }
 

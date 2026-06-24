@@ -127,6 +127,13 @@ class JournalViewModel(
         viewModelScope.launch { preferencesManager.addCustomMood(emoji) }
     }
 
+    val coverHintCount: StateFlow<Int> = preferencesManager.coverHintCount
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    fun incrementCoverHintCount() {
+        viewModelScope.launch { preferencesManager.incrementCoverHintCount() }
+    }
+
     private val _isAppLocked = MutableStateFlow(false)
     val isAppLocked: StateFlow<Boolean> = _isAppLocked.asStateFlow()
 

@@ -28,6 +28,7 @@ class PreferencesManager(private val context: Context) {
     private val KEY_APP_LOCK = booleanPreferencesKey("app_lock_enabled")
     private val KEY_ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
     private val KEY_CUSTOM_MOODS = stringPreferencesKey("custom_moods")
+    private val KEY_COVER_HINT_COUNT = intPreferencesKey("cover_hint_count")
 
     companion object {
         const val DEFAULT_REMINDER_INTERVAL_DAYS = 4
@@ -49,6 +50,16 @@ class PreferencesManager(private val context: Context) {
         .map { prefs ->
             prefs[KEY_CUSTOM_MOODS]?.split("|")?.filter { it.isNotBlank() } ?: emptyList()
         }
+
+    val coverHintCount: Flow<Int> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_COVER_HINT_COUNT] ?: 0 }
+
+    suspend fun incrementCoverHintCount() {
+        context.dataStore.edit { prefs ->
+            prefs[KEY_COVER_HINT_COUNT] = (prefs[KEY_COVER_HINT_COUNT] ?: 0) + 1
+        }
+    }
 
     suspend fun addCustomMood(emoji: String) {
         context.dataStore.edit { prefs ->

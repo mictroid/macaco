@@ -73,6 +73,7 @@
     <string name="entry_detail_photo_move_left">Flytta vänster</string>
     <string name="entry_detail_photo_move_right">Flytta höger</string>
     <string name="entry_detail_photo_remove">Ta bort foto</string>
+    <string name="entry_detail_cover_hint">Håll en bild intryckt för att ordna om eller ta bort</string>
     <string name="entry_detail_delete_title">Radera anteckning</string>
     <string name="entry_detail_delete_message">Radera &quot;%s&quot;? Detta kan inte ångras.</string>
 

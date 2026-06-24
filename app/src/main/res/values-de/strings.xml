@@ -76,6 +76,7 @@
     <string name="entry_detail_photo_move_left">Nach links verschieben</string>
     <string name="entry_detail_photo_move_right">Nach rechts verschieben</string>
     <string name="entry_detail_photo_remove">Foto entfernen</string>
+    <string name="entry_detail_cover_hint">Lange auf ein Foto tippen zum Neu­sortieren oder Löschen</string>
     <string name="entry_detail_delete_title">Eintrag löschen</string>
     <string name="entry_detail_delete_message">\"%s\" löschen? Dies kann nicht rückgängig gemacht werden.</string>
 

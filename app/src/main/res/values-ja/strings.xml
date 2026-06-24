@@ -71,6 +71,7 @@
     <string name="entry_detail_photo_move_left">左に移動</string>
     <string name="entry_detail_photo_move_right">右に移動</string>
     <string name="entry_detail_photo_remove">写真を削除</string>
+    <string name="entry_detail_cover_hint">写真を長押しして並べ替えや削除</string>
     <string name="entry_detail_delete_title">記録を削除</string>
     <string name="entry_detail_delete_message">&quot;%s&quot; を削除しますか？この操作は取り消せません。</string>
 

@@ -73,6 +73,7 @@
     <string name="entry_detail_photo_move_left">Naar links verplaatsen</string>
     <string name="entry_detail_photo_move_right">Naar rechts verplaatsen</string>
     <string name="entry_detail_photo_remove">Foto verwijderen</string>
+    <string name="entry_detail_cover_hint">Houd een foto ingedrukt om te herordenen of verwijderen</string>
     <string name="entry_detail_delete_title">Herinnering verwijderen</string>
     <string name="entry_detail_delete_message">&quot;%s&quot; verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
 

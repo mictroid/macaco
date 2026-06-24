@@ -71,6 +71,7 @@
     <string name="entry_detail_photo_move_left">向左移动</string>
     <string name="entry_detail_photo_move_right">向右移动</string>
     <string name="entry_detail_photo_remove">删除照片</string>
+    <string name="entry_detail_cover_hint">长按照片以重新排序或删除</string>
     <string name="entry_detail_delete_title">删除日记</string>
     <string name="entry_detail_delete_message">删除 &quot;%s&quot;？此操作无法撤销。</string>
 

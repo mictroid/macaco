@@ -73,6 +73,7 @@
     <string name="entry_detail_photo_move_left">Déplacer à gauche</string>
     <string name="entry_detail_photo_move_right">Déplacer à droite</string>
     <string name="entry_detail_photo_remove">Supprimer la photo</string>
+    <string name="entry_detail_cover_hint">Appuyez longuement sur une photo pour réorganiser ou supprimer</string>
     <string name="entry_detail_delete_title">Supprimer l\'entrée</string>
     <string name="entry_detail_delete_message">Supprimer &quot;%s&quot; ? Cette action est irréversible.</string>
 

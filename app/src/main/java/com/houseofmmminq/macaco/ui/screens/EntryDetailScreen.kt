@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -92,6 +93,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
@@ -102,6 +104,7 @@ import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import kotlin.math.absoluteValue
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 
@@ -116,7 +119,9 @@ fun EntryDetailScreen(
     onTagClick: (String) -> Unit = {},
     onSaveEntry: (TravelEntry) -> Unit = {},
     onSuppressAutoLock: () -> Unit = {},
-    cachedDrivePhotos: Map<String, String> = emptyMap()
+    cachedDrivePhotos: Map<String, String> = emptyMap(),
+    coverHintCount: Int = 0,
+    onIncrementCoverHintCount: () -> Unit = {}
 ) {
     val context = LocalContext.current
     // Swipe horizontally to move between entries. Opens on the tapped entry; the toolbar and the
@@ -267,6 +272,15 @@ fun EntryDetailScreen(
         // the active page so swiping in never resumes mid-scroll.
         val listState = rememberLazyListState()
         var photoActionIndex by remember { mutableStateOf<Int?>(null) }
+        var showCoverHint by remember { mutableStateOf(false) }
+        LaunchedEffect(entry.id) {
+            if (entry.photoUris.size > 1 && coverHintCount < 3) {
+                showCoverHint = true
+                onIncrementCoverHintCount()
+                delay(4_000)
+                showCoverHint = false
+            }
+        }
         LaunchedEffect(entriesPagerState.currentPage) {
             if (entriesPagerState.currentPage == page) {
                 listState.scrollToItem(0)
@@ -416,6 +430,21 @@ fun EntryDetailScreen(
                         }
                     }
                 }
+                }
+                AnimatedVisibility(
+                    visible = showCoverHint,
+                    enter = fadeIn(tween(300)),
+                    exit = fadeOut(tween(500))
+                ) {
+                    Text(
+                        text = stringResource(R.string.entry_detail_cover_hint),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 6.dp, bottom = 2.dp)
+                    )
                 }
             }
 

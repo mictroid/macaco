@@ -73,6 +73,7 @@
     <string name="entry_detail_photo_move_left">Mover a la izquierda</string>
     <string name="entry_detail_photo_move_right">Mover a la derecha</string>
     <string name="entry_detail_photo_remove">Eliminar foto</string>
+    <string name="entry_detail_cover_hint">Mantén pulsada una foto para reordenar o eliminar</string>
     <string name="entry_detail_delete_title">Eliminar entrada</string>
     <string name="entry_detail_delete_message">¿Eliminar &quot;%s&quot;? Esta acción no se puede deshacer.</string>
 
