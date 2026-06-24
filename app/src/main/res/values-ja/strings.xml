@@ -67,6 +67,10 @@
     <string name="entry_detail_add_story">あなたの物語を書く…</string>
     <string name="entry_detail_set_cover">カバーに設定</string>
     <string name="entry_detail_add_photo">写真を追加</string>
+    <string name="entry_detail_photo_set_cover">カバーに設定</string>
+    <string name="entry_detail_photo_move_left">左に移動</string>
+    <string name="entry_detail_photo_move_right">右に移動</string>
+    <string name="entry_detail_photo_remove">写真を削除</string>
     <string name="entry_detail_delete_title">記録を削除</string>
     <string name="entry_detail_delete_message">&quot;%s&quot; を削除しますか？この操作は取り消せません。</string>
 

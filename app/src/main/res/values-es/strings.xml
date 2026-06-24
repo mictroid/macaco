@@ -69,6 +69,10 @@
     <string name="entry_detail_add_story">Cuenta tu historia…</string>
     <string name="entry_detail_set_cover">Establecer como portada</string>
     <string name="entry_detail_add_photo">Añadir foto</string>
+    <string name="entry_detail_photo_set_cover">Establecer como portada</string>
+    <string name="entry_detail_photo_move_left">Mover a la izquierda</string>
+    <string name="entry_detail_photo_move_right">Mover a la derecha</string>
+    <string name="entry_detail_photo_remove">Eliminar foto</string>
     <string name="entry_detail_delete_title">Eliminar entrada</string>
     <string name="entry_detail_delete_message">¿Eliminar &quot;%s&quot;? Esta acción no se puede deshacer.</string>
 

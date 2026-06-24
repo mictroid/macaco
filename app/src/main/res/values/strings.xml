@@ -131,6 +131,10 @@
     <string name="entry_detail_add_story">Add your story…</string>
     <string name="entry_detail_set_cover">Set as cover</string>
     <string name="entry_detail_add_photo">Add photo</string>
+    <string name="entry_detail_photo_set_cover">Set as cover</string>
+    <string name="entry_detail_photo_move_left">Move left</string>
+    <string name="entry_detail_photo_move_right">Move right</string>
+    <string name="entry_detail_photo_remove">Remove photo</string>
     <string name="entry_detail_delete_title">Delete Entry</string>
     <string name="entry_detail_delete_message">Delete \"%s\"? This cannot be undone.</string>
 

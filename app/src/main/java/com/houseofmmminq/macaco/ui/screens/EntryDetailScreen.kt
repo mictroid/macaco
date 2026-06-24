@@ -47,10 +47,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -62,7 +65,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -261,6 +266,7 @@ fun EntryDetailScreen(
         // Each entry keeps its own scroll position, but lands back at the top whenever it becomes
         // the active page so swiping in never resumes mid-scroll.
         val listState = rememberLazyListState()
+        var photoActionIndex by remember { mutableStateOf<Int?>(null) }
         LaunchedEffect(entriesPagerState.currentPage) {
             if (entriesPagerState.currentPage == page) {
                 listState.scrollToItem(0)
@@ -281,6 +287,18 @@ fun EntryDetailScreen(
             if (entry.description.isBlank()) {
                 MacacoWatermarkBackground(modifier = Modifier.matchParentSize())
             }
+            val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
+            photoActionIndex?.let { idx ->
+                PhotoActionSheet(
+                    index = idx,
+                    total = photoCount,
+                    onSetCover = { onSaveEntry(entry.withCover(idx)) },
+                    onMoveLeft = { onSaveEntry(entry.withSwapped(idx, idx - 1)) },
+                    onMoveRight = { onSaveEntry(entry.withSwapped(idx, idx + 1)) },
+                    onRemove = { onSaveEntry(entry.withRemoved(idx)) },
+                    onDismiss = { photoActionIndex = null }
+                )
+            }
             LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             item {
                 // Parallax: the header moves at ~40% of the swipe offset, clipped so it never
@@ -297,7 +315,6 @@ fun EntryDetailScreen(
                 } else {
                     260.dp
                 }
-                val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
                 // Promote the photo at [index] to the cover (hero) and confirm with a toast.
                 val setCover: (Int) -> Unit = { index ->
                     onSaveEntry(entry.withCover(index))
@@ -328,6 +345,7 @@ fun EntryDetailScreen(
                     photoCount == 1 -> JournalPhoto(
                         data = entry.displayPhotoUri(0, cachedDrivePhotos),
                         onClick = { galleryStartIndex = 0 },
+                        onLongClick = { photoActionIndex = 0 },
                         modifier = Modifier.fillMaxWidth().height(heroHeight)
                     )
 
@@ -348,6 +366,7 @@ fun EntryDetailScreen(
                                 JournalPhoto(
                                     data = entry.displayPhotoUri(0, cachedDrivePhotos),
                                     onClick = { galleryStartIndex = 0 },
+                                    onLongClick = { photoActionIndex = 0 },
                                     modifier = Modifier.weight(0.65f).fillMaxHeight()
                                 )
                                 Column(
@@ -358,7 +377,7 @@ fun EntryDetailScreen(
                                         JournalThumb(
                                             data = entry.displayPhotoUri(index, cachedDrivePhotos),
                                             onClick = { galleryStartIndex = index },
-                                            onLongClick = { setCover(index) },
+                                            onLongClick = { photoActionIndex = index },
                                             modifier = Modifier.weight(1f).fillMaxWidth()
                                         )
                                     }
@@ -382,7 +401,7 @@ fun EntryDetailScreen(
                                         JournalThumb(
                                             data = entry.displayPhotoUri(index, cachedDrivePhotos),
                                             onClick = { galleryStartIndex = index },
-                                            onLongClick = { setCover(index) },
+                                            onLongClick = { photoActionIndex = index },
                                             modifier = Modifier.size(80.dp)
                                         )
                                     }
@@ -641,9 +660,26 @@ private fun TravelEntry.withCover(index: Int): TravelEntry {
     return copy(photoUris = photos, driveFileIds = driveIds)
 }
 
+private fun TravelEntry.withRemoved(index: Int): TravelEntry {
+    if (index < 0 || index >= photoUris.size) return this
+    val photos = photoUris.toMutableList().apply { removeAt(index) }
+    val driveIds = driveFileIds.toMutableList().apply { if (index < size) removeAt(index) }
+    return copy(photoUris = photos, driveFileIds = driveIds)
+}
+
+private fun TravelEntry.withSwapped(a: Int, b: Int): TravelEntry {
+    if (a == b || a < 0 || b < 0 || a >= photoUris.size || b >= photoUris.size) return this
+    val photos = photoUris.toMutableList().also { list -> val tmp = list[a]; list[a] = list[b]; list[b] = tmp }
+    val driveIds = if (a < driveFileIds.size && b < driveFileIds.size) {
+        driveFileIds.toMutableList().also { list -> val tmp = list[a]; list[a] = list[b]; list[b] = tmp }
+    } else driveFileIds
+    return copy(photoUris = photos, driveFileIds = driveIds)
+}
+
 /** A single journal photo, cropped to fill its slot, tappable to open the full-screen viewer. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun JournalPhoto(data: String?, onClick: () -> Unit, modifier: Modifier) {
+private fun JournalPhoto(data: String?, onClick: () -> Unit, onLongClick: (() -> Unit)? = null, modifier: Modifier) {
     val context = LocalContext.current
     AsyncImage(
         model = ImageRequest.Builder(context).data(data).crossfade(true).build(),
@@ -651,7 +687,7 @@ private fun JournalPhoto(data: String?, onClick: () -> Unit, modifier: Modifier)
         contentScale = ContentScale.Crop,
         modifier = modifier
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable(onClick = onClick)
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick ?: {})
     )
 }
 
@@ -686,6 +722,61 @@ private fun JournalThumb(data: String?, onClick: () -> Unit, onLongClick: () -> 
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PhotoActionSheet(
+    index: Int,
+    total: Int,
+    onSetCover: () -> Unit,
+    onMoveLeft: () -> Unit,
+    onMoveRight: () -> Unit,
+    onRemove: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(modifier = Modifier.padding(bottom = 32.dp)) {
+            if (index > 0) {
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.entry_detail_photo_set_cover)) },
+                    leadingContent = { Icon(Icons.Filled.Star, contentDescription = null) },
+                    modifier = Modifier.clickable { onSetCover(); onDismiss() }
+                )
+            }
+            if (index > 0) {
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.entry_detail_photo_move_left)) },
+                    leadingContent = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null) },
+                    modifier = Modifier.clickable { onMoveLeft(); onDismiss() }
+                )
+            }
+            if (index < total - 1) {
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.entry_detail_photo_move_right)) },
+                    leadingContent = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
+                    modifier = Modifier.clickable { onMoveRight(); onDismiss() }
+                )
+            }
+            HorizontalDivider()
+            ListItem(
+                headlineContent = {
+                    Text(
+                        stringResource(R.string.entry_detail_photo_remove),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        Icons.Filled.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+                modifier = Modifier.clickable { onRemove(); onDismiss() }
+            )
+        }
+    }
 }
 
 private fun shareEntry(context: Context, entry: TravelEntry) {

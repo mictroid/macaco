@@ -69,6 +69,10 @@
     <string name="entry_detail_add_story">Berätta din historia…</string>
     <string name="entry_detail_set_cover">Använd som omslag</string>
     <string name="entry_detail_add_photo">Lägg till foto</string>
+    <string name="entry_detail_photo_set_cover">Ange som omslag</string>
+    <string name="entry_detail_photo_move_left">Flytta vänster</string>
+    <string name="entry_detail_photo_move_right">Flytta höger</string>
+    <string name="entry_detail_photo_remove">Ta bort foto</string>
     <string name="entry_detail_delete_title">Radera anteckning</string>
     <string name="entry_detail_delete_message">Radera &quot;%s&quot;? Detta kan inte ångras.</string>
 

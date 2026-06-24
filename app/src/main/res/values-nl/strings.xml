@@ -69,6 +69,10 @@
     <string name="entry_detail_add_story">Vertel je verhaal…</string>
     <string name="entry_detail_set_cover">Als omslag instellen</string>
     <string name="entry_detail_add_photo">Foto toevoegen</string>
+    <string name="entry_detail_photo_set_cover">Instellen als omslag</string>
+    <string name="entry_detail_photo_move_left">Naar links verplaatsen</string>
+    <string name="entry_detail_photo_move_right">Naar rechts verplaatsen</string>
+    <string name="entry_detail_photo_remove">Foto verwijderen</string>
     <string name="entry_detail_delete_title">Herinnering verwijderen</string>
     <string name="entry_detail_delete_message">&quot;%s&quot; verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
 

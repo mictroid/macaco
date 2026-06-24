@@ -69,6 +69,10 @@
     <string name="entry_detail_add_story">Racontez votre histoire…</string>
     <string name="entry_detail_set_cover">Définir comme couverture</string>
     <string name="entry_detail_add_photo">Ajouter une photo</string>
+    <string name="entry_detail_photo_set_cover">Définir comme couverture</string>
+    <string name="entry_detail_photo_move_left">Déplacer à gauche</string>
+    <string name="entry_detail_photo_move_right">Déplacer à droite</string>
+    <string name="entry_detail_photo_remove">Supprimer la photo</string>
     <string name="entry_detail_delete_title">Supprimer l\'entrée</string>
     <string name="entry_detail_delete_message">Supprimer &quot;%s&quot; ? Cette action est irréversible.</string>
 
