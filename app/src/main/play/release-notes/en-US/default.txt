@@ -1,4 +1,4 @@
 What's new:
-• The map now opens on your most recent adventure instead of zooming out to the whole world
+• The Adventures map now frames all of your travels at once when it opens
 • Entry cards now have a clean, subtle outline in dark mode so they stand apart from the background
 • Bug fixes and polish
