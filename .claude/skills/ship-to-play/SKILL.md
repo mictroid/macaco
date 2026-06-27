@@ -63,6 +63,13 @@ memory). Record the **local dispatch time** you printed above plus the run ID.
 - State plainly that the run is **dispatched, not confirmed** — it can be checked later with
   `gh run list` (builds typically take ~6 min). Do not block waiting for it.
 
+### 7. Email the user the summary — ALWAYS, standing request (2026-06-27)
+After every push/dispatch to Play, the user wants the ship summary emailed to them. Invoke the `me`
+skill to draft it to `michael.tromp78@gmail.com` (vc, run ID, dispatch time, run URL, batch contents,
+and what still needs on-device verification). The Gmail connector can only **create a draft** (it
+can't send) — so tell the user the draft is in their inbox ready to send. Do this without being asked
+each time; it's a standing rule.
+
 ## Notes
 - A build typically takes ~6 minutes; a SUCCESS run publishes to the `alpha`/closed-testing track.
 - WIF is keyed to repo + ref + workflow, **not** commit SHAs — a force-push doesn't disrupt it.
