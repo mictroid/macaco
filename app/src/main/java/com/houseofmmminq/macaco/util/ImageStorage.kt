@@ -2,11 +2,14 @@ package com.houseofmmminq.macaco.util
 
 import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 /**
@@ -70,8 +73,13 @@ object ImageStorage {
             val uri = resolver.insert(
                 MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values
             ) ?: return null
+            val sourceBytes = resolver.openInputStream(source)?.use { it.readBytes() } ?: run {
+                runCatching { resolver.delete(uri, null, null) }
+                return null
+            }
+            val outputBytes = compressForStorage(sourceBytes) ?: sourceBytes // fallback: write original
             val ok = resolver.openOutputStream(uri)?.use { output ->
-                resolver.openInputStream(source)?.use { input -> input.copyTo(output); true } ?: false
+                output.write(outputBytes); true
             } ?: false
             if (!ok) {
                 runCatching { resolver.delete(uri, null, null) }
@@ -88,9 +96,9 @@ object ImageStorage {
                 "Macaco"
             ).also { it.mkdirs() }
             val file = File(dir, name)
-            resolver.openInputStream(source)?.use { input ->
-                file.outputStream().use { output -> input.copyTo(output) }
-            } ?: return null
+            val sourceBytes = resolver.openInputStream(source)?.use { it.readBytes() } ?: return null
+            val outputBytes = compressForStorage(sourceBytes) ?: sourceBytes // fallback: write original
+            file.writeBytes(outputBytes)
             val values = ContentValues().apply {
                 put(MediaStore.Images.Media.DISPLAY_NAME, name)
                 put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
@@ -182,6 +190,54 @@ object ImageStorage {
         val file = File(dir, "capture_${System.currentTimeMillis()}.jpg")
         file.createNewFile()
         FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    }.getOrNull()
+
+    /**
+     * Decodes [bytes] as a bitmap, scales it down so neither dimension exceeds [maxDim], and
+     * re-encodes at [quality]% JPEG. Returns null if the input is not a recognised bitmap format
+     * (the caller falls back to the original bytes in that case, so no photo is ever lost).
+     *
+     * Uses a two-pass decode (bounds only → inSampleSize) so the full-resolution pixel data is
+     * never loaded into RAM: a 12 MP photo decoded with inSampleSize=4 uses ~2 MB of heap instead
+     * of ~36 MB. CPU work — run it off the main thread.
+     */
+    private fun compressForStorage(
+        bytes: ByteArray,
+        maxDim: Int = 1920,
+        quality: Int = 85
+    ): ByteArray? = runCatching {
+        // Pass 1: read dimensions without decoding pixels.
+        val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
+        check(opts.outWidth > 0 && opts.outHeight > 0)
+
+        // Largest power-of-2 subsample that keeps the image above maxDim.
+        var sample = 1
+        while (maxOf(opts.outWidth, opts.outHeight) / (sample * 2) > maxDim) sample *= 2
+
+        // Pass 2: decode at reduced resolution using 16-bit colour (half the RAM of ARGB_8888).
+        opts.inJustDecodeBounds = false
+        opts.inSampleSize = sample
+        opts.inPreferredConfig = Bitmap.Config.RGB_565
+        val sampled = checkNotNull(BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts))
+
+        // Fine-scale to exactly maxDim if the subsampled bitmap is still too large.
+        val largest = maxOf(sampled.width, sampled.height)
+        val final = if (largest > maxDim) {
+            val s = maxDim.toFloat() / largest
+            Bitmap.createScaledBitmap(
+                sampled,
+                (sampled.width * s).toInt(),
+                (sampled.height * s).toInt(),
+                true
+            ).also { if (it !== sampled) sampled.recycle() }
+        } else sampled
+
+        ByteArrayOutputStream().use { out ->
+            final.compress(Bitmap.CompressFormat.JPEG, quality, out)
+            final.recycle()
+            out.toByteArray()
+        }
     }.getOrNull()
 
     const val BACKGROUNDS = "backgrounds"
