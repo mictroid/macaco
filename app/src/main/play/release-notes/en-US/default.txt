@@ -1,4 +1,5 @@
 What's new:
-• The Adventures map now frames all your travels correctly, even across the globe
-• Landscape mode is much better on the journal, map, and entry screens
+• Reorder photos in an entry — just long-press and drag
+• Photos now take up far less space without losing quality
+• New Help & About answers: reset your password, manage photos, and use tags
 • Bug fixes and polish
