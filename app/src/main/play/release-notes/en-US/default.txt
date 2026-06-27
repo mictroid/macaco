@@ -1,5 +1,4 @@
 What's new:
-• Long-press any photo in an entry to reorder, set as cover, or remove it
-• A subtle hint appears to help you discover the long-press gesture
-• Settings page no longer cuts off content behind the navigation bar
+• The map now opens on your most recent adventure instead of zooming out to the whole world
+• Entry cards now have a clean, subtle outline in dark mode so they stand apart from the background
 • Bug fixes and polish
