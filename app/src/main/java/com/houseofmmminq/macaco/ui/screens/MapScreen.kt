@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -135,28 +136,34 @@ fun MapScreen(
 
     LaunchedEffect(mapLoaded, geocodingComplete) {
         if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty()) {
-            // Center on the most recently written entry that has a geocoded location.
-            // Fitting ALL locations looks great for same-country trips but degrades to
-            // a useless zoom-2 world map the moment two continents are involved.
-            // "Where was I last?" is the more useful default; users can pinch out to
-            // see all pins. Exclude Null Island (0.0, 0.0) — geocoding failures land there.
-            // newLatLngZoom never throws regardless of map layout state.
-            val target = entries
-                .sortedByDescending { it.createdAt }
-                .mapNotNull { entry ->
-                    val loc = entry.location.trim().ifBlank { null } ?: return@mapNotNull null
-                    geocodedLocations[loc]?.let { (lat, lon) ->
-                        LatLng(lat, lon).takeIf { !(it.latitude == 0.0 && it.longitude == 0.0) }
-                    }
-                }
-                .firstOrNull() ?: return@LaunchedEffect
+            // Fit ALL geocoded locations in view ("show me my whole travel map"). We use the
+            // newLatLngBounds(bounds, width, height, padding) overload that takes explicit pixel
+            // dimensions: unlike the 1-arg form it does NOT require the map to be laid out, so it
+            // never throws "Map size can't be 0", and it computes the exact zoom to frame every pin
+            // — no manual zoom-table (which collapsed cross-continental spans to a useless world
+            // view). Exclude Null Island (0.0, 0.0) — geocoding failures land there.
+            val latlngs = locations
+                .mapNotNull { geocodedLocations[it] }
+                .map { LatLng(it.first, it.second) }
+                .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
+            if (latlngs.isEmpty()) return@LaunchedEffect
 
-            // Keep the gate so a hypothetical future failure doesn't clear the scrim with
-            // the camera stuck at the default world view. If not moved, the 8-second
-            // revealTimedOut in the sibling LaunchedEffect eventually drops the scrim.
-            val moved = runCatching {
-                cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(target, 6f))
-            }.isSuccess
+            val update = if (latlngs.size == 1) {
+                // A single point has no bounds to fit; pick a sensible country-level zoom.
+                CameraUpdateFactory.newLatLngZoom(latlngs[0], 6f)
+            } else {
+                val bounds = LatLngBounds.builder().apply { latlngs.forEach { include(it) } }.build()
+                val metrics = context.resources.displayMetrics
+                val padding = (metrics.density * 48).toInt() // 48dp inset so pins aren't on the edge
+                CameraUpdateFactory.newLatLngBounds(
+                    bounds, metrics.widthPixels, metrics.heightPixels, padding
+                )
+            }
+
+            // Keep the gate so a hypothetical future failure doesn't clear the scrim with the
+            // camera stuck at the default world view. If not moved, the 8-second revealTimedOut in
+            // the sibling LaunchedEffect eventually drops the scrim.
+            val moved = runCatching { cameraPositionState.move(update) }.isSuccess
             if (moved) cameraPositioned = true
         }
     }
