@@ -12,6 +12,14 @@ manual dispatch → closed testing). It needs no local signing key. A local
 Prerequisite: the code to ship is already committed (e.g. via `implement-cowork-brief`). This skill
 handles bump → notes → push → verify → dispatch → record.
 
+**Before shipping — batch size (2026-06-27).** Default to **~4-5 changes per release**, not one
+release per change. Let committed changes accumulate locally and ship them together. Flex the count
+by impact/risk and advise the user: ship **sooner (1-2)** for high-risk / regression-prone areas
+(auth, billing, sync/Firestore, the map camera) or a fix the user is verifying on-device; **hold
+longer (5+)** for low-risk cosmetic/UI/string tweaks. Don't reflexively ship a single change — only
+run this skill at the recommended batch point or on explicit request. See the `batch-before-shipping`
+memory.
+
 ## Procedure
 
 ### 1. Bump versionCode
