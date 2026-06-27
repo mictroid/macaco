@@ -15,7 +15,10 @@ app/src/main/res/values-pt/strings.xml        values-nl   values-sv   values-pl
 app/src/main/res/values-ja/strings.xml        values-zh-rCN
 ```
 
-(FAQ strings are an exception — they're English-only; see the `strings-localization` memory.)
+(All keys — including the `help_faq_*` FAQ strings — are translated in all 11 locales; verified
+2026-06-27 (all 30 `help_faq_*` keys present in en/de/ja). An older note here and in the
+`strings-localization` memory claimed FAQ strings were English-only — that's wrong; confirm against
+live source if unsure.)
 
 ## The trap: PowerShell encoding mangles non-ASCII
 
