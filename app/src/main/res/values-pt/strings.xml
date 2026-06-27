@@ -256,6 +256,12 @@
     <string name="help_faq_swipe_entries_a">Na lista do diário, deslize para a esquerda ou direita sobre um cartão de entrada para ir à memória seguinte ou anterior. O contador no topo mostra sua posição.</string>
     <string name="help_faq_adventures_map_q">O que é o mapa de Aventuras?</string>
     <string name="help_faq_adventures_map_a">O mapa de Aventuras mostra num mapa-múndi cada lugar que você registrou no diário. Toque no ícone do globo na tela do diário para abri-lo. Os marcadores são agrupados por cidade — toque em um grupo para aproximar.</string>
+    <string name="help_faq_reset_password_q">Como redefino a minha palavra-passe?</string>
+    <string name="help_faq_reset_password_a">No ecrã de início de sessão, toque em \"Esqueceu-se da palavra-passe?\" e introduza o seu email. Receberá um link de redefinição em poucos segundos. Isto aplica-se apenas a contas de email/palavra-passe — se iniciou sessão com o Google, faça a gestão da palavra-passe na sua conta Google.</string>
+    <string name="help_faq_reorder_photos_q">Como reordeno ou removo fotos?</string>
+    <string name="help_faq_reorder_photos_a">Abra a entrada no modo de edição. Mantenha uma foto premida e arraste-a para uma nova posição para reordenar. Toque no × de uma foto para a remover da entrada (a foto permanece na sua galeria).</string>
+    <string name="help_faq_use_tags_q">Como uso etiquetas?</string>
+    <string name="help_faq_use_tags_a">Escreva uma etiqueta no editor de entradas e prima o botão + para a adicionar. As etiquetas permitem agrupar entradas por viagem, tema ou qualquer rótulo que quiser. Toque na etiqueta de uma entrada na lista do diário para filtrar por essa etiqueta.</string>
     <string name="help_faq_transfer_device_q">Transferir para um novo dispositivo</string>
     <string name="help_faq_transfer_device_a">Faça login com a mesma conta Google ou de e-mail no seu novo dispositivo. Suas entradas sincronizam automaticamente em poucos segundos. As fotos salvas via Backup e restauração também serão restauradas quando você reimportar o arquivo de backup.</string>
     <string name="help_faq_premium_benefits_q">O que ganho com o premium?</string>

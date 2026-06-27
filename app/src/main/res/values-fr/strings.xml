@@ -256,6 +256,12 @@
     <string name="help_faq_swipe_entries_a">Dans la liste du journal, balayez vers la gauche ou la droite sur une carte d\'entrée pour aller au souvenir suivant ou précédent. Le compteur en haut indique votre position.</string>
     <string name="help_faq_adventures_map_q">Qu\'est-ce que la carte Aventures ?</string>
     <string name="help_faq_adventures_map_a">La carte Aventures place sur une carte du monde chaque lieu que vous avez consigné dans le journal. Appuyez sur l\'icône du globe sur l\'écran du journal pour l\'ouvrir. Les repères sont regroupés par ville — appuyez sur un groupe pour zoomer.</string>
+    <string name="help_faq_reset_password_q">Comment réinitialiser mon mot de passe ?</string>
+    <string name="help_faq_reset_password_a">Sur l\'écran de connexion, appuyez sur \"Mot de passe oublié ?\" et saisissez votre adresse e-mail. Vous recevrez un lien de réinitialisation en quelques secondes. Cela ne concerne que les comptes e-mail/mot de passe — si vous vous êtes connecté avec Google, gérez votre mot de passe depuis votre compte Google.</string>
+    <string name="help_faq_reorder_photos_q">Comment réorganiser ou supprimer des photos ?</string>
+    <string name="help_faq_reorder_photos_a">Ouvrez l\'entrée en mode édition. Appuyez longuement sur une photo et faites-la glisser vers une nouvelle position pour la réorganiser. Appuyez sur le × d\'une photo pour la retirer de l\'entrée (la photo reste dans votre galerie).</string>
+    <string name="help_faq_use_tags_q">Comment utiliser les tags ?</string>
+    <string name="help_faq_use_tags_a">Saisissez un tag dans l\'éditeur d\'entrée et appuyez sur le bouton + pour l\'ajouter. Les tags vous permettent de regrouper les entrées par voyage, thème ou toute autre étiquette de votre choix. Appuyez sur une puce de tag sur une entrée de la liste du journal pour filtrer par ce tag.</string>
     <string name="help_faq_transfer_device_q">Transférer vers un nouvel appareil</string>
     <string name="help_faq_transfer_device_a">Connectez-vous avec le même compte Google ou e-mail sur votre nouvel appareil. Vos entrées se synchronisent automatiquement en quelques secondes. Les photos enregistrées via Sauvegarde &amp; restauration seront aussi restaurées une fois le fichier de sauvegarde réimporté.</string>
     <string name="help_faq_premium_benefits_q">Qu\'est-ce que premium m\'apporte ?</string>

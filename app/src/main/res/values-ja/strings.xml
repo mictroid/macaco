@@ -252,6 +252,12 @@
     <string name="help_faq_swipe_entries_a">ジャーナル一覧でエントリーカードを左右にスワイプすると、次または前の思い出に移動します。上部のカウンターで現在の位置がわかります。</string>
     <string name="help_faq_adventures_map_q">アドベンチャーマップとは？</string>
     <string name="help_faq_adventures_map_a">アドベンチャーマップは、ジャーナルに記録したすべての場所を世界地図上に表示します。ジャーナル画面の地球儀アイコンをタップして開きます。ピンは都市ごとにまとめられ、グループをタップするとズームインします。</string>
+    <string name="help_faq_reset_password_q">パスワードをリセットするには？</string>
+    <string name="help_faq_reset_password_a">ログイン画面で「パスワードをお忘れですか？」をタップし、メールアドレスを入力します。数秒以内にリセットリンクが届きます。これはメールとパスワードのアカウントにのみ適用されます。Googleでログインしている場合は、Googleアカウントでパスワードを管理してください。</string>
+    <string name="help_faq_reorder_photos_q">写真の並べ替えや削除はどうすればいいですか？</string>
+    <string name="help_faq_reorder_photos_a">編集モードでエントリーを開きます。写真を長押しして新しい位置にドラッグすると並べ替えられます。写真の×をタップすると、エントリーから削除できます（写真はギャラリーに残ります）。</string>
+    <string name="help_faq_use_tags_q">タグはどう使いますか？</string>
+    <string name="help_faq_use_tags_a">エントリーエディターでタグを入力し、＋ボタンを押して追加します。タグを使うと、旅行やテーマなど好きなラベルでエントリーをグループ化できます。ジャーナルリストのエントリーにあるタグチップをタップすると、そのタグで絞り込めます。</string>
     <string name="help_faq_transfer_device_q">新しいデバイスへの移行</string>
     <string name="help_faq_transfer_device_a">新しいデバイスで同じ Google またはメールアカウントでサインインしてください。エントリーは数秒で自動的に同期されます。バックアップと復元で保存した写真も、バックアップファイルを再インポートすると復元されます。</string>
     <string name="help_faq_premium_benefits_q">プレミアムで何ができますか？</string>

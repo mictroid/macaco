@@ -64,6 +64,12 @@
     <string name="help_faq_swipe_entries_a">On the journal list, swipe left or right anywhere on an entry card to move to the next or previous memory. The counter at the top shows your position.</string>
     <string name="help_faq_adventures_map_q">What is the Adventures map?</string>
     <string name="help_faq_adventures_map_a">The Adventures map plots every location you\'ve journalled on a world map. Tap the globe icon on the journal screen to open it. Pins group by city — tap a cluster to zoom in.</string>
+    <string name="help_faq_reset_password_q">How do I reset my password?</string>
+    <string name="help_faq_reset_password_a">On the login screen, tap \"Forgot password?\" and enter your email. You\'ll receive a reset link in a few seconds. This only applies to email/password accounts — if you signed in with Google, use your Google account to manage your password.</string>
+    <string name="help_faq_reorder_photos_q">How do I reorder or remove photos?</string>
+    <string name="help_faq_reorder_photos_a">Open the entry in edit mode. Long-press any photo and drag it to a new position to reorder. Tap the × on a photo to remove it from the entry (the photo stays in your gallery).</string>
+    <string name="help_faq_use_tags_q">How do I use tags?</string>
+    <string name="help_faq_use_tags_a">Type a tag in the entry editor and press the + button to add it. Tags let you group entries by trip, theme, or any label you like. Tap a tag chip on any entry in the journal list to filter by that tag.</string>
     <string name="help_faq_transfer_device_q">Transfer to a new device</string>
     <string name="help_faq_transfer_device_a">Sign in with the same Google or email account on your new device. Your entries sync automatically within a few seconds. Photos saved via Backup &amp; Restore will also restore once you re-import the backup file.</string>
     <string name="help_faq_premium_benefits_q">What do I get with premium?</string>

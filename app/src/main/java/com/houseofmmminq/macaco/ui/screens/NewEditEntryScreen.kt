@@ -9,6 +9,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,6 +67,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -73,10 +75,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -87,6 +92,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
@@ -359,12 +365,53 @@ fun NewEditEntryScreen(
                 Spacer(Modifier.height(8.dp))
                 // Photos first, the + button last, with trailing padding so the final item
                 // (the + button) is never clipped against the screen edge.
+                // Long-press a photo to drag it left/right and reorder; tapping × removes it.
+                // photoUris are de-duplicated on add, so each uri is a stable LazyRow key — which is
+                // what lets the dragged composable (and its active pointer gesture) travel with its
+                // photo as the list reorders under it.
+                val slotPx = with(LocalDensity.current) { 88.dp.toPx() } // 80.dp item + 8.dp spacing
+                var draggingUri by remember { mutableStateOf<String?>(null) }
+                var dragOffsetX by remember { mutableStateOf(0f) }
+                // Read the live list inside the long-lived drag closure without a stale capture.
+                val livePhotoUris by rememberUpdatedState(photoUris)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(end = 16.dp)
                 ) {
-                    itemsIndexed(photoUris) { index, uri ->
-                        Box {
+                    itemsIndexed(photoUris, key = { _, uri -> uri }) { index, uri ->
+                        val isDragging = draggingUri == uri
+                        Box(
+                            modifier = Modifier
+                                .zIndex(if (isDragging) 1f else 0f)
+                                .graphicsLayer {
+                                    translationX = if (isDragging) dragOffsetX else 0f
+                                    val s = if (isDragging) 1.08f else 1f
+                                    scaleX = s
+                                    scaleY = s
+                                }
+                                .pointerInput(Unit) {
+                                    detectDragGesturesAfterLongPress(
+                                        onDragStart = { draggingUri = uri; dragOffsetX = 0f },
+                                        onDragEnd = { draggingUri = null; dragOffsetX = 0f },
+                                        onDragCancel = { draggingUri = null; dragOffsetX = 0f },
+                                        onDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragOffsetX += dragAmount.x
+                                            val from = livePhotoUris.indexOf(uri)
+                                            if (from < 0) return@detectDragGesturesAfterLongPress
+                                            if (dragOffsetX > slotPx / 2 && from < livePhotoUris.lastIndex) {
+                                                photoUris = livePhotoUris.toMutableList()
+                                                    .also { it.add(from + 1, it.removeAt(from)) }
+                                                dragOffsetX -= slotPx
+                                            } else if (dragOffsetX < -slotPx / 2 && from > 0) {
+                                                photoUris = livePhotoUris.toMutableList()
+                                                    .also { it.add(from - 1, it.removeAt(from)) }
+                                                dragOffsetX += slotPx
+                                            }
+                                        }
+                                    )
+                                }
+                        ) {
                             AsyncImage(
                                 model = uri,
                                 contentDescription = null,
@@ -381,7 +428,7 @@ fun NewEditEntryScreen(
                                     .clip(CircleShape)
                                     .background(Color.Black.copy(alpha = 0.6f))
                                     .clickable {
-                                        photoUris = photoUris.toMutableList().also { it.removeAt(index) }
+                                        photoUris = photoUris.toMutableList().also { it.remove(uri) }
                                         // If this was added this session it was never committed, so
                                         // delete its file now. Pre-existing photos are left to the
                                         // ViewModel to clean up only once the removal is saved.

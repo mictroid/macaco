@@ -256,6 +256,12 @@
     <string name="help_faq_swipe_entries_a">Veeg in de dagboeklijst op een kaart naar links of rechts om naar de volgende of vorige herinnering te gaan. De teller bovenaan toont je positie.</string>
     <string name="help_faq_adventures_map_q">Wat is de Avonturen-kaart?</string>
     <string name="help_faq_adventures_map_a">De Avonturen-kaart toont elke locatie die je in je dagboek hebt vastgelegd op een wereldkaart. Tik op het wereldbolpictogram in het dagboekscherm om hem te openen. Markeringen worden per stad gegroepeerd — tik op een groep om in te zoomen.</string>
+    <string name="help_faq_reset_password_q">Hoe stel ik mijn wachtwoord opnieuw in?</string>
+    <string name="help_faq_reset_password_a">Tik op het inlogscherm op \"Wachtwoord vergeten?\" en voer je e-mailadres in. Je ontvangt binnen enkele seconden een resetlink. Dit geldt alleen voor accounts met e-mail en wachtwoord — als je met Google bent ingelogd, beheer je je wachtwoord via je Google-account.</string>
+    <string name="help_faq_reorder_photos_q">Hoe wijzig ik de volgorde van foto\'s of verwijder ik ze?</string>
+    <string name="help_faq_reorder_photos_a">Open het item in de bewerkmodus. Houd een foto ingedrukt en sleep deze naar een nieuwe positie om de volgorde te wijzigen. Tik op de × op een foto om deze uit het item te verwijderen (de foto blijft in je galerij).</string>
+    <string name="help_faq_use_tags_q">Hoe gebruik ik tags?</string>
+    <string name="help_faq_use_tags_a">Typ een tag in de itembewerker en druk op de +-knop om deze toe te voegen. Met tags kun je items groeperen op reis, thema of een willekeurig label. Tik op een tagchip bij een item in de journaallijst om op die tag te filteren.</string>
     <string name="help_faq_transfer_device_q">Overzetten naar een nieuw apparaat</string>
     <string name="help_faq_transfer_device_a">Meld je op je nieuwe apparaat aan met hetzelfde Google- of e-mailaccount. Je vermeldingen synchroniseren automatisch binnen enkele seconden. Foto\'s die via Back-up &amp; herstel zijn opgeslagen, worden ook hersteld zodra je het back-upbestand opnieuw importeert.</string>
     <string name="help_faq_premium_benefits_q">Wat krijg ik met premium?</string>

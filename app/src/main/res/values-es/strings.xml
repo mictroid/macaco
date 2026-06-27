@@ -256,6 +256,12 @@
     <string name="help_faq_swipe_entries_a">En la lista del diario, desliza a la izquierda o a la derecha sobre una tarjeta de entrada para ir al recuerdo siguiente o anterior. El contador de arriba muestra tu posición.</string>
     <string name="help_faq_adventures_map_q">¿Qué es el mapa de Aventuras?</string>
     <string name="help_faq_adventures_map_a">El mapa de Aventuras muestra en un mapamundi cada lugar que has registrado en el diario. Toca el icono del globo en la pantalla del diario para abrirlo. Los marcadores se agrupan por ciudad: toca un grupo para acercar.</string>
+    <string name="help_faq_reset_password_q">¿Cómo restablezco mi contraseña?</string>
+    <string name="help_faq_reset_password_a">En la pantalla de inicio de sesión, toca \"¿Olvidaste tu contraseña?\" e introduce tu correo electrónico. Recibirás un enlace de restablecimiento en unos segundos. Esto solo se aplica a las cuentas de correo y contraseña; si iniciaste sesión con Google, gestiona tu contraseña desde tu cuenta de Google.</string>
+    <string name="help_faq_reorder_photos_q">¿Cómo reordeno o elimino fotos?</string>
+    <string name="help_faq_reorder_photos_a">Abre la entrada en modo de edición. Mantén pulsada una foto y arrástrala a una nueva posición para reordenarla. Toca la × de una foto para quitarla de la entrada (la foto permanece en tu galería).</string>
+    <string name="help_faq_use_tags_q">¿Cómo uso las etiquetas?</string>
+    <string name="help_faq_use_tags_a">Escribe una etiqueta en el editor de entradas y pulsa el botón + para añadirla. Las etiquetas te permiten agrupar entradas por viaje, tema o cualquier categoría que quieras. Toca el chip de una etiqueta en cualquier entrada de la lista del diario para filtrar por esa etiqueta.</string>
     <string name="help_faq_transfer_device_q">Transferir a un nuevo dispositivo</string>
     <string name="help_faq_transfer_device_a">Inicia sesión con la misma cuenta de Google o de correo en tu nuevo dispositivo. Tus entradas se sincronizan automáticamente en unos segundos. Las fotos guardadas con Copia de seguridad y restauración también se restaurarán cuando vuelvas a importar el archivo de copia.</string>
     <string name="help_faq_premium_benefits_q">¿Qué incluye premium?</string>

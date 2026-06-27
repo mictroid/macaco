@@ -256,6 +256,12 @@
     <string name="help_faq_swipe_entries_a">Nell\'elenco del diario, scorri a sinistra o a destra su una scheda per andare al ricordo successivo o precedente. Il contatore in alto mostra la tua posizione.</string>
     <string name="help_faq_adventures_map_q">Cos\'è la mappa Avventure?</string>
     <string name="help_faq_adventures_map_a">La mappa Avventure mostra su un planisfero ogni luogo che hai annotato nel diario. Tocca l\'icona del globo nella schermata del diario per aprirla. I segnaposto sono raggruppati per città: tocca un gruppo per ingrandire.</string>
+    <string name="help_faq_reset_password_q">Come reimposto la mia password?</string>
+    <string name="help_faq_reset_password_a">Nella schermata di accesso, tocca \"Password dimenticata?\" e inserisci la tua email. Riceverai un link per la reimpostazione in pochi secondi. Questo vale solo per gli account email/password; se hai effettuato l\'accesso con Google, gestisci la password dal tuo account Google.</string>
+    <string name="help_faq_reorder_photos_q">Come riordino o rimuovo le foto?</string>
+    <string name="help_faq_reorder_photos_a">Apri la voce in modalità di modifica. Tieni premuta una foto e trascinala in una nuova posizione per riordinarla. Tocca la × su una foto per rimuoverla dalla voce (la foto resta nella tua galleria).</string>
+    <string name="help_faq_use_tags_q">Come uso i tag?</string>
+    <string name="help_faq_use_tags_a">Digita un tag nell\'editor della voce e premi il pulsante + per aggiungerlo. I tag ti permettono di raggruppare le voci per viaggio, tema o qualsiasi etichetta tu voglia. Tocca il chip di un tag su una voce nell\'elenco del diario per filtrare in base a quel tag.</string>
     <string name="help_faq_transfer_device_q">Trasferisci su un nuovo dispositivo</string>
     <string name="help_faq_transfer_device_a">Accedi con lo stesso account Google o e-mail sul nuovo dispositivo. Le tue voci si sincronizzano automaticamente in pochi secondi. Anche le foto salvate tramite Backup e ripristino verranno ripristinate dopo aver reimportato il file di backup.</string>
     <string name="help_faq_premium_benefits_q">Cosa include premium?</string>

@@ -264,6 +264,12 @@
     <string name="help_faq_swipe_entries_a">Na liście dziennika przesuń palcem w lewo lub w prawo na karcie wpisu, aby przejść do następnego lub poprzedniego wspomnienia. Licznik u góry pokazuje twoją pozycję.</string>
     <string name="help_faq_adventures_map_q">Czym jest mapa Przygody?</string>
     <string name="help_faq_adventures_map_a">Mapa Przygody pokazuje na mapie świata każde miejsce zapisane w dzienniku. Naciśnij ikonę globusa na ekranie dziennika, aby ją otworzyć. Pinezki są grupowane według miast — naciśnij grupę, aby przybliżyć.</string>
+    <string name="help_faq_reset_password_q">Jak zresetować hasło?</string>
+    <string name="help_faq_reset_password_a">Na ekranie logowania dotknij \"Nie pamiętasz hasła?\" i wpisz swój adres e-mail. W ciągu kilku sekund otrzymasz link do resetowania. Dotyczy to tylko kont z adresem e-mail i hasłem — jeśli logujesz się przez Google, zarządzaj hasłem na swoim koncie Google.</string>
+    <string name="help_faq_reorder_photos_q">Jak zmienić kolejność lub usunąć zdjęcia?</string>
+    <string name="help_faq_reorder_photos_a">Otwórz wpis w trybie edycji. Przytrzymaj zdjęcie i przeciągnij je w nowe miejsce, aby zmienić kolejność. Dotknij × na zdjęciu, aby usunąć je z wpisu (zdjęcie pozostanie w galerii).</string>
+    <string name="help_faq_use_tags_q">Jak używać tagów?</string>
+    <string name="help_faq_use_tags_a">Wpisz tag w edytorze wpisu i naciśnij przycisk +, aby go dodać. Tagi pozwalają grupować wpisy według podróży, motywu lub dowolnej etykiety. Dotknij chipa tagu przy dowolnym wpisie na liście dziennika, aby filtrować według tego tagu.</string>
     <string name="help_faq_transfer_device_q">Przeniesienie na nowe urządzenie</string>
     <string name="help_faq_transfer_device_a">Zaloguj się na nowym urządzeniu tym samym kontem Google lub e-mail. Twoje wpisy synchronizują się automatycznie w kilka sekund. Zdjęcia zapisane przez Kopię zapasową i przywracanie również zostaną przywrócone po ponownym zaimportowaniu pliku kopii.</string>
     <string name="help_faq_premium_benefits_q">Co daje premium?</string>
