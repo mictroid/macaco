@@ -1,4 +1,4 @@
 What's new:
-• The Adventures map now frames all of your travels at once when it opens
-• Entry cards now have a clean, subtle outline in dark mode so they stand apart from the background
+• The Adventures map now frames all your travels correctly, even across the globe
+• Landscape mode is much better on the journal, map, and entry screens
 • Bug fixes and polish
