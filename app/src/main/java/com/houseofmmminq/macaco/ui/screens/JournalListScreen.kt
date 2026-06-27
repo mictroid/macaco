@@ -382,13 +382,91 @@ fun JournalListScreen(
                 // Branded header: the splash's deep-teal radial fade behind the icon, with the
                 // gold "macaco" wordmark styled to match the splash. Kept compact; the drawer menu
                 // and profile avatar ride the top so navigation stays reachable.
+                // In landscape on phones (short screen) the tall centered brand block eats ~33% of
+                // the height, so collapse it to a single slim row. Tablets stay tall (~750dp+).
+                val isLandscape = LocalConfiguration.current.screenHeightDp < 480
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(macacoBrandBackground())
                         .statusBarsPadding()
-                        .padding(bottom = 4.dp)
+                        .padding(bottom = if (isLandscape) 0.dp else 4.dp)
                 ) {
+                  if (isLandscape) {
+                    // ── Compact landscape header: single slim row ──────────────────────
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Menu,
+                                contentDescription = stringResource(R.string.journal_list_menu_cd),
+                                tint = Color.White
+                            )
+                        }
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            text = "macaco",
+                            color = SplashGoldBright,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Light,
+                            letterSpacing = 3.sp
+                        )
+                        if (entries.isNotEmpty()) {
+                            val count = visibleEntries.size
+                            val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
+                            Text(
+                                text = " · " + memoriesText +
+                                    if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = SplashGold.copy(alpha = 0.7f)
+                            )
+                        }
+                        Spacer(Modifier.weight(1f))
+                        if (currentUser != null) {
+                            if (profilePhotoUri != null) {
+                                AsyncImage(
+                                    model = profilePhotoUri,
+                                    contentDescription = stringResource(R.string.common_profile),
+                                    modifier = Modifier
+                                        .padding(end = 12.dp)
+                                        .size(28.dp)
+                                        .clip(CircleShape)
+                                        .clickable { onProfile() },
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(end = 12.dp)
+                                        .size(28.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White)
+                                        .clickable { onProfile() },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        currentUser!!.displayName.take(1).uppercase(),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = SplashTealMid
+                                    )
+                                }
+                            }
+                        }
+                    }
+                  } else {
                     // Menu and avatar ride the top edge; the brand block overlays them centered,
                     // so the icon sits flush at the top with no dead space above it.
                     Row(
@@ -483,6 +561,7 @@ fun JournalListScreen(
                             }
                         }
                     }
+                  }
                 }
             },
             floatingActionButton = {

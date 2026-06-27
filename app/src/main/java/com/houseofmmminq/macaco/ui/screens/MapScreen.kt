@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -176,12 +178,52 @@ fun MapScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        // In landscape on phones (short screen) the tall centered brand block eats ~120dp of map;
+        // collapse it to a single slim row. Tablets stay tall (~750dp+) and keep the full header.
+        val isLandscape = LocalConfiguration.current.screenHeightDp < 480
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(macacoBrandBackground())
                 .statusBarsPadding()
         ) {
+          if (isLandscape) {
+            // ── Compact landscape header: single slim row ──────────────────────
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = "macaco",
+                    color = SplashGoldBright,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Light,
+                    letterSpacing = 3.sp
+                )
+                Text(
+                    text = " · Adventures",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White.copy(alpha = 0.85f)
+                )
+                if (locations.isNotEmpty()) {
+                    val mappedCount = locations.count { it in geocodedLocations }
+                    Text(
+                        text = " · $mappedCount/${locations.size} mapped",
+                        color = SplashGold.copy(alpha = 0.70f),
+                        fontSize = 11.sp,
+                        fontFamily = MacacoFontFamily
+                    )
+                }
+            }
+          } else {
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -219,6 +261,7 @@ fun MapScreen(
                     )
                 }
             }
+          }
         }
 
         Box(modifier = Modifier.fillMaxSize()) {

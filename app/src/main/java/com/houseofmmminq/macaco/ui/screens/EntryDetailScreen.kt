@@ -313,6 +313,246 @@ fun EntryDetailScreen(
                     onDismiss = { photoActionIndex = null }
                 )
             }
+            // In landscape on phones (short screen) a full-width hero photo fills most of the
+            // viewport and the title/text fall below the fold. For entries WITH photos, switch to
+            // a two-panel Row (photo left, scrollable text right). Photoless entries and tablets
+            // (tall screens) keep the portrait single-column layout below.
+            val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+            if (isLandscape && photoCount > 0) {
+                val launchAddPhoto = {
+                    onSuppressAutoLock()
+                    addPhotoLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+                Row(modifier = Modifier.fillMaxSize()) {
+                    // Left panel: photo / collage fills the panel height.
+                    Box(
+                        modifier = Modifier
+                            .weight(0.45f)
+                            .fillMaxHeight()
+                            .clipToBounds()
+                            .graphicsLayer { translationX = pageOffset * size.width * 0.4f }
+                    ) {
+                        when {
+                            photoCount == 1 -> JournalPhoto(
+                                data = entry.displayPhotoUri(0, cachedDrivePhotos),
+                                onClick = { galleryStartIndex = 0 },
+                                onLongClick = { photoActionIndex = 0 },
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            else -> {
+                                val rightCount = if (photoCount <= 4) photoCount - 1 else 2
+                                val overflowStart = 1 + rightCount
+                                Column(modifier = Modifier.fillMaxSize()) {
+                                    Row(
+                                        modifier = Modifier.weight(1f).fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                    ) {
+                                        JournalPhoto(
+                                            data = entry.displayPhotoUri(0, cachedDrivePhotos),
+                                            onClick = { galleryStartIndex = 0 },
+                                            onLongClick = { photoActionIndex = 0 },
+                                            modifier = Modifier.weight(0.65f).fillMaxHeight()
+                                        )
+                                        Column(
+                                            modifier = Modifier.weight(0.35f).fillMaxHeight(),
+                                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                                        ) {
+                                            for (index in 1..rightCount) {
+                                                JournalThumb(
+                                                    data = entry.displayPhotoUri(index, cachedDrivePhotos),
+                                                    onClick = { galleryStartIndex = index },
+                                                    onLongClick = { photoActionIndex = index },
+                                                    modifier = Modifier.weight(1f).fillMaxWidth()
+                                                )
+                                            }
+                                            if (photoCount <= 4) {
+                                                AddPhotoTile(
+                                                    onClick = launchAddPhoto,
+                                                    modifier = Modifier.weight(1f).fillMaxWidth()
+                                                )
+                                            }
+                                        }
+                                    }
+                                    if (photoCount > 4) {
+                                        Spacer(Modifier.height(2.dp))
+                                        LazyRow(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                        ) {
+                                            items(photoCount - overflowStart) { j ->
+                                                val index = j + overflowStart
+                                                JournalThumb(
+                                                    data = entry.displayPhotoUri(index, cachedDrivePhotos),
+                                                    onClick = { galleryStartIndex = index },
+                                                    onLongClick = { photoActionIndex = index },
+                                                    modifier = Modifier.size(64.dp)
+                                                )
+                                            }
+                                            item {
+                                                AddPhotoTile(
+                                                    onClick = launchAddPhoto,
+                                                    modifier = Modifier.size(64.dp)
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Right panel: text content, scrollable.
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier
+                            .weight(0.55f)
+                            .fillMaxHeight()
+                    ) {
+                        item {
+                            AnimatedVisibility(
+                                visible = showCoverHint,
+                                enter = fadeIn(tween(300)),
+                                exit = fadeOut(tween(500))
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.entry_detail_cover_hint),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 6.dp, bottom = 2.dp)
+                                )
+                            }
+                        }
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Text(
+                                    entry.title,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                FlowRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    if (entry.mood.isNotBlank()) {
+                                        AssistChip(
+                                            onClick = {},
+                                            label = { Text(entry.mood) },
+                                            border = null,
+                                            colors = AssistChipDefaults.assistChipColors(
+                                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                                labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        )
+                                    }
+                                    if (entry.location.isNotBlank()) {
+                                        AssistChip(
+                                            onClick = {},
+                                            label = { Text(entry.location) },
+                                            leadingIcon = {
+                                                Icon(
+                                                    Icons.Filled.LocationOn,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(16.dp)
+                                                )
+                                            },
+                                            colors = AssistChipDefaults.assistChipColors(
+                                                labelColor = MaterialTheme.colorScheme.primary,
+                                                leadingIconContentColor = MaterialTheme.colorScheme.primary
+                                            )
+                                        )
+                                    }
+                                    AssistChip(
+                                        onClick = {},
+                                        label = { Text(formatDate(entry.dateMillis)) },
+                                        leadingIcon = {
+                                            Icon(
+                                                Icons.Filled.DateRange,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                        },
+                                        border = null,
+                                        colors = AssistChipDefaults.assistChipColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            labelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            leadingIconContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
+                                    )
+                                }
+                                if (!entry.tripName.isNullOrBlank()) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Text("✈️", fontSize = 14.sp)
+                                        Text(
+                                            entry.tripName!!,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                                if (entry.description.isNotBlank()) {
+                                    Text(
+                                        entry.description,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        lineHeight = 28.sp
+                                    )
+                                } else {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(16.dp))
+                                            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
+                                            .clickable(onClick = { onEdit(entry.id) })
+                                            .padding(24.dp)
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.entry_detail_add_story),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+
+                                if (entry.tags.isNotEmpty()) {
+                                    FlowRow(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        entry.tags.forEach { tag ->
+                                            AssistChip(
+                                                onClick = { onTagClick(tag) },
+                                                label = { Text("#$tag") },
+                                                border = null,
+                                                colors = AssistChipDefaults.assistChipColors(
+                                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                                    labelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        item { Spacer(Modifier.height(16.dp)) }
+                    }
+                }
+            } else {
             LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             item {
                 // Parallax: the header moves at ~40% of the swipe offset, clipped so it never
@@ -594,6 +834,7 @@ fun EntryDetailScreen(
 
                     Spacer(Modifier.height(32.dp))
                 }
+            }
             }
             }
 
