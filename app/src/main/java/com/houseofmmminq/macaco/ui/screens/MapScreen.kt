@@ -47,7 +47,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -138,12 +137,8 @@ fun MapScreen(
 
     LaunchedEffect(mapLoaded, geocodingComplete) {
         if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty()) {
-            // Fit ALL geocoded locations in view ("show me my whole travel map"). We use the
-            // newLatLngBounds(bounds, width, height, padding) overload that takes explicit pixel
-            // dimensions: unlike the 1-arg form it does NOT require the map to be laid out, so it
-            // never throws "Map size can't be 0", and it computes the exact zoom to frame every pin
-            // — no manual zoom-table (which collapsed cross-continental spans to a useless world
-            // view). Exclude Null Island (0.0, 0.0) — geocoding failures land there.
+            // Fit ALL geocoded locations in view ("show me my whole travel map"). Exclude Null
+            // Island (0.0, 0.0) — geocoding failures land there.
             val latlngs = locations
                 .mapNotNull { geocodedLocations[it] }
                 .map { LatLng(it.first, it.second) }
@@ -154,12 +149,48 @@ fun MapScreen(
                 // A single point has no bounds to fit; pick a sensible country-level zoom.
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 6f)
             } else {
-                val bounds = LatLngBounds.builder().apply { latlngs.forEach { include(it) } }.build()
-                val metrics = context.resources.displayMetrics
-                val padding = (metrics.density * 48).toInt() // 48dp inset so pins aren't on the edge
-                CameraUpdateFactory.newLatLngBounds(
-                    bounds, metrics.widthPixels, metrics.heightPixels, padding
-                )
+                // Compute a center + zoom that frames every pin, handling the antimeridian. We do
+                // NOT use LatLngBounds: it collapses onto the empty Pacific for globe-spanning sets
+                // (e.g. Argentina + Iceland + Japan + Germany span >180° of longitude, so its box
+                // wraps the wrong way and the pins fall off-screen). Instead: latitude is a simple
+                // min/max; for longitude we find the largest EMPTY gap between pins and center on
+                // the complement arc — the tightest span that still contains them all. newLatLngZoom
+                // never throws and doesn't need the map laid out.
+                val lats = latlngs.map { it.latitude }
+                val latCenter = (lats.min() + lats.max()) / 2.0
+                val latSpan = lats.max() - lats.min()
+
+                val lngs = latlngs.map { it.longitude }.sorted()
+                var largestGap = Double.NEGATIVE_INFINITY
+                var arcStart = lngs.first() // first pin east of the largest gap
+                for (i in lngs.indices) {
+                    val next = if (i + 1 < lngs.size) lngs[i + 1] else lngs.first() + 360.0
+                    val gap = next - lngs[i]
+                    if (gap > largestGap) {
+                        largestGap = gap
+                        arcStart = if (i + 1 < lngs.size) lngs[i + 1] else lngs.first()
+                    }
+                }
+                val lngSpan = 360.0 - largestGap
+                var lngCenter = arcStart + lngSpan / 2.0
+                if (lngCenter > 180.0) lngCenter -= 360.0
+                if (lngCenter < -180.0) lngCenter += 360.0
+
+                // Pick a zoom from the wider of the two spans (degrees). Generous margin so pins
+                // sit comfortably inside the map, which is shorter than the screen (header + nav).
+                val maxSpan = maxOf(latSpan, lngSpan)
+                val zoom = when {
+                    maxSpan > 200.0 -> 0f
+                    maxSpan > 100.0 -> 1f
+                    maxSpan > 60.0  -> 2f
+                    maxSpan > 30.0  -> 3f
+                    maxSpan > 15.0  -> 4f
+                    maxSpan > 8.0   -> 5f
+                    maxSpan > 2.0   -> 6f
+                    maxSpan > 0.5   -> 8f
+                    else            -> 10f
+                }
+                CameraUpdateFactory.newLatLngZoom(LatLng(latCenter, lngCenter), zoom)
             }
 
             // Keep the gate so a hypothetical future failure doesn't clear the scrim with the
