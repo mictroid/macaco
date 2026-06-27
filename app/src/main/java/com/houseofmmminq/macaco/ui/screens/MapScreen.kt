@@ -40,13 +40,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -137,44 +135,29 @@ fun MapScreen(
 
     LaunchedEffect(mapLoaded, geocodingComplete) {
         if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty()) {
-            // Only fit to locations that belong to current entries (geocodedLocations is an
-            // append-only cache; stale entries from deleted/edited entries are excluded here).
-            // Exclude Null Island (0.0, 0.0) — geocoding failures land there and drag the
-            // bounds south to equatorial Africa.
-            val latlngs = locations
-                .mapNotNull { geocodedLocations[it] }
-                .map { LatLng(it.first, it.second) }
-                .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
-            if (latlngs.isEmpty()) return@LaunchedEffect
-
-            // Build the camera update without newLatLngBounds, which requires the map to be
-            // fully laid out (throws on slow/tablet devices even after delay). Instead, compute
-            // a center + approximate zoom from the bounds directly — newLatLngZoom never throws.
-            fun buildUpdate(): CameraUpdate {
-                if (latlngs.size == 1) return CameraUpdateFactory.newLatLngZoom(latlngs[0], 5f)
-                val bounds = LatLngBounds.builder().apply { latlngs.forEach { include(it) } }.build()
-                val center = bounds.center
-                val latSpan = bounds.northeast.latitude - bounds.southwest.latitude
-                val lngSpan = bounds.northeast.longitude - bounds.southwest.longitude
-                val zoom = when (maxOf(latSpan, lngSpan)) {
-                    in 0.0..0.5   -> 10f
-                    in 0.5..2.0   -> 8f
-                    in 2.0..8.0   -> 6f
-                    in 8.0..20.0  -> 5f
-                    in 20.0..50.0 -> 4f
-                    in 50.0..90.0 -> 3f
-                    else          -> 2f
+            // Center on the most recently written entry that has a geocoded location.
+            // Fitting ALL locations looks great for same-country trips but degrades to
+            // a useless zoom-2 world map the moment two continents are involved.
+            // "Where was I last?" is the more useful default; users can pinch out to
+            // see all pins. Exclude Null Island (0.0, 0.0) — geocoding failures land there.
+            // newLatLngZoom never throws regardless of map layout state.
+            val target = entries
+                .sortedByDescending { it.createdAt }
+                .mapNotNull { entry ->
+                    val loc = entry.location.trim().ifBlank { null } ?: return@mapNotNull null
+                    geocodedLocations[loc]?.let { (lat, lon) ->
+                        LatLng(lat, lon).takeIf { !(it.latitude == 0.0 && it.longitude == 0.0) }
+                    }
                 }
-                return CameraUpdateFactory.newLatLngZoom(center, zoom)
-            }
+                .firstOrNull() ?: return@LaunchedEffect
 
-            // newLatLngZoom never throws, but keep the gate so a hypothetical future failure
-            // doesn't clear the scrim with the camera stuck at the default world view.
-            delay(100)
-            val moved = runCatching { cameraPositionState.move(buildUpdate()) }.isSuccess
+            // Keep the gate so a hypothetical future failure doesn't clear the scrim with
+            // the camera stuck at the default world view. If not moved, the 8-second
+            // revealTimedOut in the sibling LaunchedEffect eventually drops the scrim.
+            val moved = runCatching {
+                cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(target, 6f))
+            }.isSuccess
             if (moved) cameraPositioned = true
-            // If not moved, the 8-second revealTimedOut in the sibling LaunchedEffect will
-            // eventually drop the scrim so the user is never permanently trapped.
         }
     }
 

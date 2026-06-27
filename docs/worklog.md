@@ -2,6 +2,23 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-27 — 2-brief batch (dark-mode card borders + map-camera-v6), local
+
+Both Cowork briefs verified vs live source first; `assembleDebug` SUCCESSFUL. Not yet
+bumped/pushed/published. User confirmed vc31/36/37 working on-device except the map-camera fit —
+which `map-camera-v6` here addresses.
+- **dark-mode-card-borders** (`JournalListScreen`): `EntryCard` + "On This Day" small card now get a
+  `0.5.dp outlineVariant` border in dark mode only (`colorScheme.background.luminance() < 0.5f`), so
+  cards stop bleeding into the near-identical dark `surface`/`background`. Light mode unchanged; works
+  across all 7 themes. Added `foundation.border` + `ui.graphics.luminance` imports.
+- **map-camera-v6** (`MapScreen`): replaced v5's bounds-fit + zoom-table with most-recent-entry
+  centering — `entries.sortedByDescending { createdAt }` → first geocoded location →
+  `newLatLngZoom(target, 6f)`. Fixes the cross-continental regression where a >90° lng span fell
+  through to zoom 2 (world view). Removed now-unused `CameraUpdate` + `LatLngBounds` imports.
+- Visual verify deferred to the A53 after ship (emulator blocked by the login+premium gate; real
+  RevenueCat key means a sideloaded debug APK can't pass the paywall). See
+  `docs/worklog-2026-06-27.md` for full per-brief detail.
+
 > **NEXT (2026-06-23):** vc33/1.5 is **published to closed testing** (WIF run `28010450490`
 > SUCCESS). **Only open item is on-device verification** of the four shipped items: tablet-ui
 > `sw600dp+` layouts (needs the **Tab A9+**), backup ZipFile extraction (truncated-Drive-download
