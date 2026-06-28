@@ -102,6 +102,11 @@ fun MapScreen(
     // Apply the user-selected map style; Standard (styleRes == null) uses Google's default map.
     val mapProperties = remember(mapTheme) {
         MapProperties(
+            // The SDK's default minimum zoom (~3.0 on this device) only reveals ~72° of longitude,
+            // so a globe-spanning entry set (e.g. 212°) can never be framed — move() silently clamps
+            // any lower request up to 3.0 (confirmed via Logcat). Lower the floor so the fit-all
+            // camera can actually zoom out far enough.
+            minZoomPreference = 1f,
             mapStyleOptions = mapTheme.styleRes?.let {
                 MapStyleOptions.loadRawResourceStyle(context, it)
             }
@@ -159,17 +164,22 @@ fun MapScreen(
                 // A single point has no bounds to fit; pick a sensible country-level zoom.
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 6f)
             } else {
-                // Frame every pin, antimeridian-correct AND exact-zoom (the v1–v9 saga, see
-                // docs/DONE/code-brief-map-camera-v10.md). The center is found the same way v8/v9 did
-                // (correct): latitude is a simple min/max; for longitude we find the largest EMPTY gap
-                // between sorted pins — the complement is the tightest arc containing them all, so its
-                // midpoint is the antimeridian-correct longitude center.
+                // Frame every pin, antimeridian-correct AND best-effort zoom (the v1–v10 saga). The
+                // center is found the same way v8/v9 did (correct): latitude is a simple min/max; for
+                // longitude we find the largest EMPTY gap between sorted pins — the complement is the
+                // tightest arc containing them all, so its midpoint is the antimeridian-correct
+                // longitude center.
                 //
-                // v9 then handed that arc to newLatLngBounds for the zoom, but on device (A53, vc43)
-                // it still under-zoomed for our >180° span (4 pins span 209°). v10 computes the zoom
-                // ourselves with direct Mercator math — the same calculation the SDK does internally,
-                // but explicit so no SDK edge case can interfere — and logs every result so any future
-                // failure is visible in Logcat (`adb logcat -s MapCamera`).
+                // ZOOM (v11): v9's newLatLngBounds under-zoomed; v10's explicit Mercator math was
+                // correct but (a) omitted the screen-density factor and (b) hit a hard SDK minimum-zoom
+                // floor — move() SILENTLY CLAMPS any lower request (confirmed on A53/vc43 via the
+                // `adb logcat -s MapCamera` diagnostics: requested 1.2 → applied 2.0). v11 fixes the
+                // density factor AND lowers MapProperties.minZoomPreference (see above) so the camera
+                // can actually zoom out. NOTE: a full-height portrait map still can't go below ~zoom 2.0
+                // (the SDK won't show past the poles), which caps visible longitude at ~144°. So a
+                // genuinely globe-spanning set (>~144° span) frames the MOST pins possible, centered;
+                // the 1–2 extreme pins may sit just off-screen. This is an SDK/portrait limit, not a
+                // math bug — do not "fix" it with more zoom math.
                 val lats = latlngs.map { it.latitude }
                 val latMin = lats.min()
                 val latMax = lats.max()
@@ -193,19 +203,24 @@ fun MapScreen(
                 val latCenter = (latMin + latMax) / 2.0
 
                 // Mercator zoom math — bypasses newLatLngBounds which under-zooms for spans > 180°.
-                // At zoom z: 1 longitude degree = 256·2^z / 360 px (linear).
-                //            1 Mercator radian  = 256·2^z / (2π) px (latitude is log-compressed).
-                // Solve for z in each dimension; take the smaller (most zoomed-out) value.
-                val paddingPx = (context.resources.displayMetrics.density * 32).toInt() // 32dp each side
+                // At zoom z, world width = 256·density·2^z PHYSICAL px, so:
+                //   1 longitude degree = 256·density·2^z / 360 px (linear).
+                //   1 Mercator radian  = 256·density·2^z / (2π) px (latitude is log-compressed).
+                // Solve for z in each dimension; take the smaller (most zoomed-out) value. The `tile`
+                // term MUST include screen density — omitting it (v10) made the computed zoom
+                // ~log2(density) too high (≈1.4 on this xxhdpi device).
+                val density = context.resources.displayMetrics.density
+                val tile = 256.0 * density
+                val paddingPx = (density * 32).toInt() // 32dp each side
                 val usableW = (mapSizePx.width - 2 * paddingPx).coerceAtLeast(1)
                 val usableH = (mapSizePx.height - 2 * paddingPx).coerceAtLeast(1)
-                val lngZoom = ln(usableW * 360.0 / (256.0 * lngSpan)) / ln(2.0)
+                val lngZoom = ln(usableW * 360.0 / (tile * lngSpan)) / ln(2.0)
                 val mercY = { deg: Double -> ln(tan(Math.PI / 4.0 + deg * Math.PI / 360.0)) }
                 val mercSpan = (mercY(latMax) - mercY(latMin)).coerceAtLeast(0.001)
-                val latZoom = ln(usableH * 2.0 * Math.PI / (256.0 * mercSpan)) / ln(2.0)
+                val latZoom = ln(usableH * 2.0 * Math.PI / (tile * mercSpan)) / ln(2.0)
                 val zoom = minOf(lngZoom, latZoom).toFloat().coerceIn(1f, 18f)
 
-                Log.d("MapCamera", "v10: lngSpan=${"%.1f".format(lngSpan)}° " +
+                Log.d("MapCamera", "v11: lngSpan=${"%.1f".format(lngSpan)}° density=$density " +
                     "lngZ=${"%.2f".format(lngZoom)} latZ=${"%.2f".format(latZoom)} " +
                     "→zoom=$zoom map=${mapSizePx.width}×${mapSizePx.height}px " +
                     "center=(${"%+.1f".format(latCenter)},${"%+.1f".format(lngCenter)})")
@@ -218,7 +233,7 @@ fun MapScreen(
             // the sibling LaunchedEffect eventually drops the scrim.
             val moveResult = runCatching { cameraPositionState.move(update) }
             if (moveResult.isFailure) {
-                Log.e("MapCamera", "v10: move() threw — camera not positioned", moveResult.exceptionOrNull())
+                Log.e("MapCamera", "v11: move() threw — camera not positioned", moveResult.exceptionOrNull())
             }
             val moved = moveResult.isSuccess
             if (moved) cameraPositioned = true
