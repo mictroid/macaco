@@ -13,8 +13,8 @@
     <group
         android:pivotX="512"
         android:pivotY="512"
-        android:scaleX="0.9"
-        android:scaleY="0.9">
+        android:scaleX="1.15"
+        android:scaleY="1.15">
 
         <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="23"
             android:pathData="M420,613 a92,63 0 1,0 184,0 a92,63 0 1,0 -184,0" />
