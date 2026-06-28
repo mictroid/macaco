@@ -25,3 +25,6 @@ play-service-account.json
 
 # Local Claude Code settings
 .claude/settings.local.json
+
+# Screen recordings — local app-flow captures used for Cowork review, not source
+Screen_Recording_*.mp4
