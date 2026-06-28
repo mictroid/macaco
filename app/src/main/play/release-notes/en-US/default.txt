@@ -1,5 +1,4 @@
 What's new:
-• Reorder photos in an entry — just long-press and drag
-• Photos now take up far less space without losing quality
-• New Help & About answers: reset your password, manage photos, and use tags
+• A bigger, bolder app icon on your home screen
+• Backups now include every photo reliably — and tell you if any couldn't be added
 • Bug fixes and polish
