@@ -36,8 +36,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,6 +49,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -134,9 +137,14 @@ fun MapScreen(
     // Safety net: if geocoding yields nothing (offline, or every lookup fails) the camera never
     // moves — drop the scrim after a few seconds so the spinner can't trap the user forever.
     var revealTimedOut by remember { mutableStateOf(false) }
+    // Actual measured pixel size of the map area (captured via onSizeChanged below). The 4-arg
+    // newLatLngBounds needs the REAL map dimensions — the map is shorter than the screen (header +
+    // bottom nav), so displayMetrics would over-tighten the fit and clip edge pins.
+    var mapSizePx by remember { mutableStateOf(IntSize.Zero) }
 
-    LaunchedEffect(mapLoaded, geocodingComplete) {
-        if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty()) {
+    LaunchedEffect(mapLoaded, geocodingComplete, mapSizePx) {
+        if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty() &&
+            mapSizePx.width > 0 && mapSizePx.height > 0) {
             // Fit ALL geocoded locations in view ("show me my whole travel map"). Exclude Null
             // Island (0.0, 0.0) — geocoding failures land there.
             val latlngs = locations
@@ -149,20 +157,23 @@ fun MapScreen(
                 // A single point has no bounds to fit; pick a sensible country-level zoom.
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 6f)
             } else {
-                // Compute a center + zoom that frames every pin, handling the antimeridian. We do
-                // NOT use LatLngBounds: it collapses onto the empty Pacific for globe-spanning sets
-                // (e.g. Argentina + Iceland + Japan + Germany span >180° of longitude, so its box
-                // wraps the wrong way and the pins fall off-screen). Instead: latitude is a simple
-                // min/max; for longitude we find the largest EMPTY gap between pins and center on
-                // the complement arc — the tightest span that still contains them all. newLatLngZoom
-                // never throws and doesn't need the map laid out.
+                // Frame every pin, antimeridian-correct AND exact-zoom (the v1–v8 saga, see
+                // docs/DONE/code-brief-map-camera-v9.md). LatLngBounds' BUILDER is useless here: it
+                // always picks the SMALLER of the two longitude arcs, so a globe-spanning set
+                // (Argentina+Iceland+Japan+Germany span >180° of longitude) frames the empty Pacific.
+                // Instead: latitude is a simple min/max; for longitude we find the largest EMPTY gap
+                // between sorted pins — the complement is the tightest arc containing them all — and
+                // feed that arc's west/east edges to the LatLngBounds(SW, NE) CONSTRUCTOR, which takes
+                // the corners literally (NE.lng < SW.lng ⇒ the box crosses the antimeridian; no
+                // minimization). The 4-arg newLatLngBounds then computes the precise zoom for the
+                // map's REAL pixel size (mapSizePx) — no manual zoom table that under/over-zoomed.
                 val lats = latlngs.map { it.latitude }
-                val latCenter = (lats.min() + lats.max()) / 2.0
-                val latSpan = lats.max() - lats.min()
+                val latMin = lats.min()
+                val latMax = lats.max()
 
                 val lngs = latlngs.map { it.longitude }.sorted()
                 var largestGap = Double.NEGATIVE_INFINITY
-                var arcStart = lngs.first() // first pin east of the largest gap
+                var arcStart = lngs.first() // western edge of the populated arc (pin just east of gap)
                 for (i in lngs.indices) {
                     val next = if (i + 1 < lngs.size) lngs[i + 1] else lngs.first() + 360.0
                     val gap = next - lngs[i]
@@ -172,25 +183,17 @@ fun MapScreen(
                     }
                 }
                 val lngSpan = 360.0 - largestGap
-                var lngCenter = arcStart + lngSpan / 2.0
-                if (lngCenter > 180.0) lngCenter -= 360.0
-                if (lngCenter < -180.0) lngCenter += 360.0
-
-                // Pick a zoom from the wider of the two spans (degrees). Generous margin so pins
-                // sit comfortably inside the map, which is shorter than the screen (header + nav).
-                val maxSpan = maxOf(latSpan, lngSpan)
-                val zoom = when {
-                    maxSpan > 200.0 -> 0f
-                    maxSpan > 100.0 -> 1f
-                    maxSpan > 60.0  -> 2f
-                    maxSpan > 30.0  -> 3f
-                    maxSpan > 15.0  -> 4f
-                    maxSpan > 8.0   -> 5f
-                    maxSpan > 2.0   -> 6f
-                    maxSpan > 0.5   -> 8f
-                    else            -> 10f
+                val neLng = arcStart + lngSpan
+                val bounds = if (neLng <= 180.0) {
+                    // Non-crossing box, e.g. arcStart=-69, neLng=140 → literal 209° span.
+                    LatLngBounds(LatLng(latMin, arcStart), LatLng(latMax, neLng))
+                } else {
+                    // Antimeridian-crossing, e.g. arcStart=178, neLng=203 → NE.lng = 203-360 = -157;
+                    // SW.lng(178) > NE.lng(-157) tells the SDK the box crosses the date line.
+                    LatLngBounds(LatLng(latMin, arcStart), LatLng(latMax, neLng - 360.0))
                 }
-                CameraUpdateFactory.newLatLngZoom(LatLng(latCenter, lngCenter), zoom)
+                val padding = (context.resources.displayMetrics.density * 48).toInt() // 48dp inset
+                CameraUpdateFactory.newLatLngBounds(bounds, mapSizePx.width, mapSizePx.height, padding)
             }
 
             // Keep the gate so a hypothetical future failure doesn't clear the scrim with the
@@ -295,7 +298,9 @@ fun MapScreen(
           }
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged { mapSizePx = it }) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
