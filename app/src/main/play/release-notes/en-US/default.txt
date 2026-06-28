@@ -1,4 +1,4 @@
 What's new:
-• A bigger, bolder app icon on your home screen
-• Backups now include every photo reliably — and tell you if any couldn't be added
+• The map now zooms to frame all your entry pins automatically
+• Smoother, more accurate map camera positioning
 • Bug fixes and polish
