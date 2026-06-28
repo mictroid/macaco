@@ -180,6 +180,24 @@ class DrivePhotoSync(private val context: Context) {
      * Saves to cacheDir/drive_photos/ and updates [cachedPhotoUris].
      */
     fun downloadMissingPhotos(entries: List<TravelEntry>) {
+        ioScope.launch { downloadMissing(entries) }
+    }
+
+    /**
+     * Like [downloadMissingPhotos] but suspends until the download pass completes, then returns the
+     * up-to-date driveFileId → cache-URI map. Used by the backup export to ensure Drive-only photos
+     * are pulled local *before* bundling, so a cold cache can't silently produce a photo-less backup.
+     */
+    suspend fun ensurePhotosCached(entries: List<TravelEntry>): Map<String, String> =
+        withContext(Dispatchers.IO) {
+            downloadMissing(entries)
+            _cachedPhotoUris.value
+        }
+
+    /** Shared download body for [downloadMissingPhotos] (fire-and-forget) and [ensurePhotosCached]
+     *  (awaited). Downloads Drive photos that have an ID but no accessible local file into
+     *  cacheDir/drive_photos/ and folds them into [_cachedPhotoUris]. */
+    private suspend fun downloadMissing(entries: List<TravelEntry>) = withContext(Dispatchers.IO) {
         val needed = entries.flatMap { entry ->
             entry.driveFileIds.filterIndexed { i, id ->
                 id.isNotEmpty() &&
@@ -187,28 +205,26 @@ class DrivePhotoSync(private val context: Context) {
                     (entry.photoUris.getOrNull(i)?.let { !isUriAccessible(it) } ?: true)
             }
         }.distinct()
-        if (needed.isEmpty()) return
+        if (needed.isEmpty()) return@withContext
 
-        ioScope.launch {
-            val drive = runCatching { getDriveService() }.getOrNull() ?: return@launch
-            val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
-            val newEntries = mutableMapOf<String, String>()
-            needed.forEach { fileId ->
-                val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
-                if (!cacheFile.exists()) {
-                    runCatching {
-                        val out = ByteArrayOutputStream()
-                        drive.files().get(fileId).executeMediaAndDownloadTo(out)
-                        cacheFile.writeBytes(out.toByteArray())
-                    }.onFailure { return@forEach }
-                }
-                if (cacheFile.exists()) {
-                    newEntries[fileId] = Uri.fromFile(cacheFile).toString()
-                }
+        val drive = runCatching { getDriveService() }.getOrNull() ?: return@withContext
+        val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
+        val newEntries = mutableMapOf<String, String>()
+        needed.forEach { fileId ->
+            val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
+            if (!cacheFile.exists()) {
+                runCatching {
+                    val out = ByteArrayOutputStream()
+                    drive.files().get(fileId).executeMediaAndDownloadTo(out)
+                    cacheFile.writeBytes(out.toByteArray())
+                }.onFailure { return@forEach }
             }
-            if (newEntries.isNotEmpty()) {
-                _cachedPhotoUris.value = _cachedPhotoUris.value + newEntries
+            if (cacheFile.exists()) {
+                newEntries[fileId] = Uri.fromFile(cacheFile).toString()
             }
+        }
+        if (newEntries.isNotEmpty()) {
+            _cachedPhotoUris.value = _cachedPhotoUris.value + newEntries
         }
     }
 

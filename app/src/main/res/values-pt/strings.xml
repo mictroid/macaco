@@ -207,6 +207,7 @@
     <string name="settings_import_downloading_mb">A transferir cópia de segurança… %1$d MB / %2$d MB</string>
     <string name="settings_import_restoring">A restaurar entradas… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d entradas salvas no arquivo</string>
+    <string name="settings_backup_export_done_warn">%1$d entradas salvas, mas %2$d foto(s) não puderam ser incluídas. Abra o app on-line para baixá-las e exporte novamente.</string>
     <string name="settings_backup_export_quality_title">Qualidade de exportação</string>
     <string name="settings_backup_export_quality_body">Compacto recodifica as fotos com 80% de qualidade — normalmente 40–60% menor com diferença visível mínima. Qualidade total preserva as fotos originais exatamente.</string>
     <string name="settings_backup_export_compact">Compacto</string>

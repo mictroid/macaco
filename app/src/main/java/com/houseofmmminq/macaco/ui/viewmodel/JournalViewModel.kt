@@ -357,9 +357,34 @@ class JournalViewModel(
     }
 
     /** Writes a backup zip (entries + photo bytes) to the user-picked [dest]. [compact] re-encodes
-     *  photos at JPEG 80% for a smaller file. */
-    suspend fun exportBackup(dest: android.net.Uri, compact: Boolean = false): Result<Int> =
-        journalBackup.exportTo(dest, entries.value, compact)
+     *  photos at JPEG 80% for a smaller file.
+     *
+     *  Entry photos can live only in the volatile Drive cache (cleared on app update), so before
+     *  bundling we await a Drive download of any photo that isn't readable locally and substitute
+     *  the freshly-cached copy. That stops a cold cache from silently producing a photo-less backup;
+     *  anything still unreadable is reported via [JournalBackup.ExportResult.photosSkipped]. */
+    suspend fun exportBackup(
+        dest: android.net.Uri,
+        compact: Boolean = false
+    ): Result<JournalBackup.ExportResult> {
+        val all = entries.value
+        val cached = if (drivePhotoSync.isDriveConnected()) {
+            runCatching { drivePhotoSync.ensurePhotosCached(all) }
+                .getOrDefault(drivePhotoSync.cachedPhotoUris.value)
+        } else {
+            drivePhotoSync.cachedPhotoUris.value
+        }
+        // The cache only holds photos that weren't readable locally, so substituting "when cached"
+        // touches exactly the photos that need it and leaves accessible local photos untouched.
+        val resolved = if (cached.isEmpty()) all else all.map { entry ->
+            val newUris = entry.photoUris.mapIndexed { i, uri ->
+                val driveId = entry.driveFileIds.getOrNull(i)
+                if (!driveId.isNullOrEmpty()) cached[driveId] ?: uri else uri
+            }
+            entry.copy(photoUris = newUris)
+        }
+        return journalBackup.exportTo(dest, resolved, compact)
+    }
 
     /** Restores entries from a backup zip at [src], upserting each into the cloud store. Publishes
      *  phase/byte progress to [importProgress] so the UI can show a determinate bar, then clears it. */

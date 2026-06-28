@@ -207,6 +207,7 @@
     <string name="settings_import_downloading_mb">Laddar ner säkerhetskopia… %1$d MB / %2$d MB</string>
     <string name="settings_import_restoring">Återställer poster… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d inlägg säkerhetskopierade till fil</string>
+    <string name="settings_backup_export_done_warn">Säkerhetskopierade %1$d poster, men %2$d foto(n) kunde inte inkluderas. Öppna appen online för att ladda ner dem och exportera igen.</string>
     <string name="settings_backup_export_quality_title">Exportkvalitet</string>
     <string name="settings_backup_export_quality_body">Kompakt omkodar foton med 80% kvalitet — vanligtvis 40–60% mindre med minimal synlig skillnad. Full kvalitet bevarar originalfotona exakt.</string>
     <string name="settings_backup_export_compact">Kompakt</string>

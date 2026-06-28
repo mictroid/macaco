@@ -204,6 +204,7 @@
     <string name="settings_import_downloading_mb">バックアップをダウンロード中… %1$d MB / %2$d MB</string>
     <string name="settings_import_restoring">エントリーを復元中… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d 件の記録をファイルにバックアップしました</string>
+    <string name="settings_backup_export_done_warn">%1$d 件のエントリーをバックアップしましたが、%2$d 枚の写真を含められませんでした。オンラインでアプリを開いて写真をダウンロードしてから、もう一度エクスポートしてください。</string>
     <string name="settings_backup_export_quality_title">エクスポート品質</string>
     <string name="settings_backup_export_quality_body">コンパクトは写真を80%品質で再エンコードします。通常40〜60%小さくなり、見た目の差はわずかです。フル品質は元の写真をそのまま保持します。</string>
     <string name="settings_backup_export_compact">コンパクト</string>

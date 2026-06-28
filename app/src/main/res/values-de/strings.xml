@@ -218,6 +218,7 @@
     <string name="settings_import_downloading_mb">Backup wird heruntergeladen… %1$d MB / %2$d MB</string>
     <string name="settings_import_restoring">Einträge werden wiederhergestellt… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d Einträge in Datei gesichert</string>
+    <string name="settings_backup_export_done_warn">%1$d Einträge gesichert, aber %2$d Foto(s) konnten nicht einbezogen werden. Öffne die App online, um sie herunterzuladen, und exportiere dann erneut.</string>
     <string name="settings_backup_export_quality_title">Exportqualität</string>
     <string name="settings_backup_export_quality_body">Kompakt kodiert Fotos mit 80 % Qualität neu — typischerweise 40–60 % kleiner bei minimal sichtbarem Unterschied. Volle Qualität bewahrt die Originalfotos exakt.</string>
     <string name="settings_backup_export_compact">Kompakt</string>

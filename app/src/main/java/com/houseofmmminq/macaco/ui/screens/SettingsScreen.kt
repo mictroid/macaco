@@ -288,7 +288,15 @@ fun SettingsScreen(
             Toast.makeText(
                 context,
                 result.fold(
-                    { context.getString(R.string.settings_backup_export_done, it) },
+                    { r ->
+                        if (r.photosSkipped > 0) {
+                            context.getString(
+                                R.string.settings_backup_export_done_warn, r.entries, r.photosSkipped
+                            )
+                        } else {
+                            context.getString(R.string.settings_backup_export_done, r.entries)
+                        }
+                    },
                     { it.message ?: context.getString(R.string.settings_backup_failed) }
                 ),
                 Toast.LENGTH_LONG

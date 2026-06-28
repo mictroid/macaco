@@ -37,6 +37,17 @@ class JournalBackup(private val context: Context) {
         val entries: List<TravelEntry>
     )
 
+    /**
+     * Outcome of an export. [photosSkipped] > 0 means some photos couldn't be read at export time
+     * (e.g. a Drive-only photo that wasn't cached locally) and were left out — the caller should
+     * warn the user rather than report unqualified success.
+     */
+    data class ExportResult(
+        val entries: Int,
+        val photosWritten: Int,
+        val photosSkipped: Int
+    )
+
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
     private companion object {
@@ -48,32 +59,35 @@ class JournalBackup(private val context: Context) {
 
     /**
      * Writes all [entries] (and their photo bytes) into a zip at [dest].
-     * Returns the number of entries written, or a failure the caller can surface.
+     * Returns an [ExportResult] (entries written + photos written/skipped), or a failure the caller
+     * can surface.
      */
-    fun exportTo(dest: Uri, entries: List<TravelEntry>, compact: Boolean = false): Result<Int> = runCatching {
+    fun exportTo(dest: Uri, entries: List<TravelEntry>, compact: Boolean = false): Result<ExportResult> = runCatching {
+        var photosWritten = 0
+        var photosSkipped = 0
         val resolver = context.contentResolver
         resolver.openOutputStream(dest)?.use { os ->
             ZipOutputStream(BufferedOutputStream(os)).use { zip ->
                 val exported = entries.map { entry ->
-                    // Replace each photo URI with a zip-relative path, writing its bytes as we go.
-                    // Photos we can't read (revoked grants, deleted media) are dropped, not fatal.
+                    // Replace each photo URI with a zip-relative path. Crucially we resolve the bytes
+                    // FIRST and only open a zip entry once we have them — an unreadable photo (revoked
+                    // grant, deleted media, Drive-only photo not cached locally) is then cleanly
+                    // absent instead of leaving a 0-byte entry behind, and is counted so the caller
+                    // can warn rather than silently shipping a gutted backup.
                     val paths = entry.photoUris.mapIndexedNotNull { i, uriString ->
+                        // Compact re-encodes at JPEG 80% (lossy, strips EXIF) for a much smaller zip;
+                        // full quality uses the original bytes untouched.
+                        val bytes = if (compact) compressToBytes(uriString) else readBytes(uriString)
+                        if (bytes == null) {
+                            photosSkipped++
+                            return@mapIndexedNotNull null
+                        }
                         val path = "photos/${entry.id}_$i.jpg"
                         zip.putNextEntry(ZipEntry(path))
-                        // Compact re-encodes at JPEG 80% (lossy, strips EXIF) for a much smaller zip;
-                        // full quality writes the original bytes untouched.
-                        val wrote = if (compact) {
-                            writeCompressed(uriString, zip)
-                        } else {
-                            val bytes = readBytes(uriString) ?: run {
-                                zip.closeEntry()
-                                return@mapIndexedNotNull null
-                            }
-                            zip.write(bytes)
-                            true
-                        }
+                        zip.write(bytes)
                         zip.closeEntry()
-                        if (wrote) path else null
+                        photosWritten++
+                        path
                     }
                     // driveFileIds are device/account-specific; clear them so import re-uploads fresh.
                     entry.copy(photoUris = paths, driveFileIds = emptyList())
@@ -84,15 +98,17 @@ class JournalBackup(private val context: Context) {
                 zip.closeEntry()
             }
         } ?: error("Couldn't open the destination file.")
-        entries.size
+        ExportResult(entries = entries.size, photosWritten = photosWritten, photosSkipped = photosSkipped)
     }
 
     /**
-     * Decodes the photo at [uriString] at a memory-safe resolution, re-encodes at JPEG 80%
-     * directly into [out], and recycles the bitmap. Returns false only if the photo is
-     * genuinely unreadable (revoked URI, deleted media) — OOM is prevented by subsampling.
+     * Decodes the photo at [uriString] at a memory-safe resolution and re-encodes it at JPEG 80%,
+     * returning the compressed bytes. Returns null only if the photo is genuinely unreadable
+     * (revoked URI, deleted media) or the encode fails — OOM is prevented by subsampling. The
+     * caller writes the returned bytes to the zip in one shot, so it can decide not to open a zip
+     * entry at all when this returns null.
      */
-    private fun writeCompressed(uriString: String, out: java.io.OutputStream): Boolean {
+    private fun compressToBytes(uriString: String): ByteArray? {
         val uri = Uri.parse(uriString)
         val resolver = context.contentResolver
 
@@ -102,11 +118,11 @@ class JournalBackup(private val context: Context) {
         }
         resolver.openInputStream(uri)?.use {
             android.graphics.BitmapFactory.decodeStream(it, null, boundsOpts)
-        } ?: return false  // URI not readable
+        } ?: return null  // URI not readable
 
         val rawW = boundsOpts.outWidth
         val rawH = boundsOpts.outHeight
-        if (rawW <= 0 || rawH <= 0) return false  // unrecognised format
+        if (rawW <= 0 || rawH <= 0) return null  // unrecognised format
 
         // Compute smallest power-of-2 sample that brings longest edge within MAX_COMPACT_DIMENSION.
         var sampleSize = 1
@@ -125,10 +141,8 @@ class JournalBackup(private val context: Context) {
             resolver.openInputStream(uri)?.use {
                 android.graphics.BitmapFactory.decodeStream(it, null, decodeOpts)
             }
-        }.getOrNull() ?: return false
+        }.getOrNull() ?: return null
 
-        // Encode into a ByteArrayOutputStream first — keeps the JPEG encoder's chunked writes
-        // away from the ZipOutputStream's DEFLATE state, preventing IOException mid-entry.
         val baos = java.io.ByteArrayOutputStream()
         val encodeOk = runCatching {
             bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, baos)
@@ -137,10 +151,8 @@ class JournalBackup(private val context: Context) {
         }.getOrDefault(false)
 
         // Verify encode succeeded AND produced bytes (compress returning false = silent failure).
-        if (!encodeOk || baos.size() == 0) return false
-
-        // Write all JPEG bytes to the zip entry in one call — no chunked interaction with Deflater.
-        return runCatching { baos.writeTo(out) }.isSuccess
+        if (!encodeOk || baos.size() == 0) return null
+        return baos.toByteArray()
     }
 
     /**
