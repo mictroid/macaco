@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +50,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -61,6 +61,8 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.theme.MacacoFontFamily
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import kotlin.math.ln
+import kotlin.math.tan
 import kotlinx.coroutines.delay
 
 private fun createTealMarkerBitmap(context: Context): Bitmap {
@@ -137,8 +139,8 @@ fun MapScreen(
     // Safety net: if geocoding yields nothing (offline, or every lookup fails) the camera never
     // moves — drop the scrim after a few seconds so the spinner can't trap the user forever.
     var revealTimedOut by remember { mutableStateOf(false) }
-    // Actual measured pixel size of the map area (captured via onSizeChanged below). The 4-arg
-    // newLatLngBounds needs the REAL map dimensions — the map is shorter than the screen (header +
+    // Actual measured pixel size of the map area (captured via onSizeChanged below). The v10 Mercator
+    // zoom math needs the REAL map dimensions — the map is shorter than the screen (header +
     // bottom nav), so displayMetrics would over-tighten the fit and clip edge pins.
     var mapSizePx by remember { mutableStateOf(IntSize.Zero) }
 
@@ -157,16 +159,17 @@ fun MapScreen(
                 // A single point has no bounds to fit; pick a sensible country-level zoom.
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 6f)
             } else {
-                // Frame every pin, antimeridian-correct AND exact-zoom (the v1–v8 saga, see
-                // docs/DONE/code-brief-map-camera-v9.md). LatLngBounds' BUILDER is useless here: it
-                // always picks the SMALLER of the two longitude arcs, so a globe-spanning set
-                // (Argentina+Iceland+Japan+Germany span >180° of longitude) frames the empty Pacific.
-                // Instead: latitude is a simple min/max; for longitude we find the largest EMPTY gap
-                // between sorted pins — the complement is the tightest arc containing them all — and
-                // feed that arc's west/east edges to the LatLngBounds(SW, NE) CONSTRUCTOR, which takes
-                // the corners literally (NE.lng < SW.lng ⇒ the box crosses the antimeridian; no
-                // minimization). The 4-arg newLatLngBounds then computes the precise zoom for the
-                // map's REAL pixel size (mapSizePx) — no manual zoom table that under/over-zoomed.
+                // Frame every pin, antimeridian-correct AND exact-zoom (the v1–v9 saga, see
+                // docs/DONE/code-brief-map-camera-v10.md). The center is found the same way v8/v9 did
+                // (correct): latitude is a simple min/max; for longitude we find the largest EMPTY gap
+                // between sorted pins — the complement is the tightest arc containing them all, so its
+                // midpoint is the antimeridian-correct longitude center.
+                //
+                // v9 then handed that arc to newLatLngBounds for the zoom, but on device (A53, vc43)
+                // it still under-zoomed for our >180° span (4 pins span 209°). v10 computes the zoom
+                // ourselves with direct Mercator math — the same calculation the SDK does internally,
+                // but explicit so no SDK edge case can interfere — and logs every result so any future
+                // failure is visible in Logcat (`adb logcat -s MapCamera`).
                 val lats = latlngs.map { it.latitude }
                 val latMin = lats.min()
                 val latMax = lats.max()
@@ -183,23 +186,41 @@ fun MapScreen(
                     }
                 }
                 val lngSpan = 360.0 - largestGap
-                val neLng = arcStart + lngSpan
-                val bounds = if (neLng <= 180.0) {
-                    // Non-crossing box, e.g. arcStart=-69, neLng=140 → literal 209° span.
-                    LatLngBounds(LatLng(latMin, arcStart), LatLng(latMax, neLng))
-                } else {
-                    // Antimeridian-crossing, e.g. arcStart=178, neLng=203 → NE.lng = 203-360 = -157;
-                    // SW.lng(178) > NE.lng(-157) tells the SDK the box crosses the date line.
-                    LatLngBounds(LatLng(latMin, arcStart), LatLng(latMax, neLng - 360.0))
-                }
-                val padding = (context.resources.displayMetrics.density * 48).toInt() // 48dp inset
-                CameraUpdateFactory.newLatLngBounds(bounds, mapSizePx.width, mapSizePx.height, padding)
+                // Antimeridian-correct longitude center (v8 logic, unchanged).
+                var lngCenter = arcStart + lngSpan / 2.0
+                if (lngCenter > 180.0) lngCenter -= 360.0
+                if (lngCenter < -180.0) lngCenter += 360.0
+                val latCenter = (latMin + latMax) / 2.0
+
+                // Mercator zoom math — bypasses newLatLngBounds which under-zooms for spans > 180°.
+                // At zoom z: 1 longitude degree = 256·2^z / 360 px (linear).
+                //            1 Mercator radian  = 256·2^z / (2π) px (latitude is log-compressed).
+                // Solve for z in each dimension; take the smaller (most zoomed-out) value.
+                val paddingPx = (context.resources.displayMetrics.density * 32).toInt() // 32dp each side
+                val usableW = (mapSizePx.width - 2 * paddingPx).coerceAtLeast(1)
+                val usableH = (mapSizePx.height - 2 * paddingPx).coerceAtLeast(1)
+                val lngZoom = ln(usableW * 360.0 / (256.0 * lngSpan)) / ln(2.0)
+                val mercY = { deg: Double -> ln(tan(Math.PI / 4.0 + deg * Math.PI / 360.0)) }
+                val mercSpan = (mercY(latMax) - mercY(latMin)).coerceAtLeast(0.001)
+                val latZoom = ln(usableH * 2.0 * Math.PI / (256.0 * mercSpan)) / ln(2.0)
+                val zoom = minOf(lngZoom, latZoom).toFloat().coerceIn(1f, 18f)
+
+                Log.d("MapCamera", "v10: lngSpan=${"%.1f".format(lngSpan)}° " +
+                    "lngZ=${"%.2f".format(lngZoom)} latZ=${"%.2f".format(latZoom)} " +
+                    "→zoom=$zoom map=${mapSizePx.width}×${mapSizePx.height}px " +
+                    "center=(${"%+.1f".format(latCenter)},${"%+.1f".format(lngCenter)})")
+
+                CameraUpdateFactory.newLatLngZoom(LatLng(latCenter, lngCenter), zoom)
             }
 
             // Keep the gate so a hypothetical future failure doesn't clear the scrim with the
             // camera stuck at the default world view. If not moved, the 8-second revealTimedOut in
             // the sibling LaunchedEffect eventually drops the scrim.
-            val moved = runCatching { cameraPositionState.move(update) }.isSuccess
+            val moveResult = runCatching { cameraPositionState.move(update) }
+            if (moveResult.isFailure) {
+                Log.e("MapCamera", "v10: move() threw — camera not positioned", moveResult.exceptionOrNull())
+            }
+            val moved = moveResult.isSuccess
             if (moved) cameraPositioned = true
         }
     }
