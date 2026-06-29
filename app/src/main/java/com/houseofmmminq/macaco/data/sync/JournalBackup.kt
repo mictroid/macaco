@@ -116,9 +116,12 @@ class JournalBackup(private val context: Context) {
         val boundsOpts = android.graphics.BitmapFactory.Options().apply {
             inJustDecodeBounds = true
         }
-        resolver.openInputStream(uri)?.use {
+        // Guard: if the URI is unreadable, bail here. decodeStream with inJustDecodeBounds
+        // always returns null by design, so the guard must check the stream, not the decode result.
+        val streamForBounds = resolver.openInputStream(uri) ?: return null  // URI not readable
+        streamForBounds.use {
             android.graphics.BitmapFactory.decodeStream(it, null, boundsOpts)
-        } ?: return null  // URI not readable
+        }
 
         val rawW = boundsOpts.outWidth
         val rawH = boundsOpts.outHeight
