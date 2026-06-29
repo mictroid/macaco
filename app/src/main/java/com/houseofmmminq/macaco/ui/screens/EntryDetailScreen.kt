@@ -101,6 +101,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
+import com.houseofmmminq.macaco.util.AppActions
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import kotlin.math.absoluteValue
@@ -458,7 +459,7 @@ fun EntryDetailScreen(
                                     }
                                     if (entry.location.isNotBlank()) {
                                         AssistChip(
-                                            onClick = {},
+                                            onClick = { AppActions.openMapsSearch(context, entry.location) },
                                             label = { Text(entry.location) },
                                             leadingIcon = {
                                                 Icon(
@@ -724,7 +725,7 @@ fun EntryDetailScreen(
                         }
                         if (entry.location.isNotBlank()) {
                             AssistChip(
-                                onClick = {},
+                                onClick = { AppActions.openMapsSearch(context, entry.location) },
                                 label = { Text(entry.location) },
                                 leadingIcon = {
                                     Icon(

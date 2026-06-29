@@ -191,6 +191,16 @@ object AppActions {
         runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
     }
 
+    /**
+     * Opens the location in Google Maps (or any installed map app) as a search query.
+     * Uses the `geo:0,0?q=` URI scheme — no coordinates needed, the map app resolves
+     * the name itself. Falls back silently if no map app is installed (edge case).
+     */
+    fun openMapsSearch(context: Context, location: String) {
+        val uri = Uri.parse("geo:0,0?q=${Uri.encode(location)}")
+        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, uri)) }
+    }
+
     private fun Context.findActivity(): Activity? {
         var ctx: Context = this
         while (ctx is ContextWrapper) {
