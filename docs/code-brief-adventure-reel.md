@@ -1,38 +1,5 @@
 # Macaco — Adventure Reel: Auto-generate a shareable video from a trip's photos
 
-> ## ⚠️ CODE REVIEW — NOT IMPLEMENTED (held 2026-06-29)
->
-> Verified the brief against live source per the cowork-brief-workflow. **Held pending correction** —
-> two blockers compile-fail as written, plus minor drift. Fixes are known and small; nothing here is
-> a design objection. Re-issue (or say "implement" and Code will apply these fixes inline).
->
-> **Blocker 1 — `getApplication()` does not exist on this ViewModel (Change 3).**
-> `JournalViewModel` is a plain `ViewModel` with manual constructor injection, **not** an
-> `AndroidViewModel` (`ui/viewmodel/JournalViewModel.kt:37,44`). `getApplication()` won't resolve.
-> ✅ Fix: it already injects `private val appContext: Context` (line 38) — use
-> `AdventureReelEncoder(appContext)`.
->
-> **Blocker 2 — `reelEncoderJob` is never declared (Change 3).** `cancelReel()` calls
-> `reelEncoderJob?.cancel()`, but the field is never declared and `startReel` never assigns its
-> `viewModelScope.launch{}` to it → unresolved reference, and cancel wouldn't stop the encode.
-> ✅ Fix: add `private var reelEncoderJob: Job? = null` and `reelEncoderJob = viewModelScope.launch(...) { ... }`.
->
-> **Minor 1 — `TripHeader` call site (Change 1/6).** Live call is
-> `item(key="trip-header-$trip") { TripHeader(trip, sectionEntries.size) }` (JournalListScreen.kt:628).
-> The trip's entries are `sectionEntries`, not `tripEntries` — wire
-> `onCreateReel = { viewModel.startReel(trip, sectionEntries) }`.
->
-> **Minor 2 — `file_paths.xml` (Change 5) IS required.** Live file declares only `files-path` (no
-> cache-path), so the `<cache-path>` add is needed. Also verify the FileProvider **authority** in
-> AndroidManifest.xml matches `${context.packageName}.fileprovider` before relying on it.
->
-> **Note — premium gate is partly moot.** The whole JournalList is already behind the login+purchase
-> gate (NavGraph), so `isPurchased` is effectively always true here; the `if (isPurchased)` guard is
-> harmless but redundant.
->
-> **Risk:** large MediaCodec input-surface feature — device-dependent codec behavior + OOM risk on big
-> photo sets. When implemented, ship it **alone** (batch rule: high-risk → ship 1).
-
 # Macaco — Adventure Reel: Auto-generate a shareable video from a trip's photos
 
 New premium feature. Adds a "Create Reel" icon button to each `TripHeader` in
@@ -144,9 +111,12 @@ private fun TripHeader(
 }
 ```
 
-Wire `onCreateReel` in the `LazyColumn` where `TripHeader` is called — pass
-`onCreateReel = { viewModel.startReel(tripName, tripEntries) }`.
-Pass `isPurchased` down from the collected ViewModel state.
+Wire `onCreateReel` at the live call site `item(key="trip-header-$trip") { TripHeader(...) }`
+(JournalListScreen.kt:628) — pass `onCreateReel = { viewModel.startReel(trip, sectionEntries) }`.
+The trip's entries are `sectionEntries` at that call site.
+Pass `isPurchased` down from the collected ViewModel state (note: the whole list is already
+behind the login+purchase gate in NavGraph, so `isPurchased` will always be true here —
+the guard is harmless but redundant).
 
 Import: `androidx.compose.material.icons.filled.Videocam`
 
@@ -215,8 +185,12 @@ sealed class ReelState {
     data class Error(val message: String) : ReelState()
 }
 
-val reelState: StateFlow<ReelState> = MutableStateFlow(ReelState.Idle)
-    // expose as val, back with private MutableStateFlow _reelState
+// _reelState backed by a private MutableStateFlow; exposed as val reelState
+private val _reelState = MutableStateFlow<ReelState>(ReelState.Idle)
+val reelState: StateFlow<ReelState> = _reelState.asStateFlow()
+
+// Holds the encode coroutine so cancelReel() can actually stop it.
+private var reelEncoderJob: Job? = null
 
 fun startReel(tripName: String, entries: List<TravelEntry>) {
     val photos = entries
@@ -236,9 +210,12 @@ fun startReel(tripName: String, entries: List<TravelEntry>) {
         return
     }
 
-    viewModelScope.launch(Dispatchers.IO) {
+    // Assign to reelEncoderJob so cancelReel() can cancel the coroutine.
+    reelEncoderJob = viewModelScope.launch(Dispatchers.IO) {
         _reelState.value = ReelState.Generating(tripName, 0f)
-        val result = AdventureReelEncoder(getApplication()).encode(
+        // JournalViewModel uses manual DI — appContext is injected at construction (line 38),
+        // not getApplication() (this is a plain ViewModel, not AndroidViewModel).
+        val result = AdventureReelEncoder(appContext).encode(
             photoUris = photos,
             outputName = "reel_${tripName.replace(" ", "_")}.mp4",
             onProgress = { p -> _reelState.value = ReelState.Generating(tripName, p) }
@@ -252,6 +229,7 @@ fun startReel(tripName: String, entries: List<TravelEntry>) {
 
 fun cancelReel() {
     reelEncoderJob?.cancel()
+    reelEncoderJob = null
     _reelState.value = ReelState.Idle
 }
 
@@ -487,14 +465,18 @@ File: `app/src/main/java/com/houseofmmminq/macaco/data/sync/AdventureReelEncoder
 
 ## Change 5 — FileProvider: declare the reel output path
 
-The `FileProvider` in `AndroidManifest.xml` needs `cacheDir` declared so it can hand out a
-`content://` URI for the generated MP4. If `cacheDir` is already in `file_paths.xml`, no
-change is needed — check first.
+The live `file_paths.xml` only declares a `files-path` entry — there is no `cache-path`.
+Add one so `FileProvider` can serve the generated MP4 from `cacheDir`:
 
 ```xml
-<!-- res/xml/file_paths.xml — add if cacheDir is not already declared -->
+<!-- res/xml/file_paths.xml — ADD this entry -->
 <cache-path name="reel_output" path="." />
 ```
+
+Also verify the `FileProvider` authority in `AndroidManifest.xml` is
+`${applicationId}.fileprovider` — that is the authority used in `AdventureReelEncoder`
+(`context.packageName + ".fileprovider"`). If the manifest uses a different authority string,
+update `AdventureReelEncoder` to match.
 
 File: `app/src/main/res/xml/file_paths.xml`
 
@@ -576,6 +558,10 @@ values-sv, values-zh-rCN).
 - **Out:** Entries without a `tripName` — no reel button for ungrouped entries.
 - **Out:** Custom reel ordering, duration controls — v2.
 - **No changes to TravelEntry, Firestore, or Drive sync.**
+
+**⚠️ Ship alone.** MediaCodec input-surface behaviour is device-dependent and this is a new
+encode pipeline. Do not batch with other changes — ship as a single vc so any device-specific
+codec or OOM failure is immediately attributable to this feature.
 
 ## Verification
 
