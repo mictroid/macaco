@@ -1,4 +1,5 @@
 What's new:
-• The map now zooms to frame all your entry pins automatically
-• Smoother, more accurate map camera positioning
+• Fixed compact backups so they now include all your photos
+• Improved the travel map so it frames your entry pins more reliably
+• Restored the original app icon
 • Bug fixes and polish
