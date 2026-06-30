@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,6 +68,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -98,6 +100,8 @@ fun ProfileScreen(
     var deleteInProgress by remember { mutableStateOf(false) }
     var deleteError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.screenHeightDp < 480
 
     var showPhotoSourceSheet by remember { mutableStateOf(false) }
     var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
@@ -263,6 +267,320 @@ fun ProfileScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
+      if (isLandscape) {
+        // ── LANDSCAPE: two-pane Row — identity info left, action buttons right ──────────
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            // LEFT PANE — compact banner + identity info (scrollable)
+            Column(
+                modifier = Modifier
+                    .weight(0.5f)
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Compact banner — back arrow left, "macaco" centred, no tagline
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(macacoBrandBackground())
+                        .statusBarsPadding()
+                ) {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back),
+                            tint = Color.White
+                        )
+                    }
+                    Text(
+                        text = "macaco",
+                        color = SplashGoldBright,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Light,
+                        letterSpacing = 5.sp,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(vertical = 12.dp)
+                    )
+                }
+
+                val user = currentUser
+                if (user != null) {
+                    Spacer(Modifier.height(16.dp))
+
+                    // Avatar — slightly smaller in landscape
+                    Box(
+                        modifier = Modifier
+                            .size(88.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.background),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape)
+                                .clickable { showPhotoSourceSheet = true },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val displayPhotoModel: Any? = profilePhotoUri ?: user.photoUrl
+                            if (displayPhotoModel != null) {
+                                AsyncImage(
+                                    model = displayPhotoModel,
+                                    contentDescription = stringResource(R.string.profile_photo_cd),
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop,
+                                    error = rememberVectorPainter(Icons.Default.Person)
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primaryContainer),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        user.displayName.take(2).uppercase(),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                            }
+                            // Camera badge
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .size(24.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primary),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.Filled.CameraAlt,
+                                    contentDescription = stringResource(R.string.profile_change_photo_cd),
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        user.displayName,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        user.email,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = MaterialTheme.colorScheme.secondaryContainer
+                    ) {
+                        Text(
+                            text = when (user.provider) {
+                                AuthProvider.Google -> stringResource(R.string.profile_google_account)
+                                AuthProvider.Email  -> stringResource(R.string.profile_email_account)
+                                AuthProvider.Guest  -> stringResource(R.string.profile_guest)
+                            },
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                    Spacer(Modifier.height(12.dp))
+
+                    val tripCount = entries
+                        .mapNotNull { it.tripName?.trim()?.ifBlank { null } }
+                        .distinct()
+                        .size
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            StatItem(
+                                value = "${entries.size}",
+                                label = stringResource(R.string.profile_memories)
+                            )
+                            if (tripCount > 0) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(1.dp).height(36.dp)
+                                        .background(MaterialTheme.colorScheme.outlineVariant)
+                                )
+                                StatItem(
+                                    value = tripCount.toString(),
+                                    label = stringResource(R.string.profile_trips)
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .width(1.dp).height(36.dp)
+                                    .background(MaterialTheme.colorScheme.outlineVariant)
+                            )
+                            StatItem(
+                                value = entries.mapNotNull { it.location.ifBlank { null } }
+                                    .distinct().size.toString(),
+                                label = stringResource(R.string.profile_locations)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .width(1.dp).height(36.dp)
+                                    .background(MaterialTheme.colorScheme.outlineVariant)
+                            )
+                            StatItem(
+                                value = entries.sumOf { it.photoUris.size }.toString(),
+                                label = stringResource(R.string.profile_photos)
+                            )
+                        }
+                    }
+
+                    val memberSince = user.createdAt?.let { millis ->
+                        java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
+                            .format(java.util.Date(millis))
+                    }
+                    if (memberSince != null) {
+                        Text(
+                            text = "Member since $memberSince",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
+                    }
+                } else {
+                    Spacer(Modifier.height(32.dp))
+                    Text("🔑", fontSize = 48.sp)
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        stringResource(R.string.profile_no_account_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        stringResource(R.string.profile_no_account_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
+                }
+            } // end LEFT PANE
+
+            // RIGHT PANE — action buttons centred vertically, macaco logo pinned to bottom
+            Box(
+                modifier = Modifier
+                    .weight(0.5f)
+                    .fillMaxHeight()
+                    .padding(horizontal = 24.dp)
+            ) {
+                if (currentUser != null) {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        OutlinedButton(
+                            onClick = onSubscription,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Icon(
+                                Icons.Outlined.WorkspacePremium,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.common_subscription))
+                        }
+                        OutlinedButton(
+                            onClick = { showSignOutDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            )
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.common_sign_out))
+                        }
+                        TextButton(
+                            onClick = { showDeleteAccountDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            )
+                        ) {
+                            Icon(
+                                Icons.Outlined.DeleteForever,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.profile_delete_account))
+                        }
+                    }
+                } else {
+                    Button(
+                        onClick = onLogin,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(stringResource(R.string.common_sign_in), fontWeight = FontWeight.SemiBold)
+                    }
+                }
+                // Macaco logo pinned to bottom of right pane
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 8.dp)
+                )
+            } // end RIGHT PANE
+        } // end landscape Row
+      } else {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -626,6 +944,7 @@ fun ProfileScreen(
                 )
             }
         }
+      } // end else (portrait)
     }
 }
 

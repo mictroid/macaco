@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -94,6 +95,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
@@ -318,7 +320,12 @@ fun EntryDetailScreen(
             // viewport and the title/text fall below the fold. For entries WITH photos, switch to
             // a two-panel Row (photo left, scrollable text right). Photoless entries and tablets
             // (tall screens) keep the portrait single-column layout below.
-            val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+            // Two-pane layout for: (a) phone landscape (short screen) OR (b) tablet in landscape
+            // orientation (wide AND wider-than-tall). Portrait tablet (tall screen) stays single-column.
+            val configuration = LocalConfiguration.current
+            val isTablet = configuration.screenWidthDp >= 600
+            val isLandscape = configuration.screenHeightDp < 480 ||
+                (isTablet && configuration.screenWidthDp > configuration.screenHeightDp)
             if (isLandscape && photoCount > 0) {
                 val launchAddPhoto = {
                     onSuppressAutoLock()
@@ -330,7 +337,7 @@ fun EntryDetailScreen(
                     // Left panel: photo / collage fills the panel height.
                     Box(
                         modifier = Modifier
-                            .weight(0.45f)
+                            .weight(if (isTablet) 0.50f else 0.45f)
                             .fillMaxHeight()
                             .clipToBounds()
                             .graphicsLayer { translationX = pageOffset * size.width * 0.4f }
@@ -408,7 +415,7 @@ fun EntryDetailScreen(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
-                            .weight(0.55f)
+                            .weight(if (isTablet) 0.50f else 0.55f)
                             .fillMaxHeight()
                     ) {
                         item {
@@ -432,7 +439,10 @@ fun EntryDetailScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                    .padding(
+                                        horizontal = if (isTablet) 32.dp else 16.dp,
+                                        vertical = 12.dp
+                                    ),
                                 verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
                                 Text(
@@ -538,7 +548,14 @@ fun EntryDetailScreen(
                                         entry.tags.forEach { tag ->
                                             AssistChip(
                                                 onClick = { onTagClick(tag) },
-                                                label = { Text("#$tag") },
+                                                label = {
+                                                    Text(
+                                                        "#$tag",
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier = Modifier.widthIn(max = 160.dp)
+                                                    )
+                                                },
                                                 border = null,
                                                 colors = AssistChipDefaults.assistChipColors(
                                                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -822,7 +839,14 @@ fun EntryDetailScreen(
                                 // from the amber (secondaryContainer) mood/date chips above.
                                 AssistChip(
                                     onClick = { onTagClick(tag) },
-                                    label = { Text("#$tag") },
+                                    label = {
+                                        Text(
+                                            "#$tag",
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.widthIn(max = 160.dp)
+                                        )
+                                    },
                                     border = null,
                                     colors = AssistChipDefaults.assistChipColors(
                                         containerColor = MaterialTheme.colorScheme.primaryContainer,

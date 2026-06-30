@@ -7,6 +7,8 @@ import android.graphics.Paint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -35,9 +39,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -62,9 +68,12 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.theme.MacacoFontFamily
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import kotlin.math.abs
 import kotlin.math.ln
+import kotlin.math.pow
 import kotlin.math.tan
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private fun createTealMarkerBitmap(context: Context): Bitmap {
     val dp = context.resources.displayMetrics.density
@@ -92,6 +101,7 @@ fun MapScreen(
     onEntryClick: (String) -> Unit
 ) {
     val context = LocalContext.current
+    val mapScope = rememberCoroutineScope()
     val entries by viewModel.entries.collectAsState()
     val geocodedLocations by viewModel.geocodedLocations.collectAsState()
     val geocodingComplete by viewModel.geocodingComplete.collectAsState()
@@ -146,6 +156,12 @@ fun MapScreen(
     // ~zoom 2.0) because the user's pins span wider than any allowed zoom can frame. Drives the
     // "Swipe to see all pins" header hint. See the v11/v12 notes in the move() block below.
     var globeSpanning by remember { mutableStateOf(false) }
+    // v13: longitude of the off-screen pin furthest west/east (null = none off that edge), plus the
+    // lat center + applied zoom after move() — used by the edge chevrons to pan-to the off-screen pin.
+    var offScreenWestLng by remember { mutableStateOf<Double?>(null) }
+    var offScreenEastLng by remember { mutableStateOf<Double?>(null) }
+    var mapLatCenter by remember { mutableStateOf(0.0) }
+    var mapAppliedZoom by remember { mutableStateOf(0f) }
     // Safety net: if geocoding yields nothing (offline, or every lookup fails) the camera never
     // moves — drop the scrim after a few seconds so the spinner can't trap the user forever.
     var revealTimedOut by remember { mutableStateOf(false) }
@@ -168,6 +184,12 @@ fun MapScreen(
             // The zoom we ASK the SDK for — captured so the post-move() block can compare it against
             // what the SDK actually applied and detect the portrait Mercator clamp (v12).
             var requestedZoom = 6f
+            // Hoisted out of the multi-pin branch so the post-move() block (v13 off-screen-pin math)
+            // can reach them — they'd otherwise be scoped inside the `else` and not compile there.
+            val density = context.resources.displayMetrics.density
+            val tile = 256.0 * density
+            var fitLatCenter = latlngs[0].latitude
+            var fitLngCenter = latlngs[0].longitude
             val update = if (latlngs.size == 1) {
                 // A single point has no bounds to fit; pick a sensible country-level zoom.
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 6f)
@@ -217,8 +239,6 @@ fun MapScreen(
                 // Solve for z in each dimension; take the smaller (most zoomed-out) value. The `tile`
                 // term MUST include screen density — omitting it (v10) made the computed zoom
                 // ~log2(density) too high (≈1.4 on this xxhdpi device).
-                val density = context.resources.displayMetrics.density
-                val tile = 256.0 * density
                 val paddingPx = (density * 32).toInt() // 32dp each side
                 val usableW = (mapSizePx.width - 2 * paddingPx).coerceAtLeast(1)
                 val usableH = (mapSizePx.height - 2 * paddingPx).coerceAtLeast(1)
@@ -228,6 +248,8 @@ fun MapScreen(
                 val latZoom = ln(usableH * 2.0 * Math.PI / (tile * mercSpan)) / ln(2.0)
                 val zoom = minOf(lngZoom, latZoom).toFloat().coerceIn(1f, 18f)
                 requestedZoom = zoom
+                fitLatCenter = latCenter
+                fitLngCenter = lngCenter
 
                 Log.d("MapCamera", "v11: lngSpan=${"%.1f".format(lngSpan)}° density=$density " +
                     "lngZ=${"%.2f".format(lngZoom)} latZ=${"%.2f".format(latZoom)} " +
@@ -253,6 +275,42 @@ fun MapScreen(
                 Log.d("MapCamera", "v12: applied zoom=$appliedZoom (requested=$requestedZoom) " +
                     "clamp=${if (appliedZoom > requestedZoom + 0.2f) "YES — SDK floor active" else "no"}")
                 globeSpanning = appliedZoom > requestedZoom + 0.2f
+
+                // v13: when clamped, some pins fall off the left/right edge. Compute which, so the
+                // edge chevrons can point to them, and reframe the latitude on the visible pins only
+                // (off-screen pins' latitudes otherwise pull the frame south into empty ocean).
+                mapAppliedZoom = appliedZoom
+                mapLatCenter = fitLatCenter
+                if (globeSpanning) {
+                    val halfSpanDeg =
+                        (mapSizePx.width / (tile * 2.0.pow(appliedZoom.toDouble()))) * 360.0 / 2.0
+                    val westEdge = fitLngCenter - halfSpanDeg
+                    val eastEdge = fitLngCenter + halfSpanDeg
+
+                    offScreenWestLng = latlngs.map { it.longitude }.filter { it < westEdge }.minOrNull()
+                    offScreenEastLng = latlngs.map { it.longitude }.filter { it > eastEdge }.maxOrNull()
+
+                    val visibleLatlngs = latlngs.filter { it.longitude in westEdge..eastEdge }
+                    val latCenterVisible = if (visibleLatlngs.isNotEmpty()) {
+                        (visibleLatlngs.minOf { it.latitude } + visibleLatlngs.maxOf { it.latitude }) / 2.0
+                    } else fitLatCenter
+
+                    if (abs(latCenterVisible - fitLatCenter) > 0.5) {
+                        Log.d("MapCamera", "v13: lat reframe ${"%.1f".format(fitLatCenter)}→" +
+                            "${"%.1f".format(latCenterVisible)} (${visibleLatlngs.size} visible pins)")
+                        runCatching {
+                            cameraPositionState.move(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(latCenterVisible, fitLngCenter), appliedZoom
+                                )
+                            )
+                        }
+                        mapLatCenter = latCenterVisible
+                    }
+                } else {
+                    offScreenWestLng = null
+                    offScreenEastLng = null
+                }
             }
         }
     }
@@ -280,6 +338,7 @@ fun MapScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -307,6 +366,16 @@ fun MapScreen(
                         color = SplashGold.copy(alpha = 0.70f),
                         fontSize = 11.sp,
                         fontFamily = MacacoFontFamily
+                    )
+                }
+                // Globe-spanning hint — compact, dot-separated, same line (reuses the localized
+                // portrait hint string).
+                if (globeSpanning) {
+                    Text(
+                        text = " · " + stringResource(R.string.map_globe_spanning_hint),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = SplashGold.copy(alpha = 0.75f),
+                        letterSpacing = 0.5.sp
                     )
                 }
             }
@@ -433,6 +502,73 @@ fun MapScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                }
+            }
+
+            // ── Off-screen pin chevrons ──────────────────────────────────────────────────
+            // Only shown when globeSpanning=true AND there are pins off that edge. Each button
+            // animates the camera to centre on the furthest off-screen pin in that direction,
+            // keeping the same zoom and latitude.
+            if (globeSpanning) {
+                val westLng = offScreenWestLng
+                val eastLng = offScreenEastLng
+
+                if (westLng != null) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 8.dp)
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF0D3D38).copy(alpha = 0.80f))
+                            .clickable {
+                                mapScope.launch {
+                                    cameraPositionState.animate(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            LatLng(mapLatCenter, westLng), mapAppliedZoom
+                                        ),
+                                        durationMs = 600
+                                    )
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronLeft,
+                            contentDescription = stringResource(R.string.map_globe_spanning_hint),
+                            tint = SplashGold,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+
+                if (eastLng != null) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 8.dp)
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF0D3D38).copy(alpha = 0.80f))
+                            .clickable {
+                                mapScope.launch {
+                                    cameraPositionState.animate(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            LatLng(mapLatCenter, eastLng), mapAppliedZoom
+                                        ),
+                                        durationMs = 600
+                                    )
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ChevronRight,
+                            contentDescription = stringResource(R.string.map_globe_spanning_hint),
+                            tint = SplashGold,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
                 }
             }
         }
