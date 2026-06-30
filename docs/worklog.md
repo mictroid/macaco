@@ -2,6 +2,15 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-30 — adventure-reel-v2 implemented (added to vc47 batch, NOT shipped)
+
+Cowork brief verified vs live source first; `assembleDebug` SUCCESSFUL. Commit `faa66e6`; →
+`docs/DONE/`. Render-layer polish to the reel encoder (no MediaCodec config change → safe to batch):
+cosine ease-in-out dissolve; decode 1080→1440px (sharper); animated 1.00→1.04× zoom (less crop);
+`ReelPhotoMeta` + per-frame branding (location/date pill + faint macaco watermark). **Deviation:**
+kept `startReel`'s Drive-cache fallback (brief's Fix 4e example dropped it) and derived overlay text
+per entry. On-device verify owed (rides on the still-unverified vc46 reel).
+
 ## 2026-06-30 — 3-brief landscape/tablet batch implemented (held for vc47, NOT shipped)
 
 Three Cowork briefs verified vs live source first; `assembleDebug` SUCCESSFUL. Commit `4036c00`;
