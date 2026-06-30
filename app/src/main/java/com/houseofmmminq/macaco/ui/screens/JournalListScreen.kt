@@ -1,5 +1,6 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,6 +42,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.StarRate
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -50,6 +53,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -60,6 +64,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -94,6 +99,7 @@ import com.houseofmmminq.macaco.data.model.tagsByFrequency
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel.ReelState
 import com.houseofmmminq.macaco.util.AppActions
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -120,6 +126,10 @@ fun JournalListScreen(
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
     val context = LocalContext.current
+    // null = billing still loading; the whole list is already behind the purchase gate so this is
+    // effectively always true here, but keep the explicit check so the reel button can't leak pre-gate.
+    val isPurchased by viewModel.isPurchased.collectAsState()
+    val reelState by viewModel.reelState.collectAsState()
 
     // Tag filter: tapping chips narrows the list to entries carrying any of the selected tags (OR).
     // State lives in the ViewModel so the detail screen can set it too.
@@ -173,6 +183,37 @@ fun JournalListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
         viewModel.syncErrors.collect { snackbarHostState.showSnackbar(it) }
+    }
+
+    // Adventure Reel: when a render finishes, launch the share sheet; on error, snackbar it.
+    LaunchedEffect(reelState) {
+        when (val state = reelState) {
+            is ReelState.Ready -> {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "video/mp4"
+                    putExtra(Intent.EXTRA_STREAM, state.uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                context.startActivity(
+                    Intent.createChooser(shareIntent, context.getString(R.string.reel_share_chooser))
+                )
+                viewModel.reelConsumed()
+            }
+            is ReelState.Error -> {
+                snackbarHostState.showSnackbar(state.message)
+                viewModel.reelConsumed()
+            }
+            else -> Unit
+        }
+    }
+
+    // Block with a progress dialog while a reel is generating.
+    (reelState as? ReelState.Generating)?.let { gen ->
+        ReelProgressDialog(
+            tripName = gen.tripName,
+            progress = gen.progress,
+            onCancel = { viewModel.cancelReel() }
+        )
     }
 
     ModalNavigationDrawer(
@@ -625,7 +666,14 @@ fun JournalListScreen(
                     ) {
                         if (hasTrips) {
                             tripSections.forEach { (trip, sectionEntries) ->
-                                item(key = "trip-header-$trip") { TripHeader(trip, sectionEntries.size) }
+                                item(key = "trip-header-$trip") {
+                                    TripHeader(
+                                        tripName = trip,
+                                        entryCount = sectionEntries.size,
+                                        isPurchased = isPurchased == true,
+                                        onCreateReel = { viewModel.startReel(trip, sectionEntries) }
+                                    )
+                                }
                                 items(sectionEntries, key = { it.id }) { entry ->
                                     EntryCard(
                                         entry = entry,
@@ -1170,7 +1218,12 @@ internal fun monthYear(millis: Long): String =
 
 // Trip section header: a filled pill banner that opens each named-trip group in the list.
 @Composable
-private fun TripHeader(tripName: String, entryCount: Int) {
+private fun TripHeader(
+    tripName: String,
+    entryCount: Int,
+    isPurchased: Boolean,
+    onCreateReel: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -1192,7 +1245,58 @@ private fun TripHeader(tripName: String, entryCount: Int) {
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
         )
+        if (isPurchased) {
+            Spacer(Modifier.width(8.dp))
+            IconButton(
+                onClick = onCreateReel,
+                modifier = Modifier.size(28.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Videocam,
+                    contentDescription = stringResource(R.string.reel_create_button),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
     }
+}
+
+// Blocking progress dialog shown while an Adventure Reel is being encoded.
+@Composable
+private fun ReelProgressDialog(
+    tripName: String,
+    progress: Float,
+    onCancel: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = {},   // not dismissible by back-tap while generating
+        title = { Text(stringResource(R.string.reel_generating_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    stringResource(R.string.reel_generating_subtitle, tripName),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    "${(progress * 100).toInt()}%",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.End)
+                )
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onCancel) {
+                Text(stringResource(R.string.common_cancel))
+            }
+        }
+    )
 }
 
 // Month/year run header: a small gold-uppercase label with a hairline rule trailing off to the

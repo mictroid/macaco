@@ -2,4 +2,6 @@
 <paths>
     <!-- Exposes app-internal storage (filesDir) so entry photos can be shared via FileProvider. -->
     <files-path name="internal_images" path="." />
+    <!-- Exposes cacheDir so generated Adventure Reel MP4s can be shared via FileProvider. -->
+    <cache-path name="reel_output" path="." />
 </paths>

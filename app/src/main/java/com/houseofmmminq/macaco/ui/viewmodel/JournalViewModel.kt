@@ -2,6 +2,8 @@ package com.houseofmmminq.macaco.ui.viewmodel
 
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
+import com.houseofmmminq.macaco.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -12,6 +14,7 @@ import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.UserProfile
 import com.houseofmmminq.macaco.data.storage.CloudEntrySync
 import com.houseofmmminq.macaco.data.storage.LegacyEntryMigration
+import com.houseofmmminq.macaco.data.sync.AdventureReelEncoder
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
@@ -21,6 +24,7 @@ import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.ReminderScheduler
 import android.location.Geocoder
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -89,6 +93,59 @@ class JournalViewModel(
     val currentPlanId = billingManager.currentPlanId
     val manageableSubscription = billingManager.manageableSubscription
     val currentBasePlanId = billingManager.currentBasePlanId
+
+    /** State of an Adventure Reel render (premium): a shareable slideshow video from a trip's photos. */
+    sealed class ReelState {
+        object Idle : ReelState()
+        data class Generating(val tripName: String, val progress: Float) : ReelState()
+        data class Ready(val tripName: String, val uri: Uri) : ReelState()
+        data class Error(val message: String) : ReelState()
+    }
+
+    private val _reelState = MutableStateFlow<ReelState>(ReelState.Idle)
+    val reelState: StateFlow<ReelState> = _reelState.asStateFlow()
+
+    // Holds the encode coroutine so cancelReel() can actually stop it.
+    private var reelEncoderJob: Job? = null
+
+    fun startReel(tripName: String, entries: List<TravelEntry>) {
+        val photos = entries
+            .sortedBy { it.dateMillis }
+            .flatMap { entry ->
+                // Prefer local MediaStore URI; fall back to Drive cache URI (keyed by driveFileId).
+                entry.photoUris.ifEmpty {
+                    entry.driveFileIds.mapNotNull { id -> cachedDrivePhotos.value[id] }
+                }
+            }
+            .filter { it.isNotBlank() }
+
+        if (photos.isEmpty()) {
+            _reelState.value = ReelState.Error(appContext.getString(R.string.reel_no_photos_error))
+            return
+        }
+
+        reelEncoderJob = viewModelScope.launch(Dispatchers.IO) {
+            _reelState.value = ReelState.Generating(tripName, 0f)
+            // Plain ViewModel (manual DI) — appContext is injected at construction, not getApplication().
+            val result = AdventureReelEncoder(appContext).encode(
+                photoUris = photos,
+                outputName = "reel_${tripName.replace(" ", "_")}.mp4",
+                onProgress = { p -> _reelState.value = ReelState.Generating(tripName, p) }
+            )
+            _reelState.value = result.fold(
+                onSuccess = { uri -> ReelState.Ready(tripName, uri) },
+                onFailure = { e -> ReelState.Error(e.message ?: "Reel generation failed.") }
+            )
+        }
+    }
+
+    fun cancelReel() {
+        reelEncoderJob?.cancel()
+        reelEncoderJob = null
+        _reelState.value = ReelState.Idle
+    }
+
+    fun reelConsumed() { _reelState.value = ReelState.Idle }
 
     val isDarkMode: StateFlow<Boolean> = preferencesManager.isDarkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)

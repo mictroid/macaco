@@ -88,6 +88,11 @@
     <string name="map_theme_light">Claro</string>
     <string name="map_theme_standard">Padrão</string>
     <string name="map_globe_spanning_hint">Deslize para ver todos os pontos</string>
+    <string name="reel_create_button">Criar Reel de aventura</string>
+    <string name="reel_generating_title">Criando seu Reel…</string>
+    <string name="reel_generating_subtitle">Criando %1$s</string>
+    <string name="reel_share_chooser">Compartilhar Reel de aventura</string>
+    <string name="reel_no_photos_error">Nenhuma foto encontrada para esta viagem</string>
     <string name="settings_background_image">Imagem de Fundo</string>
     <string name="settings_custom_bg_active">Fundo personalizado ativo</string>
     <string name="settings_custom_bg_tap_change">Toque para alterar</string>

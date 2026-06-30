@@ -88,6 +88,11 @@
     <string name="map_theme_light">Licht</string>
     <string name="map_theme_standard">Standaard</string>
     <string name="map_globe_spanning_hint">Veeg om alle pins te zien</string>
+    <string name="reel_create_button">Avontuur-reel maken</string>
+    <string name="reel_generating_title">Je reel wordt gemaakt…</string>
+    <string name="reel_generating_subtitle">%1$s wordt gemaakt</string>
+    <string name="reel_share_chooser">Avontuur-reel delen</string>
+    <string name="reel_no_photos_error">Geen foto\'s gevonden voor deze reis</string>
     <string name="settings_background_image">Achtergrondafbeelding</string>
     <string name="settings_custom_bg_active">Aangepaste achtergrond actief</string>
     <string name="settings_custom_bg_tap_change">Tik om te wijzigen</string>

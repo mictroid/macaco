@@ -92,6 +92,11 @@
     <string name="map_theme_light">Hell</string>
     <string name="map_theme_standard">Standard</string>
     <string name="map_globe_spanning_hint">Wischen, um alle Punkte zu sehen</string>
+    <string name="reel_create_button">Abenteuer-Reel erstellen</string>
+    <string name="reel_generating_title">Reel wird erstellt…</string>
+    <string name="reel_generating_subtitle">%1$s wird erstellt</string>
+    <string name="reel_share_chooser">Abenteuer-Reel teilen</string>
+    <string name="reel_no_photos_error">Keine Fotos für diese Reise gefunden</string>
     <string name="settings_background_image">Hintergrundbild</string>
     <string name="settings_custom_bg_active">Benutzerdefinierter Hintergrund aktiv</string>
     <string name="settings_custom_bg_tap_change">Tippen zum Ändern</string>

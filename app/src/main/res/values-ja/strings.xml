@@ -86,6 +86,11 @@
     <string name="map_theme_light">ライト</string>
     <string name="map_theme_standard">標準</string>
     <string name="map_globe_spanning_hint">スワイプしてすべてのピンを表示</string>
+    <string name="reel_create_button">アドベンチャーリールを作成</string>
+    <string name="reel_generating_title">リールを作成中…</string>
+    <string name="reel_generating_subtitle">%1$sを作成中</string>
+    <string name="reel_share_chooser">アドベンチャーリールを共有</string>
+    <string name="reel_no_photos_error">この旅行の写真が見つかりません</string>
     <string name="settings_background_image">背景画像</string>
     <string name="settings_custom_bg_active">カスタム背景が有効です</string>
     <string name="settings_custom_bg_tap_change">タップして変更</string>

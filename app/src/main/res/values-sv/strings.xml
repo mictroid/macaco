@@ -88,6 +88,11 @@
     <string name="map_theme_light">Ljus</string>
     <string name="map_theme_standard">Standard</string>
     <string name="map_globe_spanning_hint">Svep för att se alla nålar</string>
+    <string name="reel_create_button">Skapa äventyrsreel</string>
+    <string name="reel_generating_title">Skapar din reel…</string>
+    <string name="reel_generating_subtitle">Skapar %1$s</string>
+    <string name="reel_share_chooser">Dela äventyrsreel</string>
+    <string name="reel_no_photos_error">Inga foton hittades för den här resan</string>
     <string name="settings_background_image">Bakgrundsbild</string>
     <string name="settings_custom_bg_active">Anpassad bakgrund aktiv</string>
     <string name="settings_custom_bg_tap_change">Tryck för att byta</string>

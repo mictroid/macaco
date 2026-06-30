@@ -92,6 +92,11 @@
     <string name="map_theme_light">Jasny</string>
     <string name="map_theme_standard">Standardowy</string>
     <string name="map_globe_spanning_hint">Przesuń, aby zobaczyć wszystkie punkty</string>
+    <string name="reel_create_button">Utwórz Reel z podróży</string>
+    <string name="reel_generating_title">Tworzenie Twojego Reela…</string>
+    <string name="reel_generating_subtitle">Tworzenie %1$s</string>
+    <string name="reel_share_chooser">Udostępnij Reel z podróży</string>
+    <string name="reel_no_photos_error">Nie znaleziono zdjęć dla tej podróży</string>
     <string name="settings_background_image">Obraz tła</string>
     <string name="settings_custom_bg_active">Własne tło aktywne</string>
     <string name="settings_custom_bg_tap_change">Naciśnij, aby zmienić</string>

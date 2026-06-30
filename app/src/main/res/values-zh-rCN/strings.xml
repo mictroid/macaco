@@ -86,6 +86,11 @@
     <string name="map_theme_light">浅色</string>
     <string name="map_theme_standard">标准</string>
     <string name="map_globe_spanning_hint">滑动以查看所有地点</string>
+    <string name="reel_create_button">创建冒险短片</string>
+    <string name="reel_generating_title">正在生成短片…</string>
+    <string name="reel_generating_subtitle">正在生成%1$s</string>
+    <string name="reel_share_chooser">分享冒险短片</string>
+    <string name="reel_no_photos_error">未找到此行程的照片</string>
     <string name="settings_background_image">背景图片</string>
     <string name="settings_custom_bg_active">自定义背景已启用</string>
     <string name="settings_custom_bg_tap_change">点击更换</string>
