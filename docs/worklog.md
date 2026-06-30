@@ -2,6 +2,15 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-30 — help-about-update-v2 implemented (added to vc47 batch, NOT shipped)
+
+Cowork brief verified vs live source + **re-read before commit** (it was revised mid-implementation
+to add Change 1; user caught the miss → [[recheck-brief-before-finalizing]]). `assembleDebug` green.
+Commit `7d6522b`; → `docs/DONE/`. FAQ-only. Change 1: rewrote the stale `help_faq_reorder_photos_a`
+(old=edit-mode drag; shipped=long-press PhotoActionSheet) ×11 + new Set-as-Cover entry ×11. Change
+2/3: globe-spanning map-pins FAQ (v13 ◀▶), free-trial FAQ (verified vs revenuecat-setup.md), Adventure
+Reel FAQ — 6 keys ×11. Wired into Getting Started + Photos + Premium sections.
+
 ## 2026-06-30 — adventure-reel-v2 implemented (added to vc47 batch, NOT shipped)
 
 Cowork brief verified vs live source first; `assembleDebug` SUCCESSFUL. Commit `faa66e6`; →
