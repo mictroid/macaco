@@ -65,6 +65,7 @@ private val FAQ_SECTIONS = listOf(
             R.string.help_faq_use_tags_q to R.string.help_faq_use_tags_a,
             R.string.help_faq_swipe_entries_q to R.string.help_faq_swipe_entries_a,
             R.string.help_faq_adventures_map_q to R.string.help_faq_adventures_map_a,
+            R.string.help_faq_map_pins_q to R.string.help_faq_map_pins_a,
         )
     ),
     FaqSection(
@@ -72,6 +73,7 @@ private val FAQ_SECTIONS = listOf(
         listOf(
             R.string.help_faq_q_photos to R.string.help_faq_a_photos,
             R.string.help_faq_reorder_photos_q to R.string.help_faq_reorder_photos_a,
+            R.string.help_faq_cover_q to R.string.help_faq_cover_a,
             R.string.help_faq_q_backup to R.string.help_faq_a_backup,
         )
     ),
@@ -91,6 +93,8 @@ private val FAQ_SECTIONS = listOf(
     FaqSection(
         R.string.help_section_premium,
         listOf(
+            R.string.help_faq_free_trial_q to R.string.help_faq_free_trial_a,
+            R.string.help_faq_reel_q to R.string.help_faq_reel_a,
             R.string.help_faq_premium_benefits_q to R.string.help_faq_premium_benefits_a,
             R.string.help_faq_premium_broken_q to R.string.help_faq_premium_broken_a,
             // Question renamed; the existing billing/cancel answer copy is reused unchanged.
