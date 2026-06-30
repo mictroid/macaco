@@ -15,6 +15,7 @@ import com.houseofmmminq.macaco.data.model.UserProfile
 import com.houseofmmminq.macaco.data.storage.CloudEntrySync
 import com.houseofmmminq.macaco.data.storage.LegacyEntryMigration
 import com.houseofmmminq.macaco.data.sync.AdventureReelEncoder
+import com.houseofmmminq.macaco.data.sync.ReelPhotoMeta
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
@@ -109,17 +110,22 @@ class JournalViewModel(
     private var reelEncoderJob: Job? = null
 
     fun startReel(tripName: String, entries: List<TravelEntry>) {
-        val photos = entries
+        val reelPhotos = entries
             .sortedBy { it.dateMillis }
             .flatMap { entry ->
-                // Prefer local MediaStore URI; fall back to Drive cache URI (keyed by driveFileId).
-                entry.photoUris.ifEmpty {
+                // Prefer local MediaStore URIs; fall back to Drive cache URIs (keyed by driveFileId).
+                val uris = entry.photoUris.ifEmpty {
                     entry.driveFileIds.mapNotNull { id -> cachedDrivePhotos.value[id] }
-                }
+                }.filter { it.isNotBlank() }
+                // Branding overlay: "Location · Mon YYYY" (null when the entry has no location).
+                val dateStr = java.text.SimpleDateFormat("MMM yyyy", java.util.Locale.getDefault())
+                    .format(java.util.Date(entry.dateMillis))
+                val overlayText =
+                    if (entry.location.isNotBlank()) "${entry.location} · $dateStr" else null
+                uris.map { uri -> ReelPhotoMeta(uri = uri, overlayText = overlayText) }
             }
-            .filter { it.isNotBlank() }
 
-        if (photos.isEmpty()) {
+        if (reelPhotos.isEmpty()) {
             _reelState.value = ReelState.Error(appContext.getString(R.string.reel_no_photos_error))
             return
         }
@@ -128,7 +134,7 @@ class JournalViewModel(
             _reelState.value = ReelState.Generating(tripName, 0f)
             // Plain ViewModel (manual DI) — appContext is injected at construction, not getApplication().
             val result = AdventureReelEncoder(appContext).encode(
-                photoUris = photos,
+                photos = reelPhotos,
                 outputName = "reel_${tripName.replace(" ", "_")}.mp4",
                 onProgress = { p -> _reelState.value = ReelState.Generating(tripName, p) }
             )

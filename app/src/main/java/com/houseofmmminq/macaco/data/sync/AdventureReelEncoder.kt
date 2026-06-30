@@ -13,14 +13,28 @@ import android.media.MediaMuxer
 import android.net.Uri
 import android.view.Surface
 import androidx.core.content.FileProvider
+import com.houseofmmminq.macaco.R
 import kotlinx.coroutines.ensureActive
 import java.io.File
 import kotlin.coroutines.coroutineContext
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.roundToInt
 
 /**
- * Encodes a list of photo URIs into a 9:16 (720×1280) H.264 MP4 slideshow with Ken Burns
- * pan/zoom animation and cross-dissolve transitions between photos.
+ * Metadata for one photo in the reel.
+ * [overlayText] appears as a location/date pill at the bottom of the frame —
+ * pass null to skip the overlay for that photo.
+ */
+data class ReelPhotoMeta(
+    val uri: String,
+    val overlayText: String? = null   // e.g. "Patagonia · Jun 2025"
+)
+
+/**
+ * Encodes a list of photos into a 9:16 (720×1280) H.264 MP4 slideshow with Ken Burns
+ * pan/zoom animation, ease-in-out cross-dissolve transitions, and a location/macaco branding
+ * overlay.
  *
  * Pipeline: decode bitmap → render frames to a MediaCodec input surface via Canvas
  *           → MediaMuxer writes MP4 to cacheDir.
@@ -40,12 +54,12 @@ class AdventureReelEncoder(private val context: Context) {
     }
 
     suspend fun encode(
-        photoUris: List<String>,
+        photos: List<ReelPhotoMeta>,
         outputName: String,
         onProgress: (Float) -> Unit
     ): Result<Uri> = runCatching {
         val outFile = File(context.cacheDir, outputName).also { it.delete() }
-        val totalPhotos = photoUris.size
+        val totalPhotos = photos.size
         // Total frames: each photo has PHOTO_FRAMES, plus FADE_FRAMES overlap between consecutive.
         val totalFrames = (totalPhotos * PHOTO_FRAMES + (totalPhotos - 1) * FADE_FRAMES)
             .coerceAtLeast(1)
@@ -80,14 +94,18 @@ class AdventureReelEncoder(private val context: Context) {
             val t = frameInPhoto.toFloat() / PHOTO_FRAMES          // 0..1
             val bw = bitmap.width.toFloat()
             val bh = bitmap.height.toFloat()
-            // Fill scale — fit the shorter dimension, overflow the longer, with extra room to pan.
-            val scale = maxOf(WIDTH / bw, HEIGHT / bh) * 1.08f
+            // Fill scale: exactly enough to cover the frame on the short axis.
+            val fillScale = maxOf(WIDTH / bw, HEIGHT / bh)
+            // Animate from 1.00× to 1.04× — less crop than the old 1.08×, slow cinematic pull-in.
+            val scale = fillScale * (1.00f + 0.04f * t)
             val scaledW = bw * scale
             val scaledH = bh * scale
-            val maxDx = (scaledW - WIDTH) / 2f
-            val maxDy = (scaledH - HEIGHT) / 2f
-            val dx = WIDTH / 2f - scaledW / 2f + maxDx * (0.5f - t * 0.5f)
-            val dy = HEIGHT / 2f - scaledH / 2f + maxDy * (0.5f - t * 0.5f)
+            // Overflow room available for panning (0 if photo perfectly matches the frame ratio).
+            val maxDx = (scaledW - WIDTH).coerceAtLeast(0f) / 2f
+            val maxDy = (scaledH - HEIGHT).coerceAtLeast(0f) / 2f
+            // Pan from upper-left offset toward centre as the photo plays (matches the pull-in).
+            val dx = WIDTH / 2f - scaledW / 2f + maxDx * (1f - t)
+            val dy = HEIGHT / 2f - scaledH / 2f + maxDy * (1f - t)
             val paint = Paint().apply {
                 this.alpha = (alpha * 255).roundToInt().coerceIn(0, 255)
                 isFilterBitmap = true
@@ -143,14 +161,15 @@ class AdventureReelEncoder(private val context: Context) {
         }
 
         // ── Main render loop ──────────────────────────────────────────────────────────────────
+        val logoBitmap = loadLogoBitmap(sizePx = 48)
         try {
             var prevBitmap: Bitmap? = null
             var framesRendered = 0
 
-            for ((photoIdx, uriString) in photoUris.withIndex()) {
+            for ((photoIdx, meta) in photos.withIndex()) {
                 coroutineContext.ensureActive()   // respect cancellation
 
-                val bitmap = loadBitmap(uriString) ?: continue
+                val bitmap = loadBitmap(meta.uri) ?: continue
                 val prev = prevBitmap
 
                 // Cross-dissolve from the previous photo into this one — both layers in ONE frame so
@@ -159,10 +178,12 @@ class AdventureReelEncoder(private val context: Context) {
                 if (prev != null) {
                     for (f in 0 until FADE_FRAMES) {
                         coroutineContext.ensureActive()
-                        val alpha = f.toFloat() / FADE_FRAMES
+                        // Cosine ease-in-out: slow start, fast middle, slow end — no perceptual pop.
+                        val alpha = (0.5f - 0.5f * cos(PI * f.toDouble() / FADE_FRAMES)).toFloat()
                         postFrame { canvas ->
                             drawKenBurns(canvas, prev, 1f, PHOTO_FRAMES - 1)
                             drawKenBurns(canvas, bitmap, alpha, f)
+                            drawBranding(canvas, logoBitmap, meta.overlayText)
                         }
                         drainEncoder(false)
                         framesRendered++
@@ -174,7 +195,10 @@ class AdventureReelEncoder(private val context: Context) {
                 // Main photo display.
                 for (f in 0 until PHOTO_FRAMES) {
                     coroutineContext.ensureActive()
-                    postFrame { canvas -> drawKenBurns(canvas, bitmap, 1f, f) }
+                    postFrame { canvas ->
+                        drawKenBurns(canvas, bitmap, 1f, f)
+                        drawBranding(canvas, logoBitmap, meta.overlayText)
+                    }
                     drainEncoder(false)
                     framesRendered++
                     onProgress((framesRendered.toFloat() / totalFrames).coerceAtMost(1f))
@@ -185,6 +209,7 @@ class AdventureReelEncoder(private val context: Context) {
             prevBitmap?.recycle()
             drainEncoder(true)
         } finally {
+            logoBitmap?.recycle()
             runCatching { encoder.stop() }
             encoder.release()
             if (muxerStarted) runCatching { muxer.stop() }
@@ -201,8 +226,9 @@ class AdventureReelEncoder(private val context: Context) {
     }
 
     /**
-     * Decodes the photo at [uriString] subsampled to fit within 1080px on its longest edge.
-     * Returns null if the URI is unreadable or the format is unsupported.
+     * Decodes the photo at [uriString] subsampled to fit within 1440px on its longest edge —
+     * one sample-size of headroom above the 1280px video height, so most phone photos decode at
+     * sample=2 rather than sample=4 (sharper). Returns null if the URI is unreadable.
      */
     private fun loadBitmap(uriString: String): Bitmap? {
         val uri = Uri.parse(uriString)
@@ -214,7 +240,7 @@ class AdventureReelEncoder(private val context: Context) {
         val rawLongest = maxOf(boundsOpts.outWidth, boundsOpts.outHeight)
         if (rawLongest <= 0) return null
         var sample = 1
-        while (rawLongest / sample > 1080) sample *= 2
+        while (rawLongest / sample > 1440) sample *= 2
         val decodeOpts = BitmapFactory.Options().apply {
             inSampleSize = sample
             inPreferredConfig = Bitmap.Config.ARGB_8888
@@ -224,5 +250,62 @@ class AdventureReelEncoder(private val context: Context) {
                 BitmapFactory.decodeStream(it, null, decodeOpts)
             }
         }.getOrNull()
+    }
+
+    /**
+     * Loads the launcher foreground drawable as a Bitmap for use as a watermark.
+     * Returns null if the drawable cannot be found or drawn.
+     */
+    private fun loadLogoBitmap(sizePx: Int): Bitmap? = runCatching {
+        val drawable = androidx.core.content.res.ResourcesCompat.getDrawable(
+            context.resources, R.drawable.ic_launcher_foreground, context.theme
+        ) ?: return@runCatching null
+        val bm = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val c = Canvas(bm)
+        drawable.setBounds(0, 0, sizePx, sizePx)
+        drawable.draw(c)
+        bm
+    }.getOrNull()
+
+    /**
+     * Composites the branding layer onto [canvas]:
+     *   - Semi-transparent location/date pill (bottom of frame) if [overlayText] is non-null.
+     *   - macaco logo watermark (bottom-centre, ~15% opacity) if [logoBitmap] is non-null.
+     *
+     * Call this AFTER drawKenBurns so branding always sits on top.
+     */
+    private fun drawBranding(canvas: Canvas, logoBitmap: Bitmap?, overlayText: String?) {
+        // ── Location pill ──────────────────────────────────────────────────────
+        if (overlayText != null) {
+            val pillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                // Macaco dark-teal scrim at 70% opacity.
+                color = android.graphics.Color.argb(178, 7, 30, 38)
+            }
+            canvas.drawRoundRect(
+                android.graphics.RectF(32f, 1152f, 688f, 1224f),
+                24f, 24f,
+                pillPaint
+            )
+            val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.WHITE
+                textSize = 22f
+                textAlign = Paint.Align.CENTER
+                typeface = android.graphics.Typeface.create(
+                    android.graphics.Typeface.DEFAULT, android.graphics.Typeface.NORMAL
+                )
+            }
+            // Vertically centre text within the pill (pill midpoint y = 1188; baseline ≈ 1196).
+            canvas.drawText(overlayText, 360f, 1196f, textPaint)
+        }
+
+        // ── Logo watermark (bottom-centre) ─────────────────────────────────────
+        if (logoBitmap != null) {
+            val logoPaint = Paint().apply {
+                alpha = 38    // ~15% opacity — visible but unobtrusive
+            }
+            val logoX = ((WIDTH - 48) / 2).toFloat()   // = 336f
+            val logoY = (HEIGHT - 48 - 8).toFloat()    // = 1224f → bottom edge 1272f
+            canvas.drawBitmap(logoBitmap, logoX, logoY, logoPaint)
+        }
     }
 }
