@@ -61,17 +61,20 @@ private val FAQ_SECTIONS = listOf(
         R.string.help_section_getting_started,
         listOf(
             R.string.help_faq_create_entry_q to R.string.help_faq_create_entry_a,
+            R.string.help_faq_trips_q to R.string.help_faq_trips_a,
             R.string.help_faq_reset_password_q to R.string.help_faq_reset_password_a,
             R.string.help_faq_use_tags_q to R.string.help_faq_use_tags_a,
             R.string.help_faq_swipe_entries_q to R.string.help_faq_swipe_entries_a,
             R.string.help_faq_adventures_map_q to R.string.help_faq_adventures_map_a,
             R.string.help_faq_map_pins_q to R.string.help_faq_map_pins_a,
+            R.string.help_faq_on_this_day_q to R.string.help_faq_on_this_day_a,
         )
     ),
     FaqSection(
         R.string.help_section_photos,
         listOf(
             R.string.help_faq_q_photos to R.string.help_faq_a_photos,
+            R.string.help_faq_drive_connect_q to R.string.help_faq_drive_connect_a,
             R.string.help_faq_reorder_photos_q to R.string.help_faq_reorder_photos_a,
             R.string.help_faq_cover_q to R.string.help_faq_cover_a,
             R.string.help_faq_q_backup to R.string.help_faq_a_backup,
@@ -88,6 +91,12 @@ private val FAQ_SECTIONS = listOf(
         R.string.help_section_privacy,
         listOf(
             R.string.help_faq_q_lock to R.string.help_faq_a_lock,
+        )
+    ),
+    FaqSection(
+        R.string.help_section_account,
+        listOf(
+            R.string.help_faq_delete_account_q to R.string.help_faq_delete_account_a,
         )
     ),
     FaqSection(
