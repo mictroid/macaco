@@ -91,6 +91,7 @@
     <string name="map_theme_dark">Ciemny</string>
     <string name="map_theme_light">Jasny</string>
     <string name="map_theme_standard">Standardowy</string>
+    <string name="map_globe_spanning_hint">Przesuń, aby zobaczyć wszystkie punkty</string>
     <string name="settings_background_image">Obraz tła</string>
     <string name="settings_custom_bg_active">Własne tło aktywne</string>
     <string name="settings_custom_bg_tap_change">Naciśnij, aby zmienić</string>

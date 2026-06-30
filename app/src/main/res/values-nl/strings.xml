@@ -87,6 +87,7 @@
     <string name="map_theme_dark">Donker</string>
     <string name="map_theme_light">Licht</string>
     <string name="map_theme_standard">Standaard</string>
+    <string name="map_globe_spanning_hint">Veeg om alle pins te zien</string>
     <string name="settings_background_image">Achtergrondafbeelding</string>
     <string name="settings_custom_bg_active">Aangepaste achtergrond actief</string>
     <string name="settings_custom_bg_tap_change">Tik om te wijzigen</string>

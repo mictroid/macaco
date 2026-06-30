@@ -91,6 +91,7 @@
     <string name="map_theme_dark">Dunkel</string>
     <string name="map_theme_light">Hell</string>
     <string name="map_theme_standard">Standard</string>
+    <string name="map_globe_spanning_hint">Wischen, um alle Punkte zu sehen</string>
     <string name="settings_background_image">Hintergrundbild</string>
     <string name="settings_custom_bg_active">Benutzerdefinierter Hintergrund aktiv</string>
     <string name="settings_custom_bg_tap_change">Tippen zum Ändern</string>

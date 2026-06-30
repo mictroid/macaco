@@ -85,6 +85,7 @@
     <string name="map_theme_dark">深色</string>
     <string name="map_theme_light">浅色</string>
     <string name="map_theme_standard">标准</string>
+    <string name="map_globe_spanning_hint">滑动以查看所有地点</string>
     <string name="settings_background_image">背景图片</string>
     <string name="settings_custom_bg_active">自定义背景已启用</string>
     <string name="settings_custom_bg_tap_change">点击更换</string>

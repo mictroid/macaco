@@ -87,6 +87,7 @@
     <string name="map_theme_dark">Oscuro</string>
     <string name="map_theme_light">Claro</string>
     <string name="map_theme_standard">Estándar</string>
+    <string name="map_globe_spanning_hint">Desliza para ver todos los puntos</string>
     <string name="settings_background_image">Imagen de fondo</string>
     <string name="settings_custom_bg_active">Fondo personalizado activo</string>
     <string name="settings_custom_bg_tap_change">Toca para cambiar</string>

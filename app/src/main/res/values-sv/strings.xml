@@ -87,6 +87,7 @@
     <string name="map_theme_dark">Mörk</string>
     <string name="map_theme_light">Ljus</string>
     <string name="map_theme_standard">Standard</string>
+    <string name="map_globe_spanning_hint">Svep för att se alla nålar</string>
     <string name="settings_background_image">Bakgrundsbild</string>
     <string name="settings_custom_bg_active">Anpassad bakgrund aktiv</string>
     <string name="settings_custom_bg_tap_change">Tryck för att byta</string>

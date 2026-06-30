@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material3.CircularProgressIndicator
@@ -141,6 +142,10 @@ fun MapScreen(
     // under the scrim rather than animated from the default, which is what made it fly across the
     // Atlantic on every open).
     var cameraPositioned by remember { mutableStateOf(false) }
+    // True when the SDK clamped the fit-all camera to its minimum zoom (portrait Mercator pole floor,
+    // ~zoom 2.0) because the user's pins span wider than any allowed zoom can frame. Drives the
+    // "Swipe to see all pins" header hint. See the v11/v12 notes in the move() block below.
+    var globeSpanning by remember { mutableStateOf(false) }
     // Safety net: if geocoding yields nothing (offline, or every lookup fails) the camera never
     // moves — drop the scrim after a few seconds so the spinner can't trap the user forever.
     var revealTimedOut by remember { mutableStateOf(false) }
@@ -160,6 +165,9 @@ fun MapScreen(
                 .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
             if (latlngs.isEmpty()) return@LaunchedEffect
 
+            // The zoom we ASK the SDK for — captured so the post-move() block can compare it against
+            // what the SDK actually applied and detect the portrait Mercator clamp (v12).
+            var requestedZoom = 6f
             val update = if (latlngs.size == 1) {
                 // A single point has no bounds to fit; pick a sensible country-level zoom.
                 CameraUpdateFactory.newLatLngZoom(latlngs[0], 6f)
@@ -219,6 +227,7 @@ fun MapScreen(
                 val mercSpan = (mercY(latMax) - mercY(latMin)).coerceAtLeast(0.001)
                 val latZoom = ln(usableH * 2.0 * Math.PI / (tile * mercSpan)) / ln(2.0)
                 val zoom = minOf(lngZoom, latZoom).toFloat().coerceIn(1f, 18f)
+                requestedZoom = zoom
 
                 Log.d("MapCamera", "v11: lngSpan=${"%.1f".format(lngSpan)}° density=$density " +
                     "lngZ=${"%.2f".format(lngZoom)} latZ=${"%.2f".format(latZoom)} " +
@@ -233,10 +242,18 @@ fun MapScreen(
             // the sibling LaunchedEffect eventually drops the scrim.
             val moveResult = runCatching { cameraPositionState.move(update) }
             if (moveResult.isFailure) {
-                Log.e("MapCamera", "v11: move() threw — camera not positioned", moveResult.exceptionOrNull())
+                Log.e("MapCamera", "v12: move() threw — camera not positioned", moveResult.exceptionOrNull())
             }
             val moved = moveResult.isSuccess
-            if (moved) cameraPositioned = true
+            if (moved) {
+                cameraPositioned = true
+                // Read back what the SDK actually applied — may differ from requestedZoom if the SDK
+                // clamped it (portrait Mercator floor: ~zoom 2.0 on a full-height phone).
+                val appliedZoom = cameraPositionState.position.zoom
+                Log.d("MapCamera", "v12: applied zoom=$appliedZoom (requested=$requestedZoom) " +
+                    "clamp=${if (appliedZoom > requestedZoom + 0.2f) "YES — SDK floor active" else "no"}")
+                globeSpanning = appliedZoom > requestedZoom + 0.2f
+            }
         }
     }
 
@@ -328,6 +345,14 @@ fun MapScreen(
                         color = SplashGold.copy(alpha = 0.70f),
                         fontSize = 11.sp,
                         fontFamily = MacacoFontFamily
+                    )
+                }
+                if (globeSpanning) {
+                    Text(
+                        stringResource(R.string.map_globe_spanning_hint),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = SplashGold.copy(alpha = 0.75f),
+                        letterSpacing = 0.5.sp
                     )
                 }
             }

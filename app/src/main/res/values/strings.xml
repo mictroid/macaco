@@ -156,6 +156,7 @@
     <string name="map_theme_dark">Dark</string>
     <string name="map_theme_light">Light</string>
     <string name="map_theme_standard">Standard</string>
+    <string name="map_globe_spanning_hint">Swipe to see all pins</string>
     <string name="settings_background_image">Background Image</string>
     <string name="settings_custom_bg_active">Custom background active</string>
     <string name="settings_custom_bg_tap_change">Tap to change</string>

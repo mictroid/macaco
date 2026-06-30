@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-30 — map-camera-v12 (diagnostic + globe-spanning hint), local NOT yet shipped
+
+Verified vs live source first; `assembleDebug` SUCCESSFUL (APK 13:00). Brief → `docs/DONE/`.
+- **map-camera-v12** (`MapScreen` + strings ×11): v11 confirmed the camera math is correct but the
+  Google Maps SDK clamps `move()` to a portrait Mercator floor (~zoom 2.0, ≈144° visible lng) that
+  can't frame a genuinely globe-spanning pin set (user's 4-pin set spans 209°). This brief makes the
+  clamp **visible + explained** rather than trying to beat it: reads back the SDK's actual applied
+  zoom after `move()`, logs `clamp=YES/no`, sets a new `globeSpanning` flag, and shows a
+  "Swipe to see all pins" subtitle (`map_globe_spanning_hint`, 11 locales) in the portrait map
+  header when clamped. No camera-math change.
+- **Deviation:** the brief's Change-1 AFTER code referenced `zoom` at the `move()` block, but `zoom`
+  is scoped inside the multi-pin `else` branch and is out of scope there — it would not compile.
+  Fixed by hoisting a `requestedZoom` var (default 6f, set in both branches) and comparing against
+  that. Also added the missing `stringResource` import.
+- Adventure-reel brief left pending in `docs/` (must ship alone per its scope note).
+
 ## 2026-06-27 — 2-brief batch (dark-mode card borders + map-camera-v6), local
 
 Both Cowork briefs verified vs live source first; `assembleDebug` SUCCESSFUL. Not yet
