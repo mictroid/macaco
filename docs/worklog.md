@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-30 — 3-brief landscape/tablet batch implemented (held for vc47, NOT shipped)
+
+Three Cowork briefs verified vs live source first; `assembleDebug` SUCCESSFUL. Commit `4036c00`;
+all → `docs/DONE/`. Independent files, batched for one release (all low-to-moderate-risk UI; no
+auth/billing/sync). On-device verify owed (A53 phone landscape + Tab A9+).
+- **map-camera-v13** (`MapScreen`) — center landscape header + inline globe-spanning hint; off-screen
+  pin chevrons (◀▶, tap to pan-to) when clamped; latitude reframe on visible pins. Deviation: hoisted
+  `density`/`tile`/`fitLatCenter`/`fitLngCenter` out of the multi-pin `else` (brief referenced them at
+  the post-`move()` block where they were out of scope — same bug class as v12's `zoom`); added the
+  chevron/coroutine/math imports. Landscape hint reuses the localized `map_globe_spanning_hint` string.
+- **profile-landscape** (`ProfileScreen`) — landscape two-pane Row (identity left/scrollable, buttons
+  right + logo bottom); portrait wrapped verbatim. Added `LocalConfiguration` + `fillMaxHeight` imports.
+- **tablet-entry-detail** (`EntryDetailScreen`) — two-pane now covers landscape tablets; 50/50 weights
+  + 32dp content padding on tablet; tag-chip ellipsis (both chip renders). Added `widthIn` +
+  `TextOverflow` imports (brief named only `TextOverflow`).
+
 ## 2026-06-30 — adventure-reel implemented (local, NOT yet shipped — ships ALONE)
 
 Large premium feature from the corrected Cowork brief, verified vs live source first; `assembleDebug`
