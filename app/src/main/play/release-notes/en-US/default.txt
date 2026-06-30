@@ -1,4 +1,6 @@
 What's new:
-• Adventure Reels! Turn any trip's photos into a shareable slideshow video — tap the video icon on a trip to create one
-• Smooth Ken Burns pan-and-zoom with crossfade transitions, ready to share anywhere
+• Adventure Reels are now sharper, with smoother transitions and a location & date caption on each photo
+• Better landscape and tablet layouts for the profile and entry screens
+• Adventures map: tap the ◀ ▶ arrows to reach pins on far-apart trips
+• Expanded Help & About with new answers on Reels, trips, Drive backup, and more
 • Bug fixes and polish
