@@ -2,9 +2,14 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-06-30 — map-camera-v12 (diagnostic + globe-spanning hint), local NOT yet shipped
+## 2026-06-30 — vc45/1.6 SHIPPED — 2-change batch (location-tap-maps + map-camera-v12)
 
-Verified vs live source first; `assembleDebug` SUCCESSFUL (APK 13:00). Brief → `docs/DONE/`.
+**Dispatched 2026-06-30 13:10:38 +0200, WIF run `28439954824`** (master HEAD `b3ad9da`, origin == HEAD
+verified before dispatch) — https://github.com/mictroid/macaco/actions/runs/28439954824. Dispatched,
+not yet confirmed (check `gh run list`; ~6 min). Batch = **location-tap-maps** (`c3ece32`, shipped now)
++ **map-camera-v12** (`70882d8`). Both verified vs live source first; `assembleDebug` SUCCESSFUL.
+Brief → `docs/DONE/`. **On-device verify owed on A53:** location chip opens Google Maps; map shows the
+"Swipe to see all pins" hint for the 4-pin globe set + `adb logcat -s MapCamera` shows `v12: clamp=YES`.
 - **map-camera-v12** (`MapScreen` + strings ×11): v11 confirmed the camera math is correct but the
   Google Maps SDK clamps `move()` to a portrait Mercator floor (~zoom 2.0, ≈144° visible lng) that
   can't frame a genuinely globe-spanning pin set (user's 4-pin set spans 209°). This brief makes the
