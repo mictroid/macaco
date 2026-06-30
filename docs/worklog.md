@@ -2,6 +2,13 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-30 — help-about-update-v3 implemented (added to vc47 batch, NOT shipped)
+
+Cowork brief verified vs live source; `assembleDebug` green. Commit `3a1428d`; → `docs/DONE/`. FAQ-only.
+Fix 1: `premium_broken_a` ×11 → Profile→Subscription (was removed Settings path). Fix 2:
+`premium_benefits_a` ×11 → adds Adventure Reel + Drive backup + Annual 7-day trial. Plus 4 new FAQs +
+new Account section: delete-account, On This Day, Drive connect, trips. 9 new keys ×11.
+
 ## 2026-06-30 — help-about-update-v2 implemented (added to vc47 batch, NOT shipped)
 
 Cowork brief verified vs live source + **re-read before commit** (it was revised mid-implementation
