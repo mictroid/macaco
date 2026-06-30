@@ -1,4 +1,4 @@
 What's new:
-• Tap a location on any entry to open it in Google Maps
-• The travel map now lets you know when a trip spans the globe — swipe to see every pin
+• Adventure Reels! Turn any trip's photos into a shareable slideshow video — tap the video icon on a trip to create one
+• Smooth Ken Burns pan-and-zoom with crossfade transitions, ready to share anywhere
 • Bug fixes and polish
