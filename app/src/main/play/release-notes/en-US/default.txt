@@ -1,5 +1,4 @@
 What's new:
-• Fixed compact backups so they now include all your photos
-• Improved the travel map so it frames your entry pins more reliably
-• Restored the original app icon
+• Tap a location on any entry to open it in Google Maps
+• The travel map now lets you know when a trip spans the globe — swipe to see every pin
 • Bug fixes and polish
