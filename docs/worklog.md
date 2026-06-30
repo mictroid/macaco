@@ -2,6 +2,28 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-06-30 — adventure-reel implemented (local, NOT yet shipped — ships ALONE)
+
+Large premium feature from the corrected Cowork brief, verified vs live source first; `assembleDebug`
+SUCCESSFUL. Commit `ab74d67`; brief → `docs/DONE/`. **Ships alone per the brief** (device-dependent
+MediaCodec input-surface behaviour) — held local, NOT pushed.
+- **adventure-reel** — 🎬 button on each trip header (premium-gated) renders that trip's photos into a
+  9:16 720×1280 H.264 MP4 (Ken Burns + cross-dissolve) via a new `AdventureReelEncoder` (MediaCodec
+  input surface → MediaMuxer → cacheDir), then opens the share sheet. New `ReelState` +
+  `startReel`/`cancelReel`/`reelConsumed` on the ViewModel, a blocking progress dialog, a `cache-path`
+  FileProvider entry, and `reel_*` strings ×11 locales.
+- **6 brief fixes folded in** (from the prior verification): (1) `isPurchased` is now actually
+  collected in `JournalListScreen` (brief falsely assumed it was) — `StateFlow<Boolean?>`, guarded
+  `== true`; (2) dropped the duplicate `val context`; (3) added missing imports (Intent, Videocam,
+  AlertDialog, LinearProgressIndicator, TextButton, + Job/Uri in the ViewModel); (4) **crossfade now
+  composites prev+next in ONE locked frame** so it actually blends (the draft posted two frames, the
+  second's `drawColor(BLACK)` erasing the first); (5) **PTS now derives from a monotonic muxed-frame
+  counter**, not the live render counter, so timestamps stay monotonic/evenly-spaced; (6) no-photos
+  error uses the localized `reel_no_photos_error` resource.
+- **On-device verify owed (A53):** 🎬 appears on trip headers; tap → progress dialog advances → share
+  sheet opens a playable MP4 with Ken Burns motion + crossfades, oldest entry first; cancel is clean;
+  a photo-less trip shows the error snackbar. **Watch for device-specific MediaCodec/OOM failures.**
+
 ## 2026-06-30 — vc45/1.6 SHIPPED — 2-change batch (location-tap-maps + map-camera-v12)
 
 **Dispatched 2026-06-30 13:10:38 +0200, WIF run `28439954824`** (master HEAD `b3ad9da`, origin == HEAD
