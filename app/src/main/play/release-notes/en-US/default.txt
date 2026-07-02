@@ -1,6 +1,6 @@
 What's new:
-• Adventures map: the ◀ ▶ arrows now jump to the nearest off-screen trip and follow its position, so far-apart pins are easier to reach
-• Smoother Adventure Reels — the pan-and-zoom no longer jumps between photos
-• Landscape polish across the journal, settings, and profile screens, plus roomier tablet layouts
-• Fixed a brief black flash when switching language in dark mode
-• The date picker now matches the app's colours, plus more bug fixes and polish
+• Fixed a crash when rotating the screen between portrait and landscape
+• Map pins now match your selected theme colour
+• Map: fixed pins that could hide behind the header, and made the landscape arrow easier to tap
+• Landscape polish for the menu drawer and profile screen (buttons and sign-out no longer cut off)
+• More bug fixes and refinements
