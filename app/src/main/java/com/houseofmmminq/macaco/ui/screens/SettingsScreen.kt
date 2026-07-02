@@ -81,6 +81,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -338,6 +339,10 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            // In landscape on phones (short screen) the tall centered header + stacked appearance
+            // cards push the lower settings off the fold; collapse the header and put Theme/Background
+            // side-by-side. Tablets stay tall (height > 480dp) and keep the portrait layout.
+            val isLandscape = LocalConfiguration.current.screenHeightDp < 480
             // Branded fixed header: splash teal radial with the back button, gold "macaco"
             // wordmark, and the "Settings" label — matching the profile and login headers.
             Box(
@@ -346,42 +351,83 @@ fun SettingsScreen(
                     .background(macacoBrandBackground())
                     .statusBarsPadding()
             ) {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(4.dp)
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.common_back),
-                        tint = Color.White
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth()
-                        .padding(top = 2.dp, bottom = 10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier.size(44.dp).offset(y = 4.dp)
-                    )
-                    Text(
-                        text = "macaco",
-                        color = SplashGoldBright,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 5.sp
-                    )
-                    Text(
-                        stringResource(R.string.common_settings),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.White.copy(alpha = 0.85f)
-                    )
+                if (isLandscape) {
+                    // ── Compact landscape: slim single row (same pattern as MapScreen) ──
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = onBack,
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.common_back),
+                                tint = Color.White
+                            )
+                        }
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .offset(y = (-2).dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            text = "macaco",
+                            color = SplashGoldBright,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Light,
+                            letterSpacing = 3.sp
+                        )
+                        Text(
+                            text = " · " + stringResource(R.string.common_settings),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back),
+                            tint = Color.White
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                            .padding(top = 2.dp, bottom = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(44.dp).offset(y = 4.dp)
+                        )
+                        Text(
+                            text = "macaco",
+                            color = SplashGoldBright,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Light,
+                            letterSpacing = 5.sp
+                        )
+                        Text(
+                            stringResource(R.string.common_settings),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
+                    }
                 }
             }
 
@@ -405,159 +451,213 @@ fun SettingsScreen(
                 onCheckedChange = { viewModel.toggleDarkMode() }
             )
 
-            // ── Theme Color ───────────────────────────────────────────────────
-            Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader(stringResource(R.string.settings_theme_color))
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        AppTheme.entries.forEach { theme ->
-                            ThemeSwatch(
-                                theme = theme,
-                                selected = appTheme == theme,
-                                onClick = {
-                                    viewModel.setAppTheme(theme)
-                                }
-                            )
-                        }
-                    }
-                    Spacer(Modifier.height(10.dp))
-                    Text(
-                        appTheme.displayName,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
-
-            // ── Background Image ──────────────────────────────────────────────
-            Spacer(Modifier.height(4.dp))
-            SettingsSectionHeader(stringResource(R.string.settings_background_image))
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    if (themeImageUri != null) {
+            // ── Theme Color + Background Image ────────────────────────────────
+            // Portrait: stacked (spacer + header + card each). Landscape: the two cards sit
+            // side-by-side in a weight(1f) Row so the lower settings stay above the fold.
+            // Extracted as composable lambdas so both layouts share one definition.
+            val themeColorCard: @Composable () -> Unit = {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                ) {
+                    Column(modifier = Modifier.padding(if (isLandscape) 12.dp else 16.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            // Current image thumbnail
-                            Box(modifier = Modifier.size(72.dp)) {
-                                AsyncImage(
-                                    model = themeImageUri,
-                                    contentDescription = stringResource(R.string.settings_background_image),
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(RoundedCornerShape(10.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    stringResource(R.string.settings_custom_bg_active),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    stringResource(R.string.settings_custom_bg_tap_change),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            // Remove button
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.errorContainer)
-                                    .clickable {
-                                        ImageStorage.clear(context, ImageStorage.BACKGROUNDS)
-                                        viewModel.setThemeImage(null)
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    Icons.Filled.Close,
-                                    contentDescription = stringResource(R.string.settings_remove_image_cd),
-                                    tint = MaterialTheme.colorScheme.onErrorContainer,
-                                    modifier = Modifier.size(16.dp)
+                            AppTheme.entries.forEach { theme ->
+                                ThemeSwatch(
+                                    theme = theme,
+                                    selected = appTheme == theme,
+                                    onClick = {
+                                        viewModel.setAppTheme(theme)
+                                    }
                                 )
                             }
                         }
-                        Spacer(Modifier.height(12.dp))
-                    }
-
-                    // Pick / Change button. Light mode: vibrant accent; dark mode: container (as-is).
-                    val pickerLight = isLightTheme()
-                    val pickerBg = if (pickerLight) MaterialTheme.colorScheme.primary
-                                   else MaterialTheme.colorScheme.primaryContainer
-                    val pickerFg = if (pickerLight) MaterialTheme.colorScheme.onPrimary
-                                   else MaterialTheme.colorScheme.onPrimaryContainer
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(if (themeImageUri == null) 80.dp else 44.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(pickerBg)
-                            .clickable {
-                                imagePicker.launch(
-                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                )
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (themeImageUri == null) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(
-                                    Icons.Filled.Add,
-                                    contentDescription = null,
-                                    tint = pickerFg,
-                                    modifier = Modifier.size(28.dp)
-                                )
-                                Spacer(Modifier.height(4.dp))
-                                Text(
-                                    stringResource(R.string.settings_pick_bg),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = pickerFg
-                                )
-                            }
-                        } else {
-                            Text(
-                                stringResource(R.string.settings_change_image),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = pickerFg,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-
-                    if (themeImageUri == null) {
-                        Spacer(Modifier.height(6.dp))
+                        Spacer(Modifier.height(if (isLandscape) 6.dp else 10.dp))
                         Text(
-                            stringResource(R.string.settings_bg_hint),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            appTheme.displayName,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
+            }
+
+            val backgroundImageCard: @Composable () -> Unit = {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                ) {
+                    Column(modifier = Modifier.padding(if (isLandscape) 12.dp else 16.dp)) {
+                        if (themeImageUri != null) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Current image thumbnail
+                                Box(modifier = Modifier.size(72.dp)) {
+                                    AsyncImage(
+                                        model = themeImageUri,
+                                        contentDescription = stringResource(R.string.settings_background_image),
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(RoundedCornerShape(10.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        stringResource(R.string.settings_custom_bg_active),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    Text(
+                                        stringResource(R.string.settings_custom_bg_tap_change),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                // Remove button
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.errorContainer)
+                                        .clickable {
+                                            ImageStorage.clear(context, ImageStorage.BACKGROUNDS)
+                                            viewModel.setThemeImage(null)
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Close,
+                                        contentDescription = stringResource(R.string.settings_remove_image_cd),
+                                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            }
+                            Spacer(Modifier.height(12.dp))
+                        }
+
+                        // Pick / Change button. Light mode: vibrant accent; dark mode: container (as-is).
+                        val pickerLight = isLightTheme()
+                        val pickerBg = if (pickerLight) MaterialTheme.colorScheme.primary
+                                       else MaterialTheme.colorScheme.primaryContainer
+                        val pickerFg = if (pickerLight) MaterialTheme.colorScheme.onPrimary
+                                       else MaterialTheme.colorScheme.onPrimaryContainer
+                        // Compact (44dp inline) when an image is set, or in landscape; generous
+                        // 80dp icon-above-text tap target only in portrait with no image.
+                        val pickerHeight = when {
+                            themeImageUri != null -> 44.dp
+                            isLandscape -> 44.dp
+                            else -> 80.dp
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(pickerHeight)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(pickerBg)
+                                .clickable {
+                                    imagePicker.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (themeImageUri == null) {
+                                if (isLandscape) {
+                                    // Compact inline row in landscape.
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    ) {
+                                        Icon(
+                                            Icons.Filled.Add,
+                                            contentDescription = null,
+                                            tint = pickerFg,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Text(
+                                            stringResource(R.string.settings_pick_bg),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = pickerFg
+                                        )
+                                    }
+                                } else {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Icon(
+                                            Icons.Filled.Add,
+                                            contentDescription = null,
+                                            tint = pickerFg,
+                                            modifier = Modifier.size(28.dp)
+                                        )
+                                        Spacer(Modifier.height(4.dp))
+                                        Text(
+                                            stringResource(R.string.settings_pick_bg),
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = pickerFg
+                                        )
+                                    }
+                                }
+                            } else {
+                                Text(
+                                    stringResource(R.string.settings_change_image),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = pickerFg,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+
+                        // The explanatory hint eats vertical space; skip it in landscape.
+                        if (themeImageUri == null && !isLandscape) {
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                stringResource(R.string.settings_bg_hint),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            }
+
+            if (isLandscape) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        SettingsSectionHeader(stringResource(R.string.settings_theme_color))
+                        themeColorCard()
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        SettingsSectionHeader(stringResource(R.string.settings_background_image))
+                        backgroundImageCard()
+                    }
+                }
+            } else {
+                // ── Theme Color ───────────────────────────────────────────────
+                Spacer(Modifier.height(4.dp))
+                SettingsSectionHeader(stringResource(R.string.settings_theme_color))
+                themeColorCard()
+
+                // ── Background Image ──────────────────────────────────────────
+                Spacer(Modifier.height(4.dp))
+                SettingsSectionHeader(stringResource(R.string.settings_background_image))
+                backgroundImageCard()
             }
 
             // ── Map ───────────────────────────────────────────────────────────

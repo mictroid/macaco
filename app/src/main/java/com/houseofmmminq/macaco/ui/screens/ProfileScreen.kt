@@ -101,7 +101,9 @@ fun ProfileScreen(
     var deleteError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenHeightDp < 480
+    // 2-pane on any wide screen: phones in landscape (short height) AND tablets (≥600dp wide,
+    // the Material 3 compact→medium breakpoint) in any orientation.
+    val isLandscape = configuration.screenHeightDp < 480 || configuration.screenWidthDp >= 600
 
     var showPhotoSourceSheet by remember { mutableStateOf(false) }
     var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
@@ -315,7 +317,7 @@ fun ProfileScreen(
 
                 val user = currentUser
                 if (user != null) {
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(8.dp))
 
                     // Avatar — slightly smaller in landscape
                     Box(

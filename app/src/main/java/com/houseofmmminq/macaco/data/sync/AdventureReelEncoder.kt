@@ -53,6 +53,22 @@ class AdventureReelEncoder(private val context: Context) {
         private const val MIME = "video/avc"
     }
 
+    // Pre-allocated Paints — never allocate inside the render loop (GC stall risk on A53's
+    // Exynos 1280). These are android.graphics.Paint writing pixels into the video frame, not
+    // Compose theming, so the hardcoded colours are correct here. Only kenBurnsPaint.alpha
+    // changes per frame; it's set inline before each drawBitmap.
+    private val kenBurnsPaint = Paint().apply { isFilterBitmap = true }
+    private val pillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = android.graphics.Color.argb(178, 7, 30, 38)   // macaco dark-teal at 70% opacity
+    }
+    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = android.graphics.Color.WHITE
+        textSize = 22f
+        textAlign = Paint.Align.CENTER
+        typeface = android.graphics.Typeface.DEFAULT
+    }
+    private val logoPaint = Paint().apply { alpha = 38 }       // ~15% opacity
+
     suspend fun encode(
         photos: List<ReelPhotoMeta>,
         outputName: String,
@@ -91,7 +107,8 @@ class AdventureReelEncoder(private val context: Context) {
         // Paints one Ken Burns layer onto an already-locked canvas. Does NOT lock/post — so several
         // layers (e.g. a cross-dissolve) can be composited into a SINGLE posted frame.
         fun drawKenBurns(canvas: Canvas, bitmap: Bitmap, alpha: Float, frameInPhoto: Int) {
-            val t = frameInPhoto.toFloat() / PHOTO_FRAMES          // 0..1
+            // Coerce so the extended main loop (f runs up to PHOTO_FRAMES + FADE_FRAMES - 1) stays in [0,1].
+            val t = (frameInPhoto.toFloat() / PHOTO_FRAMES).coerceAtMost(1f)
             val bw = bitmap.width.toFloat()
             val bh = bitmap.height.toFloat()
             // Fill scale: exactly enough to cover the frame on the short axis.
@@ -106,14 +123,11 @@ class AdventureReelEncoder(private val context: Context) {
             // Pan from upper-left offset toward centre as the photo plays (matches the pull-in).
             val dx = WIDTH / 2f - scaledW / 2f + maxDx * (1f - t)
             val dy = HEIGHT / 2f - scaledH / 2f + maxDy * (1f - t)
-            val paint = Paint().apply {
-                this.alpha = (alpha * 255).roundToInt().coerceIn(0, 255)
-                isFilterBitmap = true
-            }
+            kenBurnsPaint.alpha = (alpha * 255).roundToInt().coerceIn(0, 255)
             canvas.save()
             canvas.translate(dx, dy)
             canvas.scale(scale, scale)
-            canvas.drawBitmap(bitmap, 0f, 0f, paint)
+            canvas.drawBitmap(bitmap, 0f, 0f, kenBurnsPaint)
             canvas.restore()
         }
 
@@ -192,8 +206,13 @@ class AdventureReelEncoder(private val context: Context) {
                     prev.recycle()
                 }
 
-                // Main photo display.
-                for (f in 0 until PHOTO_FRAMES) {
+                // Main photo display. For photos after the first, the preceding cross-dissolve
+                // already advanced Ken Burns from t=0 to t=FADE_FRAMES/PHOTO_FRAMES, so start the
+                // main loop at FADE_FRAMES to continue seamlessly instead of snapping back to t=0
+                // (the visible jerk at every transition). For the first photo (no dissolve) f still
+                // begins at 0. Total frames per photo is unchanged (dissolve 15 + main 90 = 105).
+                val mainStart = if (prev != null) FADE_FRAMES else 0
+                for (f in mainStart until PHOTO_FRAMES + mainStart) {
                     coroutineContext.ensureActive()
                     postFrame { canvas ->
                         drawKenBurns(canvas, bitmap, 1f, f)

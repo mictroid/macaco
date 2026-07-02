@@ -2,6 +2,31 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-02 — vc47-QA batch (7 briefs) implemented, one push, NOT yet shipped
+
+7 briefs from vc47 on-device QA, all verified vs live source first and built together
+(`assembleDebug` SUCCESSFUL). Batched for one version bump; all → `docs/DONE/`. Dated detail +
+per-brief deviations in `worklog-2026-07-02.md`. User confirmed: all 7 in one push; map arrows use
+theme tokens (not v13 hardcoded teal+gold).
+
+- **map-arrows-v14** (`MapScreen.kt`) — reactive off-screen pin tracker (keyed on camera position)
+  fixes stale-coordinate wraparound; nearest-pin nav; `arrowVerticalFraction()` dynamic arrow y;
+  arrows decoupled from `globeSpanning`. *Deviations:* hoisted `density` (brief wrongly said in scope);
+  added `IntOffset`, `roundToInt`, `PI` imports.
+- **ui-polish** (`NewEditEntryScreen.kt`, `MapScreen.kt`) — branded date picker; landscape map header
+  icon 24→20dp +offset. *Deviation:* added `DatePickerDefaults` import.
+- **adventure-reel-v3** (`AdventureReelEncoder.kt`) — Ken Burns dissolve-boundary continuity + 4
+  pre-allocated Paints. *Deviation:* first photo starts at f=0 (brief's literal snippet skipped its
+  opening pan).
+- **journal-landscape** (`JournalListScreen.kt`) — landscape header centred + compact drawer header.
+- **profile-landscape-v2** (`ProfileScreen.kt`) — 2-pane on tablets (≥600dp) + spacer 16→8dp.
+- **settings-landscape** (`SettingsScreen.kt`) — compact header + Theme/Background side-by-side +
+  compact picker. *Deviation:* added `LocalConfiguration` import (build failed without it — brief
+  wrongly said present); cards extracted to `@Composable` lambdas to avoid duplication.
+- **language-switch-flash** (`themes.xml`, `MainActivity.kt`) — `windowBackground` on
+  `Theme.Macaco.Splash` + guard `installSplashScreen()` on cold start only; kills first-language-switch
+  black flash.
+
 ## 2026-06-30 — help-about-update-v3 implemented (added to vc47 batch, NOT shipped)
 
 Cowork brief verified vs live source; `assembleDebug` green. Commit `3a1428d`; → `docs/DONE/`. FAQ-only.

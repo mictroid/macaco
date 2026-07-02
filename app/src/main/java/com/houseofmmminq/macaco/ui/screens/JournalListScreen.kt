@@ -228,83 +228,152 @@ fun JournalListScreen(
                 windowInsets = WindowInsets(0)
             ) {
                 // Branded drawer header: the same splash teal fade + gold "macaco" wordmark as the
-                // app header, with the monkey icon above the signed-in user's name.
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(macacoBrandBackground())
-                        .statusBarsPadding()
-                        .padding(horizontal = 20.dp, vertical = 24.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                // app header, with the monkey icon above the signed-in user's name. In landscape on
+                // phones the tall portrait header pushes the bottom nav items (sign-out) off-screen,
+                // so collapse it to a slim horizontal row there.
+                val drawerIsLandscape = LocalConfiguration.current.screenHeightDp < 480
+                if (drawerIsLandscape) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(macacoBrandBackground())
+                            .statusBarsPadding()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(R.drawable.ic_launcher_foreground),
                             contentDescription = null,
-                            modifier = Modifier.size(64.dp)
+                            modifier = Modifier
+                                .size(32.dp)
+                                .offset(y = 2.dp)
                         )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = "macaco",
+                            color = SplashGoldBright,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Light,
+                            letterSpacing = 4.sp
+                        )
+                        if (currentUser != null) {
+                            Text(
+                                text = " · " + currentUser!!.displayName,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.White.copy(alpha = 0.75f)
+                            )
+                        }
+                        Spacer(Modifier.weight(1f))
+                        if (currentUser != null) {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primaryContainer)
+                                    .clickable {
+                                        scope.launch { drawerState.close() }
+                                        onProfile()
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (profilePhotoUri != null) {
+                                    AsyncImage(
+                                        model = profilePhotoUri,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(32.dp)
+                                            .clip(CircleShape),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    Text(
+                                        currentUser!!.displayName.take(1).uppercase(),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(macacoBrandBackground())
+                            .statusBarsPadding()
+                            .padding(horizontal = 20.dp, vertical = 24.dp)
+                    ) {
                         Column(
-                            modifier = Modifier.offset(y = (-8).dp),
+                            modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = "macaco",
-                                color = SplashGoldBright,
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight.Light,
-                                letterSpacing = 5.sp
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher_foreground),
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp)
                             )
-                            Text(
-                                text = "Roam Freely. Forget Nothing.",
-                                color = SplashGold.copy(alpha = 0.82f),
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Light,
-                                letterSpacing = 1.sp
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            if (currentUser != null) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(44.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer)
-                                        .clickable {
-                                            scope.launch { drawerState.close() }
-                                            onProfile()
-                                        },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (profilePhotoUri != null) {
-                                        AsyncImage(
-                                            model = profilePhotoUri,
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .size(44.dp)
-                                                .clip(CircleShape),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    } else {
-                                        Text(
-                                            currentUser!!.displayName.take(2).uppercase(),
-                                            style = MaterialTheme.typography.labelLarge,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
+                            Column(
+                                modifier = Modifier.offset(y = (-8).dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "macaco",
+                                    color = SplashGoldBright,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Light,
+                                    letterSpacing = 5.sp
+                                )
+                                Text(
+                                    text = "Roam Freely. Forget Nothing.",
+                                    color = SplashGold.copy(alpha = 0.82f),
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Light,
+                                    letterSpacing = 1.sp
+                                )
+                                Spacer(Modifier.height(8.dp))
+                                if (currentUser != null) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(44.dp)
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.primaryContainer)
+                                            .clickable {
+                                                scope.launch { drawerState.close() }
+                                                onProfile()
+                                            },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        if (profilePhotoUri != null) {
+                                            AsyncImage(
+                                                model = profilePhotoUri,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(44.dp)
+                                                    .clip(CircleShape),
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        } else {
+                                            Text(
+                                                currentUser!!.displayName.take(2).uppercase(),
+                                                style = MaterialTheme.typography.labelLarge,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            )
+                                        }
                                     }
+                                    Spacer(Modifier.height(4.dp))
                                 }
-                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text = if (currentUser != null) currentUser!!.displayName else "Not signed in",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.White.copy(alpha = 0.85f),
+                                    modifier = if (currentUser != null) Modifier.clickable {
+                                        scope.launch { drawerState.close() }
+                                        onProfile()
+                                    } else Modifier
+                                )
                             }
-                            Text(
-                                text = if (currentUser != null) currentUser!!.displayName else "Not signed in",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.White.copy(alpha = 0.85f),
-                                modifier = if (currentUser != null) Modifier.clickable {
-                                    scope.launch { drawerState.close() }
-                                    onProfile()
-                                } else Modifier
-                            )
                         }
                     }
                 }
@@ -434,7 +503,9 @@ fun JournalListScreen(
                         .padding(bottom = if (isLandscape) 0.dp else 4.dp)
                 ) {
                   if (isLandscape) {
-                    // ── Compact landscape header: single slim row ──────────────────────
+                    // ── Compact landscape header: single slim row, brand content centred ──
+                    // The hamburger (left) and avatar (right) are both fixed 40dp so the brand
+                    // block, in a weight(1f) Box, is centred symmetrically between them.
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -451,58 +522,78 @@ fun JournalListScreen(
                                 tint = Color.White
                             )
                         }
-                        Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text = "macaco",
-                            color = SplashGoldBright,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 3.sp
-                        )
-                        if (entries.isNotEmpty()) {
-                            val count = visibleEntries.size
-                            val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
-                            Text(
-                                text = " · " + memoriesText +
-                                    if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = SplashGold.copy(alpha = 0.7f)
-                            )
-                        }
-                        Spacer(Modifier.weight(1f))
-                        if (currentUser != null) {
-                            if (profilePhotoUri != null) {
-                                AsyncImage(
-                                    model = profilePhotoUri,
-                                    contentDescription = stringResource(R.string.common_profile),
+
+                        Box(
+                            modifier = Modifier.weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                                    contentDescription = null,
                                     modifier = Modifier
-                                        .padding(end = 12.dp)
-                                        .size(28.dp)
-                                        .clip(CircleShape)
-                                        .clickable { onProfile() },
-                                    contentScale = ContentScale.Crop
+                                        .size(20.dp)
+                                        .offset(y = (-2).dp)
                                 )
-                            } else {
-                                Box(
-                                    modifier = Modifier
-                                        .padding(end = 12.dp)
-                                        .size(28.dp)
-                                        .clip(CircleShape)
-                                        .background(Color.White)
-                                        .clickable { onProfile() },
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "macaco",
+                                    color = SplashGoldBright,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Light,
+                                    letterSpacing = 3.sp
+                                )
+                                if (entries.isNotEmpty()) {
+                                    val count = visibleEntries.size
+                                    val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
                                     Text(
-                                        currentUser!!.displayName.take(1).uppercase(),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = SplashTealMid
+                                        text = " · " + memoriesText +
+                                            if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = SplashGold.copy(alpha = 0.7f)
                                     )
+                                }
+                            }
+                        }
+
+                        // Right anchor: 40dp-wide Box matches the hamburger width so the centre
+                        // stays symmetric even when no avatar is present.
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(end = 4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (currentUser != null) {
+                                if (profilePhotoUri != null) {
+                                    AsyncImage(
+                                        model = profilePhotoUri,
+                                        contentDescription = stringResource(R.string.common_profile),
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .clickable { onProfile() },
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .background(Color.White)
+                                            .clickable { onProfile() },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            currentUser!!.displayName.take(1).uppercase(),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = SplashTealMid
+                                        )
+                                    }
                                 }
                             }
                         }

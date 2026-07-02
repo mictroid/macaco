@@ -68,8 +68,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // System splash (teal brand colour + monkey) covers the cold-start window, then the
-        // in-app Compose SplashScreen continues the branded poster.
-        installSplashScreen()
+        // in-app Compose SplashScreen continues the branded poster. Only install it on a true
+        // cold start: on a recreation (locale change, rotation) the OS doesn't show the splash
+        // anyway, and installSplashScreen()'s postSplashScreenTheme swap causes a one-frame
+        // black flash. The windowBackground on Theme.Macaco.Splash covers the gap otherwise.
+        if (savedInstanceState == null) {
+            installSplashScreen()
+        }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (intent?.action == ACTION_NEW_ENTRY) openNewEntry = true

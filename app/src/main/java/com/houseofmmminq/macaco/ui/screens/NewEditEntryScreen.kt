@@ -44,6 +44,7 @@ import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -279,6 +280,17 @@ fun NewEditEntryScreen(
     }
 
     if (showDatePicker) {
+        // Brand the picker: surface background + macaco teal (primary) accents, so it stops
+        // looking like a foreign Material default (surfaceContainerHigh lavender).
+        val pickerColors = DatePickerDefaults.colors(
+            containerColor            = MaterialTheme.colorScheme.surface,
+            headlineContentColor      = MaterialTheme.colorScheme.primary,
+            weekdayContentColor       = MaterialTheme.colorScheme.primary,
+            selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+            selectedDayContentColor   = MaterialTheme.colorScheme.onPrimary,
+            todayContentColor         = MaterialTheme.colorScheme.primary,
+            todayDateBorderColor      = MaterialTheme.colorScheme.primary,
+        )
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
@@ -289,9 +301,10 @@ fun NewEditEntryScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.common_cancel)) }
-            }
+            },
+            colors = pickerColors
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(state = datePickerState, colors = pickerColors)
         }
     }
 

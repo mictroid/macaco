@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -68,12 +69,37 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.theme.MacacoFontFamily
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.tan
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+/**
+ * Maps [pinLat] to a vertical fraction (0.0 = top, 1.0 = bottom) in the current viewport.
+ * Uses Mercator projection so high-latitude positions are positioned correctly.
+ * Returns a value clamped to [minFraction, maxFraction] to stay within safe tap area.
+ */
+private fun arrowVerticalFraction(
+    pinLat: Double,
+    camLat: Double,
+    camZoom: Float,
+    mapHeightPx: Int,
+    density: Float,
+    minFraction: Float = 0.1f,
+    maxFraction: Float = 0.9f
+): Float {
+    if (mapHeightPx <= 0) return 0.5f
+    val tile = 256.0 * density
+    val mercPerPx = 2 * PI / (tile * 2.0.pow(camZoom.toDouble()))
+    val halfMercSpan = mercPerPx * mapHeightPx / 2.0
+    val merc = { lat: Double -> ln(tan(PI / 4 + lat * PI / 360)) }
+    val fraction = 0.5 + (merc(camLat) - merc(pinLat)) / (2 * halfMercSpan)
+    return fraction.toFloat().coerceIn(minFraction, maxFraction)
+}
 
 private fun createTealMarkerBitmap(context: Context): Bitmap {
     val dp = context.resources.displayMetrics.density
@@ -101,6 +127,7 @@ fun MapScreen(
     onEntryClick: (String) -> Unit
 ) {
     val context = LocalContext.current
+    val density = context.resources.displayMetrics.density
     val mapScope = rememberCoroutineScope()
     val entries by viewModel.entries.collectAsState()
     val geocodedLocations by viewModel.geocodedLocations.collectAsState()
@@ -160,6 +187,8 @@ fun MapScreen(
     // lat center + applied zoom after move() — used by the edge chevrons to pan-to the off-screen pin.
     var offScreenWestLng by remember { mutableStateOf<Double?>(null) }
     var offScreenEastLng by remember { mutableStateOf<Double?>(null) }
+    var offScreenWestLat by remember { mutableStateOf<Double?>(null) }   // v14: pin latitude, for arrow y-offset + nav target
+    var offScreenEastLat by remember { mutableStateOf<Double?>(null) }
     var mapLatCenter by remember { mutableStateOf(0.0) }
     var mapAppliedZoom by remember { mutableStateOf(0f) }
     // Safety net: if geocoding yields nothing (offline, or every lookup fails) the camera never
@@ -186,7 +215,7 @@ fun MapScreen(
             var requestedZoom = 6f
             // Hoisted out of the multi-pin branch so the post-move() block (v13 off-screen-pin math)
             // can reach them — they'd otherwise be scoped inside the `else` and not compile there.
-            val density = context.resources.displayMetrics.density
+            // (`density` is now a composable-scope val — shared with the reactive off-screen tracker.)
             val tile = 256.0 * density
             var fitLatCenter = latlngs[0].latitude
             var fitLngCenter = latlngs[0].longitude
@@ -276,9 +305,11 @@ fun MapScreen(
                     "clamp=${if (appliedZoom > requestedZoom + 0.2f) "YES — SDK floor active" else "no"}")
                 globeSpanning = appliedZoom > requestedZoom + 0.2f
 
-                // v13: when clamped, some pins fall off the left/right edge. Compute which, so the
-                // edge chevrons can point to them, and reframe the latitude on the visible pins only
-                // (off-screen pins' latitudes otherwise pull the frame south into empty ocean).
+                // v13: when clamped, some pins fall off the left/right edge; reframe the latitude on
+                // the visible pins only (off-screen pins' latitudes otherwise pull the frame south
+                // into empty ocean). v14: the off-screen pin SET is no longer computed here — the
+                // reactive LaunchedEffect below owns it so the chevrons stay correct after the user
+                // navigates to a new region (fixes the stale-coordinate wraparound bug).
                 mapAppliedZoom = appliedZoom
                 mapLatCenter = fitLatCenter
                 if (globeSpanning) {
@@ -286,9 +317,6 @@ fun MapScreen(
                         (mapSizePx.width / (tile * 2.0.pow(appliedZoom.toDouble()))) * 360.0 / 2.0
                     val westEdge = fitLngCenter - halfSpanDeg
                     val eastEdge = fitLngCenter + halfSpanDeg
-
-                    offScreenWestLng = latlngs.map { it.longitude }.filter { it < westEdge }.minOrNull()
-                    offScreenEastLng = latlngs.map { it.longitude }.filter { it > eastEdge }.maxOrNull()
 
                     val visibleLatlngs = latlngs.filter { it.longitude in westEdge..eastEdge }
                     val latCenterVisible = if (visibleLatlngs.isNotEmpty()) {
@@ -307,12 +335,51 @@ fun MapScreen(
                         }
                         mapLatCenter = latCenterVisible
                     }
-                } else {
-                    offScreenWestLng = null
-                    offScreenEastLng = null
                 }
             }
         }
+    }
+
+    // v14: reactive off-screen pin tracker. Runs whenever the camera settles at a new position,
+    // mapSizePx changes, or geocodedLocations gains new entries. Replaces the one-time computation
+    // that used to live in the initial LaunchedEffect — this version always reflects the CURRENT
+    // viewport, so chevrons work correctly after the user navigates to a new region.
+    //
+    // Navigation goes to the NEAREST off-screen pin (closest to the viewport edge), not the
+    // furthest. From Japan: nearest western pin = Europe, not USA.
+    //
+    // Antimeridian note: uses simple -180..+180 longitude comparison. Edge case where the viewport
+    // straddles the antimeridian is rare and handled by the globeSpanning logic above.
+    LaunchedEffect(cameraPositionState.position, geocodedLocations, mapSizePx) {
+        if (mapSizePx.width <= 0 || geocodedLocations.isEmpty()) return@LaunchedEffect
+
+        val pos = cameraPositionState.position
+        val camLng = pos.target.longitude
+        val camZoom = pos.zoom
+        val tile = 256.0 * density
+        val halfSpanDeg =
+            (mapSizePx.width / (tile * 2.0.pow(camZoom.toDouble()))) * 360.0 / 2.0
+        val westEdge = camLng - halfSpanDeg
+        val eastEdge = camLng + halfSpanDeg
+
+        val latlngs = locations
+            .mapNotNull { geocodedLocations[it] }
+            .map { LatLng(it.first, it.second) }
+            .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
+
+        // Nearest west: highest longitude that is still west of the viewport edge.
+        val nearestWest = latlngs.filter { it.longitude < westEdge }.maxByOrNull { it.longitude }
+        // Nearest east: lowest longitude that is still east of the viewport edge.
+        val nearestEast = latlngs.filter { it.longitude > eastEdge }.minByOrNull { it.longitude }
+
+        offScreenWestLng = nearestWest?.longitude
+        offScreenWestLat = nearestWest?.latitude
+        offScreenEastLng = nearestEast?.longitude
+        offScreenEastLat = nearestEast?.latitude
+
+        // Keep mapLatCenter + mapAppliedZoom in sync for chevron navigation.
+        mapLatCenter = pos.target.latitude
+        mapAppliedZoom = camZoom
     }
 
     LaunchedEffect(locations) {
@@ -344,7 +411,9 @@ fun MapScreen(
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier
+                        .size(20.dp)
+                        .offset(y = (-2).dp)
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
@@ -506,69 +575,89 @@ fun MapScreen(
             }
 
             // ── Off-screen pin chevrons ──────────────────────────────────────────────────
-            // Only shown when globeSpanning=true AND there are pins off that edge. Each button
-            // animates the camera to centre on the furthest off-screen pin in that direction,
-            // keeping the same zoom and latitude.
-            if (globeSpanning) {
-                val westLng = offScreenWestLng
-                val eastLng = offScreenEastLng
+            // v14: shown whenever there is an off-screen pin on that edge (the reactive tracker
+            // keeps the set current) — no longer gated on globeSpanning, so they also appear on
+            // tablet landscape where the SDK didn't need to clamp the zoom. Each button animates
+            // the camera to centre on the NEAREST off-screen pin in that direction, at that pin's
+            // actual latitude, and floats vertically toward where that pin sits off-screen.
+            val westLng = offScreenWestLng
+            val westLat = offScreenWestLat
+            val eastLng = offScreenEastLng
+            val eastLat = offScreenEastLat
 
-                if (westLng != null) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(start = 8.dp)
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF0D3D38).copy(alpha = 0.80f))
-                            .clickable {
-                                mapScope.launch {
-                                    cameraPositionState.animate(
-                                        CameraUpdateFactory.newLatLngZoom(
-                                            LatLng(mapLatCenter, westLng), mapAppliedZoom
-                                        ),
-                                        durationMs = 600
-                                    )
-                                }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ChevronLeft,
-                            contentDescription = stringResource(R.string.map_globe_spanning_hint),
-                            tint = SplashGold,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
+            if (westLng != null && westLat != null) {
+                val fraction = arrowVerticalFraction(
+                    pinLat = westLat,
+                    camLat = cameraPositionState.position.target.latitude,
+                    camZoom = cameraPositionState.position.zoom,
+                    mapHeightPx = mapSizePx.height,
+                    density = density
+                )
+                val yOffsetPx = ((fraction - 0.5f) * mapSizePx.height).roundToInt()
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .offset { IntOffset(0, yOffsetPx) }
+                        .padding(start = 8.dp)
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f))
+                        .clickable {
+                            mapScope.launch {
+                                cameraPositionState.animate(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(westLat, westLng), mapAppliedZoom
+                                    ),
+                                    durationMs = 600
+                                )
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ChevronLeft,
+                        contentDescription = stringResource(R.string.map_globe_spanning_hint),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(22.dp)
+                    )
                 }
+            }
 
-                if (eastLng != null) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(end = 8.dp)
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF0D3D38).copy(alpha = 0.80f))
-                            .clickable {
-                                mapScope.launch {
-                                    cameraPositionState.animate(
-                                        CameraUpdateFactory.newLatLngZoom(
-                                            LatLng(mapLatCenter, eastLng), mapAppliedZoom
-                                        ),
-                                        durationMs = 600
-                                    )
-                                }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ChevronRight,
-                            contentDescription = stringResource(R.string.map_globe_spanning_hint),
-                            tint = SplashGold,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
+            if (eastLng != null && eastLat != null) {
+                val fraction = arrowVerticalFraction(
+                    pinLat = eastLat,
+                    camLat = cameraPositionState.position.target.latitude,
+                    camZoom = cameraPositionState.position.zoom,
+                    mapHeightPx = mapSizePx.height,
+                    density = density
+                )
+                val yOffsetPx = ((fraction - 0.5f) * mapSizePx.height).roundToInt()
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .offset { IntOffset(0, yOffsetPx) }
+                        .padding(end = 8.dp)
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f))
+                        .clickable {
+                            mapScope.launch {
+                                cameraPositionState.animate(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(eastLat, eastLng), mapAppliedZoom
+                                    ),
+                                    durationMs = 600
+                                )
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = stringResource(R.string.map_globe_spanning_hint),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(22.dp)
+                    )
                 }
             }
         }
