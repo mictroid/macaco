@@ -71,12 +71,11 @@ memory). Record the **local dispatch time** you printed above plus the run ID.
 - State plainly that the run is **dispatched, not confirmed** — it can be checked later with
   `gh run list` (builds typically take ~6 min). Do not block waiting for it.
 
-### 7. Email the user the summary — ALWAYS, standing request (2026-06-27)
-After every push/dispatch to Play, the user wants the ship summary emailed to them. Invoke the `me`
-skill to draft it to `michael.tromp78@gmail.com` (vc, run ID, dispatch time, run URL, batch contents,
-and what still needs on-device verification). The Gmail connector can only **create a draft** (it
-can't send) — so tell the user the draft is in their inbox ready to send. Do this without being asked
-each time; it's a standing rule.
+### 7. Report the summary in chat
+Report the ship summary to the user in chat (vc, run ID, dispatch time, run URL, batch contents, and
+what still needs on-device verification). **Do NOT auto-draft a summary email** — the old
+always-email standing rule was revoked 2026-07-02 (see the `email-summary-after-ship` memory). Only
+email if the user asks (`/me`).
 
 ## Notes
 - A build typically takes ~6 minutes; a SUCCESS run publishes to the `alpha`/closed-testing track.
