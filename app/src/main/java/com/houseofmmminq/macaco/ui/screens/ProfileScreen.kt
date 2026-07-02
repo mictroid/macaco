@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.Flight
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.WorkspacePremium
@@ -66,12 +67,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.painterResource
@@ -101,9 +104,11 @@ fun ProfileScreen(
     var deleteError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    // 2-pane on any wide screen: phones in landscape (short height) AND tablets (≥600dp wide,
-    // the Material 3 compact→medium breakpoint) in any orientation.
-    val isLandscape = configuration.screenHeightDp < 480 || configuration.screenWidthDp >= 600
+    // 2-pane only when actually wide-and-short: phones in landscape (short height) OR tablets
+    // (≥600dp wide) but ONLY in landscape (width > height). Tablet PORTRAIT falls through to the
+    // single-column layout, which flows better tall-and-narrow. (v3)
+    val isLandscape = configuration.screenHeightDp < 480 ||
+        (configuration.screenWidthDp >= 600 && configuration.screenWidthDp > configuration.screenHeightDp)
 
     var showPhotoSourceSheet by remember { mutableStateOf(false) }
     var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
@@ -270,13 +275,78 @@ fun ProfileScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
       if (isLandscape) {
-        // ── LANDSCAPE: two-pane Row — identity info left, action buttons right ──────────
-        Row(
+        // Hoisted so both the left (stats) and right (Trips stat) panes can read it. (v3)
+        val tripCount = entries
+            .mapNotNull { it.tripName?.trim()?.ifBlank { null } }
+            .distinct()
+            .size
+        // ── LANDSCAPE: full-width header + two-pane Row ─────────────────────────────────
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // LEFT PANE — compact banner + identity info (scrollable)
+            // Full-width compact header — moved OUT of the left pane so it spans the screen. (v3)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(macacoBrandBackground())
+                    .statusBarsPadding()
+            ) {
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 4.dp)
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back),
+                        tint = Color.White
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp).offset(y = (-2).dp),
+                        colorFilter = ColorFilter.tint(SplashGoldBright)
+                    )
+                    Text(
+                        text = "macaco",
+                        color = SplashGoldBright,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Light,
+                        letterSpacing = 4.sp
+                    )
+                }
+                // Avatar thumbnail pinned to end (tappable shortcut to change photo)
+                val headerPhotoModel: Any? = profilePhotoUri ?: currentUser?.photoUrl
+                if (headerPhotoModel != null) {
+                    AsyncImage(
+                        model = headerPhotoModel,
+                        contentDescription = stringResource(R.string.profile_photo_cd),
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 12.dp)
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .clickable { showPhotoSourceSheet = true },
+                        contentScale = ContentScale.Crop,
+                        error = rememberVectorPainter(Icons.Default.Person)
+                    )
+                }
+            }
+
+            // Two-pane Row below the full-width header
+            Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
+            // LEFT PANE — identity info (scrollable, no header)
             Column(
                 modifier = Modifier
                     .weight(0.5f)
@@ -284,37 +354,6 @@ fun ProfileScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Compact banner — back arrow left, "macaco" centred, no tagline
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(macacoBrandBackground())
-                        .statusBarsPadding()
-                ) {
-                    IconButton(
-                        onClick = onBack,
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(4.dp)
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.common_back),
-                            tint = Color.White
-                        )
-                    }
-                    Text(
-                        text = "macaco",
-                        color = SplashGoldBright,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 5.sp,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(vertical = 12.dp)
-                    )
-                }
-
                 val user = currentUser
                 if (user != null) {
                     Spacer(Modifier.height(8.dp))
@@ -410,14 +449,11 @@ fun ProfileScreen(
                     }
                     Spacer(Modifier.height(12.dp))
 
-                    val tripCount = entries
-                        .mapNotNull { it.tripName?.trim()?.ifBlank { null } }
-                        .distinct()
-                        .size
+                    // tripCount hoisted above the isLandscape branch (v3) — no local decl here.
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 8.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surface
@@ -500,12 +536,12 @@ fun ProfileScreen(
                 }
             } // end LEFT PANE
 
-            // RIGHT PANE — action buttons centred vertically, macaco logo pinned to bottom
+            // RIGHT PANE — Trips stat + side-by-side actions (v3)
             Box(
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxHeight()
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 20.dp)
             ) {
                 if (currentUser != null) {
                     Column(
@@ -513,50 +549,69 @@ fun ProfileScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        OutlinedButton(
-                            onClick = onSubscription,
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Icon(
-                                Icons.Outlined.WorkspacePremium,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.common_subscription))
+                        // Trips stat (only when the user has named trips)
+                        if (tripCount > 0) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(
+                                    Icons.Outlined.Flight,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Text(
+                                    text = "$tripCount ${stringResource(R.string.profile_trips)}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
                         }
-                        OutlinedButton(
-                            onClick = { showSignOutDialog = true },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = MaterialTheme.colorScheme.error
-                            )
+                        // Subscribe + Sign Out side-by-side
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.Logout,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.common_sign_out))
+                            OutlinedButton(
+                                onClick = onSubscription,
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text(
+                                    stringResource(R.string.common_subscription),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            OutlinedButton(
+                                onClick = { showSignOutDialog = true },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.error
+                                )
+                            ) {
+                                Text(
+                                    stringResource(R.string.common_sign_out),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
+                        // Delete Account
                         TextButton(
                             onClick = { showDeleteAccountDialog = true },
-                            modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.textButtonColors(
                                 contentColor = MaterialTheme.colorScheme.error
                             )
                         ) {
-                            Icon(
-                                Icons.Outlined.DeleteForever,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                            Text(
+                                stringResource(R.string.profile_delete_account),
+                                style = MaterialTheme.typography.bodySmall
                             )
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.profile_delete_account))
                         }
                     }
                 } else {
@@ -581,7 +636,8 @@ fun ProfileScreen(
                         .padding(bottom = 8.dp)
                 )
             } // end RIGHT PANE
-        } // end landscape Row
+            } // end two-pane Row
+        } // end landscape Column
       } else {
         Column(
             modifier = Modifier

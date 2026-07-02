@@ -14,15 +14,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.Icons
@@ -101,7 +107,7 @@ private fun arrowVerticalFraction(
     return fraction.toFloat().coerceIn(minFraction, maxFraction)
 }
 
-private fun createTealMarkerBitmap(context: Context): Bitmap {
+private fun createThemedMarkerBitmap(context: Context, colorInt: Int): Bitmap {
     val dp = context.resources.displayMetrics.density
     val size = (36 * dp).toInt()
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -110,7 +116,7 @@ private fun createTealMarkerBitmap(context: Context): Bitmap {
     val radius = size / 2f
 
     paint.style = Paint.Style.FILL
-    paint.color = android.graphics.Color.parseColor("#1B96B3")
+    paint.color = colorInt
     canvas.drawCircle(radius, radius, radius - 2 * dp, paint)
 
     paint.style = Paint.Style.STROKE
@@ -136,7 +142,9 @@ fun MapScreen(
 
     // BitmapDescriptorFactory requires the Maps SDK to be initialized, which happens when
     // GoogleMap first renders. Defer creation to onMapLoaded so we never call it too early.
-    var tealMarker by remember { mutableStateOf<BitmapDescriptor?>(null) }
+    var themedMarker by remember { mutableStateOf<BitmapDescriptor?>(null) }
+    // Pin colour follows the user's selected theme (was hardcoded teal #1B96B3).
+    val primaryColorArgb = MaterialTheme.colorScheme.primary.toArgb()
     // Apply the user-selected map style; Standard (styleRes == null) uses Google's default map.
     val mapProperties = remember(mapTheme) {
         MapProperties(
@@ -198,6 +206,16 @@ fun MapScreen(
     // zoom math needs the REAL map dimensions — the map is shorter than the screen (header +
     // bottom nav), so displayMetrics would over-tighten the fit and clip edge pins.
     var mapSizePx by remember { mutableStateOf(IntSize.Zero) }
+
+    // Refresh the pin bitmap if the user switches theme while the map is open (or once the map
+    // finishes loading). The initial creation still happens in onMapLoaded below.
+    LaunchedEffect(primaryColorArgb, mapLoaded) {
+        if (mapLoaded) {
+            themedMarker = BitmapDescriptorFactory.fromBitmap(
+                createThemedMarkerBitmap(context, primaryColorArgb)
+            )
+        }
+    }
 
     LaunchedEffect(mapLoaded, geocodingComplete, mapSizePx) {
         if (mapLoaded && !cameraPositioned && geocodingComplete && geocodedLocations.isNotEmpty() &&
@@ -497,8 +515,12 @@ fun MapScreen(
           }
         }
 
+        // weight(1f) (not fillMaxSize) so mapSizePx measures the REMAINING height after the header,
+        // not the full Column height — otherwise the camera centre is placed too low and northern
+        // pins render behind the tall (tablet/portrait) header. (v7)
         Box(modifier = Modifier
-            .fillMaxSize()
+            .weight(1f)
+            .fillMaxWidth()
             .onSizeChanged { mapSizePx = it }) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
@@ -506,14 +528,16 @@ fun MapScreen(
                 properties = mapProperties,
                 onMapLoaded = {
                     mapLoaded = true
-                    tealMarker = BitmapDescriptorFactory.fromBitmap(createTealMarkerBitmap(context))
+                    themedMarker = BitmapDescriptorFactory.fromBitmap(
+                        createThemedMarkerBitmap(context, primaryColorArgb)
+                    )
                 },
                 uiSettings = MapUiSettings(
                     zoomControlsEnabled = false,
                     myLocationButtonEnabled = false
                 )
             ) {
-                val marker = tealMarker
+                val marker = themedMarker
                 if (marker != null) {
                     geocodedLocations.forEach { (location, coords) ->
                         val topEntry = topEntryByLocation[location] ?: return@forEach
@@ -636,6 +660,9 @@ fun MapScreen(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .offset { IntOffset(0, yOffsetPx) }
+                        // In landscape the nav bar sits on the right edge and would swallow taps on
+                        // this chevron; inset only the End side so the other overlays stay put.
+                        .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.End))
                         .padding(end = 8.dp)
                         .size(36.dp)
                         .clip(CircleShape)

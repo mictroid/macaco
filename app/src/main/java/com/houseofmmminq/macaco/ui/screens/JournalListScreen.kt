@@ -391,7 +391,12 @@ fun JournalListScreen(
                     }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp,
+                        vertical = if (drawerIsLandscape) 4.dp else 8.dp
+                    )
+                )
 
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.settings_dark_mode)) },
@@ -445,9 +450,20 @@ fun JournalListScreen(
                     }
                 )
 
-                Spacer(Modifier.weight(1f))
+                // Portrait: weight spacer pins Sign Out to the drawer bottom. Landscape: a fixed
+                // spacer instead, so the weight doesn't push Sign Out below the short screen edge.
+                if (drawerIsLandscape) {
+                    Spacer(Modifier.height(8.dp))
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                HorizontalDivider(
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp,
+                        vertical = if (drawerIsLandscape) 4.dp else 8.dp
+                    )
+                )
 
                 if (currentUser != null) {
                     NavigationDrawerItem(
