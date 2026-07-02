@@ -2,6 +2,26 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-02 — vc48-QA batch (6 briefs) implemented, one push (vc49)
+
+Six Cowork briefs from vc48 on-device QA, verified vs live source first, built together
+(`assembleDebug` SUCCESSFUL), one push. Commit `7b83b4c`; all → `docs/DONE/`. Dated detail +
+deviations in `worklog-2026-07-02.md`.
+
+- **rotation-crash** (`AndroidManifest.xml`) — add `orientation|screenSize|screenLayout` to
+  `configChanges`; Activity no longer recreated on rotation. Crash fix.
+- **map-camera-v7** (`MapScreen.kt`) — map Box `fillMaxSize()`→`weight(1f).fillMaxWidth()`; pins stop
+  hiding behind the header (measures visible height).
+- **map-nav-bar** (`MapScreen.kt`) — east chevron nav-bar End inset so it's tappable in landscape.
+- **map-pin-theme** (`MapScreen.kt`) — themed pin (`colorScheme.primary`) + refresh on theme change;
+  `tealMarker`→`themedMarker`. Added `toArgb`.
+- **drawer-landscape** (`JournalListScreen.kt`) — landscape drawer: fixed spacer + tighter dividers so
+  Sign Out isn't clipped.
+- **profile-landscape-v3** (`ProfileScreen.kt`, supersedes v2) — full-width header, right pane Trips +
+  side-by-side buttons, stats padding 16→8, no 2-pane on tablet portrait. *Deviations:* added
+  ColorFilter/Flight/TextOverflow imports; used live keys `common_subscription`/`common_sign_out`
+  (brief cited non-existent `profile_subscribe`/`profile_sign_out`).
+
 ## 2026-07-02 — vc47-QA batch (7 briefs) implemented, one push, NOT yet shipped
 
 7 briefs from vc47 on-device QA, all verified vs live source first and built together
