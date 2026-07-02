@@ -1,6 +1,6 @@
 What's new:
-• Adventure Reels are now sharper, with smoother transitions and a location & date caption on each photo
-• Better landscape and tablet layouts for the profile and entry screens
-• Adventures map: tap the ◀ ▶ arrows to reach pins on far-apart trips
-• Expanded Help & About with new answers on Reels, trips, Drive backup, and more
-• Bug fixes and polish
+• Adventures map: the ◀ ▶ arrows now jump to the nearest off-screen trip and follow its position, so far-apart pins are easier to reach
+• Smoother Adventure Reels — the pan-and-zoom no longer jumps between photos
+• Landscape polish across the journal, settings, and profile screens, plus roomier tablet layouts
+• Fixed a brief black flash when switching language in dark mode
+• The date picker now matches the app's colours, plus more bug fixes and polish
