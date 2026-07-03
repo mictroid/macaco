@@ -46,6 +46,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -180,7 +181,11 @@ fun NewEditEntryScreen(
         mutableStateOf(emptySet<String>())
     }
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
+    val isDatePickerLandscape = LocalConfiguration.current.screenHeightDp < 480
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = dateMillis,
+        initialDisplayMode = if (isDatePickerLandscape) DisplayMode.Input else DisplayMode.Picker,
+    )
 
     var showPhotoSourceDialog by remember { mutableStateOf(false) }
 

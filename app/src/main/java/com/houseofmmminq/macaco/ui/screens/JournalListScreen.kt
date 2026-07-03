@@ -13,17 +13,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -379,7 +383,7 @@ fun JournalListScreen(
                     }
                 }
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(if (drawerIsLandscape) 4.dp else 8.dp))
 
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.common_settings)) },
@@ -418,32 +422,27 @@ fun JournalListScreen(
                     onClick = { viewModel.toggleDarkMode() }
                 )
 
-                // Share App + Rate Us are secondary discovery actions; hide them in landscape so
-                // the essential items (Settings, Dark Mode, Help, Sign Out) always fit the ~443dp
-                // landscape height. Both are still reachable from Help & About.
-                if (!drawerIsLandscape) {
-                    NavigationDrawerItem(
-                        label = { Text(stringResource(R.string.drawer_share_app)) },
-                        selected = false,
-                        colors = drawerItemColors,
-                        icon = { Icon(Icons.Filled.Share, contentDescription = null) },
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            AppActions.shareApp(context, entries.size)
-                        }
-                    )
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.drawer_share_app)) },
+                    selected = false,
+                    colors = drawerItemColors,
+                    icon = { Icon(Icons.Filled.Share, contentDescription = null) },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        AppActions.shareApp(context, entries.size)
+                    }
+                )
 
-                    NavigationDrawerItem(
-                        label = { Text(stringResource(R.string.drawer_rate_us)) },
-                        selected = false,
-                        colors = drawerItemColors,
-                        icon = { Icon(Icons.Filled.StarRate, contentDescription = null) },
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            AppActions.requestReview(context)
-                        }
-                    )
-                }
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.drawer_rate_us)) },
+                    selected = false,
+                    colors = drawerItemColors,
+                    icon = { Icon(Icons.Filled.StarRate, contentDescription = null) },
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        AppActions.requestReview(context)
+                    }
+                )
 
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.drawer_help)) },
@@ -459,7 +458,7 @@ fun JournalListScreen(
                 // Portrait: weight spacer pins Sign Out to the drawer bottom. Landscape: a fixed
                 // spacer instead, so the weight doesn't push Sign Out below the short screen edge.
                 if (drawerIsLandscape) {
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(4.dp))
                 } else {
                     Spacer(Modifier.weight(1f))
                 }
@@ -505,7 +504,7 @@ fun JournalListScreen(
                     )
                 }
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(if (drawerIsLandscape) 4.dp else 8.dp))
             }
         }
     ) {
@@ -737,6 +736,7 @@ fun JournalListScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
+                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.End))
                     // Faint teal wash from the top so the page isn't a flat slab behind the cards.
                     .background(
                         Brush.verticalGradient(
@@ -747,14 +747,6 @@ fun JournalListScreen(
                         )
                     )
             ) {
-                if (onThisDayEntries.isNotEmpty() && !onThisDayDismissed) {
-                    OnThisDayBanner(
-                        entries = onThisDayEntries,
-                        cachedDrivePhotos = cachedDrivePhotos,
-                        onEntryClick = onEntryClick,
-                        onDismiss = { onThisDayDismissed = true }
-                    )
-                }
                 if (allTags.isNotEmpty()) {
                     TagFilterRow(
                         tags = allTags,
@@ -779,6 +771,18 @@ fun JournalListScreen(
                         ),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
+                        // Banner is now the first LazyColumn item so the whole page
+                        // is one scrollable unit — swipe up anywhere to reach entries.
+                        if (onThisDayEntries.isNotEmpty() && !onThisDayDismissed) {
+                            item(key = "on_this_day_banner") {
+                                OnThisDayBanner(
+                                    entries = onThisDayEntries,
+                                    cachedDrivePhotos = cachedDrivePhotos,
+                                    onEntryClick = onEntryClick,
+                                    onDismiss = { onThisDayDismissed = true }
+                                )
+                            }
+                        }
                         if (hasTrips) {
                             tripSections.forEach { (trip, sectionEntries) ->
                                 item(key = "trip-header-$trip") {
@@ -1191,7 +1195,7 @@ private fun OnThisDayBanner(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -1344,7 +1348,7 @@ private fun TripHeader(
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 2.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

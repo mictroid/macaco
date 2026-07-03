@@ -157,7 +157,7 @@ fun SettingsScreen(
             onDismissRequest = { showLanguagePicker = false },
             title = { Text(stringResource(R.string.settings_language)) },
             text = {
-                Column {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     SUPPORTED_LANGUAGES.forEach { lang ->
                         Row(
                             modifier = Modifier

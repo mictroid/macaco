@@ -13,15 +13,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -67,7 +71,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -341,15 +344,16 @@ fun ProfileScreen(
                     Image(
                         painter = painterResource(R.drawable.ic_launcher_foreground),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(SplashGoldBright)
+                        modifier = Modifier
+                            .size(20.dp)
+                            .offset(y = (-2).dp)
                     )
                     Text(
                         text = "macaco",
                         color = SplashGoldBright,
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Light,
-                        letterSpacing = 4.sp
+                        letterSpacing = 3.sp
                     )
                 }
                 // Avatar thumbnail pinned to end (tappable shortcut to change photo)
@@ -515,6 +519,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxHeight()
+                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.End))
                     .padding(horizontal = 20.dp)
             ) {
                 if (currentUser != null) {
@@ -681,15 +686,22 @@ fun ProfileScreen(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
-                        .padding(top = 18.dp, bottom = 60.dp),
+                        .padding(top = 8.dp, bottom = 60.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(44.dp)
+                            .offset(y = 4.dp)
+                    )
                     Text(
                         text = "macaco",
                         color = SplashGoldBright,
-                        fontSize = 24.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Light,
-                        letterSpacing = 6.sp
+                        letterSpacing = 5.sp
                     )
                     Text(
                         text = "Roam Freely. Forget Nothing.",

@@ -28,12 +28,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -78,6 +78,7 @@ import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -194,10 +195,8 @@ fun MapScreen(
     var globeSpanning by remember { mutableStateOf(false) }
     // v13: longitude of the off-screen pin furthest west/east (null = none off that edge), plus the
     // lat center + applied zoom after move() — used by the edge chevrons to pan-to the off-screen pin.
-    var offScreenWestLng by remember { mutableStateOf<Double?>(null) }
-    var offScreenEastLng by remember { mutableStateOf<Double?>(null) }
-    var offScreenWestLat by remember { mutableStateOf<Double?>(null) }   // v14: pin latitude, for arrow y-offset + nav target
-    var offScreenEastLat by remember { mutableStateOf<Double?>(null) }
+    var offScreenWestPins by remember { mutableStateOf<List<LatLng>>(emptyList()) }
+    var offScreenEastPins by remember { mutableStateOf<List<LatLng>>(emptyList()) }
     var mapLatCenter by remember { mutableStateOf(0.0) }
     var mapAppliedZoom by remember { mutableStateOf(0f) }
     // Safety net: if geocoding yields nothing (offline, or every lookup fails) the camera never
@@ -386,15 +385,9 @@ fun MapScreen(
             .map { LatLng(it.first, it.second) }
             .filter { !(it.latitude == 0.0 && it.longitude == 0.0) }
 
-        // Nearest west: highest longitude that is still west of the viewport edge.
-        val nearestWest = latlngs.filter { it.longitude < westEdge }.maxByOrNull { it.longitude }
-        // Nearest east: lowest longitude that is still east of the viewport edge.
-        val nearestEast = latlngs.filter { it.longitude > eastEdge }.minByOrNull { it.longitude }
-
-        offScreenWestLng = nearestWest?.longitude
-        offScreenWestLat = nearestWest?.latitude
-        offScreenEastLng = nearestEast?.longitude
-        offScreenEastLat = nearestEast?.latitude
+        // All pins off each edge — each gets its own directional arrow.
+        offScreenWestPins = latlngs.filter { it.longitude < westEdge }
+        offScreenEastPins = latlngs.filter { it.longitude > eastEdge }
 
         // Keep mapLatCenter + mapAppliedZoom in sync for chevron navigation.
         mapLatCenter = pos.target.latitude
@@ -600,26 +593,28 @@ fun MapScreen(
                 }
             }
 
-            // ── Off-screen pin chevrons ──────────────────────────────────────────────────
-            // v14: shown whenever there is an off-screen pin on that edge (the reactive tracker
-            // keeps the set current) — no longer gated on globeSpanning, so they also appear on
-            // tablet landscape where the SDK didn't need to clamp the zoom. Each button animates
-            // the camera to centre on the NEAREST off-screen pin in that direction, at that pin's
-            // actual latitude, and floats vertically toward where that pin sits off-screen.
-            val westLng = offScreenWestLng
-            val westLat = offScreenWestLat
-            val eastLng = offScreenEastLng
-            val eastLat = offScreenEastLat
+            // ── Off-screen pin arrows (v15) ──────────────────────────────────────────────
+            // One arrow per off-screen pin. Each arrow is an ArrowUpward icon rotated to the
+            // visual direction from the map centre to that arrow's edge position — so Iceland
+            // tilts NW, Europe points W, Argentina tilts SW, etc.
+            //
+            // Bearing formula: from screen-centre (0.5, 0.5) to the arrow's edge position
+            // (left edge x=0, right edge x=1, vertical = arrowVerticalFraction).
+            // atan2(eastComponent, northComponent) → degrees clockwise from north for rotationZ.
 
-            if (westLng != null && westLat != null) {
+            offScreenWestPins.forEach { pin ->
                 val fraction = arrowVerticalFraction(
-                    pinLat = westLat,
+                    pinLat = pin.latitude,
                     camLat = cameraPositionState.position.target.latitude,
                     camZoom = cameraPositionState.position.zoom,
                     mapHeightPx = mapSizePx.height,
                     density = density
                 )
                 val yOffsetPx = ((fraction - 0.5f) * mapSizePx.height).roundToInt()
+                // Arrow at left edge: east component = -0.5, north component = 0.5 - fraction
+                val bearing = Math.toDegrees(
+                    atan2(-0.5, (0.5f - fraction).toDouble())
+                ).toFloat()
                 Box(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
@@ -635,7 +630,7 @@ fun MapScreen(
                             mapScope.launch {
                                 cameraPositionState.animate(
                                     CameraUpdateFactory.newLatLngZoom(
-                                        LatLng(westLat, westLng), mapAppliedZoom
+                                        LatLng(pin.latitude, pin.longitude), mapAppliedZoom
                                     ),
                                     durationMs = 600
                                 )
@@ -644,23 +639,29 @@ fun MapScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ChevronLeft,
+                        imageVector = Icons.Default.ArrowUpward,
                         contentDescription = stringResource(R.string.map_globe_spanning_hint),
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier
+                            .size(22.dp)
+                            .graphicsLayer { rotationZ = bearing }
                     )
                 }
             }
 
-            if (eastLng != null && eastLat != null) {
+            offScreenEastPins.forEach { pin ->
                 val fraction = arrowVerticalFraction(
-                    pinLat = eastLat,
+                    pinLat = pin.latitude,
                     camLat = cameraPositionState.position.target.latitude,
                     camZoom = cameraPositionState.position.zoom,
                     mapHeightPx = mapSizePx.height,
                     density = density
                 )
                 val yOffsetPx = ((fraction - 0.5f) * mapSizePx.height).roundToInt()
+                // Arrow at right edge: east component = +0.5, north component = 0.5 - fraction
+                val bearing = Math.toDegrees(
+                    atan2(0.5, (0.5f - fraction).toDouble())
+                ).toFloat()
                 Box(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
@@ -679,7 +680,7 @@ fun MapScreen(
                             mapScope.launch {
                                 cameraPositionState.animate(
                                     CameraUpdateFactory.newLatLngZoom(
-                                        LatLng(eastLat, eastLng), mapAppliedZoom
+                                        LatLng(pin.latitude, pin.longitude), mapAppliedZoom
                                     ),
                                     durationMs = 600
                                 )
@@ -688,10 +689,12 @@ fun MapScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ChevronRight,
+                        imageVector = Icons.Default.ArrowUpward,
                         contentDescription = stringResource(R.string.map_globe_spanning_hint),
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier
+                            .size(22.dp)
+                            .graphicsLayer { rotationZ = bearing }
                     )
                 }
             }
