@@ -1,5 +1,9 @@
 What's new:
-• Landscape polish across the menu, profile, and settings screens
-• Menu no longer cuts off Sign Out in landscape
-• Cleaner, tighter Settings layout
-• More refinements
+• Date picker now fits landscape (switches to quick date entry)
+• Full menu, including Share & Rate, stays visible in landscape
+• Journal list scrolls smoothly and clears the navigation bar in landscape
+• Language list scrolls so every language is reachable
+• Map shows one direction arrow per off-screen place
+• Themed tint on "On This Day" and trip headers; refreshed profile header
+</content>
+</invoke>
