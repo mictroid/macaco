@@ -418,27 +418,32 @@ fun JournalListScreen(
                     onClick = { viewModel.toggleDarkMode() }
                 )
 
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.drawer_share_app)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.Share, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        AppActions.shareApp(context, entries.size)
-                    }
-                )
+                // Share App + Rate Us are secondary discovery actions; hide them in landscape so
+                // the essential items (Settings, Dark Mode, Help, Sign Out) always fit the ~443dp
+                // landscape height. Both are still reachable from Help & About.
+                if (!drawerIsLandscape) {
+                    NavigationDrawerItem(
+                        label = { Text(stringResource(R.string.drawer_share_app)) },
+                        selected = false,
+                        colors = drawerItemColors,
+                        icon = { Icon(Icons.Filled.Share, contentDescription = null) },
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            AppActions.shareApp(context, entries.size)
+                        }
+                    )
 
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.drawer_rate_us)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.StarRate, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        AppActions.requestReview(context)
-                    }
-                )
+                    NavigationDrawerItem(
+                        label = { Text(stringResource(R.string.drawer_rate_us)) },
+                        selected = false,
+                        colors = drawerItemColors,
+                        icon = { Icon(Icons.Filled.StarRate, contentDescription = null) },
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            AppActions.requestReview(context)
+                        }
+                    )
+                }
 
                 NavigationDrawerItem(
                     label = { Text(stringResource(R.string.drawer_help)) },
@@ -544,34 +549,36 @@ fun JournalListScreen(
                             modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
                             ) {
                                 Image(
                                     painter = painterResource(R.drawable.ic_launcher_foreground),
                                     contentDescription = null,
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .offset(y = (-2).dp)
+                                    modifier = Modifier.size(22.dp)
                                 )
-                                Spacer(Modifier.width(6.dp))
-                                Text(
-                                    text = "macaco",
-                                    color = SplashGoldBright,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Light,
-                                    letterSpacing = 3.sp
-                                )
-                                if (entries.isNotEmpty()) {
-                                    val count = visibleEntries.size
-                                    val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
                                     Text(
-                                        text = " · " + memoriesText +
-                                            if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = SplashGold.copy(alpha = 0.7f)
+                                        text = "macaco",
+                                        color = SplashGoldBright,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Light,
+                                        letterSpacing = 3.sp
                                     )
+                                    if (entries.isNotEmpty()) {
+                                        val count = visibleEntries.size
+                                        val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
+                                        Text(
+                                            text = " · " + memoriesText +
+                                                if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = SplashGold.copy(alpha = 0.7f)
+                                        )
+                                    }
                                 }
                             }
                         }

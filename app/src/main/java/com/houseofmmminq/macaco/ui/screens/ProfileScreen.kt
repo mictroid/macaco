@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.DeleteForever
-import androidx.compose.material.icons.outlined.Flight
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.WorkspacePremium
@@ -333,23 +332,22 @@ fun ProfileScreen(
                         tint = Color.White
                     )
                 }
-                Row(
+                Column(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .padding(vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        .padding(vertical = 4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(R.drawable.ic_launcher_foreground),
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp).offset(y = (-2).dp),
+                        modifier = Modifier.size(24.dp),
                         colorFilter = ColorFilter.tint(SplashGoldBright)
                     )
                     Text(
                         text = "macaco",
                         color = SplashGoldBright,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Light,
                         letterSpacing = 4.sp
                     )
@@ -478,59 +476,7 @@ fun ProfileScreen(
                     Spacer(Modifier.height(12.dp))
 
                     // tripCount hoisted above the isLandscape branch (v3) — no local decl here.
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            StatItem(
-                                value = "${entries.size}",
-                                label = stringResource(R.string.profile_memories)
-                            )
-                            if (tripCount > 0) {
-                                Box(
-                                    modifier = Modifier
-                                        .width(1.dp).height(36.dp)
-                                        .background(MaterialTheme.colorScheme.outlineVariant)
-                                )
-                                StatItem(
-                                    value = tripCount.toString(),
-                                    label = stringResource(R.string.profile_trips)
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .width(1.dp).height(36.dp)
-                                    .background(MaterialTheme.colorScheme.outlineVariant)
-                            )
-                            StatItem(
-                                value = entries.mapNotNull { it.location.ifBlank { null } }
-                                    .distinct().size.toString(),
-                                label = stringResource(R.string.profile_locations)
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .width(1.dp).height(36.dp)
-                                    .background(MaterialTheme.colorScheme.outlineVariant)
-                            )
-                            StatItem(
-                                value = entries.sumOf { it.photoUris.size }.toString(),
-                                label = stringResource(R.string.profile_photos)
-                            )
-                        }
-                    }
+                    // Stats card moved to the right pane in v4 (see below).
 
                     val memberSince = user.createdAt?.let { millis ->
                         java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
@@ -577,23 +523,55 @@ fun ProfileScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Trips stat (only when the user has named trips)
-                        if (tripCount > 0) {
+                        // Stats card — moved from the left pane (v4)
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    Icons.Outlined.Flight,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp)
+                                StatItem(
+                                    value = "${entries.size}",
+                                    label = stringResource(R.string.profile_memories)
                                 )
-                                Text(
-                                    text = "$tripCount ${stringResource(R.string.profile_trips)}",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                if (tripCount > 0) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(1.dp).height(36.dp)
+                                            .background(MaterialTheme.colorScheme.outlineVariant)
+                                    )
+                                    StatItem(
+                                        value = tripCount.toString(),
+                                        label = stringResource(R.string.profile_trips)
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .width(1.dp).height(36.dp)
+                                        .background(MaterialTheme.colorScheme.outlineVariant)
+                                )
+                                StatItem(
+                                    value = entries.mapNotNull { it.location.ifBlank { null } }
+                                        .distinct().size.toString(),
+                                    label = stringResource(R.string.profile_locations)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .width(1.dp).height(36.dp)
+                                        .background(MaterialTheme.colorScheme.outlineVariant)
+                                )
+                                StatItem(
+                                    value = entries.sumOf { it.photoUris.size }.toString(),
+                                    label = stringResource(R.string.profile_photos)
                                 )
                             }
                         }

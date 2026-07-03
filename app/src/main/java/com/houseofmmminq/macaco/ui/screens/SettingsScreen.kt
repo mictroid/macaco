@@ -346,16 +346,18 @@ fun SettingsScreen(
                     .statusBarsPadding()
             ) {
                 if (isLandscape) {
-                    // ── Compact landscape: slim single row (same pattern as MapScreen) ──
-                    Row(
+                    // ── Compact landscape: back button start, brand column (icon above text) centered ──
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 4.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(vertical = 4.dp)
                     ) {
                         IconButton(
                             onClick = onBack,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(start = 4.dp)
+                                .size(40.dp)
                         ) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
@@ -363,26 +365,30 @@ fun SettingsScreen(
                                 tint = Color.White
                             )
                         }
-                        Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(20.dp)
-                                .offset(y = (-2).dp)
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text = "macaco",
-                            color = SplashGoldBright,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 3.sp
-                        )
-                        Text(
-                            text = " · " + stringResource(R.string.common_settings),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.White.copy(alpha = 0.85f)
-                        )
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher_foreground),
+                                contentDescription = null,
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "macaco",
+                                    color = SplashGoldBright,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Light,
+                                    letterSpacing = 3.sp
+                                )
+                                Text(
+                                    text = " · " + stringResource(R.string.common_settings),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White.copy(alpha = 0.85f)
+                                )
+                            }
+                        }
                     }
                 } else {
                     IconButton(
@@ -431,8 +437,8 @@ fun SettingsScreen(
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                     .navigationBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
             // ── Appearance ────────────────────────────────────────────────────
             SettingsSectionHeader(stringResource(R.string.settings_appearance))
@@ -628,34 +634,17 @@ fun SettingsScreen(
                 }
             }
 
-            if (isLandscape) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        SettingsSectionHeader(stringResource(R.string.settings_theme_color))
-                        themeColorCard()
-                    }
-                    Column(modifier = Modifier.weight(1f)) {
-                        SettingsSectionHeader(stringResource(R.string.settings_background_image))
-                        backgroundImageCard()
-                    }
-                }
-            } else {
-                // ── Theme Color ───────────────────────────────────────────────
-                Spacer(Modifier.height(4.dp))
-                SettingsSectionHeader(stringResource(R.string.settings_theme_color))
-                themeColorCard()
+            // ── Theme Color ───────────────────────────────────────────────
+            // Always stacked (side-by-side landscape layout reverted); the outer Column's
+            // spacedBy(4.dp) provides the inter-section gap.
+            SettingsSectionHeader(stringResource(R.string.settings_theme_color))
+            themeColorCard()
 
-                // ── Background Image ──────────────────────────────────────────
-                Spacer(Modifier.height(4.dp))
-                SettingsSectionHeader(stringResource(R.string.settings_background_image))
-                backgroundImageCard()
-            }
+            // ── Background Image ──────────────────────────────────────────
+            SettingsSectionHeader(stringResource(R.string.settings_background_image))
+            backgroundImageCard()
 
             // ── Map ───────────────────────────────────────────────────────────
-            Spacer(Modifier.height(4.dp))
             SettingsSectionHeader(stringResource(R.string.settings_map))
 
             MapThemeCard(
@@ -664,7 +653,6 @@ fun SettingsScreen(
             )
 
             // ── Language ──────────────────────────────────────────────────────
-            Spacer(Modifier.height(4.dp))
             SettingsSectionHeader(stringResource(R.string.settings_language))
 
             val displayedLanguage = SUPPORTED_LANGUAGES.find { it.code == selectedLanguageCode }
