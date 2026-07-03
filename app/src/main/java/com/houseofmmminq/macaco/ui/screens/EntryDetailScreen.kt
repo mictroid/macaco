@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,6 +56,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.platform.LocalContext
@@ -77,6 +79,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -90,10 +93,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -106,6 +116,7 @@ import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.util.AppActions
 import com.houseofmmminq.macaco.util.ImageStorage
+import com.houseofmmminq.macaco.util.VideoTranscoder
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import kotlin.math.absoluteValue
 import kotlinx.coroutines.delay
@@ -568,6 +579,17 @@ fun EntryDetailScreen(
                                 }
                             }
                         }
+                        if (entry.displayVideoUris(cachedDrivePhotos).isNotEmpty()) {
+                            item {
+                                VideoStrip(
+                                    videoUris = entry.displayVideoUris(cachedDrivePhotos),
+                                    modifier = Modifier.padding(
+                                        horizontal = if (isTablet) 32.dp else 16.dp,
+                                        vertical = 4.dp
+                                    )
+                                )
+                            }
+                        }
                         item { Spacer(Modifier.height(16.dp)) }
                     }
                 }
@@ -703,6 +725,16 @@ fun EntryDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 6.dp, bottom = 2.dp)
+                    )
+                }
+            }
+
+            // Videos strip — inline playable clips (tap → full-screen ExoPlayer).
+            if (entry.displayVideoUris(cachedDrivePhotos).isNotEmpty()) {
+                item {
+                    VideoStrip(
+                        videoUris = entry.displayVideoUris(cachedDrivePhotos),
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
                     )
                 }
             }
@@ -950,6 +982,16 @@ private fun TravelEntry.displayPhotoUri(index: Int, cached: Map<String, String>)
         ?: photoUris.getOrNull(index)
 
 /**
+ * The entry's videos resolved for display: prefers the cached Drive copy (downloaded on this device)
+ * over the local URI, which may be unreadable on a device that didn't record the clip. Order follows
+ * [TravelEntry.videoUris] (mediaOrder is not applied here — videos show as their own strip).
+ */
+private fun TravelEntry.displayVideoUris(cached: Map<String, String>): List<String> =
+    videoUris.mapIndexedNotNull { i, uri ->
+        videoFileIds.getOrNull(i)?.takeIf { it.isNotEmpty() }?.let { cached[it] } ?: uri
+    }
+
+/**
  * A copy of this entry with the photo at [index] moved to the front (the cover/hero). Moves the
  * parallel [TravelEntry.driveFileIds] entry too so the two lists stay aligned.
  */
@@ -1178,4 +1220,105 @@ private fun shareEntry(
         }
     }
     context.startActivity(Intent.createChooser(intent, context.getString(R.string.entry_share_chooser)))
+}
+
+/** A horizontal row of video tiles; each opens a full-screen player when tapped. */
+@Composable
+private fun VideoStrip(videoUris: List<String>, modifier: Modifier = Modifier) {
+    LazyRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(videoUris) { uri ->
+            VideoEntryTile(
+                uri = uri,
+                modifier = Modifier
+                    .size(width = 160.dp, height = 110.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+        }
+    }
+}
+
+/**
+ * Shows a video as a thumbnail tile. Tapping opens a full-screen dialog with ExoPlayer; the player is
+ * released when the dialog closes.
+ */
+@Composable
+fun VideoEntryTile(uri: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    var showPlayer by remember { mutableStateOf(false) }
+
+    val thumbnail = remember(uri) { VideoTranscoder.getFirstFrame(context, Uri.parse(uri)) }
+
+    Box(modifier = modifier.clickable { showPlayer = true }, contentAlignment = Alignment.Center) {
+        if (thumbnail != null) {
+            androidx.compose.foundation.Image(
+                bitmap = thumbnail.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+        }
+        Icon(
+            Icons.Filled.PlayCircle,
+            contentDescription = stringResource(R.string.video_play_cd),
+            tint = Color.White.copy(alpha = 0.85f),
+            modifier = Modifier.size(40.dp)
+        )
+    }
+
+    if (showPlayer) {
+        Dialog(
+            onDismissRequest = { showPlayer = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black)
+                    .aspectRatio(16f / 9f),
+                contentAlignment = Alignment.Center
+            ) {
+                val player = remember {
+                    ExoPlayer.Builder(context).build().apply {
+                        setMediaItem(MediaItem.fromUri(uri))
+                        prepare()
+                        playWhenReady = true
+                    }
+                }
+                DisposableEffect(Unit) { onDispose { player.release() } }
+
+                AndroidView(
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            this.player = player
+                            useController = true
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                IconButton(
+                    onClick = { showPlayer = false },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = stringResource(R.string.common_close),
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+    }
 }

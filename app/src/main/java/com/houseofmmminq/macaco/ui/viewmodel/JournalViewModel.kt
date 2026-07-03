@@ -16,6 +16,8 @@ import com.houseofmmminq.macaco.data.storage.CloudEntrySync
 import com.houseofmmminq.macaco.data.storage.LegacyEntryMigration
 import com.houseofmmminq.macaco.data.sync.AdventureReelEncoder
 import com.houseofmmminq.macaco.data.sync.ReelPhotoMeta
+import com.houseofmmminq.macaco.util.VideoTranscoder
+import java.io.File
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
@@ -145,40 +147,88 @@ class JournalViewModel(
     private var reelEncoderJob: Job? = null
 
     fun startReel(tripName: String, entries: List<TravelEntry>) {
-        val reelPhotos = entries
-            .sortedBy { it.dateMillis }
-            .flatMap { entry ->
-                // Resolve per photo: prefer the Drive-cached copy when one exists (it only exists
-                // when the local URI was unreadable), else the local URI. Mirrors EntryDetail's
-                // displayPhotoUri — an all-or-nothing ifEmpty decoded nothing when photoUris was
-                // non-empty but every URI was dead (e.g. after a reinstall).
-                val cache = cachedDrivePhotos.value
-                val count = maxOf(entry.photoUris.size, entry.driveFileIds.size)
-                val uris = (0 until count).mapNotNull { i ->
-                    entry.driveFileIds.getOrNull(i)?.takeIf { it.isNotEmpty() }?.let { cache[it] }
-                        ?: entry.photoUris.getOrNull(i)
-                }.filter { it.isNotBlank() }
-                // Branding overlay: "Location · Mon YYYY" (null when the entry has no location).
-                val dateStr = java.text.SimpleDateFormat("MMM yyyy", java.util.Locale.getDefault())
-                    .format(java.util.Date(entry.dateMillis))
-                val overlayText =
-                    if (entry.location.isNotBlank()) "${entry.location} · $dateStr" else null
-                uris.map { uri -> ReelPhotoMeta(uri = uri, overlayText = overlayText) }
-            }
-
-        if (reelPhotos.isEmpty()) {
-            _reelState.value = ReelState.Error(appContext.getString(R.string.reel_no_photos_error))
-            return
-        }
-
         reelEncoderJob = viewModelScope.launch(Dispatchers.IO) {
             _reelState.value = ReelState.Generating(tripName, 0f)
+
+            // Build the ordered frame list on the IO thread so video first-frame extraction
+            // (MediaMetadataRetriever, via VideoTranscoder) is safe to call here. Video frames are
+            // written to temp JPEGs in cacheDir and deleted after the encode finishes.
+            val tempFrameFiles = mutableListOf<File>()
+            val reelPhotos = entries
+                .sortedBy { it.dateMillis }
+                .flatMap { entry ->
+                    val cache = cachedDrivePhotos.value
+                    // Branding overlay: "Location · Mon YYYY" (null when the entry has no location).
+                    val dateStr = java.text.SimpleDateFormat("MMM yyyy", java.util.Locale.getDefault())
+                        .format(java.util.Date(entry.dateMillis))
+                    val overlayText =
+                        if (entry.location.isNotBlank()) "${entry.location} · $dateStr" else null
+
+                    // Resolve media in display order. Entries with videos carry a mediaOrder
+                    // (photos + videos interleaved); legacy/photo-only entries (mediaOrder empty)
+                    // fall back to photos-only in photoUris order, unchanged from before.
+                    val orderedItems: List<Pair<String, String>> = if (entry.mediaOrder.isNotEmpty()) {
+                        entry.mediaOrder.mapNotNull { uri ->
+                            when {
+                                uri in entry.photoUris -> uri to "photo"
+                                uri in entry.videoUris -> uri to "video"
+                                else -> null
+                            }
+                        }
+                    } else {
+                        val count = maxOf(entry.photoUris.size, entry.driveFileIds.size)
+                        (0 until count).mapNotNull { i ->
+                            entry.photoUris.getOrNull(i)?.let { it to "photo" }
+                        }
+                    }
+
+                    orderedItems.mapNotNull { (uri, type) ->
+                        val resolvedUri: String? = if (type == "photo") {
+                            // Prefer the Drive-cached copy when one exists (it only exists when the
+                            // local URI was unreadable, e.g. after a reinstall), else the local URI.
+                            val idx = entry.photoUris.indexOf(uri)
+                            val driveId = entry.driveFileIds.getOrNull(idx)
+                            (driveId?.takeIf { it.isNotEmpty() }?.let { cache[it] } ?: uri)
+                                .takeIf { it.isNotBlank() }
+                        } else {
+                            // Video: extract the first frame → temp JPEG → file:// URI. Resolve the
+                            // playable source the same way photos do (Drive-cache fallback).
+                            val vIdx = entry.videoUris.indexOf(uri)
+                            val vDriveId = entry.videoFileIds.getOrNull(vIdx)
+                            val playable = vDriveId?.takeIf { it.isNotEmpty() }?.let { cache[it] } ?: uri
+                            val bitmap = VideoTranscoder.getFirstFrame(
+                                appContext, android.net.Uri.parse(playable)
+                            )
+                            if (bitmap == null) null else {
+                                val tempFile = File(
+                                    appContext.cacheDir, "reel_vf_${entry.id}_${uri.hashCode()}.jpg"
+                                )
+                                tempFile.outputStream().use { out ->
+                                    bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, out)
+                                }
+                                bitmap.recycle()
+                                tempFrameFiles += tempFile
+                                android.net.Uri.fromFile(tempFile).toString()
+                            }
+                        }
+                        resolvedUri?.let { ReelPhotoMeta(uri = it, overlayText = overlayText) }
+                    }
+                }
+
+            if (reelPhotos.isEmpty()) {
+                tempFrameFiles.forEach { it.delete() }
+                _reelState.value = ReelState.Error(appContext.getString(R.string.reel_no_photos_error))
+                return@launch
+            }
+
             // Plain ViewModel (manual DI) — appContext is injected at construction, not getApplication().
             val result = AdventureReelEncoder(appContext).encode(
                 photos = reelPhotos,
                 outputName = "reel_${tripName.replace(" ", "_")}.mp4",
                 onProgress = { p -> _reelState.value = ReelState.Generating(tripName, p) }
             )
+            // Clean up temp video-frame files regardless of the encode outcome.
+            tempFrameFiles.forEach { it.delete() }
             _reelState.value = result.fold(
                 onSuccess = { uri -> ReelState.Ready(tripName, uri) },
                 onFailure = { e ->
@@ -344,9 +394,10 @@ class JournalViewModel(
 
     fun saveEntry(entry: TravelEntry) {
         viewModelScope.launch {
-            // On edit, free the files for any photos the user dropped from the entry.
+            // On edit, free the files for any photos/videos the user dropped from the entry.
             entries.value.find { it.id == entry.id }?.let { old ->
                 ImageStorage.delete(appContext, old.photoUris - entry.photoUris.toSet())
+                ImageStorage.delete(appContext, old.videoUris - entry.videoUris.toSet())
             }
             cloudEntrySync.save(entry)
             // Upload new photos to Drive in the background; persist updated IDs when done.
@@ -365,12 +416,28 @@ class JournalViewModel(
                     }
                 }
             }
+            // Upload new videos to Drive in the background; persist updated IDs when done. Mirrors
+            // the photo path — positional videoFileIds merged into the latest entry if unchanged.
+            if (entry.videoUris.isNotEmpty()) {
+                launch {
+                    val updatedVideoIds = drivePhotoSync.uploadEntryVideosOrReport(entry)
+                    if (updatedVideoIds != entry.videoFileIds) {
+                        val latest = entries.value.find { it.id == entry.id } ?: entry
+                        if (latest.videoUris == entry.videoUris) {
+                            cloudEntrySync.save(latest.copy(videoFileIds = updatedVideoIds))
+                        }
+                    }
+                }
+            }
         }
     }
 
     fun deleteEntry(id: String) {
         viewModelScope.launch {
-            entries.value.find { it.id == id }?.let { ImageStorage.delete(appContext, it.photoUris) }
+            entries.value.find { it.id == id }?.let {
+                ImageStorage.delete(appContext, it.photoUris)
+                ImageStorage.delete(appContext, it.videoUris)
+            }
             cloudEntrySync.delete(id)
         }
     }

@@ -193,6 +193,66 @@ object ImageStorage {
     }.getOrNull()
 
     /**
+     * Creates an empty `.mp4` temp file the system camera can record into, returned as a
+     * FileProvider `content://` URI, or null on failure. After recording, transcode then call
+     * [persistVideoToGallery]. Temp files live in `filesDir/[VIDEO_TEMP]` — call
+     * `clear(context, VIDEO_TEMP)` when done.
+     */
+    fun newVideoTempUri(context: Context): Uri? = runCatching {
+        val dir = File(context.filesDir, VIDEO_TEMP).apply { mkdirs() }
+        val file = File(dir, "capture_${System.currentTimeMillis()}.mp4")
+        file.createNewFile()
+        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+    }.getOrNull()
+
+    /**
+     * Copies [transcodedFile] (the `.mp4` output from [VideoTranscoder]) into the device's shared
+     * Movies/Macaco collection and returns the `content://` URI string, or null on failure. Uses the
+     * same IS_PENDING flow as [persistToGallery] on API 29+, and the write-to-disk-first approach on
+     * API ≤ 28.
+     */
+    fun persistVideoToGallery(context: Context, transcodedFile: File): String? = runCatching {
+        val resolver = context.contentResolver
+        val name = "macaco_${System.currentTimeMillis()}.mp4"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.Video.Media.DISPLAY_NAME, name)
+                put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/Macaco")
+                put(MediaStore.Video.Media.IS_PENDING, 1)
+            }
+            val uri = resolver.insert(
+                MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values
+            ) ?: return null
+            val ok = resolver.openOutputStream(uri)?.use { out ->
+                transcodedFile.inputStream().use { it.copyTo(out) }; true
+            } ?: false
+            if (!ok) {
+                runCatching { resolver.delete(uri, null, null) }
+                return null
+            }
+            values.clear()
+            values.put(MediaStore.Video.Media.IS_PENDING, 0)
+            resolver.update(uri, values, null, null)
+            uri.toString()
+        } else {
+            val dir = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "Macaco"
+            ).also { it.mkdirs() }
+            val file = File(dir, name)
+            transcodedFile.copyTo(file, overwrite = true)
+            val values = ContentValues().apply {
+                put(MediaStore.Video.Media.DISPLAY_NAME, name)
+                put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                @Suppress("DEPRECATION")
+                put(MediaStore.Video.Media.DATA, file.absolutePath)
+            }
+            val uri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
+            (uri ?: Uri.fromFile(file)).toString()
+        }
+    }.getOrNull()
+
+    /**
      * Decodes [bytes] as a bitmap, scales it down so neither dimension exceeds [maxDim], and
      * re-encodes at [quality]% JPEG. Returns null if the input is not a recognised bitmap format
      * (the caller falls back to the original bytes in that case, so no photo is ever lost).
@@ -272,4 +332,6 @@ object ImageStorage {
     const val PROFILE = "profile"
     const val ENTRY_PHOTOS = "entry_photos"
     const val CAMERA_TEMP = "camera_temp"
+    const val VIDEO_TEMP = "video_temp"
+    const val DRIVE_VIDEOS = "drive_videos"   // used in DrivePhotoSync
 }

@@ -90,7 +90,12 @@ class JournalBackup(private val context: Context) {
                         path
                     }
                     // driveFileIds are device/account-specific; clear them so import re-uploads fresh.
-                    entry.copy(photoUris = paths, driveFileIds = emptyList())
+                    // Videos are NOT bundled in the zip (too large) — keep videoUris + videoFileIds so
+                    // downloadMissingVideos can re-fetch them from Drive on the next sync. Clear
+                    // mediaOrder: it holds this device's photo content-URIs, which are rewritten on
+                    // import, so a preserved order would reference stale URIs (displayMedia then falls
+                    // back to photos-then-videos).
+                    entry.copy(photoUris = paths, driveFileIds = emptyList(), mediaOrder = emptyList())
                 }
                 val backup = BackupFile(exportedAt = System.currentTimeMillis(), entries = exported)
                 zip.putNextEntry(ZipEntry("backup.json"))
@@ -277,7 +282,10 @@ class JournalBackup(private val context: Context) {
                     tempFile.delete() // free disk immediately after writing to the gallery
                     uri
                 }
-                onEntry(entry.copy(photoUris = newUris, driveFileIds = emptyList()))
+                // videoFileIds intentionally NOT cleared (unlike driveFileIds) — videos aren't in the
+                // zip, so their Drive IDs must survive for downloadMissingVideos to re-fetch them.
+                // mediaOrder cleared (stale photo URIs after the rewrite → photos-then-videos fallback).
+                onEntry(entry.copy(photoUris = newUris, driveFileIds = emptyList(), mediaOrder = emptyList()))
             }
             backup.entries.size
         } finally {

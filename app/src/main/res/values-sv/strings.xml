@@ -329,4 +329,20 @@
     <string name="help_terms_of_service">Användarvillkor</string>
     <string name="help_terms_of_service_subtitle">Granska ditt avtal med Macaco</string>
     <string name="help_contact_template">Hej Macaco-teamet,\n\n[Skriv ditt meddelande här]</string>
+    <string name="new_entry_media_label">Foton och videor</string>
+    <string name="new_entry_add_video">Lägg till video</string>
+    <string name="new_entry_add_video_short">Video</string>
+    <string name="new_entry_add_photo_short">Foto</string>
+    <string name="new_entry_video_record">Spela in klipp (15 s)</string>
+    <string name="new_entry_video_gallery">Välj från galleriet</string>
+    <string name="video_trim_title">Välj ditt 15-sekundersklipp</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">Använd det här klippet</string>
+    <string name="video_processing">Komprimerar video…</string>
+    <string name="video_play_cd">Spela upp video</string>
+    <string name="help_section_media">Foton och videor</string>
+    <string name="help_faq_video_add_q">Hur lägger jag till en video i en anteckning?</string>
+    <string name="help_faq_video_add_a">Tryck på Video-knappen i anteckningseditorn och välj ”Spela in klipp” för att spela in upp till 15 sekunder direkt med kameran, eller ”Välj från galleriet” för att välja en befintlig video. Gallerivideor som är längre än 15 sekunder kan trimmas till önskat ögonblick innan du sparar. Du kan lägga till upp till 3 videor per anteckning.</string>
+    <string name="help_faq_video_length_q">Hur lång kan en video vara och hur mycket utrymme tar den?</string>
+    <string name="help_faq_video_length_a">Videor är begränsade till 15 sekunder. Macaco komprimerar automatiskt varje klipp till cirka 4 MB (720p, H.264), så att ditt lagringsutrymme och din Drive-kvot hålls under kontroll. Videor säkerhetskopieras till Google Drive tillsammans med dina foton så länge Drive är anslutet i Inställningar.</string>
 </resources>

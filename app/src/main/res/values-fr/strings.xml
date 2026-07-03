@@ -356,4 +356,20 @@
     <string name="help_terms_of_service">Conditions d\'utilisation</string>
     <string name="help_terms_of_service_subtitle">Consultez votre accord avec Macaco</string>
     <string name="help_contact_template">Bonjour l\'équipe Macaco,\n\n[Écrivez votre message ici]</string>
+    <string name="new_entry_media_label">Photos et vidéos</string>
+    <string name="new_entry_add_video">Ajouter une vidéo</string>
+    <string name="new_entry_add_video_short">Vidéo</string>
+    <string name="new_entry_add_photo_short">Photo</string>
+    <string name="new_entry_video_record">Enregistrer un clip (15 s)</string>
+    <string name="new_entry_video_gallery">Choisir dans la galerie</string>
+    <string name="video_trim_title">Choisissez votre clip de 15 secondes</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">Utiliser ce clip</string>
+    <string name="video_processing">Compression de la vidéo…</string>
+    <string name="video_play_cd">Lire la vidéo</string>
+    <string name="help_section_media">Photos et vidéos</string>
+    <string name="help_faq_video_add_q">Comment ajouter une vidéo à une entrée ?</string>
+    <string name="help_faq_video_add_a">Appuyez sur le bouton Vidéo dans l\'éditeur d\'entrée et choisissez « Enregistrer un clip » pour filmer jusqu\'à 15 secondes directement avec votre caméra, ou « Choisir dans la galerie » pour sélectionner une vidéo existante. Les vidéos de la galerie de plus de 15 secondes peuvent être découpées au moment souhaité avant l\'enregistrement. Vous pouvez ajouter jusqu\'à 3 vidéos par entrée.</string>
+    <string name="help_faq_video_length_q">Quelle est la durée maximale d\'une vidéo et combien d\'espace occupe-t-elle ?</string>
+    <string name="help_faq_video_length_a">Les vidéos sont limitées à 15 secondes. Macaco compresse automatiquement chaque clip à environ 4 Mo (720p, H.264), afin de préserver votre espace de stockage et votre quota Drive. Les vidéos sont sauvegardées sur Google Drive avec vos photos tant que Drive est connecté dans les Réglages.</string>
 </resources>

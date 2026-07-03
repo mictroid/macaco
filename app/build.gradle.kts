@@ -145,6 +145,11 @@ dependencies {
     implementation(libs.play.app.update.ktx)
     implementation(libs.maps.compose)
     implementation(libs.play.services.maps)
+    // Video transcoding — H.264 720p + AAC, supports trim, API 21+
+    implementation(libs.transcoder)
+    // ExoPlayer (Media3) — inline video playback in EntryDetailScreen
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

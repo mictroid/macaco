@@ -356,4 +356,20 @@
     <string name="help_terms_of_service">Servicevoorwaarden</string>
     <string name="help_terms_of_service_subtitle">Bekijk je overeenkomst met Macaco</string>
     <string name="help_contact_template">Hallo Macaco-team,\n\n[Schrijf hier je bericht]</string>
+    <string name="new_entry_media_label">Foto\'s en video\'s</string>
+    <string name="new_entry_add_video">Video toevoegen</string>
+    <string name="new_entry_add_video_short">Video</string>
+    <string name="new_entry_add_photo_short">Foto</string>
+    <string name="new_entry_video_record">Clip opnemen (15 s)</string>
+    <string name="new_entry_video_gallery">Kies uit galerij</string>
+    <string name="video_trim_title">Kies je clip van 15 seconden</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">Deze clip gebruiken</string>
+    <string name="video_processing">Video comprimeren…</string>
+    <string name="video_play_cd">Video afspelen</string>
+    <string name="help_section_media">Foto\'s en video\'s</string>
+    <string name="help_faq_video_add_q">Hoe voeg ik een video toe aan een item?</string>
+    <string name="help_faq_video_add_a">Tik op de knop Video in de itemeditor en kies “Clip opnemen” om tot 15 seconden rechtstreeks met je camera op te nemen, of “Kies uit galerij” om een bestaande video te selecteren. Video\'s uit de galerij die langer zijn dan 15 seconden kun je vóór het opslaan inkorten tot het gewenste moment. Je kunt maximaal 3 video\'s per item toevoegen.</string>
+    <string name="help_faq_video_length_q">Hoe lang mag een video zijn en hoeveel ruimte gebruikt die?</string>
+    <string name="help_faq_video_length_a">Video\'s zijn beperkt tot 15 seconden. Macaco comprimeert elke clip automatisch tot ongeveer 4 MB (720p, H.264), zodat je opslag en Drive-quota beheersbaar blijven. Video\'s worden samen met je foto\'s geback-upt naar Google Drive zolang Drive is verbonden in Instellingen.</string>
 </resources>

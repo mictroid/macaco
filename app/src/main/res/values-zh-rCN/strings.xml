@@ -352,4 +352,20 @@
     <string name="help_terms_of_service">服务条款</string>
     <string name="help_terms_of_service_subtitle">查看您与 Macaco 的协议</string>
     <string name="help_contact_template">Macaco 团队，您好，\n\n[在此处输入您的留言]</string>
+    <string name="new_entry_media_label">照片和视频</string>
+    <string name="new_entry_add_video">添加视频</string>
+    <string name="new_entry_add_video_short">视频</string>
+    <string name="new_entry_add_photo_short">照片</string>
+    <string name="new_entry_video_record">录制片段（15 秒）</string>
+    <string name="new_entry_video_gallery">从相册选择</string>
+    <string name="video_trim_title">选择你的 15 秒片段</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">使用此片段</string>
+    <string name="video_processing">正在压缩视频…</string>
+    <string name="video_play_cd">播放视频</string>
+    <string name="help_section_media">照片和视频</string>
+    <string name="help_faq_video_add_q">如何为条目添加视频？</string>
+    <string name="help_faq_video_add_a">点按条目编辑器中的“视频”按钮，选择“录制片段”即可直接用相机拍摄最长 15 秒的视频，或选择“从相册选择”以选取已有视频。相册中超过 15 秒的视频可在保存前裁剪到你想要的片段。每个条目最多可添加 3 个视频。</string>
+    <string name="help_faq_video_length_q">视频最长可以多长？会占用多少空间？</string>
+    <string name="help_faq_video_length_a">视频限制为 15 秒。Macaco 会自动将每个片段压缩到约 4 MB（720p，H.264），以控制你的存储空间和 Drive 配额。只要在设置中已连接 Drive，视频就会与照片一起备份到 Google Drive。</string>
 </resources>

@@ -20,6 +20,19 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <!-- In-app video recording keeps the audio track. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Video gallery pick on API 33+. -->
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_VIDEO"
+        android:minSdkVersion="33" />
+
+    <!-- Resolve the system video-capture intent (API 30+ package-visibility rules). -->
+    <queries>
+        <intent>
+            <action android:name="android.media.action.VIDEO_CAPTURE" />
+        </intent>
+    </queries>
 
     <!-- androidx.biometric pulls in USE_FINGERPRINT which implies this feature is required;
          override to "false" so devices without a fingerprint sensor aren't filtered out. -->

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.houseofmmminq.macaco.data.model.TravelEntry
+import com.houseofmmminq.macaco.util.ImageStorage
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.Scope
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -72,9 +73,10 @@ class DrivePhotoSync(private val context: Context) {
     fun onAccountChanged() {
         driveFolderId = null
         _cachedPhotoUris.value = emptyMap()
-        // Delete cached Drive photo files from the previous account. The directory is re-created
-        // automatically when downloadMissingPhotos runs for the new account.
+        // Delete cached Drive photo + video files from the previous account. The directories are
+        // re-created automatically when downloadMissingPhotos runs for the new account.
         JavaFile(context.cacheDir, "drive_photos").listFiles()?.forEach { it.delete() }
+        JavaFile(context.cacheDir, ImageStorage.DRIVE_VIDEOS).listFiles()?.forEach { it.delete() }
         // Show NotConnected immediately if the new account hasn't granted Drive scope yet,
         // so SettingsScreen shows the reconnect prompt rather than a stale Idle state.
         _syncState.value = if (isDriveConnected()) DrivePhotoSyncState.Idle
@@ -175,6 +177,46 @@ class DrivePhotoSync(private val context: Context) {
             }
             .getOrDefault(entry.driveFileIds)
 
+    // Returns the new Drive file ID, or null if the stream is unavailable. Mirrors [uploadPhoto]
+    // but with the video MIME type / extension.
+    private fun uploadVideo(drive: Drive, folderId: String, uriString: String): String? {
+        val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
+        val content = InputStreamContent("video/mp4", stream)
+        val meta = File().apply {
+            name = "macaco_${System.currentTimeMillis()}.mp4"
+            parents = listOf(folderId)
+        }
+        return drive.files().create(meta, content).setFields("id").execute().id
+    }
+
+    /**
+     * Uploads any videos in [entry] that don't yet have a Drive file ID.
+     * Returns the updated videoFileIds list (same length as videoUris).
+     * Throws if Drive is not reachable — callers should catch and handle. Mirrors [uploadEntryPhotos].
+     */
+    suspend fun uploadEntryVideos(entry: TravelEntry): List<String> = withContext(Dispatchers.IO) {
+        if (!isDriveConnected()) return@withContext entry.videoFileIds
+        val drive = getDriveService()
+        val folderId = getOrCreateDriveFolder(drive)
+        val result = entry.videoFileIds.toMutableList()
+        while (result.size < entry.videoUris.size) result.add("")
+        entry.videoUris.forEachIndexed { i, uriString ->
+            if (result[i].isEmpty()) {
+                uploadVideo(drive, folderId, uriString)?.let { result[i] = it }
+            }
+        }
+        result.toList()
+    }
+
+    /** Auto-upload variant for the save path — reports failures via [errors] instead of throwing. */
+    suspend fun uploadEntryVideosOrReport(entry: TravelEntry): List<String> =
+        runCatching { uploadEntryVideos(entry) }
+            .onFailure { e ->
+                Log.e("DrivePhotoSync", "Auto-upload (video) failed for entry ${entry.id}", e)
+                _errors.trySend(friendlyDriveError(e))
+            }
+            .getOrDefault(entry.videoFileIds)
+
     /**
      * Downloads Drive photos for entries that have Drive IDs but no accessible local file.
      * Saves to cacheDir/drive_photos/ and updates [cachedPhotoUris].
@@ -207,22 +249,55 @@ class DrivePhotoSync(private val context: Context) {
         }.distinct()
         if (needed.isEmpty()) return@withContext
 
-        val drive = runCatching { getDriveService() }.getOrNull() ?: return@withContext
-        val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
-        val newEntries = mutableMapOf<String, String>()
-        needed.forEach { fileId ->
-            val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
-            if (!cacheFile.exists()) {
-                runCatching {
-                    val out = ByteArrayOutputStream()
-                    drive.files().get(fileId).executeMediaAndDownloadTo(out)
-                    cacheFile.writeBytes(out.toByteArray())
-                }.onFailure { return@forEach }
+        val neededVideos = entries.flatMap { entry ->
+            entry.videoFileIds.filterIndexed { i, id ->
+                id.isNotEmpty() &&
+                    !_cachedPhotoUris.value.containsKey(id) &&
+                    (entry.videoUris.getOrNull(i)?.let { !isUriAccessible(it) } ?: true)
             }
-            if (cacheFile.exists()) {
-                newEntries[fileId] = Uri.fromFile(cacheFile).toString()
+        }.distinct()
+
+        if (needed.isEmpty() && neededVideos.isEmpty()) return@withContext
+
+        val drive = runCatching { getDriveService() }.getOrNull() ?: return@withContext
+        val newEntries = mutableMapOf<String, String>()
+
+        if (needed.isNotEmpty()) {
+            val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
+            needed.forEach { fileId ->
+                val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
+                if (!cacheFile.exists()) {
+                    runCatching {
+                        val out = ByteArrayOutputStream()
+                        drive.files().get(fileId).executeMediaAndDownloadTo(out)
+                        cacheFile.writeBytes(out.toByteArray())
+                    }.onFailure { return@forEach }
+                }
+                if (cacheFile.exists()) {
+                    newEntries[fileId] = Uri.fromFile(cacheFile).toString()
+                }
             }
         }
+
+        // Videos share the same driveFileId → cache-URI map (keys are distinct Drive IDs, so photos
+        // and videos never collide), cached under cacheDir/drive_videos/.
+        if (neededVideos.isNotEmpty()) {
+            val videoCacheDir = JavaFile(context.cacheDir, ImageStorage.DRIVE_VIDEOS).apply { mkdirs() }
+            neededVideos.forEach { fileId ->
+                val cacheFile = JavaFile(videoCacheDir, "$fileId.mp4")
+                if (!cacheFile.exists()) {
+                    runCatching {
+                        cacheFile.outputStream().use { out ->
+                            drive.files().get(fileId).executeMediaAndDownloadTo(out)
+                        }
+                    }.onFailure { cacheFile.delete(); return@forEach }
+                }
+                if (cacheFile.exists()) {
+                    newEntries[fileId] = Uri.fromFile(cacheFile).toString()
+                }
+            }
+        }
+
         if (newEntries.isNotEmpty()) {
             _cachedPhotoUris.value = _cachedPhotoUris.value + newEntries
         }

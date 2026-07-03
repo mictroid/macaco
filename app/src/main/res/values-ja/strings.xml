@@ -352,4 +352,20 @@
     <string name="help_terms_of_service">利用規約</string>
     <string name="help_terms_of_service_subtitle">Macaco との利用規約を確認</string>
     <string name="help_contact_template">Macaco チームへ、\n\n[ここにメッセージを入力してください]</string>
+    <string name="new_entry_media_label">写真と動画</string>
+    <string name="new_entry_add_video">動画を追加</string>
+    <string name="new_entry_add_video_short">動画</string>
+    <string name="new_entry_add_photo_short">写真</string>
+    <string name="new_entry_video_record">クリップを録画（15秒）</string>
+    <string name="new_entry_video_gallery">ギャラリーから選択</string>
+    <string name="video_trim_title">15秒のクリップを選択</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">このクリップを使用</string>
+    <string name="video_processing">動画を圧縮しています…</string>
+    <string name="video_play_cd">動画を再生</string>
+    <string name="help_section_media">写真と動画</string>
+    <string name="help_faq_video_add_q">エントリーに動画を追加するには？</string>
+    <string name="help_faq_video_add_a">エントリーエディターの「動画」ボタンをタップし、「クリップを録画」を選ぶとカメラで最大15秒まで直接撮影でき、「ギャラリーから選択」を選ぶと既存の動画を選べます。15秒を超えるギャラリーの動画は、保存前に好きな場面にトリミングできます。1つのエントリーにつき最大3本の動画を追加できます。</string>
+    <string name="help_faq_video_length_q">動画の長さの上限と、使用する容量はどのくらいですか？</string>
+    <string name="help_faq_video_length_a">動画は15秒までに制限されています。Macacoは各クリップを自動的に約4MB（720p、H.264）に圧縮するので、ストレージやDriveの容量を抑えられます。設定でDriveが接続されていれば、動画は写真と一緒にGoogleドライブにバックアップされます。</string>
 </resources>

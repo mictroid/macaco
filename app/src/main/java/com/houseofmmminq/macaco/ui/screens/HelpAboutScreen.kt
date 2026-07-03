@@ -71,9 +71,11 @@ private val FAQ_SECTIONS = listOf(
         )
     ),
     FaqSection(
-        R.string.help_section_photos,
+        R.string.help_section_media,
         listOf(
             R.string.help_faq_q_photos to R.string.help_faq_a_photos,
+            R.string.help_faq_video_add_q to R.string.help_faq_video_add_a,
+            R.string.help_faq_video_length_q to R.string.help_faq_video_length_a,
             R.string.help_faq_drive_connect_q to R.string.help_faq_drive_connect_a,
             R.string.help_faq_reorder_photos_q to R.string.help_faq_reorder_photos_a,
             R.string.help_faq_cover_q to R.string.help_faq_cover_a,

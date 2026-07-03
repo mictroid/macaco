@@ -367,4 +367,20 @@
     <string name="help_terms_of_service">Nutzungsbedingungen</string>
     <string name="help_terms_of_service_subtitle">Überprüfe deine Vereinbarung mit Macaco</string>
     <string name="help_contact_template">Hallo Macaco-Team,\n\n[Schreibe hier deine Nachricht]</string>
+    <string name="new_entry_media_label">Fotos &amp; Videos</string>
+    <string name="new_entry_add_video">Video hinzufügen</string>
+    <string name="new_entry_add_video_short">Video</string>
+    <string name="new_entry_add_photo_short">Foto</string>
+    <string name="new_entry_video_record">Clip aufnehmen (15 s)</string>
+    <string name="new_entry_video_gallery">Aus Galerie wählen</string>
+    <string name="video_trim_title">Wähle deinen 15-Sekunden-Clip</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">Diesen Clip verwenden</string>
+    <string name="video_processing">Video wird komprimiert…</string>
+    <string name="video_play_cd">Video abspielen</string>
+    <string name="help_section_media">Fotos &amp; Videos</string>
+    <string name="help_faq_video_add_q">Wie füge ich einem Eintrag ein Video hinzu?</string>
+    <string name="help_faq_video_add_a">Tippe im Eintragseditor auf die Schaltfläche „Video“ und wähle „Clip aufnehmen“, um bis zu 15 Sekunden direkt mit deiner Kamera aufzunehmen, oder „Aus Galerie wählen“, um ein vorhandenes Video auszuwählen. Galerievideos, die länger als 15 Sekunden sind, kannst du vor dem Speichern auf den gewünschten Moment zuschneiden. Du kannst bis zu 3 Videos pro Eintrag hinzufügen.</string>
+    <string name="help_faq_video_length_q">Wie lang darf ein Video sein und wie viel Speicher belegt es?</string>
+    <string name="help_faq_video_length_a">Videos sind auf 15 Sekunden begrenzt. Macaco komprimiert jeden Clip automatisch auf etwa 4 MB (720p, H.264), damit dein Speicher und dein Drive-Kontingent überschaubar bleiben. Videos werden zusammen mit deinen Fotos in Google Drive gesichert, solange Drive in den Einstellungen verbunden ist.</string>
 </resources>

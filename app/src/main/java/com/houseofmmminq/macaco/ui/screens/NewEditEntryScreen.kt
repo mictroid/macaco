@@ -2,6 +2,7 @@ package com.houseofmmminq.macaco.ui.screens
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -42,7 +43,11 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -59,6 +64,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -69,6 +75,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -77,6 +84,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
@@ -103,7 +111,9 @@ import com.houseofmmminq.macaco.util.Cities
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.houseofmmminq.macaco.util.VideoTranscoder
 import java.util.Locale
 import java.util.UUID
 
@@ -181,6 +191,55 @@ fun NewEditEntryScreen(
         mutableStateOf(emptySet<String>())
     }
 
+    // ── Video state ──────────────────────────────────────────────────────────────
+    // Max 3 videos total per entry.
+    val MAX_VIDEOS = 3
+    var videoUris by rememberSaveable(stateSaver = StringListSaver) {
+        mutableStateOf(existingEntry?.videoUris ?: emptyList())
+    }
+    var videoFileIds by rememberSaveable(stateSaver = StringListSaver) {
+        mutableStateOf(
+            List(existingEntry?.videoUris?.size ?: 0) { i ->
+                existingEntry?.videoFileIds?.getOrNull(i) ?: ""
+            }
+        )
+    }
+    // mediaOrder defines the display sequence of all media (photos + videos combined).
+    // If empty (new or legacy entry), derived as photos-first then videos.
+    var mediaOrder by rememberSaveable(stateSaver = StringListSaver) {
+        mutableStateOf(existingEntry?.mediaOrder ?: emptyList())
+    }
+
+    var showVideoSourceDialog by remember { mutableStateOf(false) }
+    var pendingVideoUriString by rememberSaveable { mutableStateOf<String?>(null) }
+    val pendingVideoUri: Uri? = pendingVideoUriString?.let(Uri::parse)
+
+    // Trim dialog state — shown when a picked video is longer than 15 s.
+    var videoToTrim by remember { mutableStateOf<Uri?>(null) }
+    var videoToDuration by remember { mutableStateOf(0L) }
+
+    // Transcoding progress — null when idle, 0f→1f when active.
+    var transcodingProgress by remember { mutableStateOf<Float?>(null) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    // Derived display list: uri → "photo" or "video". Follows mediaOrder for any uris it lists, then
+    // appends anything not yet in mediaOrder (e.g. photos added via the photo picker, which don't
+    // touch mediaOrder) so media is NEVER dropped from the row when mediaOrder is partial.
+    val displayMedia: List<Pair<String, String>> = remember(mediaOrder, photoUris, videoUris) {
+        val ordered = mediaOrder.mapNotNull { uri ->
+            when {
+                uri in photoUris -> uri to "photo"
+                uri in videoUris -> uri to "video"
+                else -> null
+            }
+        }
+        val seen = ordered.map { it.first }.toSet()
+        val leftover = photoUris.filter { it !in seen }.map { it to "photo" } +
+            videoUris.filter { it !in seen }.map { it to "video" }
+        ordered + leftover
+    }
+
     val isDatePickerLandscape = LocalConfiguration.current.screenHeightDp < 480
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = dateMillis,
@@ -227,6 +286,86 @@ fun NewEditEntryScreen(
             pendingCameraUriString = uri.toString()
             onSuppressAutoLock()
             cameraLauncher.launch(uri)
+        }
+    }
+
+    // Video recording: system camera writes into a FileProvider temp .mp4 (≤15s via the duration
+    // limit extra), which we transcode then copy into the shared Movies collection.
+    val videoRecordLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val captured = pendingVideoUri
+        pendingVideoUriString = null
+        if (result.resultCode == Activity.RESULT_OK && captured != null) {
+            transcodingProgress = 0f
+            coroutineScope.launch {
+                // Recorded clip is ≤ 15 s so no trim needed — transcode directly.
+                val outFile = VideoTranscoder.transcode(
+                    context, captured, onProgress = { transcodingProgress = it }
+                )
+                transcodingProgress = null
+                ImageStorage.clear(context, ImageStorage.VIDEO_TEMP)
+                outFile?.let { file ->
+                    ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
+                        file.delete()
+                        sessionAdded = sessionAdded + stored
+                        videoUris = videoUris + stored
+                        videoFileIds = videoFileIds + ""
+                        mediaOrder = mediaOrder + stored
+                    }
+                }
+            }
+        } else {
+            ImageStorage.clear(context, ImageStorage.VIDEO_TEMP)
+        }
+    }
+
+    val launchVideoRecord = {
+        ImageStorage.newVideoTempUri(context)?.let { uri ->
+            pendingVideoUriString = uri.toString()
+            onSuppressAutoLock()
+            val intent = Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE).apply {
+                putExtra(android.provider.MediaStore.EXTRA_DURATION_LIMIT, 15)
+                putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri)
+                // The camera app must be granted write access to our FileProvider temp URI, or it
+                // can't save the clip (TakePicture grants this internally; a manual intent must not).
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            videoRecordLauncher.launch(intent)
+        }
+    }
+
+    val videoPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(maxItems = MAX_VIDEOS)
+    ) { uris ->
+        val canAdd = MAX_VIDEOS - videoUris.size
+        if (canAdd > 0) {
+            uris.take(canAdd).forEach { uri ->
+                val durationMs = VideoTranscoder.getDurationMs(context, uri)
+                if (durationMs <= VideoTranscoder.MAX_DURATION_MS) {
+                    // Short enough — transcode immediately without a trim UI.
+                    transcodingProgress = 0f
+                    coroutineScope.launch {
+                        val outFile = VideoTranscoder.transcode(
+                            context, uri, onProgress = { transcodingProgress = it }
+                        )
+                        transcodingProgress = null
+                        outFile?.let { file ->
+                            ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
+                                file.delete()
+                                sessionAdded = sessionAdded + stored
+                                videoUris = videoUris + stored
+                                videoFileIds = videoFileIds + ""
+                                mediaOrder = mediaOrder + stored
+                            }
+                        }
+                    }
+                } else {
+                    // Longer clip — ask the user to trim before transcoding.
+                    videoToTrim = uri
+                    videoToDuration = durationMs
+                }
+            }
         }
     }
 
@@ -300,6 +439,56 @@ fun NewEditEntryScreen(
         )
     }
 
+    if (showVideoSourceDialog) {
+        AlertDialog(
+            onDismissRequest = { showVideoSourceDialog = false },
+            title = { Text(stringResource(R.string.new_entry_add_video)) },
+            text = {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showVideoSourceDialog = false
+                                if (videoUris.size < MAX_VIDEOS) launchVideoRecord()
+                            }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.Videocam, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.width(16.dp))
+                        Text(stringResource(R.string.new_entry_video_record), style = MaterialTheme.typography.bodyLarge)
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showVideoSourceDialog = false
+                                if (videoUris.size < MAX_VIDEOS) {
+                                    onSuppressAutoLock()
+                                    videoPicker.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
+                                    )
+                                }
+                            }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.VideoLibrary, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.width(16.dp))
+                        Text(stringResource(R.string.new_entry_video_gallery), style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showVideoSourceDialog = false }) {
+                    Text(stringResource(R.string.common_cancel))
+                }
+            }
+        )
+    }
+
     if (showDatePicker) {
         // Brand the picker: surface background + macaco teal (primary) accents, so it stops
         // looking like a foreign Material default (surfaceContainerHigh lavender).
@@ -329,6 +518,7 @@ fun NewEditEntryScreen(
         }
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -349,6 +539,20 @@ fun NewEditEntryScreen(
                             if (title.isBlank()) {
                                 titleError = true
                             } else {
+                                // Reconcile every media list to the unified display order, so
+                                // photoUris (which the detail collage indexes) reflects any
+                                // drag-reorder and the parallel id lists stay aligned. mediaOrder is
+                                // only persisted when videos are present (else the detail view shows
+                                // photos in photoUris order and an empty video strip).
+                                val order = displayMedia
+                                val finalPhotos = order.filter { it.second == "photo" }.map { it.first }
+                                val finalDriveIds = finalPhotos.map { p ->
+                                    driveIds.getOrElse(photoUris.indexOf(p)) { "" }
+                                }
+                                val finalVideos = order.filter { it.second == "video" }.map { it.first }
+                                val finalVideoIds = finalVideos.map { v ->
+                                    videoFileIds.getOrElse(videoUris.indexOf(v)) { "" }
+                                }
                                 onSave(
                                     TravelEntry(
                                         id = existingEntry?.id ?: UUID.randomUUID().toString(),
@@ -357,11 +561,15 @@ fun NewEditEntryScreen(
                                         dateMillis = dateMillis,
                                         description = description.trim(),
                                         mood = mood,
-                                        photoUris = photoUris,
+                                        photoUris = finalPhotos,
                                         tags = tags,
                                         createdAt = existingEntry?.createdAt ?: System.currentTimeMillis(),
-                                        driveFileIds = driveIds,
-                                        tripName = tripName.trim().ifBlank { null }
+                                        driveFileIds = finalDriveIds,
+                                        tripName = tripName.trim().ifBlank { null },
+                                        videoUris = finalVideos,
+                                        videoFileIds = finalVideoIds,
+                                        mediaOrder = if (finalVideos.isEmpty()) emptyList()
+                                                     else order.map { it.first }
                                     )
                                 )
                             }
@@ -393,26 +601,24 @@ fun NewEditEntryScreen(
             contentPadding = PaddingValues(vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Photos row
+            // Media row (photos + videos, reorderable together)
             item {
-                SectionLabel(stringResource(R.string.new_entry_photos_label))
+                SectionLabel(stringResource(R.string.new_entry_media_label))
                 Spacer(Modifier.height(8.dp))
-                // Photos first, the + button last, with trailing padding so the final item
-                // (the + button) is never clipped against the screen edge.
-                // Long-press a photo to drag it left/right and reorder; tapping × removes it.
-                // photoUris are de-duplicated on add, so each uri is a stable LazyRow key — which is
-                // what lets the dragged composable (and its active pointer gesture) travel with its
-                // photo as the list reorders under it.
+                // Media first, the + buttons last, with trailing padding so the final tile is never
+                // clipped. Long-press a tile to drag it left/right and reorder; tapping × removes it.
+                // Each uri is a stable LazyRow key, so the dragged composable (and its active pointer
+                // gesture) travels with its tile as the list reorders under it.
                 val slotPx = with(LocalDensity.current) { 88.dp.toPx() } // 80.dp item + 8.dp spacing
                 var draggingUri by remember { mutableStateOf<String?>(null) }
                 var dragOffsetX by remember { mutableStateOf(0f) }
-                // Read the live list inside the long-lived drag closure without a stale capture.
-                val livePhotoUris by rememberUpdatedState(photoUris)
+                // Read the live display list inside the long-lived drag closure without stale capture.
+                val liveDisplay by rememberUpdatedState(displayMedia)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(end = 16.dp)
                 ) {
-                    itemsIndexed(photoUris, key = { _, uri -> uri }) { index, uri ->
+                    itemsIndexed(displayMedia, key = { _, pair -> pair.first }) { index, (uri, type) ->
                         val isDragging = draggingUri == uri
                         Box(
                             modifier = Modifier
@@ -431,18 +637,17 @@ fun NewEditEntryScreen(
                                         onDrag = { change, dragAmount ->
                                             change.consume()
                                             dragOffsetX += dragAmount.x
-                                            val from = livePhotoUris.indexOf(uri)
+                                            // Reorder in mediaOrder; fall back to the derived order if empty.
+                                            val currentOrder = if (mediaOrder.isEmpty())
+                                                liveDisplay.map { it.first } else mediaOrder
+                                            val from = currentOrder.indexOf(uri)
                                             if (from < 0) return@detectDragGesturesAfterLongPress
-                                            if (dragOffsetX > slotPx / 2 && from < livePhotoUris.lastIndex) {
-                                                photoUris = livePhotoUris.toMutableList()
-                                                    .also { it.add(from + 1, it.removeAt(from)) }
-                                                driveIds = driveIds.toMutableList()
+                                            if (dragOffsetX > slotPx / 2 && from < currentOrder.lastIndex) {
+                                                mediaOrder = currentOrder.toMutableList()
                                                     .also { it.add(from + 1, it.removeAt(from)) }
                                                 dragOffsetX -= slotPx
                                             } else if (dragOffsetX < -slotPx / 2 && from > 0) {
-                                                photoUris = livePhotoUris.toMutableList()
-                                                    .also { it.add(from - 1, it.removeAt(from)) }
-                                                driveIds = driveIds.toMutableList()
+                                                mediaOrder = currentOrder.toMutableList()
                                                     .also { it.add(from - 1, it.removeAt(from)) }
                                                 dragOffsetX += slotPx
                                             }
@@ -450,14 +655,22 @@ fun NewEditEntryScreen(
                                     )
                                 }
                         ) {
-                            AsyncImage(
-                                model = uri,
-                                contentDescription = null,
+                            Box(
                                 modifier = Modifier
                                     .size(80.dp)
-                                    .clip(RoundedCornerShape(12.dp)),
-                                contentScale = ContentScale.Crop
-                            )
+                                    .clip(RoundedCornerShape(12.dp))
+                            ) {
+                                if (type == "photo") {
+                                    AsyncImage(
+                                        model = uri,
+                                        contentDescription = null,
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    VideoThumbnailTile(uri = uri)
+                                }
+                            }
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
@@ -466,14 +679,22 @@ fun NewEditEntryScreen(
                                     .clip(CircleShape)
                                     .background(Color.Black.copy(alpha = 0.6f))
                                     .clickable {
-                                        val idx = photoUris.indexOf(uri)
-                                        if (idx >= 0) {
-                                            photoUris = photoUris.toMutableList().also { it.removeAt(idx) }
-                                            driveIds = driveIds.toMutableList().also { it.removeAt(idx) }
+                                        if (type == "photo") {
+                                            val idx = photoUris.indexOf(uri)
+                                            if (idx >= 0) {
+                                                photoUris = photoUris.toMutableList().also { it.removeAt(idx) }
+                                                driveIds = driveIds.toMutableList().also { it.removeAt(idx) }
+                                            }
+                                        } else {
+                                            val idx = videoUris.indexOf(uri)
+                                            if (idx >= 0) {
+                                                videoUris = videoUris.toMutableList().also { it.removeAt(idx) }
+                                                videoFileIds = videoFileIds.toMutableList().also { it.removeAt(idx) }
+                                            }
                                         }
-                                        // If this was added this session it was never committed, so
-                                        // delete its file now. Pre-existing photos are left to the
-                                        // ViewModel to clean up only once the removal is saved.
+                                        mediaOrder = mediaOrder.toMutableList().also { it.remove(uri) }
+                                        // If added this session it was never committed, so delete now.
+                                        // Pre-existing media is cleaned up by the ViewModel once saved.
                                         if (uri in sessionAdded) {
                                             ImageStorage.delete(context, listOf(uri))
                                             sessionAdded = sessionAdded - uri
@@ -491,32 +712,27 @@ fun NewEditEntryScreen(
                         }
                     }
 
-                    // Add button always last.
+                    // + Photo button always present.
                     item {
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .clickable { showPhotoSourceDialog = true },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(
-                                    Icons.Filled.Add,
-                                    contentDescription = stringResource(R.string.new_entry_add_photo_cd),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    stringResource(R.string.new_entry_add_photo),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
+                        AddMediaButton(
+                            icon = Icons.Filled.PhotoCamera,
+                            label = stringResource(R.string.new_entry_add_photo_short),
+                            onClick = { showPhotoSourceDialog = true }
+                        )
+                    }
+
+                    // + Video button while under the per-entry video cap.
+                    if (videoUris.size < MAX_VIDEOS) {
+                        item {
+                            AddMediaButton(
+                                icon = Icons.Filled.Videocam,
+                                label = stringResource(R.string.new_entry_add_video_short),
+                                onClick = { showVideoSourceDialog = true }
+                            )
                         }
                     }
                 }
-                if (photoUris.isEmpty()) {
+                if (displayMedia.isEmpty()) {
                     HintRow(Icons.Filled.PhotoCamera, stringResource(R.string.new_entry_hint_photos))
                 }
             }
@@ -682,6 +898,62 @@ fun NewEditEntryScreen(
             item { Spacer(Modifier.height(24.dp)) }
         }
         }
+    }
+
+    // Trim dialog — shown when a gallery-picked video is longer than 15 s.
+    val trimUri = videoToTrim
+    if (trimUri != null) {
+        VideoTrimDialog(
+            sourceUri = trimUri,
+            durationMs = videoToDuration,
+            onTrimConfirmed = { startMs ->
+                videoToTrim = null
+                transcodingProgress = 0f
+                coroutineScope.launch {
+                    val outFile = VideoTranscoder.transcode(
+                        context, trimUri, trimStartMs = startMs,
+                        onProgress = { transcodingProgress = it }
+                    )
+                    transcodingProgress = null
+                    outFile?.let { file ->
+                        ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
+                            file.delete()
+                            sessionAdded = sessionAdded + stored
+                            videoUris = videoUris + stored
+                            videoFileIds = videoFileIds + ""
+                            mediaOrder = mediaOrder + stored
+                        }
+                    }
+                }
+            },
+            onDismiss = { videoToTrim = null }
+        )
+    }
+
+    // Transcoding overlay — full-screen scrim + circular progress, above the app bar.
+    val progress = transcodingProgress
+    if (progress != null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier.size(56.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    stringResource(R.string.video_processing),
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+    }
     }
 }
 
@@ -1116,5 +1388,125 @@ private fun MoodChip(emoji: String, selected: Boolean, onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(emoji, fontSize = 26.sp)
+    }
+}
+
+/**
+ * Shown when a gallery-picked video is > 15 seconds. Lets the user choose which 15-second window to
+ * keep by dragging a slider over the clip's duration.
+ */
+@Composable
+private fun VideoTrimDialog(
+    sourceUri: Uri,
+    durationMs: Long,
+    onTrimConfirmed: (trimStartMs: Long) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    val maxStart = (durationMs - VideoTranscoder.MAX_DURATION_MS).coerceAtLeast(0L)
+    var trimStartMs by remember { mutableStateOf(0L) }
+
+    // First-frame thumbnail preview.
+    val thumbnail = remember(sourceUri) { VideoTranscoder.getFirstFrame(context, sourceUri) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.video_trim_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (thumbnail != null) {
+                    androidx.compose.foundation.Image(
+                        bitmap = thumbnail.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(140.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Text(
+                    text = stringResource(
+                        R.string.video_trim_window,
+                        formatMmSs(trimStartMs),
+                        formatMmSs(trimStartMs + VideoTranscoder.MAX_DURATION_MS)
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Slider(
+                    value = trimStartMs.toFloat() / maxStart.coerceAtLeast(1L),
+                    onValueChange = { trimStartMs = (it * maxStart).toLong() },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onTrimConfirmed(trimStartMs) }) {
+                Text(stringResource(R.string.video_trim_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.common_cancel)) }
+        }
+    )
+}
+
+private fun formatMmSs(ms: Long): String {
+    val s = ms / 1000
+    return "%d:%02d".format(s / 60, s % 60)
+}
+
+@Composable
+private fun VideoThumbnailTile(uri: String) {
+    val context = LocalContext.current
+    val bitmap = remember(uri) { VideoTranscoder.getFirstFrame(context, Uri.parse(uri)) }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        if (bitmap != null) {
+            androidx.compose.foundation.Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+        }
+        Icon(
+            Icons.Filled.PlayCircle,
+            contentDescription = null,
+            tint = Color.White.copy(alpha = 0.9f),
+            modifier = Modifier.size(28.dp)
+        )
+    }
+}
+
+@Composable
+private fun AddMediaButton(icon: ImageVector, label: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(80.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }

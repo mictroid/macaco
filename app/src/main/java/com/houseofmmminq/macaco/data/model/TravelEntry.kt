@@ -17,7 +17,15 @@ data class TravelEntry(
     val createdAt: Long = System.currentTimeMillis(),
     // Drive file IDs parallel to photoUris — "" means not yet uploaded.
     val driveFileIds: List<String> = emptyList(),
-    val tripName: String? = null
+    val tripName: String? = null,
+    // ── Video support (added post-vc53) ─────────────────────────────────────
+    // videoUris: content:// URIs in Movies/Macaco (parallel to videoFileIds).
+    val videoUris: List<String> = emptyList(),
+    // videoFileIds: Drive file IDs parallel to videoUris; "" = not uploaded yet.
+    val videoFileIds: List<String> = emptyList(),
+    // mediaOrder: all media URIs (photos + videos) in user-defined display order.
+    // Empty on old entries = backward-compatible: photos displayed first, then videos.
+    val mediaOrder: List<String> = emptyList(),
 )
 
 /**

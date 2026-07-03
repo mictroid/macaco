@@ -387,4 +387,20 @@
     <string name="help_terms_of_service">Terms of Service</string>
     <string name="help_terms_of_service_subtitle">Review your agreement with Macaco</string>
     <string name="help_contact_template">Hi Macaco team,\n\n[Write your message here]</string>
+    <string name="new_entry_media_label">Photos &amp; Videos</string>
+    <string name="new_entry_add_video">Add Video</string>
+    <string name="new_entry_add_video_short">Video</string>
+    <string name="new_entry_add_photo_short">Photo</string>
+    <string name="new_entry_video_record">Record clip (15 s)</string>
+    <string name="new_entry_video_gallery">Choose from gallery</string>
+    <string name="video_trim_title">Choose your 15-second clip</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">Use this clip</string>
+    <string name="video_processing">Compressing video…</string>
+    <string name="video_play_cd">Play video</string>
+    <string name="help_section_media">Photos &amp; Videos</string>
+    <string name="help_faq_video_add_q">How do I add a video to an entry?</string>
+    <string name="help_faq_video_add_a">Tap the Video button in the entry editor and choose “Record clip” to capture up to 15 seconds directly from your camera, or “Choose from gallery” to pick an existing video. Gallery videos longer than 15 seconds can be trimmed to the moment you want before saving. You can add up to 3 videos per entry.</string>
+    <string name="help_faq_video_length_q">How long can a video be, and how much space does it use?</string>
+    <string name="help_faq_video_length_a">Videos are limited to 15 seconds. Macaco automatically compresses each clip to around 4 MB (720p, H.264), so your storage and Drive quota stay under control. Videos are backed up to Google Drive alongside your photos as long as Drive is connected in Settings.</string>
 </resources>

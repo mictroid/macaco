@@ -364,4 +364,20 @@
     <string name="help_terms_of_service">Warunki korzystania z usługi</string>
     <string name="help_terms_of_service_subtitle">Przejrzyj swoją umowę z Macaco</string>
     <string name="help_contact_template">Cześć zespole Macaco,\n\n[Napisz tutaj swoją wiadomość]</string>
+    <string name="new_entry_media_label">Zdjęcia i filmy</string>
+    <string name="new_entry_add_video">Dodaj film</string>
+    <string name="new_entry_add_video_short">Film</string>
+    <string name="new_entry_add_photo_short">Zdjęcie</string>
+    <string name="new_entry_video_record">Nagraj klip (15 s)</string>
+    <string name="new_entry_video_gallery">Wybierz z galerii</string>
+    <string name="video_trim_title">Wybierz swój 15-sekundowy klip</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">Użyj tego klipu</string>
+    <string name="video_processing">Kompresowanie filmu…</string>
+    <string name="video_play_cd">Odtwórz film</string>
+    <string name="help_section_media">Zdjęcia i filmy</string>
+    <string name="help_faq_video_add_q">Jak dodać film do wpisu?</string>
+    <string name="help_faq_video_add_a">Dotknij przycisku Film w edytorze wpisu i wybierz „Nagraj klip”, aby nagrać do 15 sekund bezpośrednio kamerą, lub „Wybierz z galerii”, aby wybrać istniejący film. Filmy z galerii dłuższe niż 15 sekund można przed zapisaniem przyciąć do wybranego momentu. Do każdego wpisu możesz dodać maksymalnie 3 filmy.</string>
+    <string name="help_faq_video_length_q">Jak długi może być film i ile zajmuje miejsca?</string>
+    <string name="help_faq_video_length_a">Filmy są ograniczone do 15 sekund. Macaco automatycznie kompresuje każdy klip do około 4 MB (720p, H.264), dzięki czemu Twoja pamięć i limit Dysku pozostają pod kontrolą. Filmy są kopiowane na Dysk Google razem ze zdjęciami, o ile Dysk jest połączony w Ustawieniach.</string>
 </resources>

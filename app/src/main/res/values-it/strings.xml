@@ -356,4 +356,20 @@
     <string name="help_terms_of_service">Termini di servizio</string>
     <string name="help_terms_of_service_subtitle">Consulta il tuo accordo con Macaco</string>
     <string name="help_contact_template">Ciao team Macaco,\n\n[Scrivi qui il tuo messaggio]</string>
+    <string name="new_entry_media_label">Foto e video</string>
+    <string name="new_entry_add_video">Aggiungi video</string>
+    <string name="new_entry_add_video_short">Video</string>
+    <string name="new_entry_add_photo_short">Foto</string>
+    <string name="new_entry_video_record">Registra clip (15 s)</string>
+    <string name="new_entry_video_gallery">Scegli dalla galleria</string>
+    <string name="video_trim_title">Scegli il tuo clip di 15 secondi</string>
+    <string name="video_trim_window">%1$s → %2$s</string>
+    <string name="video_trim_confirm">Usa questo clip</string>
+    <string name="video_processing">Compressione del video…</string>
+    <string name="video_play_cd">Riproduci video</string>
+    <string name="help_section_media">Foto e video</string>
+    <string name="help_faq_video_add_q">Come aggiungo un video a una voce?</string>
+    <string name="help_faq_video_add_a">Tocca il pulsante Video nell\'editor delle voci e scegli «Registra clip» per registrare fino a 15 secondi direttamente con la fotocamera, oppure «Scegli dalla galleria» per selezionare un video esistente. I video della galleria più lunghi di 15 secondi possono essere ritagliati sul momento desiderato prima di salvare. Puoi aggiungere fino a 3 video per voce.</string>
+    <string name="help_faq_video_length_q">Quanto può durare un video e quanto spazio occupa?</string>
+    <string name="help_faq_video_length_a">I video sono limitati a 15 secondi. Macaco comprime automaticamente ogni clip a circa 4 MB (720p, H.264), così lo spazio di archiviazione e la quota di Drive restano sotto controllo. I video vengono salvati su Google Drive insieme alle foto finché Drive è collegato nelle Impostazioni.</string>
 </resources>
