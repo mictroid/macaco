@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -73,7 +74,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -247,10 +247,16 @@ fun SettingsScreen(
     // Local file backup/restore (premium). SAF picks the destination/source; results via Toast.
     val isPurchased by viewModel.isPurchased.collectAsState()
     val importProgress by viewModel.importProgress.collectAsState()
-    val backupScope = rememberCoroutineScope()
-    var backupBusy by remember { mutableStateOf(false) }
+    val backupBusyState by viewModel.backupBusy.collectAsState()
+    // Covers only the SAF picker window (between button tap and picker result), before the
+    // ViewModel-owned operation starts.
+    var pickerPending by remember { mutableStateOf(false) }
+    val backupBusy = backupBusyState != null || pickerPending
     // true = import is running; false = export is running. Used to tailor the overlay status text.
-    var backupIsImport by remember { mutableStateOf(false) }
+    val backupIsImport = backupBusyState == JournalViewModel.BackupBusy.IMPORT
+    // A backup is writing to user-picked storage; swallow back presses so navigation can't
+    // interrupt the overlay (the operation itself now survives in viewModelScope regardless).
+    BackHandler(enabled = backupBusy) { }
 
     // Keep the screen on while a backup export or import is running. Large imports take several
     // minutes to download; without this the device screen timeout fires mid-operation.
@@ -274,31 +280,24 @@ fun SettingsScreen(
     val backupExportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/zip")
     ) { uri ->
-        // backupBusy was set true before launch so the in-progress state covers the picker
-        // transition; clear it if the user cancelled.
-        if (uri == null) {
-            backupBusy = false
-            backupIsImport = false
-            return@rememberLauncherForActivityResult
-        }
-        val isCompact = pendingCompact // capture before the coroutine
-        backupScope.launch {
-            val result = viewModel.exportBackup(uri, compact = isCompact)
-            backupBusy = false
-            backupIsImport = false
+        pickerPending = false
+        if (uri == null) return@rememberLauncherForActivityResult
+        val appContext = context.applicationContext
+        val isCompact = pendingCompact // capture before the background op
+        viewModel.exportBackupInBackground(uri, compact = isCompact) { result ->
             Toast.makeText(
-                context,
+                appContext,
                 result.fold(
                     { r ->
                         if (r.photosSkipped > 0) {
-                            context.getString(
+                            appContext.getString(
                                 R.string.settings_backup_export_done_warn, r.entries, r.photosSkipped
                             )
                         } else {
-                            context.getString(R.string.settings_backup_export_done, r.entries)
+                            appContext.getString(R.string.settings_backup_export_done, r.entries)
                         }
                     },
-                    { it.message ?: context.getString(R.string.settings_backup_failed) }
+                    { it.message ?: appContext.getString(R.string.settings_backup_failed) }
                 ),
                 Toast.LENGTH_LONG
             ).show()
@@ -307,20 +306,15 @@ fun SettingsScreen(
     val backupImportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
-        if (uri == null) {
-            backupBusy = false
-            backupIsImport = false
-            return@rememberLauncherForActivityResult
-        }
-        backupScope.launch {
-            val result = viewModel.importBackup(uri)
-            backupBusy = false
-            backupIsImport = false
+        pickerPending = false
+        if (uri == null) return@rememberLauncherForActivityResult
+        val appContext = context.applicationContext
+        viewModel.importBackupInBackground(uri) { result ->
             Toast.makeText(
-                context,
+                appContext,
                 result.fold(
-                    { context.getString(R.string.settings_backup_import_done, it) },
-                    { it.message ?: context.getString(R.string.settings_backup_failed) }
+                    { appContext.getString(R.string.settings_backup_import_done, it) },
+                    { it.message ?: appContext.getString(R.string.settings_backup_failed) }
                 ),
                 Toast.LENGTH_LONG
             ).show()
@@ -781,8 +775,7 @@ fun SettingsScreen(
                 },
                 onImport = {
                     if (isPurchased == true) {
-                        backupBusy = true
-                        backupIsImport = true
+                        pickerPending = true
                         backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
                     } else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
                 }
@@ -798,8 +791,7 @@ fun SettingsScreen(
                         TextButton(onClick = {
                             showExportDialog = false
                             pendingCompact = true
-                            backupBusy = true
-                            backupIsImport = false
+                            pickerPending = true
                             backupExportLauncher.launch("macaco-backup-compact.zip")
                         }) {
                             Text(stringResource(R.string.settings_backup_export_compact))
@@ -809,8 +801,7 @@ fun SettingsScreen(
                         TextButton(onClick = {
                             showExportDialog = false
                             pendingCompact = false
-                            backupBusy = true
-                            backupIsImport = false
+                            pickerPending = true
                             backupExportLauncher.launch("macaco-backup.zip")
                         }) {
                             Text(stringResource(R.string.settings_backup_export_full))

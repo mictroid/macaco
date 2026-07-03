@@ -71,6 +71,41 @@ class JournalViewModel(
     private val _importProgress = MutableStateFlow<ImportProgress?>(null)
     val importProgress: StateFlow<ImportProgress?> = _importProgress.asStateFlow()
 
+    /** Kind of backup operation currently running, or null when idle. */
+    enum class BackupBusy { EXPORT, IMPORT }
+
+    private val _backupBusy = MutableStateFlow<BackupBusy?>(null)
+    val backupBusy: StateFlow<BackupBusy?> = _backupBusy.asStateFlow()
+
+    /** Runs the export in viewModelScope so leaving Settings can't cancel it mid-write. */
+    fun exportBackupInBackground(
+        dest: android.net.Uri,
+        compact: Boolean,
+        onDone: (Result<JournalBackup.ExportResult>) -> Unit
+    ) {
+        if (_backupBusy.value != null) return
+        _backupBusy.value = BackupBusy.EXPORT
+        viewModelScope.launch {
+            val result = exportBackup(dest, compact)
+            _backupBusy.value = null
+            onDone(result)
+        }
+    }
+
+    /** Runs the import in viewModelScope so leaving Settings can't cancel it mid-restore. */
+    fun importBackupInBackground(
+        src: android.net.Uri,
+        onDone: (Result<Int>) -> Unit
+    ) {
+        if (_backupBusy.value != null) return
+        _backupBusy.value = BackupBusy.IMPORT
+        viewModelScope.launch {
+            val result = importBackup(src)
+            _backupBusy.value = null
+            onDone(result)
+        }
+    }
+
     // Tags currently filtering the journal list (empty = show all). Lifted here so the entry
     // detail screen can set it (tap a tag → list filtered by that tag).
     private val _selectedTags = MutableStateFlow<Set<String>>(emptySet())
