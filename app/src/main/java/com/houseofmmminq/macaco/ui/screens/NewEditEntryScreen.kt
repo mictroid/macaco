@@ -897,15 +897,15 @@ private fun TripField(
                 onValueChange(it)
                 expanded = true
             },
-            label = { Text("Trip") },
-            placeholder = { Text("e.g. Thailand 2026") },
+            label = { Text(stringResource(R.string.new_entry_trip_label)) },
+            placeholder = { Text(stringResource(R.string.new_entry_trip_placeholder)) },
             leadingIcon = {
                 Text("✈️", fontSize = 16.sp, modifier = androidx.compose.ui.Modifier.padding(start = 4.dp))
             },
             trailingIcon = {
                 if (value.isNotBlank()) {
                     IconButton(onClick = { onValueChange("") }) {
-                        Icon(Icons.Filled.Close, contentDescription = "Clear trip")
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.new_entry_trip_clear_cd))
                     }
                 }
             },

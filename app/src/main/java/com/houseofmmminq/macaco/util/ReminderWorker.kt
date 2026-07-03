@@ -73,6 +73,7 @@ class ReminderWorker(
         }
 
         val (title, body) = buildNotificationCopy(
+            context = ctx,
             entryCount = entries.size,
             daysSinceLast = daysSinceLast,
             lastLocation = lastEntry?.location?.takeIf { it.isNotBlank() }
@@ -103,8 +104,8 @@ class ReminderWorker(
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setContentIntent(newEntryPending)
             .setAutoCancel(true)
-            .addAction(R.drawable.ic_add, "+ Add Memory", newEntryPending)
-            .addAction(R.drawable.ic_snooze, "Remind me later", snoozePending)
+            .addAction(R.drawable.ic_add, ctx.getString(R.string.reminder_action_add), newEntryPending)
+            .addAction(R.drawable.ic_snooze, ctx.getString(R.string.reminder_action_snooze), snoozePending)
             .build()
 
         runCatching {

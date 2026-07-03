@@ -442,14 +442,14 @@ fun MapScreen(
                     letterSpacing = 3.sp
                 )
                 Text(
-                    text = " · Adventures",
+                    text = " · " + stringResource(R.string.map_adventures_title),
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.White.copy(alpha = 0.85f)
                 )
                 if (locations.isNotEmpty()) {
                     val mappedCount = locations.count { it in geocodedLocations }
                     Text(
-                        text = " · $mappedCount/${locations.size} mapped",
+                        text = " · " + stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
                         color = SplashGold.copy(alpha = 0.70f),
                         fontSize = 11.sp,
                         fontFamily = MacacoFontFamily
@@ -487,7 +487,7 @@ fun MapScreen(
                     letterSpacing = 5.sp
                 )
                 Text(
-                    "Adventures",
+                    stringResource(R.string.map_adventures_title),
                     style = MaterialTheme.typography.labelMedium,
                     color = Color.White.copy(alpha = 0.85f)
                 )
@@ -497,7 +497,7 @@ fun MapScreen(
                     // count only the overlap with today's unique locations.
                     val mappedCount = locations.count { it in geocodedLocations }
                     Text(
-                        "$mappedCount of ${locations.size} locations mapped",
+                        stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
                         color = SplashGold.copy(alpha = 0.70f),
                         fontSize = 11.sp,
                         fontFamily = MacacoFontFamily
@@ -545,7 +545,8 @@ fun MapScreen(
                         Marker(
                             state = MarkerState(position = LatLng(coords.first, coords.second)),
                             title = location,
-                            snippet = if (count == 1) "1 memory · tap to open" else "$count memories · tap to open",
+                            snippet = if (count == 1) context.getString(R.string.map_marker_snippet_one)
+                                      else context.getString(R.string.map_marker_snippet_many, count),
                             icon = marker,
                             onInfoWindowClick = { onEntryClick(topEntry.id) }
                         )
@@ -569,13 +570,13 @@ fun MapScreen(
                     )
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        "No locations yet",
+                        stringResource(R.string.map_no_locations_title),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Add a location to your journal entries\nto see them on the map.",
+                        stringResource(R.string.map_no_locations_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,

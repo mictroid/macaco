@@ -366,7 +366,7 @@ fun JournalListScreen(
                                     Spacer(Modifier.height(4.dp))
                                 }
                                 Text(
-                                    text = if (currentUser != null) currentUser!!.displayName else "Not signed in",
+                                    text = currentUser?.displayName ?: stringResource(R.string.drawer_not_signed_in),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = Color.White.copy(alpha = 0.85f),
                                     modifier = if (currentUser != null) Modifier.clickable {

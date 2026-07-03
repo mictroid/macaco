@@ -1111,7 +1111,7 @@ private fun shareEntry(
         // Soft app credit — organic word-of-mouth, not an advertisement.
         appendLine()
         appendLine()
-        append("— shared from Macaco")
+        append(context.getString(R.string.entry_share_credit))
     }
 
     // Photos live in app-internal storage (file:// URIs), which other apps can't read directly.
@@ -1163,7 +1163,7 @@ private fun shareEntry(
             clipboard.setPrimaryClip(ClipData.newPlainText("Macaco entry", shareText))
             Toast.makeText(
                 context,
-                "Caption copied — paste it into the photo caption",
+                context.getString(R.string.entry_share_caption_copied),
                 Toast.LENGTH_LONG
             ).show()
             Intent(Intent.ACTION_SEND_MULTIPLE).apply {
@@ -1177,5 +1177,5 @@ private fun shareEntry(
             }
         }
     }
-    context.startActivity(Intent.createChooser(intent, "Share your memory"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.entry_share_chooser)))
 }

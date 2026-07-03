@@ -280,7 +280,7 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "No hidden fees. Cancel anytime.",
+                        stringResource(R.string.purchase_footer_no_fees),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White.copy(alpha = 0.55f)
                     )

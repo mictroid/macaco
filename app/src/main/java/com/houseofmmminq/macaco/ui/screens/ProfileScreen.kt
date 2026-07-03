@@ -538,7 +538,7 @@ fun ProfileScreen(
                     }
                     if (memberSince != null) {
                         Text(
-                            text = "Member since $memberSince",
+                            text = stringResource(R.string.profile_member_since, memberSince),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(vertical = 12.dp)
@@ -894,7 +894,7 @@ fun ProfileScreen(
                 }
                 if (memberSince != null) {
                     Text(
-                        text = "Member since $memberSince",
+                        text = stringResource(R.string.profile_member_since, memberSince),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(vertical = 16.dp)

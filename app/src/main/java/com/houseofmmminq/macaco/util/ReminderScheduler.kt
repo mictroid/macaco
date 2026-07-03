@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.houseofmmminq.macaco.R
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -27,9 +28,9 @@ object ReminderScheduler {
             mgr.createNotificationChannel(
                 NotificationChannel(
                     CHANNEL_ID,
-                    "Travel reminders",
+                    context.getString(R.string.reminder_channel_name),
                     NotificationManager.IMPORTANCE_DEFAULT
-                ).apply { description = "Periodic nudges to log a new travel memory" }
+                ).apply { description = context.getString(R.string.reminder_channel_desc) }
             )
         }
     }
