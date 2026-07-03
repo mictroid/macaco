@@ -68,14 +68,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // System splash (teal brand colour + monkey) covers the cold-start window, then the
-        // in-app Compose SplashScreen continues the branded poster. Only install it on a true
-        // cold start: on a recreation (locale change, rotation) the OS doesn't show the splash
-        // anyway, and installSplashScreen()'s postSplashScreenTheme swap causes a one-frame
-        // black flash. The windowBackground on Theme.Macaco.Splash covers the gap otherwise.
-        if (savedInstanceState == null) {
-            installSplashScreen()
-        }
+        // installSplashScreen() must run on every onCreate — it performs the theme swap from
+        // Theme.Macaco.Splash (Theme.SplashScreen parent, non-AppCompat) to Theme.MyApplication
+        // (AppCompat). Skipping it on recreations (locale change, rotation) leaves a non-AppCompat
+        // theme active and crashes AppCompatActivity.super.onCreate(). The one-frame flash that
+        // motivated the old savedInstanceState guard is no longer possible: both themes now share
+        // android:windowBackground=@color/splash_background (teal, added vc48), so the swap is
+        // seamless. On recreations the OS doesn't show the splash animation regardless.
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (intent?.action == ACTION_NEW_ENTRY) openNewEntry = true
