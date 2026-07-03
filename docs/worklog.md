@@ -18,8 +18,14 @@ bumped/dispatched. Dated detail + deviations in `worklog-2026-07-03.md`.
   `androidx.exifinterface:1.3.7`; bake EXIF rotation into both re-encode paths so camera photos stop
   rendering sideways.
 
-Ship 2 (delete-account-reauth, billing-signout-reset) and Ship 3 (qa-polish, branded-snackbars,
-hardcoded-strings, backup-lifecycle) still loose in `docs/`.
+**Ship 2/3 (auth & billing) — IMPLEMENTED (commit `730c9a2`), NOT shipped:**
+- **billing-signout-reset** (M2, `BillingManager.kt`) — signed-out branch drops entitlement +
+  `logOutWith`; `restore()` via `applyEntitlement`. Stops premium leaking across account switch.
+- **delete-account-reauth** (M5, auth layer + VM/NavGraph/ProfileScreen + strings ×11) — re-auth first
+  (silent Google / password field for email), then wipe, then delete; fixes half-deleted accounts.
+  *Deviation:* added the `R` import to FirebaseAuthRepository (brief listed it as present, wasn't).
+
+Ship 3 (qa-polish, branded-snackbars, hardcoded-strings, backup-lifecycle) still loose in `docs/`.
 
 ## 2026-07-02 — vc48-QA batch (6 briefs) implemented, one push (vc49)
 
