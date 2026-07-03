@@ -1,7 +1,4 @@
 What's new:
-• Photos stay reliably linked to your entries, and camera shots no longer appear sideways
-• Premium status now resets correctly when you switch accounts
-• Account deletion is more reliable and won't leave things half-removed
-• Backups no longer get interrupted if you leave the Settings screen
-• More of the app is now fully translated, plus a fresh in-app message style
-• Reliability fixes for the photo gallery, sharing, and Adventure Reel
+• Fixed a crash when changing the app language or rotating the screen
+• Map: the ◀ ▶ arrows for off-screen pins are now clearly visible in light mode
+• More reliability and polish
