@@ -1,4 +1,5 @@
 What's new:
-• Fixed a crash when changing the app language or rotating the screen
-• Map: the ◀ ▶ arrows for off-screen pins are now clearly visible in light mode
-• More reliability and polish
+• Landscape polish across the menu, profile, and settings screens
+• Menu no longer cuts off Sign Out in landscape
+• Cleaner, tighter Settings layout
+• More refinements
