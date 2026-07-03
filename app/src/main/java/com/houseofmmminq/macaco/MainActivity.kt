@@ -36,6 +36,7 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.houseofmmminq.macaco.ui.components.MacacoSnackbar
 import com.houseofmmminq.macaco.ui.navigation.NavGraph
 import com.houseofmmminq.macaco.ui.theme.WanderlogTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
@@ -161,7 +162,7 @@ class MainActivity : AppCompatActivity() {
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .navigationBarsPadding()
-                    )
+                    ) { data -> MacacoSnackbar(data) }
                 }
             }
         }

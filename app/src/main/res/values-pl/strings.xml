@@ -97,6 +97,7 @@
     <string name="reel_generating_subtitle">Tworzenie %1$s</string>
     <string name="reel_share_chooser">Udostępnij Reel z podróży</string>
     <string name="reel_no_photos_error">Nie znaleziono zdjęć dla tej podróży</string>
+    <string name="reel_error_generic">Nie udało się utworzyć reela. Spróbuj ponownie.</string>
     <string name="settings_background_image">Obraz tła</string>
     <string name="settings_custom_bg_active">Własne tło aktywne</string>
     <string name="settings_custom_bg_tap_change">Naciśnij, aby zmienić</string>

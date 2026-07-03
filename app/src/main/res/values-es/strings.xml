@@ -93,6 +93,7 @@
     <string name="reel_generating_subtitle">Creando %1$s</string>
     <string name="reel_share_chooser">Compartir Reel de aventura</string>
     <string name="reel_no_photos_error">No se encontraron fotos para este viaje</string>
+    <string name="reel_error_generic">No se pudo crear el reel. Inténtalo de nuevo.</string>
     <string name="settings_background_image">Imagen de fondo</string>
     <string name="settings_custom_bg_active">Fondo personalizado activo</string>
     <string name="settings_custom_bg_tap_change">Toca para cambiar</string>

@@ -179,6 +179,7 @@
     <string name="reel_generating_subtitle">Building %1$s</string>
     <string name="reel_share_chooser">Share Adventure Reel</string>
     <string name="reel_no_photos_error">No photos found for this trip</string>
+    <string name="reel_error_generic">Couldn\'t create the reel. Please try again.</string>
     <string name="settings_background_image">Background Image</string>
     <string name="settings_custom_bg_active">Custom background active</string>
     <string name="settings_custom_bg_tap_change">Tap to change</string>

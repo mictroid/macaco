@@ -96,6 +96,7 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.onThisDayEntries
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
+import com.houseofmmminq.macaco.ui.components.MacacoSnackbar
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
@@ -721,7 +722,7 @@ fun JournalListScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             },
-            snackbarHost = { SnackbarHost(snackbarHostState) },
+            snackbarHost = { SnackbarHost(snackbarHostState) { data -> MacacoSnackbar(data) } },
             containerColor = MaterialTheme.colorScheme.background,
             contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { padding ->

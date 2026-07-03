@@ -181,7 +181,19 @@ class JournalViewModel(
             )
             _reelState.value = result.fold(
                 onSuccess = { uri -> ReelState.Ready(tripName, uri) },
-                onFailure = { e -> ReelState.Error(e.message ?: "Reel generation failed.") }
+                onFailure = { e ->
+                    when {
+                        // User cancelled via cancelReel(): encode's runCatching swallowed the
+                        // CancellationException. cancelReel already set Idle — keep it, and
+                        // never surface cancellation as an error.
+                        e is kotlinx.coroutines.CancellationException -> ReelState.Idle
+                        // Our own guard messages (e.g. no-photos) are already user-facing.
+                        e is IllegalStateException && !e.message.isNullOrBlank() ->
+                            ReelState.Error(e.message!!)
+                        // Anything else: friendly localized copy, never raw exception text.
+                        else -> ReelState.Error(appContext.getString(R.string.reel_error_generic))
+                    }
+                }
             )
         }
     }

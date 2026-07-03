@@ -93,6 +93,7 @@
     <string name="reel_generating_subtitle">Skapar %1$s</string>
     <string name="reel_share_chooser">Dela äventyrsreel</string>
     <string name="reel_no_photos_error">Inga foton hittades för den här resan</string>
+    <string name="reel_error_generic">Det gick inte att skapa reelen. Försök igen.</string>
     <string name="settings_background_image">Bakgrundsbild</string>
     <string name="settings_custom_bg_active">Anpassad bakgrund aktiv</string>
     <string name="settings_custom_bg_tap_change">Tryck för att byta</string>
