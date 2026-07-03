@@ -36,48 +36,66 @@ object VideoTranscoder {
         onProgress: (Float) -> Unit = {}
     ): File? = withContext(Dispatchers.IO) {
         val outFile = File(context.cacheDir, "transcode_${System.currentTimeMillis()}.mp4")
-        val clampedDuration = minOf(durationMs, MAX_DURATION_MS)
+        try {
+            val keepMs = minOf(durationMs, MAX_DURATION_MS)
+            val totalMs = getDurationMs(context, sourceUri)
 
-        val dataSource = if (trimStartMs > 0L) {
-            ClipDataSource(UriDataSource(context, sourceUri), trimStartMs * 1000L, clampedDuration * 1000L)
-        } else {
-            ClipDataSource(UriDataSource(context, sourceUri), 0L, clampedDuration * 1000L)
-        }
+            // otaliastudios ClipDataSource(source, trimStartUs, trimEndUs) trims from BOTH ends
+            // (start offset + amount off the tail), NOT (start, duration). To keep the window
+            // [trimStartMs, trimStartMs+keepMs] we trim trimStartMs off the front and
+            // (total - trimStartMs - keepMs) off the back. When nothing needs trimming (a clip that
+            // already fits from 0), use the raw source so we never pass a negative/invalid trim value
+            // (that threw IllegalArgumentException "Trim values cannot be negative" and crashed).
+            val trimEndMs = if (totalMs > 0L) (totalMs - trimStartMs - keepMs).coerceAtLeast(0L) else 0L
+            val base = UriDataSource(context, sourceUri)
+            val dataSource = if (trimStartMs <= 0L && trimEndMs <= 0L) base
+                else ClipDataSource(base, trimStartMs * 1000L, trimEndMs * 1000L)
 
-        val videoStrategy = DefaultVideoStrategy.Builder()
-            .addResizer(com.otaliastudios.transcoder.resize.AtMostResizer(720))
-            .bitRate(2_000_000L)
-            .build()
+            val videoStrategy = DefaultVideoStrategy.Builder()
+                .addResizer(com.otaliastudios.transcoder.resize.AtMostResizer(720))
+                .bitRate(2_000_000L)
+                .build()
 
-        val audioStrategy = DefaultAudioStrategy.Builder()
-            .channels(DefaultAudioStrategy.CHANNELS_AS_INPUT)
-            .sampleRate(DefaultAudioStrategy.SAMPLE_RATE_AS_INPUT)
-            .bitRate(96_000L)
-            .build()
+            val audioStrategy = DefaultAudioStrategy.Builder()
+                .channels(DefaultAudioStrategy.CHANNELS_AS_INPUT)
+                .sampleRate(DefaultAudioStrategy.SAMPLE_RATE_AS_INPUT)
+                .bitRate(96_000L)
+                .build()
 
-        suspendCancellableCoroutine { cont ->
-            val future = Transcoder.into(outFile.absolutePath)
-                .addDataSource(dataSource)
-                .setVideoTrackStrategy(videoStrategy)
-                .setAudioTrackStrategy(audioStrategy)
-                .setListener(object : TranscoderListener {
-                    override fun onTranscodeProgress(progress: Double) {
-                        onProgress(progress.toFloat())
-                    }
-                    override fun onTranscodeCompleted(successCode: Int) {
-                        cont.resume(outFile)
-                    }
-                    override fun onTranscodeCanceled() {
-                        outFile.delete()
-                        cont.resume(null)
-                    }
-                    override fun onTranscodeFailed(exception: Throwable) {
-                        outFile.delete()
-                        cont.resume(null)
-                    }
-                })
-                .transcode()
-            cont.invokeOnCancellation { future.cancel(true) }
+            suspendCancellableCoroutine { cont ->
+                val future = Transcoder.into(outFile.absolutePath)
+                    .addDataSource(dataSource)
+                    .setVideoTrackStrategy(videoStrategy)
+                    .setAudioTrackStrategy(audioStrategy)
+                    .setListener(object : TranscoderListener {
+                        override fun onTranscodeProgress(progress: Double) {
+                            onProgress(progress.toFloat())
+                        }
+                        override fun onTranscodeCompleted(successCode: Int) {
+                            cont.resume(outFile)
+                        }
+                        override fun onTranscodeCanceled() {
+                            outFile.delete()
+                            cont.resume(null)
+                        }
+                        override fun onTranscodeFailed(exception: Throwable) {
+                            android.util.Log.e("VideoTranscoder", "transcode failed", exception)
+                            outFile.delete()
+                            cont.resume(null)
+                        }
+                    })
+                    .transcode()
+                cont.invokeOnCancellation { future.cancel(true) }
+            }
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            outFile.delete()
+            throw e
+        } catch (e: Throwable) {
+            // Any synchronous setup failure (bad trim values, unreadable source, muxer init, …)
+            // degrades to "no video added" instead of crashing the app.
+            android.util.Log.e("VideoTranscoder", "transcode setup failed", e)
+            outFile.delete()
+            null
         }
     }
 
