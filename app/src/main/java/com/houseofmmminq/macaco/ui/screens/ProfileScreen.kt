@@ -61,6 +61,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -111,7 +112,10 @@ fun ProfileScreen(
         (configuration.screenWidthDp >= 600 && configuration.screenWidthDp > configuration.screenHeightDp)
 
     var showPhotoSourceSheet by remember { mutableStateOf(false) }
-    var pendingCameraUri by remember { mutableStateOf<Uri?>(null) }
+    // Saveable as a string: the camera app backgrounds us and the OS may kill the process;
+    // without this the captured photo is lost on return.
+    var pendingCameraUriString by rememberSaveable { mutableStateOf<String?>(null) }
+    val pendingCameraUri: Uri? = pendingCameraUriString?.let(Uri::parse)
 
     val photoPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
@@ -145,7 +149,7 @@ fun ProfileScreen(
                     ?.let { viewModel.setProfilePhoto(it) }
             }
         }
-        pendingCameraUri = null
+        pendingCameraUriString = null
     }
 
     if (showPhotoSourceSheet) {
@@ -190,7 +194,7 @@ fun ProfileScreen(
                 modifier = Modifier.clickable {
                     showPhotoSourceSheet = false
                     val uri = ImageStorage.newCameraTempUri(context)
-                    pendingCameraUri = uri
+                    pendingCameraUriString = uri?.toString()
                     uri?.let { cameraPicker.launch(it) }
                 }
             )

@@ -199,7 +199,10 @@ fun NewEditEntryScreen(
 
     // Camera capture: the camera app writes into a FileProvider temp file, which we then copy into
     // the shared gallery (same destination as picked photos) so it's Drive-syncable and persists.
-    var pendingCameraUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    // Saveable as a string: the camera app backgrounds us and the OS may kill the process;
+    // without this the captured photo is lost on return.
+    var pendingCameraUriString by rememberSaveable { mutableStateOf<String?>(null) }
+    val pendingCameraUri: android.net.Uri? = pendingCameraUriString?.let(android.net.Uri::parse)
     val cameraLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
@@ -212,11 +215,11 @@ fun NewEditEntryScreen(
             }
         }
         ImageStorage.clear(context, ImageStorage.CAMERA_TEMP)
-        pendingCameraUri = null
+        pendingCameraUriString = null
     }
     val launchCamera = {
         ImageStorage.newCameraTempUri(context)?.let { uri ->
-            pendingCameraUri = uri
+            pendingCameraUriString = uri.toString()
             onSuppressAutoLock()
             cameraLauncher.launch(uri)
         }

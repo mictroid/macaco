@@ -226,6 +226,9 @@ class AdventureReelEncoder(private val context: Context) {
                 prevBitmap = bitmap
             }
             prevBitmap?.recycle()
+            check(framesRendered > 0) {
+                context.getString(R.string.reel_no_photos_error)
+            }
             drainEncoder(true)
         } finally {
             logoBitmap?.recycle()
@@ -296,32 +299,18 @@ class AdventureReelEncoder(private val context: Context) {
     private fun drawBranding(canvas: Canvas, logoBitmap: Bitmap?, overlayText: String?) {
         // ── Location pill ──────────────────────────────────────────────────────
         if (overlayText != null) {
-            val pillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                // Macaco dark-teal scrim at 70% opacity.
-                color = android.graphics.Color.argb(178, 7, 30, 38)
-            }
+            // Use the pre-allocated class fields — never allocate Paint inside the render loop.
             canvas.drawRoundRect(
                 android.graphics.RectF(32f, 1152f, 688f, 1224f),
                 24f, 24f,
                 pillPaint
             )
-            val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = android.graphics.Color.WHITE
-                textSize = 22f
-                textAlign = Paint.Align.CENTER
-                typeface = android.graphics.Typeface.create(
-                    android.graphics.Typeface.DEFAULT, android.graphics.Typeface.NORMAL
-                )
-            }
             // Vertically centre text within the pill (pill midpoint y = 1188; baseline ≈ 1196).
             canvas.drawText(overlayText, 360f, 1196f, textPaint)
         }
 
         // ── Logo watermark (bottom-centre) ─────────────────────────────────────
         if (logoBitmap != null) {
-            val logoPaint = Paint().apply {
-                alpha = 38    // ~15% opacity — visible but unobtrusive
-            }
             val logoX = ((WIDTH - 48) / 2).toFloat()   // = 336f
             val logoY = (HEIGHT - 48 - 8).toFloat()    // = 1224f → bottom edge 1272f
             canvas.drawBitmap(logoBitmap, logoX, logoY, logoPaint)

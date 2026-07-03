@@ -113,9 +113,15 @@ class JournalViewModel(
         val reelPhotos = entries
             .sortedBy { it.dateMillis }
             .flatMap { entry ->
-                // Prefer local MediaStore URIs; fall back to Drive cache URIs (keyed by driveFileId).
-                val uris = entry.photoUris.ifEmpty {
-                    entry.driveFileIds.mapNotNull { id -> cachedDrivePhotos.value[id] }
+                // Resolve per photo: prefer the Drive-cached copy when one exists (it only exists
+                // when the local URI was unreadable), else the local URI. Mirrors EntryDetail's
+                // displayPhotoUri — an all-or-nothing ifEmpty decoded nothing when photoUris was
+                // non-empty but every URI was dead (e.g. after a reinstall).
+                val cache = cachedDrivePhotos.value
+                val count = maxOf(entry.photoUris.size, entry.driveFileIds.size)
+                val uris = (0 until count).mapNotNull { i ->
+                    entry.driveFileIds.getOrNull(i)?.takeIf { it.isNotEmpty() }?.let { cache[it] }
+                        ?: entry.photoUris.getOrNull(i)
                 }.filter { it.isNotBlank() }
                 // Branding overlay: "Location · Mon YYYY" (null when the entry has no location).
                 val dateStr = java.text.SimpleDateFormat("MMM yyyy", java.util.Locale.getDefault())

@@ -1,5 +1,6 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -231,7 +232,7 @@ fun EntryDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { shareEntry(context, currentEntry) }) {
+                    IconButton(onClick = { shareEntry(context, currentEntry, cachedDrivePhotos) }) {
                         Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.entry_detail_share_cd))
                     }
                     IconButton(onClick = { onEdit(currentEntry.id) }) {
@@ -883,6 +884,10 @@ fun EntryDetailScreen(
         // Full-screen swipeable gallery over the current entry's photos, layered above the whole
         // screen (app bar included). Opens at the tapped index; tap a photo or the close button to
         // dismiss.
+        // System back closes the gallery first; only a second back leaves the screen.
+        BackHandler(enabled = galleryStartIndex != null) {
+            galleryStartIndex = null
+        }
         galleryStartIndex?.let { startIndex ->
             val count = maxOf(currentEntry.photoUris.size, currentEntry.driveFileIds.size)
             val galleryPagerState = rememberPagerState(
@@ -1076,7 +1081,11 @@ private fun PhotoActionSheet(
     }
 }
 
-private fun shareEntry(context: Context, entry: TravelEntry) {
+private fun shareEntry(
+    context: Context,
+    entry: TravelEntry,
+    cachedDrivePhotos: Map<String, String> = emptyMap()
+) {
     val dateStr = formatDate(entry.dateMillis)
     val shareText = buildString {
         appendLine(entry.title)
@@ -1108,8 +1117,17 @@ private fun shareEntry(context: Context, entry: TravelEntry) {
     // Photos live in app-internal storage (file:// URIs), which other apps can't read directly.
     // Expose each through our FileProvider so the share target gets a readable content:// URI.
     val authority = "${context.packageName}.fileprovider"
+    // Resolve each photo like displayPhotoUri: prefer the Drive-cached copy when one exists
+    // (it only exists when the local URI was unreadable), else the local URI. Without this, the
+    // share silently attaches nothing on any device that didn't originally add the photos.
+    val photoCount = maxOf(entry.photoUris.size, entry.driveFileIds.size)
+    val resolvedUris = (0 until photoCount).mapNotNull { i ->
+        entry.driveFileIds.getOrNull(i)?.takeIf { it.isNotEmpty() }
+            ?.let { cachedDrivePhotos[it] }
+            ?: entry.photoUris.getOrNull(i)
+    }
     val shareUris = ArrayList<Uri>(
-        entry.photoUris.mapNotNull { uriString ->
+        resolvedUris.mapNotNull { uriString ->
             val uri = Uri.parse(uriString)
             when (uri.scheme) {
                 "file" -> uri.path?.let { path ->
