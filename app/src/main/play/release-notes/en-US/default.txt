@@ -1,9 +1,6 @@
 What's new:
-• Date picker now fits landscape (switches to quick date entry)
-• Full menu, including Share & Rate, stays visible in landscape
-• Journal list scrolls smoothly and clears the navigation bar in landscape
-• Language list scrolls so every language is reachable
-• Map shows one direction arrow per off-screen place
-• Themed tint on "On This Day" and trip headers; refreshed profile header
-</content>
-</invoke>
+• New: add short video clips to your entries — record a 15-second clip or pick one from your gallery
+• Tap a video to play it full screen
+• Videos now save reliably and sync with your entry
+• Wider device support for adding videos
+• Smoother, branded app startup screen
