@@ -2,7 +2,7 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-07-03 — vc49-QA sweep, Ship 1/3 (HIGH data-integrity trio) implemented, NOT shipped
+## 2026-07-03 — vc49-QA sweep, all 3 ships (9 briefs) implemented, NOT shipped
 
 Fable 5's full-app QA at vc49 (`docs/qa-code-review-2026-07-03.md`) yielded 9 briefs; grouped into 3
 ships by risk (user chose the split). Ship 1 = the three HIGH data-integrity fixes, verified vs live
@@ -25,7 +25,21 @@ bumped/dispatched. Dated detail + deviations in `worklog-2026-07-03.md`.
   (silent Google / password field for email), then wipe, then delete; fixes half-deleted accounts.
   *Deviation:* added the `R` import to FirebaseAuthRepository (brief listed it as present, wasn't).
 
-Ship 3 (qa-polish, branded-snackbars, hardcoded-strings, backup-lifecycle) still loose in `docs/`.
+**Ship 3/3 (UX + localization) — IMPLEMENTED (commits `a61daeb`, `76e1c5c`, `9c8c6f5`, `f9041dd`), NOT shipped:**
+- **qa-polish** (M4, EntryDetail/NewEditEntry/Profile/JournalViewModel/AdventureReelEncoder) — gallery
+  `BackHandler`, camera `rememberSaveable` (survives process death), reel per-photo Drive fallback +
+  zero-frame guard + pre-allocated Paints, share resolves Drive-cached photos.
+- **backup-lifecycle** (M1, `JournalViewModel.kt`/`SettingsScreen.kt`) — backup export/import hoisted to
+  `viewModelScope` (survives leaving Settings); `BackHandler` swallows back while busy.
+- **branded-snackbars** (`JournalViewModel.kt`, new `MacacoSnackbar.kt`, MainActivity/JournalList +
+  strings ×11) — reel-cancel → Idle (no raw error snackbar), real failures → localized
+  `reel_error_generic`; new token-only branded snackbar in both hosts.
+- **hardcoded-strings** (M3, Map/Profile/JournalList/Purchase/EntryDetail/NewEditEntry/Reminder* /
+  NotificationCopy + strings ×11) — 27 new keys translated across all 11 locales; `buildNotificationCopy`
+  now Context-based. Slogan kept identical per locale.
+
+All 9 QA briefs (Ships 1+2+3) now implemented & committed locally; **none shipped** — still vc49 on
+Play. Next: one version bump + dispatch covering all three ships.
 
 ## 2026-07-02 — vc48-QA batch (6 briefs) implemented, one push (vc49)
 
