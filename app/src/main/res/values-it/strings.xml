@@ -314,6 +314,10 @@
     <string name="profile_delete_account_body">Questa operazione elimina definitivamente il tuo account Macaco e tutte le voci del diario. Le foto salvate nella galleria del dispositivo e su Google Drive non vengono modificate. Questa azione non può essere annullata.</string>
     <string name="profile_delete_account_confirm">Elimina</string>
     <string name="profile_delete_account_error">Impossibile eliminare l\'account. Esci, accedi di nuovo e riprova.</string>
+    <string name="profile_delete_password_label">Conferma la tua password</string>
+    <string name="profile_delete_password_required">Inserisci la password per confermare l\'eliminazione</string>
+    <string name="profile_delete_wrong_password">Password errata — riprova</string>
+    <string name="profile_delete_reauth_google_failed">Impossibile verificare l\'accesso Google. Esci, accedi di nuovo e riprova.</string>
     <string name="login_tos_prefix">"Continuando, accetti i nostri "</string>
     <string name="login_tos_link">Termini di servizio</string>
     <string name="login_tos_and">" e la nostra "</string>

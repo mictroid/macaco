@@ -322,8 +322,8 @@ class JournalViewModel(
         }
     }
 
-    fun deleteAccount(onComplete: (Result<Unit>) -> Unit) {
-        viewModelScope.launch { onComplete(authRepository.deleteAccount()) }
+    fun deleteAccount(password: String? = null, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch { onComplete(authRepository.deleteAccount(password)) }
     }
 
     fun purchase(activity: Activity, pkg: com.revenuecat.purchases.Package, onResult: (Result<Boolean>) -> Unit) {

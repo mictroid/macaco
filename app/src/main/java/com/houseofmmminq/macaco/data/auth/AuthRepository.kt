@@ -13,11 +13,12 @@ interface AuthRepository {
     suspend fun signOut()
 
     /**
-     * GDPR right to erasure: deletes the user's Firestore entries + user document, then the
-     * Firebase Auth account. May fail with FirebaseAuthRecentLoginRequiredException if the
-     * session is stale; the Result captures it for the caller to surface.
+     * GDPR right to erasure. Re-authenticates FIRST (silently for Google; with [password] for
+     * email accounts), then deletes the user's Firestore entries + user document, then the
+     * Firebase Auth account — so data is never wiped unless the deletion can complete.
+     * [password] is required for email/password accounts and ignored for Google accounts.
      */
-    suspend fun deleteAccount(): Result<Unit>
+    suspend fun deleteAccount(password: String? = null): Result<Unit>
 
     /**
      * Sends a Firebase password-reset email. Firebase deliberately reports success even when no

@@ -41,7 +41,7 @@ class MockAuthRepository : AuthRepository {
 
     override suspend fun signOut() { _currentUser.value = null }
 
-    override suspend fun deleteAccount(): Result<Unit> {
+    override suspend fun deleteAccount(password: String?): Result<Unit> {
         _currentUser.value = null
         return Result.success(Unit)
     }

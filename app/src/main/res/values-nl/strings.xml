@@ -314,6 +314,10 @@
     <string name="profile_delete_account_body">Hiermee worden je Macaco-account en al je dagboeknotities permanent verwijderd. Foto\'s die in je apparaatgalerij en Google Drive zijn opgeslagen, blijven ongewijzigd. Dit kan niet ongedaan worden gemaakt.</string>
     <string name="profile_delete_account_confirm">Verwijderen</string>
     <string name="profile_delete_account_error">Kan account niet verwijderen. Log uit, log opnieuw in en probeer het opnieuw.</string>
+    <string name="profile_delete_password_label">Bevestig je wachtwoord</string>
+    <string name="profile_delete_password_required">Voer je wachtwoord in om verwijderen te bevestigen</string>
+    <string name="profile_delete_wrong_password">Onjuist wachtwoord — probeer het opnieuw</string>
+    <string name="profile_delete_reauth_google_failed">Kan je Google-aanmelding niet verifiëren. Meld je af, meld je opnieuw aan en probeer het opnieuw.</string>
     <string name="login_tos_prefix">"Door door te gaan ga je akkoord met onze "</string>
     <string name="login_tos_link">Servicevoorwaarden</string>
     <string name="login_tos_and">" en ons "</string>

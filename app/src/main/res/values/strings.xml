@@ -282,6 +282,10 @@
     <string name="profile_delete_account_body">This permanently deletes your Macaco account and all your journal entries. Photos saved to your device gallery and Google Drive are not affected. This cannot be undone.</string>
     <string name="profile_delete_account_confirm">Delete</string>
     <string name="profile_delete_account_error">Could not delete account. Please sign out, sign back in, and try again.</string>
+    <string name="profile_delete_password_label">Confirm your password</string>
+    <string name="profile_delete_password_required">Enter your password to confirm deletion</string>
+    <string name="profile_delete_wrong_password">Wrong password — please try again</string>
+    <string name="profile_delete_reauth_google_failed">Couldn\'t verify your Google sign-in. Sign out, sign back in, then try again.</string>
     <string name="profile_google_account">Google Account</string>
     <string name="profile_email_account">Email Account</string>
     <string name="profile_guest">Guest</string>

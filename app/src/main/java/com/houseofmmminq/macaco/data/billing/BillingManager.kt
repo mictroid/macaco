@@ -15,6 +15,7 @@ import com.revenuecat.purchases.getCustomerInfoWith
 import com.revenuecat.purchases.getOfferingsWith
 import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
 import com.revenuecat.purchases.logInWith
+import com.revenuecat.purchases.logOutWith
 import com.revenuecat.purchases.purchaseWith
 import com.revenuecat.purchases.restorePurchasesWith
 import com.revenuecat.purchases.PurchaseParams
@@ -97,6 +98,17 @@ class BillingManager(
                             user.uid,
                             onError = { },
                             onSuccess = { info, _ ->
+                                applyEntitlement(info.entitlements[RevenueCatConfig.ENTITLEMENT_ID])
+                            }
+                        )
+                    } else {
+                        // Signed out: drop the previous account's entitlement NOW so the next
+                        // sign-in can't skip the paywall on stale state, then detach the
+                        // RevenueCat identity. logOut fails if already anonymous — ignore.
+                        applyEntitlement(null)
+                        Purchases.sharedInstance.logOutWith(
+                            onError = { },
+                            onSuccess = { info ->
                                 applyEntitlement(info.entitlements[RevenueCatConfig.ENTITLEMENT_ID])
                             }
                         )
@@ -183,9 +195,9 @@ class BillingManager(
             Purchases.sharedInstance.restorePurchasesWith(
                 onError = { error -> cont.resume(Result.failure(Exception(error.message))) },
                 onSuccess = { info ->
-                    val active = info.entitlements[RevenueCatConfig.ENTITLEMENT_ID]?.isActive == true
-                    _isPremium.value = active
-                    cont.resume(Result.success(active))
+                    val entitlement = info.entitlements[RevenueCatConfig.ENTITLEMENT_ID]
+                    applyEntitlement(entitlement)
+                    cont.resume(Result.success(entitlement?.isActive == true))
                 }
             )
         }

@@ -322,6 +322,10 @@
     <string name="profile_delete_account_body">Spowoduje to trwałe usunięcie konta Macaco i wszystkich wpisów w dzienniku. Zdjęcia zapisane w galerii urządzenia i na Dysku Google nie zostaną naruszone. Tej operacji nie można cofnąć.</string>
     <string name="profile_delete_account_confirm">Usuń</string>
     <string name="profile_delete_account_error">Nie można usunąć konta. Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.</string>
+    <string name="profile_delete_password_label">Potwierdź swoje hasło</string>
+    <string name="profile_delete_password_required">Wpisz hasło, aby potwierdzić usunięcie</string>
+    <string name="profile_delete_wrong_password">Nieprawidłowe hasło — spróbuj ponownie</string>
+    <string name="profile_delete_reauth_google_failed">Nie udało się zweryfikować logowania Google. Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.</string>
     <string name="login_tos_prefix">"Kontynuując, akceptujesz nasze "</string>
     <string name="login_tos_link">Warunki korzystania z usługi</string>
     <string name="login_tos_and">" oraz "</string>

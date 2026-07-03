@@ -93,7 +93,7 @@ fun ProfileScreen(
     onSignOut: () -> Unit,
     onLogin: () -> Unit,
     onSubscription: () -> Unit,
-    onDeleteAccount: ((Result<Unit>) -> Unit) -> Unit
+    onDeleteAccount: (String?, (Result<Unit>) -> Unit) -> Unit
 ) {
     val currentUser by viewModel.currentUser.collectAsState()
     val entries by viewModel.entries.collectAsState()
@@ -221,13 +221,37 @@ fun ProfileScreen(
         )
     }
 
+    var deletePassword by remember { mutableStateOf("") }
     if (showDeleteAccountDialog) {
+        val isEmailAccount = currentUser?.provider == AuthProvider.Email
         AlertDialog(
-            onDismissRequest = { if (!deleteInProgress) { showDeleteAccountDialog = false; deleteError = null } },
+            onDismissRequest = {
+                if (!deleteInProgress) {
+                    showDeleteAccountDialog = false; deleteError = null; deletePassword = ""
+                }
+            },
             title = { Text(stringResource(R.string.profile_delete_account_title)) },
             text = {
                 Column {
                     Text(stringResource(R.string.profile_delete_account_body))
+                    if (isEmailAccount) {
+                        Spacer(Modifier.height(12.dp))
+                        // Re-auth is required before deletion; email accounts confirm with
+                        // their password (Google accounts re-auth silently).
+                        androidx.compose.material3.OutlinedTextField(
+                            value = deletePassword,
+                            onValueChange = { deletePassword = it; deleteError = null },
+                            label = { Text(stringResource(R.string.profile_delete_password_label)) },
+                            singleLine = true,
+                            enabled = !deleteInProgress,
+                            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
+                            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                                keyboardType = androidx.compose.ui.text.input.KeyboardType.Password
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                     deleteError?.let {
                         Spacer(Modifier.height(12.dp))
                         Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
@@ -239,17 +263,17 @@ fun ProfileScreen(
                     onClick = {
                         deleteInProgress = true
                         deleteError = null
-                        onDeleteAccount { result ->
+                        onDeleteAccount(deletePassword.takeIf { isEmailAccount }) { result ->
                             deleteInProgress = false
                             result.fold(
                                 // On success the auth listener nulls currentUser → NavGraph shows
                                 // LoginScreen; no explicit navigation needed.
-                                onSuccess = { showDeleteAccountDialog = false },
+                                onSuccess = { showDeleteAccountDialog = false; deletePassword = "" },
                                 onFailure = { deleteError = it.message ?: context.getString(R.string.profile_delete_account_error) }
                             )
                         }
                     },
-                    enabled = !deleteInProgress,
+                    enabled = !deleteInProgress && (!isEmailAccount || deletePassword.isNotBlank()),
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                 ) {
                     if (deleteInProgress) {
@@ -261,7 +285,7 @@ fun ProfileScreen(
             },
             dismissButton = {
                 TextButton(
-                    onClick = { showDeleteAccountDialog = false; deleteError = null },
+                    onClick = { showDeleteAccountDialog = false; deleteError = null; deletePassword = "" },
                     enabled = !deleteInProgress
                 ) { Text(stringResource(R.string.common_cancel)) }
             }

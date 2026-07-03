@@ -314,7 +314,7 @@ fun NavGraph(
                             navController.navigate(Screen.Login.route)
                         },
                         onSubscription = { navController.navigate(Screen.Subscription.route) },
-                        onDeleteAccount = { callback -> viewModel.deleteAccount(callback) }
+                        onDeleteAccount = { password, callback -> viewModel.deleteAccount(password, callback) }
                     )
                 }
 

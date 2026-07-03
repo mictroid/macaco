@@ -1,6 +1,7 @@
 package com.houseofmmminq.macaco.data.auth
 
 import android.content.Context
+import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.AuthProvider
 import com.houseofmmminq.macaco.data.model.UserProfile
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -113,8 +114,29 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
 
     // ── Account deletion (GDPR) ─────────────────────────────────────────────────
 
-    override suspend fun deleteAccount(): Result<Unit> = runCatching {
+    override suspend fun deleteAccount(password: String?): Result<Unit> = runCatching {
         val user = auth.currentUser ?: error("Not signed in")
+
+        // Re-authenticate FIRST. user.delete() requires a recent sign-in; doing this up front
+        // guarantees the final step can't fail AFTER the data is already wiped.
+        val isGoogle = user.providerData.any { it.providerId == GoogleAuthProvider.PROVIDER_ID }
+        if (isGoogle) {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(FirebaseConfig.GOOGLE_WEB_CLIENT_ID)
+                .requestEmail()
+                .build()
+            val account = GoogleSignIn.getClient(appContext, gso).silentSignIn().await()
+            val idToken = account.idToken
+                ?: throw ReauthException(appContext.getString(R.string.profile_delete_reauth_google_failed))
+            user.reauthenticate(GoogleAuthProvider.getCredential(idToken, null)).await()
+        } else {
+            val email = user.email ?: error("No email on account")
+            if (password.isNullOrBlank()) {
+                throw ReauthException(appContext.getString(R.string.profile_delete_password_required))
+            }
+            user.reauthenticate(EmailAuthProvider.getCredential(email, password)).await()
+        }
+
         val uid = user.uid
         val db = FirebaseFirestore.getInstance()
 
@@ -134,7 +156,12 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
         user.delete().await()
         Unit
     }.mapFailure { e ->
-        Exception(e.localizedMessage ?: "Could not delete account")
+        when (e) {
+            is ReauthException -> e // already user-facing + localized
+            is FirebaseAuthInvalidCredentialsException ->
+                Exception(appContext.getString(R.string.profile_delete_wrong_password))
+            else -> Exception(e.localizedMessage ?: appContext.getString(R.string.profile_delete_account_error))
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -157,6 +184,9 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
         )
     }
 }
+
+/** Re-authentication failed before any data was touched — message is already user-facing. */
+private class ReauthException(message: String) : Exception(message)
 
 private fun <T> Result<T>.mapFailure(transform: (Throwable) -> Throwable): Result<T> =
     onFailure { return Result.failure(transform(it)) }.let { this }

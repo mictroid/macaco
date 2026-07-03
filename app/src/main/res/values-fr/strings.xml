@@ -314,6 +314,10 @@
     <string name="profile_delete_account_body">Cela supprime définitivement votre compte Macaco et toutes vos entrées de journal. Les photos enregistrées dans la galerie de votre appareil et sur Google Drive ne sont pas affectées. Cette action est irréversible.</string>
     <string name="profile_delete_account_confirm">Supprimer</string>
     <string name="profile_delete_account_error">Impossible de supprimer le compte. Déconnectez-vous, reconnectez-vous et réessayez.</string>
+    <string name="profile_delete_password_label">Confirmez votre mot de passe</string>
+    <string name="profile_delete_password_required">Saisissez votre mot de passe pour confirmer la suppression</string>
+    <string name="profile_delete_wrong_password">Mot de passe incorrect — veuillez réessayer</string>
+    <string name="profile_delete_reauth_google_failed">Impossible de vérifier votre connexion Google. Déconnectez-vous, reconnectez-vous, puis réessayez.</string>
     <string name="login_tos_prefix">"En continuant, vous acceptez nos "</string>
     <string name="login_tos_link">Conditions d\'utilisation</string>
     <string name="login_tos_and">" et notre "</string>

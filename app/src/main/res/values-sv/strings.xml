@@ -314,6 +314,10 @@
     <string name="profile_delete_account_body">Detta raderar permanent ditt Macaco-konto och alla dina dagboksinlägg. Foton som sparats i enhetens galleri och Google Drive påverkas inte. Detta kan inte ångras.</string>
     <string name="profile_delete_account_confirm">Radera</string>
     <string name="profile_delete_account_error">Det gick inte att radera kontot. Logga ut, logga in igen och försök på nytt.</string>
+    <string name="profile_delete_password_label">Bekräfta ditt lösenord</string>
+    <string name="profile_delete_password_required">Ange ditt lösenord för att bekräfta borttagningen</string>
+    <string name="profile_delete_wrong_password">Fel lösenord – försök igen</string>
+    <string name="profile_delete_reauth_google_failed">Det gick inte att verifiera din Google-inloggning. Logga ut, logga in igen och försök på nytt.</string>
     <string name="login_tos_prefix">"Genom att fortsätta godkänner du våra "</string>
     <string name="login_tos_link">Användarvillkor</string>
     <string name="login_tos_and">" och vår "</string>

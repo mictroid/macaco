@@ -310,6 +310,10 @@
     <string name="profile_delete_account_body">これにより、Macaco アカウントとすべての日記エントリーが完全に削除されます。デバイスのギャラリーや Google ドライブに保存された写真は影響を受けません。この操作は元に戻せません。</string>
     <string name="profile_delete_account_confirm">削除</string>
     <string name="profile_delete_account_error">アカウントを削除できませんでした。サインアウトしてから再度サインインし、もう一度お試しください。</string>
+    <string name="profile_delete_password_label">パスワードを確認</string>
+    <string name="profile_delete_password_required">削除を確認するにはパスワードを入力してください</string>
+    <string name="profile_delete_wrong_password">パスワードが間違っています — もう一度お試しください</string>
+    <string name="profile_delete_reauth_google_failed">Google ログインを確認できませんでした。サインアウトして再度サインインし、もう一度お試しください。</string>
     <string name="login_tos_prefix">続行すると、</string>
     <string name="login_tos_link">利用規約</string>
     <string name="login_tos_and">および</string>

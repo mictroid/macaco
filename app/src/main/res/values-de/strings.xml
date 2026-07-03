@@ -325,6 +325,10 @@
     <string name="profile_delete_account_body">Dadurch werden dein Macaco-Konto und alle deine Tagebucheinträge dauerhaft gelöscht. In deiner Gerätegalerie und in Google Drive gespeicherte Fotos sind nicht betroffen. Dies kann nicht rückgängig gemacht werden.</string>
     <string name="profile_delete_account_confirm">Löschen</string>
     <string name="profile_delete_account_error">Konto konnte nicht gelöscht werden. Bitte melde dich ab, wieder an und versuche es erneut.</string>
+    <string name="profile_delete_password_label">Bestätige dein Passwort</string>
+    <string name="profile_delete_password_required">Gib dein Passwort ein, um die Löschung zu bestätigen</string>
+    <string name="profile_delete_wrong_password">Falsches Passwort – bitte versuche es erneut</string>
+    <string name="profile_delete_reauth_google_failed">Deine Google-Anmeldung konnte nicht überprüft werden. Melde dich ab, wieder an und versuche es erneut.</string>
     <string name="login_tos_prefix">"Mit der Fortsetzung akzeptierst du unsere "</string>
     <string name="login_tos_link">Nutzungsbedingungen</string>
     <string name="login_tos_and">" und "</string>
