@@ -1282,9 +1282,8 @@ fun VideoEntryTile(uri: String, modifier: Modifier = Modifier) {
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black)
-                    .aspectRatio(16f / 9f),
+                    .fillMaxSize()
+                    .background(Color.Black),
                 contentAlignment = Alignment.Center
             ) {
                 val player = remember {
@@ -1301,6 +1300,10 @@ fun VideoEntryTile(uri: String, modifier: Modifier = Modifier) {
                         PlayerView(ctx).apply {
                             this.player = player
                             useController = true
+                            // Scale the video to fit the full-screen black area while preserving its
+                            // aspect ratio, so a portrait clip fills the height instead of being
+                            // letterboxed into a small 16:9 strip.
+                            resizeMode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
                         }
                     },
                     modifier = Modifier.fillMaxSize()

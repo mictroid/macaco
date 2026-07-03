@@ -14,8 +14,10 @@
         <item name="windowSplashScreenBackground">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.MyApplication</item>
-        <!-- Cover the gap between activity (re)creation and the first Compose frame with brand teal
-             instead of the inherited black windowBackground — kills the first-language-switch flash. -->
-        <item name="android:windowBackground">@color/splash_background</item>
+        <!-- Cover the gap between activity (re)creation and the first Compose frame with the branded
+             teal + centered monkey (not a blank teal rectangle), so the long cold-start window on
+             slow devices reads as the splash rather than a blank blue screen. Also kills the
+             first-language-switch flash (teal, not the inherited black windowBackground). -->
+        <item name="android:windowBackground">@drawable/splash_window_bg</item>
     </style>
 </resources>

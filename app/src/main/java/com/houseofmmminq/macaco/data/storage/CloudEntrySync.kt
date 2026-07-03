@@ -80,7 +80,13 @@ class CloudEntrySync(
                             createdAt = doc.getLong("createdAt") ?: 0L,
                             driveFileIds = (doc.get("driveFileIds") as? List<*>)
                                 ?.filterIsInstance<String>() ?: emptyList(),
-                            tripName = doc.getString("tripName")
+                            tripName = doc.getString("tripName"),
+                            videoUris = (doc.get("videoUris") as? List<*>)
+                                ?.filterIsInstance<String>() ?: emptyList(),
+                            videoFileIds = (doc.get("videoFileIds") as? List<*>)
+                                ?.filterIsInstance<String>() ?: emptyList(),
+                            mediaOrder = (doc.get("mediaOrder") as? List<*>)
+                                ?.filterIsInstance<String>() ?: emptyList()
                         )
                     }.getOrNull()
                 }
@@ -118,6 +124,9 @@ class CloudEntrySync(
         "tags" to tags,
         "createdAt" to createdAt,
         "driveFileIds" to driveFileIds,
-        "tripName" to tripName
+        "tripName" to tripName,
+        "videoUris" to videoUris,
+        "videoFileIds" to videoFileIds,
+        "mediaOrder" to mediaOrder
     )
 }

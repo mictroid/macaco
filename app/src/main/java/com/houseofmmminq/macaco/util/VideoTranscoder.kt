@@ -75,13 +75,19 @@ object VideoTranscoder {
                             cont.resume(outFile)
                         }
                         override fun onTranscodeCanceled() {
+                            // User cancelled — no tile wanted, so no fallback.
                             outFile.delete()
                             cont.resume(null)
                         }
                         override fun onTranscodeFailed(exception: Throwable) {
-                            android.util.Log.e("VideoTranscoder", "transcode failed", exception)
+                            // Some devices' MediaCodec can't decode+re-encode the picked source
+                            // (e.g. the Galaxy S8+/Exynos/API28 fails with "Failed to stop the
+                            // muxer"). Rather than silently drop the video, fall back to storing the
+                            // ORIGINAL clip unchanged so a tile always appears — no size reduction /
+                            // no trim, but the feature works instead of no-op'ing.
+                            android.util.Log.e("VideoTranscoder", "transcode failed — using original", exception)
                             outFile.delete()
-                            cont.resume(null)
+                            cont.resume(copyOriginalToCache(context, sourceUri))
                         }
                     })
                     .transcode()
@@ -92,12 +98,26 @@ object VideoTranscoder {
             throw e
         } catch (e: Throwable) {
             // Any synchronous setup failure (bad trim values, unreadable source, muxer init, …)
-            // degrades to "no video added" instead of crashing the app.
-            android.util.Log.e("VideoTranscoder", "transcode setup failed", e)
+            // falls back to the original clip so a tile still appears instead of crashing / no-op'ing.
+            android.util.Log.e("VideoTranscoder", "transcode setup failed — using original", e)
             outFile.delete()
-            null
+            copyOriginalToCache(context, sourceUri)
         }
     }
+
+    /**
+     * Copies [sourceUri]'s raw bytes into a cacheDir `.mp4` so [ImageStorage.persistVideoToGallery]
+     * can store it unchanged. Used as a fallback when this device's transcoder can't process the
+     * source. Returns null if the source is genuinely unreadable (then the caller drops the tile).
+     */
+    private fun copyOriginalToCache(context: Context, sourceUri: Uri): File? = runCatching {
+        val fallback = File(context.cacheDir, "original_${System.currentTimeMillis()}.mp4")
+        val ok = context.contentResolver.openInputStream(sourceUri)?.use { input ->
+            fallback.outputStream().use { input.copyTo(it) }
+            true
+        } ?: false
+        if (ok) fallback else { fallback.delete(); null }
+    }.getOrNull()
 
     /** Returns the duration of [uri] in milliseconds, or 0 on failure. */
     fun getDurationMs(context: Context, uri: Uri): Long = runCatching {

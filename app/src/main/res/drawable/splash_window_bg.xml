@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cold-start window background for Theme.Macaco.Splash: the brand teal with the monkey centered,
+     so the very first frame the OS draws (before the process finishes starting and the core-splashscreen
+     splash + Compose SplashScreen take over) already shows branding instead of a blank teal rectangle.
+     Flat @color/splash_background matches windowSplashScreenBackground so the hand-off is seamless. The
+     220dp logo matches SplashScreen.kt's logo size. Scoped to the Splash theme only — Theme.MyApplication
+     keeps a flat windowBackground so the language-switch recreation flash fix is untouched. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/splash_background" />
+    <item
+        android:width="220dp"
+        android:height="220dp"
+        android:gravity="center"
+        android:drawable="@drawable/ic_launcher_foreground" />
+</layer-list>
