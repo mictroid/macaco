@@ -50,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -625,8 +626,11 @@ fun MapScreen(
                         .offset { IntOffset(0, yOffsetPx) }
                         .padding(start = 8.dp)
                         .size(36.dp)
+                        // Shadow before clip so it renders outside the circle; primary (opaque,
+                        // saturated) pops off any ocean tile where pale primaryContainer vanished.
+                        .shadow(4.dp, CircleShape)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f))
+                        .background(MaterialTheme.colorScheme.primary)
                         .clickable {
                             mapScope.launch {
                                 cameraPositionState.animate(
@@ -642,7 +646,7 @@ fun MapScreen(
                     Icon(
                         imageVector = Icons.Default.ChevronLeft,
                         contentDescription = stringResource(R.string.map_globe_spanning_hint),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -666,8 +670,11 @@ fun MapScreen(
                         .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.End))
                         .padding(end = 8.dp)
                         .size(36.dp)
+                        // Shadow before clip so it renders outside the circle; primary (opaque,
+                        // saturated) pops off any ocean tile where pale primaryContainer vanished.
+                        .shadow(4.dp, CircleShape)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f))
+                        .background(MaterialTheme.colorScheme.primary)
                         .clickable {
                             mapScope.launch {
                                 cameraPositionState.animate(
@@ -683,7 +690,7 @@ fun MapScreen(
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = stringResource(R.string.map_globe_spanning_hint),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
