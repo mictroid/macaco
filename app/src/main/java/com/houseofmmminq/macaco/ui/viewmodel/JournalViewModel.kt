@@ -301,7 +301,14 @@ class JournalViewModel(
                 launch {
                     val updatedIds = drivePhotoSync.uploadEntryPhotosOrReport(entry)
                     if (updatedIds != entry.driveFileIds) {
-                        cloudEntrySync.save(entry.copy(driveFileIds = updatedIds))
+                        // Merge into the LATEST entry — the user may have edited it while the
+                        // upload ran; writing the captured `entry` back would revert that edit.
+                        val latest = entries.value.find { it.id == entry.id } ?: entry
+                        // Ids are positional to the photo list captured at upload start; if the
+                        // photos changed since, skip — the next save re-uploads correctly.
+                        if (latest.photoUris == entry.photoUris) {
+                            cloudEntrySync.save(latest.copy(driveFileIds = updatedIds))
+                        }
                     }
                 }
             }
@@ -411,7 +418,12 @@ class JournalViewModel(
 
     fun syncPhotosToGoogleDrive() {
         drivePhotoSync.syncAll(entries.value) { updated ->
-            cloudEntrySync.save(updated)
+            // `updated` was built from the entry list captured at sync start; merge only the
+            // driveFileIds into the live entry so a mid-sync user edit isn't reverted.
+            val latest = entries.value.find { it.id == updated.id } ?: updated
+            if (latest.photoUris == updated.photoUris) {
+                cloudEntrySync.save(latest.copy(driveFileIds = updated.driveFileIds))
+            }
         }
     }
 

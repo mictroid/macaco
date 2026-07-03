@@ -948,26 +948,28 @@ private fun TravelEntry.displayPhotoUri(index: Int, cached: Map<String, String>)
  * A copy of this entry with the photo at [index] moved to the front (the cover/hero). Moves the
  * parallel [TravelEntry.driveFileIds] entry too so the two lists stay aligned.
  */
+/** driveFileIds padded to photoUris length ("" = not uploaded), so positional edits never desync. */
+private fun TravelEntry.paddedDriveIds(): MutableList<String> =
+    MutableList(photoUris.size) { i -> driveFileIds.getOrNull(i) ?: "" }
+
 private fun TravelEntry.withCover(index: Int): TravelEntry {
     if (index <= 0 || index >= photoUris.size) return this
     val photos = photoUris.toMutableList().apply { add(0, removeAt(index)) }
-    val driveIds = driveFileIds.toMutableList().apply { if (index < size) add(0, removeAt(index)) }
+    val driveIds = paddedDriveIds().apply { add(0, removeAt(index)) }
     return copy(photoUris = photos, driveFileIds = driveIds)
 }
 
 private fun TravelEntry.withRemoved(index: Int): TravelEntry {
     if (index < 0 || index >= photoUris.size) return this
     val photos = photoUris.toMutableList().apply { removeAt(index) }
-    val driveIds = driveFileIds.toMutableList().apply { if (index < size) removeAt(index) }
+    val driveIds = paddedDriveIds().apply { removeAt(index) }
     return copy(photoUris = photos, driveFileIds = driveIds)
 }
 
 private fun TravelEntry.withSwapped(a: Int, b: Int): TravelEntry {
     if (a == b || a < 0 || b < 0 || a >= photoUris.size || b >= photoUris.size) return this
     val photos = photoUris.toMutableList().also { list -> val tmp = list[a]; list[a] = list[b]; list[b] = tmp }
-    val driveIds = if (a < driveFileIds.size && b < driveFileIds.size) {
-        driveFileIds.toMutableList().also { list -> val tmp = list[a]; list[a] = list[b]; list[b] = tmp }
-    } else driveFileIds
+    val driveIds = paddedDriveIds().also { list -> val tmp = list[a]; list[a] = list[b]; list[b] = tmp }
     return copy(photoUris = photos, driveFileIds = driveIds)
 }
 

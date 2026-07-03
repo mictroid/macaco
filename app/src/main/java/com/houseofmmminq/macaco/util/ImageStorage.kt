@@ -233,12 +233,40 @@ object ImageStorage {
             ).also { if (it !== sampled) sampled.recycle() }
         } else sampled
 
+        val oriented = applyExifOrientation(final, exifOrientation(bytes))
         ByteArrayOutputStream().use { out ->
-            final.compress(Bitmap.CompressFormat.JPEG, quality, out)
-            final.recycle()
+            oriented.compress(Bitmap.CompressFormat.JPEG, quality, out)
+            oriented.recycle()
             out.toByteArray()
         }
     }.getOrNull()
+
+    /** EXIF orientation of [bytes], or ORIENTATION_NORMAL if unreadable. */
+    private fun exifOrientation(bytes: ByteArray): Int = runCatching {
+        androidx.exifinterface.media.ExifInterface(java.io.ByteArrayInputStream(bytes))
+            .getAttributeInt(
+                androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+            )
+    }.getOrDefault(androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
+
+    /** Returns [bitmap] transformed per the EXIF [orientation] (recycling the input if replaced). */
+    internal fun applyExifOrientation(bitmap: Bitmap, orientation: Int): Bitmap {
+        val matrix = android.graphics.Matrix()
+        when (orientation) {
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE -> { matrix.postRotate(90f); matrix.postScale(-1f, 1f) }
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE -> { matrix.postRotate(270f); matrix.postScale(-1f, 1f) }
+            else -> return bitmap
+        }
+        val out = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        if (out !== bitmap) bitmap.recycle()
+        return out
+    }
 
     const val BACKGROUNDS = "backgrounds"
     const val PROFILE = "profile"

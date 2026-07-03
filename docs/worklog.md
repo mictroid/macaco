@@ -2,6 +2,25 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-03 — vc49-QA sweep, Ship 1/3 (HIGH data-integrity trio) implemented, NOT shipped
+
+Fable 5's full-app QA at vc49 (`docs/qa-code-review-2026-07-03.md`) yielded 9 briefs; grouped into 3
+ships by risk (user chose the split). Ship 1 = the three HIGH data-integrity fixes, verified vs live
+source, built together (`assembleDebug` SUCCESSFUL). All → `docs/DONE/`. Still vc49 on Play — not yet
+bumped/dispatched. Dated detail + deviations in `worklog-2026-07-03.md`.
+
+- **drive-ids-alignment** (H1, `NewEditEntryScreen.kt`/`EntryDetailScreen.kt`) — parallel `driveIds`
+  state mirrored through every photo edit; `paddedDriveIds()` helper on detail. Keeps `driveFileIds`
+  aligned with `photoUris`. *Deviation:* kept the `sessionAdded` cleanup the brief BEFORE omitted.
+- **save-entry-upload-race** (H2, `JournalViewModel.kt`) — upload/sync completion merges only
+  `driveFileIds` into the live entry, skips if photos changed; no longer reverts mid-upload edits.
+- **photo-exif-rotation** (H3, `ImageStorage.kt`/`JournalBackup.kt` + gradle) — added
+  `androidx.exifinterface:1.3.7`; bake EXIF rotation into both re-encode paths so camera photos stop
+  rendering sideways.
+
+Ship 2 (delete-account-reauth, billing-signout-reset) and Ship 3 (qa-polish, branded-snackbars,
+hardcoded-strings, backup-lifecycle) still loose in `docs/`.
+
 ## 2026-07-02 — vc48-QA batch (6 briefs) implemented, one push (vc49)
 
 Six Cowork briefs from vc48 on-device QA, verified vs live source first, built together

@@ -157,6 +157,15 @@ fun NewEditEntryScreen(
     var photoUris by rememberSaveable(stateSaver = StringListSaver) {
         mutableStateOf(existingEntry?.photoUris ?: emptyList())
     }
+    // Parallel Drive-file ids, padded to photoUris length ("" = not uploaded). Every photo
+    // add/remove/reorder below mutates BOTH lists so the pairing survives editing.
+    var driveIds by rememberSaveable(stateSaver = StringListSaver) {
+        mutableStateOf(
+            List(existingEntry?.photoUris?.size ?: 0) { i ->
+                existingEntry?.driveFileIds?.getOrNull(i) ?: ""
+            }
+        )
+    }
     var tags by rememberSaveable(stateSaver = StringListSaver) {
         mutableStateOf(existingEntry?.tags ?: emptyList())
     }
@@ -182,7 +191,10 @@ fun NewEditEntryScreen(
         // (the Photo Picker grant is temporary) and uninstalls. See ImageStorage.persistToGallery.
         val stored = uris.mapNotNull { ImageStorage.persistToGallery(context, it) }
         sessionAdded = sessionAdded + stored
-        photoUris = (photoUris + stored).distinct()
+        // No .distinct(): persistToGallery always creates a fresh uniquely-named copy so
+        // duplicates can't occur, and distinct() would break the parallel-list invariant.
+        photoUris = photoUris + stored
+        driveIds = driveIds + List(stored.size) { "" }
     }
 
     // Camera capture: the camera app writes into a FileProvider temp file, which we then copy into
@@ -195,7 +207,8 @@ fun NewEditEntryScreen(
         if (success && captured != null) {
             ImageStorage.persistToGallery(context, captured)?.let { stored ->
                 sessionAdded = sessionAdded + stored
-                photoUris = (photoUris + stored).distinct()
+                photoUris = photoUris + stored
+                driveIds = driveIds + ""
             }
         }
         ImageStorage.clear(context, ImageStorage.CAMERA_TEMP)
@@ -339,7 +352,7 @@ fun NewEditEntryScreen(
                                         photoUris = photoUris,
                                         tags = tags,
                                         createdAt = existingEntry?.createdAt ?: System.currentTimeMillis(),
-                                        driveFileIds = existingEntry?.driveFileIds ?: emptyList(),
+                                        driveFileIds = driveIds,
                                         tripName = tripName.trim().ifBlank { null }
                                     )
                                 )
@@ -415,9 +428,13 @@ fun NewEditEntryScreen(
                                             if (dragOffsetX > slotPx / 2 && from < livePhotoUris.lastIndex) {
                                                 photoUris = livePhotoUris.toMutableList()
                                                     .also { it.add(from + 1, it.removeAt(from)) }
+                                                driveIds = driveIds.toMutableList()
+                                                    .also { it.add(from + 1, it.removeAt(from)) }
                                                 dragOffsetX -= slotPx
                                             } else if (dragOffsetX < -slotPx / 2 && from > 0) {
                                                 photoUris = livePhotoUris.toMutableList()
+                                                    .also { it.add(from - 1, it.removeAt(from)) }
+                                                driveIds = driveIds.toMutableList()
                                                     .also { it.add(from - 1, it.removeAt(from)) }
                                                 dragOffsetX += slotPx
                                             }
@@ -441,7 +458,11 @@ fun NewEditEntryScreen(
                                     .clip(CircleShape)
                                     .background(Color.Black.copy(alpha = 0.6f))
                                     .clickable {
-                                        photoUris = photoUris.toMutableList().also { it.remove(uri) }
+                                        val idx = photoUris.indexOf(uri)
+                                        if (idx >= 0) {
+                                            photoUris = photoUris.toMutableList().also { it.removeAt(idx) }
+                                            driveIds = driveIds.toMutableList().also { it.removeAt(idx) }
+                                        }
                                         // If this was added this session it was never committed, so
                                         // delete its file now. Pre-existing photos are left to the
                                         // ViewModel to clean up only once the removal is saved.

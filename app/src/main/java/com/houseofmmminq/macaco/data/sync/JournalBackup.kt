@@ -146,11 +146,23 @@ class JournalBackup(private val context: Context) {
             }
         }.getOrNull() ?: return null
 
+        // Preserve camera rotation: read the EXIF tag from a fresh stream and bake it in,
+        // since re-encoding below strips all EXIF (including Orientation).
+        val orientation = runCatching {
+            resolver.openInputStream(uri)?.use { stream ->
+                androidx.exifinterface.media.ExifInterface(stream).getAttributeInt(
+                    androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                    androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+                )
+            }
+        }.getOrNull() ?: androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+        val oriented = ImageStorage.applyExifOrientation(bitmap, orientation)
+
         val baos = java.io.ByteArrayOutputStream()
         val encodeOk = runCatching {
-            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, baos)
+            oriented.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, baos)
         }.also {
-            bitmap.recycle()
+            oriented.recycle()
         }.getOrDefault(false)
 
         // Verify encode succeeded AND produced bytes (compress returning false = silent failure).
