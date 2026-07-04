@@ -2,7 +2,6 @@ package com.houseofmmminq.macaco.ui.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -368,19 +367,15 @@ private fun NavController.navigateToTab(route: String) {
 
 private val tabRoutes = setOf(Screen.JournalList.route, Screen.Adventures.route, Screen.Profile.route)
 
-private val NavTeal = Color(0xFF0E5A6B) // brand teal — same shade in light and dark mode
-private val NavGold = Color(0xFFE8B020)
-private val NavGoldBright = Color(0xFFF0C840)
-
 @Composable
 private fun MacacoBottomNavBar(navController: NavController, currentRoute: String?) {
-    NavigationBar(containerColor = NavTeal) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
         val itemColors = NavigationBarItemDefaults.colors(
-            selectedIconColor = NavGoldBright,
-            unselectedIconColor = NavGold.copy(alpha = 0.55f),
-            selectedTextColor = NavGoldBright,
-            unselectedTextColor = NavGold.copy(alpha = 0.55f),
-            indicatorColor = NavGold.copy(alpha = 0.20f)
+            selectedIconColor = MaterialTheme.colorScheme.secondaryContainer,
+            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.55f),
+            selectedTextColor = MaterialTheme.colorScheme.secondaryContainer,
+            unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.55f),
+            indicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.20f)
         )
         NavigationBarItem(
             selected = currentRoute == Screen.JournalList.route,

@@ -1365,20 +1365,20 @@ private fun MoodSelector(
             MoodChip(m, selectedMood == m) { onMoodSelected(if (selectedMood == m) "" else m) }
         }
 
-        // Add custom mood button — gold-tinted to match the selected chip style.
+        // Add custom mood button — accent-tinted to match the selected chip style.
         item {
             Box(
                 modifier = Modifier
                     .size(52.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(SplashGold.copy(alpha = 0.18f))
+                    .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f))
                     .clickable { showAddDialog = true },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = stringResource(R.string.mood_add_custom_cd),
-                    tint = SplashGold,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -1395,7 +1395,8 @@ private fun MoodChip(emoji: String, selected: Boolean, onClick: () -> Unit) {
             .background(
                 // Selected: Macaco gold — consistent with splash, nav bar, and brand moments.
                 // Unselected: neutral surface so the emoji reads clearly at rest.
-                if (selected) SplashGold else MaterialTheme.colorScheme.surfaceVariant
+                if (selected) MaterialTheme.colorScheme.secondaryContainer
+                else MaterialTheme.colorScheme.surfaceVariant
             )
             .selectable(selected = selected, onClick = onClick, role = Role.RadioButton),
         contentAlignment = Alignment.Center

@@ -1094,12 +1094,12 @@ private fun MonthHeader(month: String) {
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.5.sp,
-            color = SplashGold
+            color = MaterialTheme.colorScheme.secondary
         )
         Spacer(Modifier.width(10.dp))
         HorizontalDivider(
             modifier = Modifier.weight(1f),
-            color = SplashGold.copy(alpha = 0.3f)
+            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)
         )
     }
 }

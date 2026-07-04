@@ -309,7 +309,7 @@ fun PurchaseScreen(
                     Text(
                         stringResource(R.string.purchase_restore),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF5FD4E8),
+                        color = SplashGoldBright,
                         modifier = Modifier.clickable(enabled = !isLoading) {
                             isLoading = true
                             errorMessage = null
