@@ -314,20 +314,24 @@ class DrivePhotoSync(private val context: Context) {
             return
         }
         ioScope.launch {
-            val pending = entries.filter { entry ->
-                entry.photoUris.isNotEmpty() && (
-                    entry.driveFileIds.size < entry.photoUris.size ||
-                        entry.driveFileIds.any { it.isEmpty() }
-                    )
-            }
+            fun TravelEntry.pendingPhotos() =
+                photoUris.isNotEmpty() &&
+                    (driveFileIds.size < photoUris.size || driveFileIds.any { it.isEmpty() })
+            fun TravelEntry.pendingVideos() =
+                videoUris.isNotEmpty() &&
+                    (videoFileIds.size < videoUris.size || videoFileIds.any { it.isEmpty() })
+
+            val pending = entries.filter { it.pendingPhotos() || it.pendingVideos() }
             if (pending.isEmpty()) {
                 _syncState.value = DrivePhotoSyncState.Synced
                 downloadMissingPhotos(entries)
                 return@launch
             }
 
+            // "Photos" here counts photos + videos — one progress unit per media item.
             val totalPhotos = pending.sumOf { e ->
-                e.photoUris.size - e.driveFileIds.count { it.isNotEmpty() }
+                (e.photoUris.size - e.driveFileIds.count { it.isNotEmpty() }) +
+                    (e.videoUris.size - e.videoFileIds.count { it.isNotEmpty() })
             }.coerceAtLeast(1)
             _syncState.value = DrivePhotoSyncState.Syncing(0, totalPhotos)
 
@@ -336,24 +340,30 @@ class DrivePhotoSync(private val context: Context) {
             var firstError: String? = null
 
             pending.forEach { entry ->
-                val prevSynced = entry.driveFileIds.count { it.isNotEmpty() }
-                val newIds = runCatching { uploadEntryPhotos(entry) }
-                    .onFailure { e ->
-                        Log.e("DrivePhotoSync", "Upload failed for entry ${entry.id}", e)
-                        val msg = friendlyDriveError(e)
-                        if (firstError == null) firstError = msg
-                        _errors.trySend(msg)
-                        failed += entry.photoUris.size - prevSynced
-                        return@forEach
-                    }
-                    .getOrThrow()
+                val prevSynced = entry.driveFileIds.count { it.isNotEmpty() } +
+                    entry.videoFileIds.count { it.isNotEmpty() }
+                val result = runCatching {
+                    val photoIds = if (entry.pendingPhotos()) uploadEntryPhotos(entry) else entry.driveFileIds
+                    val videoIds = if (entry.pendingVideos()) uploadEntryVideos(entry) else entry.videoFileIds
+                    photoIds to videoIds
+                }.onFailure { e ->
+                    Log.e("DrivePhotoSync", "Upload failed for entry ${entry.id}", e)
+                    val msg = friendlyDriveError(e)
+                    if (firstError == null) firstError = msg
+                    _errors.trySend(msg)
+                    failed += (entry.photoUris.size + entry.videoUris.size) - prevSynced
+                    return@forEach
+                }.getOrThrow()
+                val (newIds, newVideoIds) = result
 
-                val nowSynced = newIds.count { it.isNotEmpty() }
+                val nowSynced = newIds.count { it.isNotEmpty() } + newVideoIds.count { it.isNotEmpty() }
                 uploaded += (nowSynced - prevSynced).coerceAtLeast(0)
-                failed += (entry.photoUris.size - nowSynced).coerceAtLeast(0)
+                failed += ((entry.photoUris.size + entry.videoUris.size) - nowSynced).coerceAtLeast(0)
 
-                if (newIds != entry.driveFileIds) {
-                    runCatching { onEntryUpdated(entry.copy(driveFileIds = newIds)) }
+                if (newIds != entry.driveFileIds || newVideoIds != entry.videoFileIds) {
+                    runCatching {
+                        onEntryUpdated(entry.copy(driveFileIds = newIds, videoFileIds = newVideoIds))
+                    }
                 }
                 _syncState.value = DrivePhotoSyncState.Syncing(uploaded, totalPhotos)
             }

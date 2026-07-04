@@ -242,8 +242,9 @@
     <string name="settings_import_restoring">Restoring entries… %1$d / %2$d</string>
     <string name="settings_backup_export_done">Backed up %1$d entries to file</string>
     <string name="settings_backup_export_done_warn">Backed up %1$d entries, but %2$d photo(s) couldn\'t be included. Open the app while online to download them, then export again.</string>
+    <string name="settings_backup_export_videos_warn">%1$d video(s) couldn\'t be included.</string>
     <string name="settings_backup_export_quality_title">Export quality</string>
-    <string name="settings_backup_export_quality_body">Compact re-encodes photos at 80% quality — typically 40–60% smaller with minimal visible difference. Full quality preserves the original photos exactly.</string>
+    <string name="settings_backup_export_quality_body">Full quality preserves original photos and includes your videos. Compact re-encodes photos at 80% quality — typically 40–60% smaller — and leaves videos out (they restore from Google Drive instead).</string>
     <string name="settings_backup_export_compact">Compact</string>
     <string name="settings_backup_export_full">Full quality</string>
     <string name="settings_backup_import_done">Restored %1$d entries from file</string>

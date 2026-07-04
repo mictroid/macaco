@@ -244,8 +244,9 @@
     <string name="settings_import_restoring">Restauration des entrées… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d entrées sauvegardées dans le fichier</string>
     <string name="settings_backup_export_done_warn">Sauvegarde de %1$d entrées, mais %2$d photo(s) n\'ont pas pu être incluses. Ouvrez l\'application en ligne pour les télécharger, puis exportez à nouveau.</string>
+    <string name="settings_backup_export_videos_warn">Impossible d\'inclure %1$d vidéo(s).</string>
     <string name="settings_backup_export_quality_title">Qualité d\'exportation</string>
-    <string name="settings_backup_export_quality_body">Le mode compact réencode les photos à 80 % de qualité — généralement 40–60 % plus petit avec une différence visible minime. La qualité complète conserve les photos originales à l\'identique.</string>
+    <string name="settings_backup_export_quality_body">La qualité complète conserve les photos d\'origine et inclut vos vidéos. Le mode compact réencode les photos à 80 % de qualité — généralement 40 à 60 % plus léger — et exclut les vidéos (elles sont restaurées depuis Google Drive).</string>
     <string name="settings_backup_export_compact">Compact</string>
     <string name="settings_backup_export_full">Qualité complète</string>
     <string name="settings_backup_import_done">%1$d entrées restaurées depuis le fichier</string>

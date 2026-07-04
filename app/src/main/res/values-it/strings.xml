@@ -244,8 +244,9 @@
     <string name="settings_import_restoring">Ripristino delle voci… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d voci salvate nel file</string>
     <string name="settings_backup_export_done_warn">Salvate %1$d voci, ma non è stato possibile includere %2$d foto. Apri l\'app online per scaricarle, poi esporta di nuovo.</string>
+    <string name="settings_backup_export_videos_warn">Impossibile includere %1$d video.</string>
     <string name="settings_backup_export_quality_title">Qualità di esportazione</string>
-    <string name="settings_backup_export_quality_body">Compatto ricodifica le foto all\'80% di qualità — in genere 40–60% più piccolo con differenze visibili minime. Qualità piena conserva le foto originali esattamente.</string>
+    <string name="settings_backup_export_quality_body">La qualità piena conserva le foto originali e include i tuoi video. La modalità compatta ricodifica le foto all\'80% di qualità — di solito il 40–60% più piccole — ed esclude i video (si ripristinano da Google Drive).</string>
     <string name="settings_backup_export_compact">Compatto</string>
     <string name="settings_backup_export_full">Qualità piena</string>
     <string name="settings_backup_import_done">%1$d voci ripristinate dal file</string>

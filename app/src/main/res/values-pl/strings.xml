@@ -250,8 +250,9 @@
     <string name="settings_import_restoring">Przywracanie wpisów… %1$d / %2$d</string>
     <string name="settings_backup_export_done">Zapisano %1$d wpisów do pliku</string>
     <string name="settings_backup_export_done_warn">Utworzono kopię %1$d wpisów, ale nie udało się dołączyć %2$d zdjęć. Otwórz aplikację online, aby je pobrać, a następnie wyeksportuj ponownie.</string>
+    <string name="settings_backup_export_videos_warn">Nie można było dołączyć %1$d filmów.</string>
     <string name="settings_backup_export_quality_title">Jakość eksportu</string>
-    <string name="settings_backup_export_quality_body">Tryb kompaktowy ponownie koduje zdjęcia w jakości 80% — zwykle o 40–60% mniejszy plik przy minimalnej widocznej różnicy. Pełna jakość zachowuje oryginalne zdjęcia bez zmian.</string>
+    <string name="settings_backup_export_quality_body">Pełna jakość zachowuje oryginalne zdjęcia i zawiera Twoje filmy. Tryb kompaktowy ponownie koduje zdjęcia w jakości 80% — zwykle 40–60% mniejsze — i pomija filmy (są przywracane z Dysku Google).</string>
     <string name="settings_backup_export_compact">Kompaktowy</string>
     <string name="settings_backup_export_full">Pełna jakość</string>
     <string name="settings_backup_import_done">Przywrócono %1$d wpisów z pliku</string>

@@ -32,7 +32,7 @@ class JournalBackup(private val context: Context) {
 
     @Serializable
     data class BackupFile(
-        val version: Int = 1,
+        val version: Int = 2,
         val exportedAt: Long,
         val entries: List<TravelEntry>
     )
@@ -45,7 +45,9 @@ class JournalBackup(private val context: Context) {
     data class ExportResult(
         val entries: Int,
         val photosWritten: Int,
-        val photosSkipped: Int
+        val photosSkipped: Int,
+        val videosWritten: Int = 0,
+        val videosSkipped: Int = 0
     )
 
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
@@ -65,6 +67,8 @@ class JournalBackup(private val context: Context) {
     fun exportTo(dest: Uri, entries: List<TravelEntry>, compact: Boolean = false): Result<ExportResult> = runCatching {
         var photosWritten = 0
         var photosSkipped = 0
+        var videosWritten = 0
+        var videosSkipped = 0
         val resolver = context.contentResolver
         resolver.openOutputStream(dest)?.use { os ->
             ZipOutputStream(BufferedOutputStream(os)).use { zip ->
@@ -89,13 +93,35 @@ class JournalBackup(private val context: Context) {
                         photosWritten++
                         path
                     }
-                    // driveFileIds are device/account-specific; clear them so import re-uploads fresh.
-                    // Videos are NOT bundled in the zip (too large) — keep videoUris + videoFileIds so
-                    // downloadMissingVideos can re-fetch them from Drive on the next sync. Clear
-                    // mediaOrder: it holds this device's photo content-URIs, which are rewritten on
-                    // import, so a preserved order would reference stale URIs (displayMedia then falls
-                    // back to photos-then-videos).
-                    entry.copy(photoUris = paths, driveFileIds = emptyList(), mediaOrder = emptyList())
+                    // Full export bundles video bytes too (720p/2Mbps ≤15s ≈ 4 MB each), streamed —
+                    // never readBytes() a multi-MB clip into heap. Compact skips videos to stay
+                    // small; their Drive IDs survive for downloadMissingVideos re-fetch.
+                    val videoPaths = if (compact) entry.videoUris else {
+                        entry.videoUris.mapIndexedNotNull { i, uriString ->
+                            val path = "videos/${entry.id}_$i.mp4"
+                            val ok = runCatching {
+                                resolver.openInputStream(Uri.parse(uriString))?.use { input ->
+                                    zip.putNextEntry(ZipEntry(path))
+                                    input.copyTo(zip, bufferSize = 65_536)
+                                    zip.closeEntry()
+                                    true
+                                } ?: false
+                            }.getOrDefault(false)
+                            if (ok) { videosWritten++; path } else { videosSkipped++; null }
+                        }
+                    }
+                    // driveFileIds are device/account-specific; clear them so import re-uploads
+                    // fresh. Full export does the same for videoFileIds (bytes are in the zip);
+                    // Compact keeps them so Drive can re-fetch the missing videos after import.
+                    // mediaOrder always cleared: it holds this device's content-URIs, which are
+                    // rewritten on import (displayMedia falls back to photos-then-videos).
+                    entry.copy(
+                        photoUris = paths,
+                        driveFileIds = emptyList(),
+                        videoUris = videoPaths,
+                        videoFileIds = if (compact) entry.videoFileIds else emptyList(),
+                        mediaOrder = emptyList()
+                    )
                 }
                 val backup = BackupFile(exportedAt = System.currentTimeMillis(), entries = exported)
                 zip.putNextEntry(ZipEntry("backup.json"))
@@ -103,7 +129,13 @@ class JournalBackup(private val context: Context) {
                 zip.closeEntry()
             }
         } ?: error("Couldn't open the destination file.")
-        ExportResult(entries = entries.size, photosWritten = photosWritten, photosSkipped = photosSkipped)
+        ExportResult(
+            entries = entries.size,
+            photosWritten = photosWritten,
+            photosSkipped = photosSkipped,
+            videosWritten = videosWritten,
+            videosSkipped = videosSkipped
+        )
     }
 
     /**
@@ -246,7 +278,7 @@ class JournalBackup(private val context: Context) {
                     // than aborting the whole import. The RESTORING phase already handles a missing
                     // temp file with: if (!tempFile.exists()) return@mapNotNull null.
                     // Flatten "photos/foo.jpg" → "photos_foo.jpg" so it's a valid filename.
-                    entries.filter { it.name.startsWith("photos/") }.forEach { entry ->
+                    entries.filter { it.name.startsWith("photos/") || it.name.startsWith("videos/") }.forEach { entry ->
                         runCatching {
                             File(tempDir, entry.name.replace("/", "_"))
                                 .outputStream()
@@ -282,10 +314,30 @@ class JournalBackup(private val context: Context) {
                     tempFile.delete() // free disk immediately after writing to the gallery
                     uri
                 }
-                // videoFileIds intentionally NOT cleared (unlike driveFileIds) — videos aren't in the
-                // zip, so their Drive IDs must survive for downloadMissingVideos to re-fetch them.
-                // mediaOrder cleared (stale photo URIs after the rewrite → photos-then-videos fallback).
-                onEntry(entry.copy(photoUris = newUris, driveFileIds = emptyList(), mediaOrder = emptyList()))
+                // Bundled videos (Full backups, videoUris = "videos/…" zip paths) re-materialize
+                // into Movies/Macaco; persistVideoToGallery takes the temp File directly, no heap
+                // copy. Compact/legacy backups carry real URIs (no "videos/" prefix) — keep them
+                // AND their videoFileIds so downloadMissingVideos re-fetches from Drive.
+                val videosBundled = entry.videoUris.any { it.startsWith("videos/") }
+                val newVideoUris = if (!videosBundled) entry.videoUris else {
+                    entry.videoUris.mapNotNull { path ->
+                        val tempFile = File(tempDir, path.replace("/", "_"))
+                        if (!tempFile.exists()) return@mapNotNull null
+                        val uri = ImageStorage.persistVideoToGallery(context, tempFile)
+                        tempFile.delete()
+                        uri
+                    }
+                }
+                // mediaOrder cleared (stale URIs after the rewrite → photos-then-videos fallback).
+                onEntry(
+                    entry.copy(
+                        photoUris = newUris,
+                        driveFileIds = emptyList(),
+                        videoUris = newVideoUris,
+                        videoFileIds = if (videosBundled) emptyList() else entry.videoFileIds,
+                        mediaOrder = emptyList()
+                    )
+                )
             }
             backup.entries.size
         } finally {

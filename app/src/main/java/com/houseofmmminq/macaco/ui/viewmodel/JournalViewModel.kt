@@ -400,31 +400,34 @@ class JournalViewModel(
                 ImageStorage.delete(appContext, old.videoUris - entry.videoUris.toSet())
             }
             cloudEntrySync.save(entry)
-            // Upload new photos to Drive in the background; persist updated IDs when done.
-            if (entry.photoUris.isNotEmpty()) {
+            // Upload new photos AND videos to Drive in ONE background pass with ONE merged save.
+            // Two separate launches used to race: each saved latest.copy(<its>FileIds), and the
+            // later writer could read a `latest` predating the earlier save, reverting its IDs to
+            // "" — which re-uploaded those files on the next save (duplicates in Drive).
+            if (entry.photoUris.isNotEmpty() || entry.videoUris.isNotEmpty()) {
                 launch {
-                    val updatedIds = drivePhotoSync.uploadEntryPhotosOrReport(entry)
-                    if (updatedIds != entry.driveFileIds) {
+                    val newPhotoIds =
+                        if (entry.photoUris.isNotEmpty()) drivePhotoSync.uploadEntryPhotosOrReport(entry)
+                        else entry.driveFileIds
+                    val newVideoIds =
+                        if (entry.videoUris.isNotEmpty()) drivePhotoSync.uploadEntryVideosOrReport(entry)
+                        else entry.videoFileIds
+                    if (newPhotoIds != entry.driveFileIds || newVideoIds != entry.videoFileIds) {
                         // Merge into the LATEST entry — the user may have edited it while the
-                        // upload ran; writing the captured `entry` back would revert that edit.
+                        // upload ran. Ids are positional to the media lists captured at upload
+                        // start; merge each list only if it's unchanged since then.
                         val latest = entries.value.find { it.id == entry.id } ?: entry
-                        // Ids are positional to the photo list captured at upload start; if the
-                        // photos changed since, skip — the next save re-uploads correctly.
-                        if (latest.photoUris == entry.photoUris) {
-                            cloudEntrySync.save(latest.copy(driveFileIds = updatedIds))
-                        }
-                    }
-                }
-            }
-            // Upload new videos to Drive in the background; persist updated IDs when done. Mirrors
-            // the photo path — positional videoFileIds merged into the latest entry if unchanged.
-            if (entry.videoUris.isNotEmpty()) {
-                launch {
-                    val updatedVideoIds = drivePhotoSync.uploadEntryVideosOrReport(entry)
-                    if (updatedVideoIds != entry.videoFileIds) {
-                        val latest = entries.value.find { it.id == entry.id } ?: entry
-                        if (latest.videoUris == entry.videoUris) {
-                            cloudEntrySync.save(latest.copy(videoFileIds = updatedVideoIds))
+                        val photosUnchanged = latest.photoUris == entry.photoUris
+                        val videosUnchanged = latest.videoUris == entry.videoUris
+                        if ((photosUnchanged && newPhotoIds != latest.driveFileIds) ||
+                            (videosUnchanged && newVideoIds != latest.videoFileIds)
+                        ) {
+                            cloudEntrySync.save(
+                                latest.copy(
+                                    driveFileIds = if (photosUnchanged) newPhotoIds else latest.driveFileIds,
+                                    videoFileIds = if (videosUnchanged) newVideoIds else latest.videoFileIds
+                                )
+                            )
                         }
                     }
                 }
@@ -539,10 +542,18 @@ class JournalViewModel(
     fun syncPhotosToGoogleDrive() {
         drivePhotoSync.syncAll(entries.value) { updated ->
             // `updated` was built from the entry list captured at sync start; merge only the
-            // driveFileIds into the live entry so a mid-sync user edit isn't reverted.
+            // Drive-ID lists into the live entry so a mid-sync user edit isn't reverted. Each
+            // list merges independently — ids are positional to the media list captured at start.
             val latest = entries.value.find { it.id == updated.id } ?: updated
-            if (latest.photoUris == updated.photoUris) {
-                cloudEntrySync.save(latest.copy(driveFileIds = updated.driveFileIds))
+            val photosUnchanged = latest.photoUris == updated.photoUris
+            val videosUnchanged = latest.videoUris == updated.videoUris
+            if (photosUnchanged || videosUnchanged) {
+                cloudEntrySync.save(
+                    latest.copy(
+                        driveFileIds = if (photosUnchanged) updated.driveFileIds else latest.driveFileIds,
+                        videoFileIds = if (videosUnchanged) updated.videoFileIds else latest.videoFileIds
+                    )
+                )
             }
         }
     }
@@ -576,7 +587,13 @@ class JournalViewModel(
                 val driveId = entry.driveFileIds.getOrNull(i)
                 if (!driveId.isNullOrEmpty()) cached[driveId] ?: uri else uri
             }
-            entry.copy(photoUris = newUris)
+            // Same substitution for videos — ensurePhotosCached/downloadMissing caches them in the
+            // same map, so a Drive-only video (dead local URI after reinstall) still exports.
+            val newVideoUris = entry.videoUris.mapIndexed { i, uri ->
+                val driveId = entry.videoFileIds.getOrNull(i)
+                if (!driveId.isNullOrEmpty()) cached[driveId] ?: uri else uri
+            }
+            entry.copy(photoUris = newUris, videoUris = newVideoUris)
         }
         return journalBackup.exportTo(dest, resolved, compact)
     }

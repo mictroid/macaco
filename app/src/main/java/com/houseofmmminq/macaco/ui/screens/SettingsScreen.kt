@@ -293,12 +293,20 @@ fun SettingsScreen(
                 appContext,
                 result.fold(
                     { r ->
-                        if (r.photosSkipped > 0) {
-                            appContext.getString(
-                                R.string.settings_backup_export_done_warn, r.entries, r.photosSkipped
+                        buildString {
+                            append(
+                                if (r.photosSkipped > 0) appContext.getString(
+                                    R.string.settings_backup_export_done_warn, r.entries, r.photosSkipped
+                                ) else appContext.getString(R.string.settings_backup_export_done, r.entries)
                             )
-                        } else {
-                            appContext.getString(R.string.settings_backup_export_done, r.entries)
+                            if (r.videosSkipped > 0) {
+                                append(" ")
+                                append(
+                                    appContext.getString(
+                                        R.string.settings_backup_export_videos_warn, r.videosSkipped
+                                    )
+                                )
+                            }
                         }
                     },
                     { it.message ?: appContext.getString(R.string.settings_backup_failed) }

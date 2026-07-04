@@ -244,8 +244,9 @@
     <string name="settings_import_restoring">A restaurar entradas… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d entradas salvas no arquivo</string>
     <string name="settings_backup_export_done_warn">%1$d entradas salvas, mas %2$d foto(s) não puderam ser incluídas. Abra o app on-line para baixá-las e exporte novamente.</string>
+    <string name="settings_backup_export_videos_warn">Não foi possível incluir %1$d vídeo(s).</string>
     <string name="settings_backup_export_quality_title">Qualidade de exportação</string>
-    <string name="settings_backup_export_quality_body">Compacto recodifica as fotos com 80% de qualidade — normalmente 40–60% menor com diferença visível mínima. Qualidade total preserva as fotos originais exatamente.</string>
+    <string name="settings_backup_export_quality_body">A qualidade total preserva as fotos originais e inclui seus vídeos. O modo compacto recodifica as fotos com 80% de qualidade — normalmente 40–60% menor — e deixa os vídeos de fora (eles são restaurados do Google Drive).</string>
     <string name="settings_backup_export_compact">Compacto</string>
     <string name="settings_backup_export_full">Qualidade total</string>
     <string name="settings_backup_import_done">%1$d entradas restauradas do arquivo</string>

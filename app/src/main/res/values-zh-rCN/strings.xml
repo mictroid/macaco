@@ -241,8 +241,9 @@
     <string name="settings_import_restoring">正在恢复条目… %1$d / %2$d</string>
     <string name="settings_backup_export_done">已将 %1$d 条记录备份到文件</string>
     <string name="settings_backup_export_done_warn">已备份 %1$d 条记录，但有 %2$d 张照片无法包含。请在联网时打开应用以下载这些照片，然后重新导出。</string>
+    <string name="settings_backup_export_videos_warn">有 %1$d 个视频无法包含在内。</string>
     <string name="settings_backup_export_quality_title">导出质量</string>
-    <string name="settings_backup_export_quality_body">紧凑模式以80%质量重新编码照片——通常缩小40–60%，视觉差异极小。完整质量将原样保留原始照片。</string>
+    <string name="settings_backup_export_quality_body">完整质量会保留原始照片并包含您的视频。精简模式以80%质量重新编码照片（通常缩小40–60%），并且不包含视频（可从 Google 云端硬盘恢复）。</string>
     <string name="settings_backup_export_compact">紧凑</string>
     <string name="settings_backup_export_full">完整质量</string>
     <string name="settings_backup_import_done">已从文件恢复 %1$d 条记录</string>

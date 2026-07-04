@@ -244,8 +244,9 @@
     <string name="settings_import_restoring">Vermeldingen herstellen… %1$d / %2$d</string>
     <string name="settings_backup_export_done">%1$d items naar bestand geback-upt</string>
     <string name="settings_backup_export_done_warn">%1$d items geback-upt, maar %2$d foto(s) konden niet worden opgenomen. Open de app online om ze te downloaden en exporteer opnieuw.</string>
+    <string name="settings_backup_export_videos_warn">%1$d video(\'s) konden niet worden opgenomen.</string>
     <string name="settings_backup_export_quality_title">Exportkwaliteit</string>
-    <string name="settings_backup_export_quality_body">Compact codeert foto\'s opnieuw op 80% kwaliteit — doorgaans 40–60% kleiner met minimaal zichtbaar verschil. Volledige kwaliteit behoudt de originele foto\'s exact.</string>
+    <string name="settings_backup_export_quality_body">Volledige kwaliteit behoudt de originele foto\'s en bevat je video\'s. Compact hercodeert foto\'s op 80% kwaliteit — meestal 40–60% kleiner — en laat video\'s weg (die worden hersteld vanaf Google Drive).</string>
     <string name="settings_backup_export_compact">Compact</string>
     <string name="settings_backup_export_full">Volledige kwaliteit</string>
     <string name="settings_backup_import_done">%1$d items uit bestand hersteld</string>
