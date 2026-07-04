@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
@@ -73,7 +75,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -704,29 +705,22 @@ fun ProfileScreen(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 60.dp),
+                        .padding(top = 6.dp, bottom = 44.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(R.drawable.ic_launcher_foreground),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(44.dp)
+                            .size(36.dp)
                             .offset(y = 4.dp)
                     )
                     Text(
                         text = "macaco",
                         color = SplashGoldBright,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Light,
                         letterSpacing = 5.sp
-                    )
-                    Text(
-                        text = "Roam Freely. Forget Nothing.",
-                        color = SplashGold.copy(alpha = 0.82f),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 1.sp
                     )
                 }
             }
@@ -744,14 +738,14 @@ fun ProfileScreen(
                 // Tappable avatar circle, with a background-colored ring so it reads over the banner.
                 Box(
                     modifier = Modifier
-                        .size(108.dp)
+                        .size(92.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.Center
                 ) {
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(84.dp)
                         .clip(CircleShape)
                         .clickable { showPhotoSourceSheet = true },
                     contentAlignment = Alignment.Center
@@ -763,7 +757,7 @@ fun ProfileScreen(
                             model = displayPhotoModel,
                             contentDescription = stringResource(R.string.profile_photo_cd),
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(84.dp)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop,
                             // If the Google URL fails to load (offline, revoked), fall through to a Person icon.
@@ -772,14 +766,14 @@ fun ProfileScreen(
                     } else {
                         Box(
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(84.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.primaryContainer),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 user.displayName.take(2).uppercase(),
-                                style = MaterialTheme.typography.headlineMedium,
+                                style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -805,21 +799,21 @@ fun ProfileScreen(
                 }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(8.dp))
 
                 Text(
                     user.displayName,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(2.dp))
                 Text(
                     user.email,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(8.dp))
 
                 Surface(
                     shape = RoundedCornerShape(20.dp),
@@ -837,7 +831,7 @@ fun ProfileScreen(
                     )
                 }
 
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(16.dp))
 
                 // Number of distinct named trips; the Trips stat is hidden when this is 0 so
                 // users who never name a trip aren't shown an empty counter.
@@ -856,7 +850,7 @@ fun ProfileScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(24.dp),
+                            .padding(vertical = 14.dp, horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -866,7 +860,7 @@ fun ProfileScreen(
                             Box(
                                 modifier = Modifier
                                     .width(1.dp)
-                                    .height(48.dp)
+                                    .height(40.dp)
                                     .background(MaterialTheme.colorScheme.outlineVariant)
                             )
                             StatItem(value = tripCount.toString(), label = stringResource(R.string.profile_trips))
@@ -875,7 +869,7 @@ fun ProfileScreen(
                         Box(
                             modifier = Modifier
                                 .width(1.dp)
-                                .height(48.dp)
+                                .height(40.dp)
                                 .background(MaterialTheme.colorScheme.outlineVariant)
                         )
                         StatItem(
@@ -886,7 +880,7 @@ fun ProfileScreen(
                         Box(
                             modifier = Modifier
                                 .width(1.dp)
-                                .height(48.dp)
+                                .height(40.dp)
                                 .background(MaterialTheme.colorScheme.outlineVariant)
                         )
                         StatItem(
@@ -905,18 +899,11 @@ fun ProfileScreen(
                         text = stringResource(R.string.profile_member_since, memberSince),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 16.dp)
+                        modifier = Modifier.padding(vertical = 8.dp)
                     )
                 }
-
-                // Utility rows relocated from the retired navigation drawer.
-                Spacer(Modifier.height(8.dp))
-                ProfileUtilityCard(
-                    onSettings = onSettings,
-                    onHelp = onHelp,
-                    entryCount = entries.size
-                )
-                Spacer(Modifier.height(8.dp))
+                // Utility + action buttons now render as a 2-column grid in the pinned
+                // section below (see ProfileActionTile), so nothing further here.
 
             } else {
                 // Not signed in
@@ -940,53 +927,73 @@ fun ProfileScreen(
         } // scrollable content Column
         } // weight(1f) Box
 
-            // Action buttons pinned above the footer — no gap possible.
+            // Action buttons pinned at the bottom, laid out as a compact 2-column grid so
+            // Settings / Help / Share / Rate / Subscription / Sign Out all fit without scrolling
+            // (replaces the old single-column utility card + stacked buttons + branded footer).
             if (currentUser != null) {
-                // Subscription management lives here (moved out of the journal drawer so the
-                // paywall isn't constantly in the user's face during normal journaling).
-                OutlinedButton(
-                    onClick = onSubscription,
+                val gridSpacing = 8.dp
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .padding(top = 12.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(gridSpacing)
                 ) {
-                    Icon(
-                        Icons.Outlined.WorkspacePremium,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.common_subscription))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        ProfileActionTile(
+                            Icons.Filled.Settings,
+                            stringResource(R.string.common_settings),
+                            onClick = onSettings
+                        )
+                        ProfileActionTile(
+                            Icons.AutoMirrored.Filled.HelpOutline,
+                            stringResource(R.string.drawer_help),
+                            onClick = onHelp
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        ProfileActionTile(
+                            Icons.Filled.Share,
+                            stringResource(R.string.drawer_share_app),
+                            onClick = { AppActions.shareApp(context, entries.size) }
+                        )
+                        ProfileActionTile(
+                            Icons.Filled.StarRate,
+                            stringResource(R.string.drawer_rate_us),
+                            onClick = { AppActions.requestReview(context) }
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        ProfileActionTile(
+                            Icons.Outlined.WorkspacePremium,
+                            stringResource(R.string.common_subscription),
+                            onClick = onSubscription
+                        )
+                        ProfileActionTile(
+                            Icons.AutoMirrored.Filled.Logout,
+                            stringResource(R.string.common_sign_out),
+                            tint = MaterialTheme.colorScheme.error,
+                            onClick = { showSignOutDialog = true }
+                        )
+                    }
                 }
-                OutlinedButton(
-                    onClick = { showSignOutDialog = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 12.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.Logout,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.common_sign_out))
-                }
-                // GDPR/Play-required in-app account deletion. Sits below sign-out, de-emphasised
-                // as a text button so it isn't an easy mis-tap.
+                // GDPR/Play-required in-app account deletion — de-emphasised full-width text
+                // button so it isn't an easy mis-tap.
                 TextButton(
                     onClick = { showDeleteAccountDialog = true },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
-                        .padding(bottom = 8.dp),
+                        .padding(top = 4.dp, bottom = 12.dp),
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                 ) {
                     Icon(
@@ -1009,45 +1016,51 @@ fun ProfileScreen(
                     Text(stringResource(R.string.common_sign_in), fontWeight = FontWeight.SemiBold)
                 }
             }
-
-            // Sleek branded footer band anchored at the bottom of the column.
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF071E26),
-                                Color(0xFF0E5A6B),
-                            )
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                // Scrim at the very top of the footer to soften the white-to-teal edge.
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(24.dp)
-                        .align(Alignment.TopCenter)
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.background.copy(alpha = 0.4f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                )
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp)
-                )
-            }
+            Spacer(Modifier.height(12.dp))
         }
       } // end else (portrait)
+    }
+}
+
+/** One tile in the Profile portrait 2-column action grid: centred icon over a single-line label. */
+@Composable
+private fun RowScope.ProfileActionTile(
+    icon: ImageVector,
+    label: String,
+    tint: Color = Color.Unspecified,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .weight(1f)
+            .heightIn(min = 64.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = if (tint == Color.Unspecified) MaterialTheme.colorScheme.primary else tint,
+                modifier = Modifier.size(22.dp)
+            )
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (tint == Color.Unspecified) MaterialTheme.colorScheme.onSurface else tint,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
