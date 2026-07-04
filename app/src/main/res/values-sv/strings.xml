@@ -116,6 +116,8 @@
     <string name="settings_app_lock_on">Biometri / skärmlås krävs för att öppna</string>
     <string name="settings_app_lock_off">Lås dagboken med biometri eller skärmlås</string>
     <string name="settings_app_lock_unavailable">Inget skärmlås konfigurerat. Lägg till en PIN-kod, ett mönster eller biometri i din enhets inställningar först.</string>
+    <string name="settings_permissions">App-behörigheter</string>
+    <string name="settings_permissions_subtitle">Kamera, plats, foton, aviseringar</string>
     <string name="settings_drive_backup">Google Drive-säkerhetskopiering</string>
     <string name="settings_drive_connected">Ansluten till Google Drive</string>
     <string name="settings_drive_not_connected">Inte ansluten</string>

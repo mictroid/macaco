@@ -143,6 +143,8 @@
     <string name="settings_app_lock_on">Biometria / bloqueio de tela necessário para abrir</string>
     <string name="settings_app_lock_off">Bloquear diário com biometria ou bloqueio de tela</string>
     <string name="settings_app_lock_unavailable">Nenhum bloqueio de tela configurado. Adicione um PIN, padrão ou biometria nas configurações do dispositivo primeiro.</string>
+    <string name="settings_permissions">Permissões do aplicativo</string>
+    <string name="settings_permissions_subtitle">Câmera, localização, fotos, notificações</string>
     <string name="settings_drive_backup">Backup no Google Drive</string>
     <string name="settings_drive_connected">Conectado ao Google Drive</string>
     <string name="settings_drive_not_connected">Não conectado</string>

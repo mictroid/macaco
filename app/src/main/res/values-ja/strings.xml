@@ -140,6 +140,8 @@
     <string name="settings_app_lock_on">生体認証 / 画面ロックが必要です</string>
     <string name="settings_app_lock_off">生体認証または画面ロックで日記を保護</string>
     <string name="settings_app_lock_unavailable">画面ロックが設定されていません。先にデバイス設定でPIN、パターン、または生体認証を追加してください。</string>
+    <string name="settings_permissions">アプリの権限</string>
+    <string name="settings_permissions_subtitle">カメラ、位置情報、写真、通知</string>
     <string name="settings_drive_backup">Google Drive バックアップ</string>
     <string name="settings_drive_connected">Google Drive に接続済み</string>
     <string name="settings_drive_not_connected">未接続</string>

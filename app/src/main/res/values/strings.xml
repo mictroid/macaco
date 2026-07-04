@@ -229,6 +229,8 @@
     <string name="settings_app_lock_on">Biometric / screen lock required to open</string>
     <string name="settings_app_lock_off">Lock journal with biometric or screen lock</string>
     <string name="settings_app_lock_unavailable">No screen lock set up. Add a PIN, pattern, or biometric in your device settings first.</string>
+    <string name="settings_permissions">App Permissions</string>
+    <string name="settings_permissions_subtitle">Camera, location, photos, notifications</string>
     <string name="settings_backup_file">Backup &amp; Restore</string>
     <string name="settings_backup_file_title">Backup to file</string>
     <string name="settings_backup_file_subtitle">Save all entries and photos to a .zip you can restore anywhere</string>

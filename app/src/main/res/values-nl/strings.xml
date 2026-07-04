@@ -143,6 +143,8 @@
     <string name="settings_app_lock_on">Biometrische of schermvergrendeling vereist om te openen</string>
     <string name="settings_app_lock_off">Dagboek vergrendelen met biometrie of schermvergrendeling</string>
     <string name="settings_app_lock_unavailable">Geen schermvergrendeling ingesteld. Voeg eerst een pincode, patroon of biometrie toe in je apparaatinstellingen.</string>
+    <string name="settings_permissions">App-machtigingen</string>
+    <string name="settings_permissions_subtitle">Camera, locatie, foto\'s, meldingen</string>
     <string name="settings_drive_backup">Google Drive Back-up</string>
     <string name="settings_drive_connected">Verbonden met Google Drive</string>
     <string name="settings_drive_not_connected">Niet verbonden</string>

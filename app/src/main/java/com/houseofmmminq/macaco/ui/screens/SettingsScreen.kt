@@ -1,8 +1,11 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings as AndroidSettings
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,6 +52,7 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -727,6 +731,21 @@ fun SettingsScreen(
                     )
                 }
             }
+
+            // Opens the Android system "App info" screen so the user can review/adjust every
+            // runtime permission (camera, location, photos/videos, notifications) in one place —
+            // apps can't grant permissions silently, so the canonical pattern is to deep-link here.
+            SettingsClickRow(
+                icon = Icons.Filled.Security,
+                title = stringResource(R.string.settings_permissions),
+                value = stringResource(R.string.settings_permissions_subtitle),
+                onClick = {
+                    val intent = Intent(AndroidSettings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", context.packageName, null)
+                    }
+                    context.startActivity(intent)
+                }
+            )
 
             // ── Google Drive Backup ───────────────────────────────────────────
             Spacer(Modifier.height(4.dp))

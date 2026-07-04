@@ -143,6 +143,8 @@
     <string name="settings_app_lock_on">Se requiere biometría o bloqueo de pantalla para abrir</string>
     <string name="settings_app_lock_off">Bloquear el diario con biometría o bloqueo de pantalla</string>
     <string name="settings_app_lock_unavailable">No hay bloqueo de pantalla configurado. Añade un PIN, patrón o biometría en los ajustes de tu dispositivo primero.</string>
+    <string name="settings_permissions">Permisos de la aplicación</string>
+    <string name="settings_permissions_subtitle">Cámara, ubicación, fotos, notificaciones</string>
     <string name="settings_drive_backup">Copia de seguridad en Google Drive</string>
     <string name="settings_drive_connected">Conectado a Google Drive</string>
     <string name="settings_drive_not_connected">No conectado</string>

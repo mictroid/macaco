@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -383,6 +384,17 @@ fun JournalListScreen(
                     }
                 }
 
+                // Post-header items fill the remaining sheet height (weight, so the portrait
+                // weight-spacer below still pins Sign Out to the bottom). In landscape the total
+                // item height (~442dp) exceeds the short screen, so make that region scrollable.
+                Column(
+                    modifier = if (drawerIsLandscape)
+                        Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                    else
+                        Modifier.weight(1f)
+                ) {
                 Spacer(Modifier.height(if (drawerIsLandscape) 4.dp else 8.dp))
 
                 NavigationDrawerItem(
@@ -505,6 +517,7 @@ fun JournalListScreen(
                 }
 
                 Spacer(Modifier.height(if (drawerIsLandscape) 4.dp else 8.dp))
+                }
             }
         }
     ) {
@@ -1193,9 +1206,9 @@ private fun OnThisDayBanner(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -1348,7 +1361,7 @@ private fun TripHeader(
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 2.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -143,6 +143,8 @@
     <string name="settings_app_lock_on">Biometrico / blocco schermo richiesto per aprire</string>
     <string name="settings_app_lock_off">Blocca il diario con biometrico o blocco schermo</string>
     <string name="settings_app_lock_unavailable">Nessun blocco schermo configurato. Imposta prima un PIN, sequenza o biometrico nelle impostazioni del dispositivo.</string>
+    <string name="settings_permissions">Autorizzazioni dell\'app</string>
+    <string name="settings_permissions_subtitle">Fotocamera, posizione, foto, notifiche</string>
     <string name="settings_drive_backup">Backup su Google Drive</string>
     <string name="settings_drive_connected">Connesso a Google Drive</string>
     <string name="settings_drive_not_connected">Non connesso</string>

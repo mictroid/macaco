@@ -147,6 +147,8 @@
     <string name="settings_app_lock_on">Biometrie / Bildschirmsperre erforderlich</string>
     <string name="settings_app_lock_off">Tagebuch mit Biometrie oder Bildschirmsperre sichern</string>
     <string name="settings_app_lock_unavailable">Keine Bildschirmsperre eingerichtet. Richte zuerst eine PIN, ein Muster oder Biometrie in den Geräteeinstellungen ein.</string>
+    <string name="settings_permissions">App-Berechtigungen</string>
+    <string name="settings_permissions_subtitle">Kamera, Standort, Fotos, Benachrichtigungen</string>
     <string name="settings_drive_backup">Google Drive Backup</string>
     <string name="settings_drive_connected">Mit Google Drive verbunden</string>
     <string name="settings_drive_not_connected">Nicht verbunden</string>

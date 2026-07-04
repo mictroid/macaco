@@ -149,6 +149,8 @@
     <string name="settings_app_lock_on">Wymagana blokada biometryczna lub ekranu</string>
     <string name="settings_app_lock_off">Zablokuj dziennik biometrycznie lub blokadą ekranu</string>
     <string name="settings_app_lock_unavailable">Brak blokady ekranu. Najpierw ustaw PIN, wzór lub dane biometryczne w ustawieniach urządzenia.</string>
+    <string name="settings_permissions">Uprawnienia aplikacji</string>
+    <string name="settings_permissions_subtitle">Aparat, lokalizacja, zdjęcia, powiadomienia</string>
     <string name="settings_drive_backup">Kopia zapasowa na Google Drive</string>
     <string name="settings_drive_connected">Połączono z Google Drive</string>
     <string name="settings_drive_not_connected">Nie połączono</string>

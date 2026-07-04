@@ -143,6 +143,8 @@
     <string name="settings_app_lock_on">Biométrie / verrouillage écran requis à l\'ouverture</string>
     <string name="settings_app_lock_off">Verrouiller le journal avec la biométrie ou le verrouillage écran</string>
     <string name="settings_app_lock_unavailable">Aucun verrouillage écran configuré. Ajoutez d\'abord un code PIN, un schéma ou une biométrie dans les paramètres de votre appareil.</string>
+    <string name="settings_permissions">Autorisations de l\'application</string>
+    <string name="settings_permissions_subtitle">Caméra, position, photos, notifications</string>
     <string name="settings_drive_backup">Sauvegarde Google Drive</string>
     <string name="settings_drive_connected">Connecté à Google Drive</string>
     <string name="settings_drive_not_connected">Non connecté</string>
