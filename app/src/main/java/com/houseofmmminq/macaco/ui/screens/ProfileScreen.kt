@@ -116,11 +116,10 @@ fun ProfileScreen(
     var deleteError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    // 2-pane only when actually wide-and-short: phones in landscape (short height) OR tablets
-    // (≥600dp wide) but ONLY in landscape (width > height). Tablet PORTRAIT falls through to the
-    // single-column layout, which flows better tall-and-narrow. (v3)
-    val isLandscape = configuration.screenHeightDp < 480 ||
-        (configuration.screenWidthDp >= 600 && configuration.screenWidthDp > configuration.screenHeightDp)
+    // 2-pane only on phones in landscape (short screen). Tablets always use the single-column
+    // portrait layout — the two-pane layout looked cramped on large screens, and the redesigned
+    // single-column view (2-column action grid) reads well tall-and-wide too.
+    val isLandscape = configuration.screenHeightDp < 480
 
     var showPhotoSourceSheet by remember { mutableStateOf(false) }
     // Saveable as a string: the camera app backgrounds us and the OS may kill the process;
