@@ -1,6 +1,6 @@
 What's new:
-• Your entry videos now stay put after reinstalling and are included in full backups
-• Videos back up and sync to Google Drive more reliably
-• Faster, smoother video thumbnails when opening entries
-• Clearer handling of long or unsupported clips
-• New App Permissions shortcut in Settings, plus landscape menu and colour polish
+• Try Macaco free — write your first entries before subscribing, with a faster startup
+• Cleaner navigation: quick actions now live on a redesigned Profile screen
+• Bigger, easier-to-tap controls and better accessibility throughout
+• App colours now follow your chosen theme more consistently
+• Tidier layouts in landscape for the journal, map and Profile
