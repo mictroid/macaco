@@ -2,6 +2,28 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-04 — vc54 PUBLISHED; Play photo/video permissions declaration unblocked
+
+vc54 (video feature go-live) was dispatched 2026-07-03 but the run (`28685107862`) **failed at the
+Play commit**, not the build: a **403 PERMISSION_DENIED** — "All developers requesting access to the
+photo and video permissions are required to tell Google Play about the core functionality." Cause:
+vc54 is the first release requesting `READ_MEDIA_VIDEO`, which makes Play require the mandatory
+**Photo and Video Permissions declaration**. `publishReleaseBundle` uploads fine but 403s at commit
+until it's submitted — and there's a chicken-and-egg: Play won't expose the *video* declaration
+question until it has *processed* a bundle requesting the permission, which the failing commit never
+lets happen.
+
+Broken with a one-time manual step: temporarily swapped `release.yml` to `bundleRelease` +
+`upload-artifact` (commit `c2fdf02`), dispatched a clean green run (`28698669783`), downloaded the
+signed AAB, uploaded it manually via the Play Console UI as a draft → Play detected the permission →
+completed the declaration → rolled out from the UI. **vc54 is PUBLISHED to closed testing.** Reverted
+`release.yml` back to `publishReleaseBundle` (commit `eafe32c`). The declaration is app-content-level
+and persists, so future `READ_MEDIA_VIDEO` releases publish normally via CI — no repeat needed.
+Detail in `worklog-2026-07-04.md`; durable lesson in the `play-media-permissions-declaration` memory.
+
+**Pending:** 5 new video-follow-up briefs in `docs/` (backup-include-videos, video-permissions,
+video-sync-integrity, video-thumbnail-perf, video-transcode-guards) — verify vs live source first.
+
 ## 2026-07-03 — vc49-QA sweep, all 3 ships (9 briefs) implemented, NOT shipped
 
 Fable 5's full-app QA at vc49 (`docs/qa-code-review-2026-07-03.md`) yielded 9 briefs; grouped into 3
