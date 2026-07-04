@@ -1,6 +1,6 @@
 What's new:
-• Add videos to your entries — now straight from an entry, not just while editing
-• Photo and video buttons are front and centre when adding memories
-• More reliable video saving on a wider range of devices
-• Cleaner single-column layout on tablets
+• Refreshed Profile screen — tighter spacing and one clean single-column layout everywhere
+• Your stats now count videos too, under a new "Media" total
+• Bigger, clearer app branding in the journal header
+• Upgrade screen now looks right in light mode
 • Assorted polish and stability fixes
