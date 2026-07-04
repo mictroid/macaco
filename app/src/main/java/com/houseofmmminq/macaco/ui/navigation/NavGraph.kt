@@ -162,8 +162,6 @@ fun NavGraph(
         // entry creation beyond the free limit (see goToNewEntry), not as an app-wide wall.
         else -> {
             val navController = rememberNavController()
-            // Set when navigating to a drawer-launched screen so the menu reopens on return.
-            var reopenDrawer by remember { mutableStateOf(false) }
 
             val entryCount = viewModel.entries.collectAsState().value.size
             // isPurchased == false is the only state that gates; null (still loading) lets the
@@ -203,16 +201,11 @@ fun NavGraph(
                 composable(Screen.JournalList.route) {
                     JournalListScreen(
                         viewModel = viewModel,
-                        openDrawerOnEnter = reopenDrawer,
-                        onDrawerConsumed = { reopenDrawer = false },
                         onNewEntry = goToNewEntry,
                         onEntryClick = { id ->
                             navController.navigate(Screen.EntryDetail.createRoute(id))
                         },
-                        onProfile = { navController.navigateToTab(Screen.Profile.route) },
-                        onSettings = { reopenDrawer = true; navController.navigate(Screen.Settings.route) },
-                        onLogin = { navController.navigate(Screen.Login.route) },
-                        onHelp = { reopenDrawer = true; navController.navigate(Screen.HelpAbout.route) }
+                        onProfile = { navController.navigateToTab(Screen.Profile.route) }
                     )
                 }
 
@@ -324,6 +317,8 @@ fun NavGraph(
                             navController.navigate(Screen.Login.route)
                         },
                         onSubscription = { navController.navigate(Screen.Subscription.route) },
+                        onSettings = { navController.navigate(Screen.Settings.route) },
+                        onHelp = { navController.navigate(Screen.HelpAbout.route) },
                         onDeleteAccount = { password, callback -> viewModel.deleteAccount(password, callback) }
                     )
                 }

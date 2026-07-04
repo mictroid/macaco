@@ -1,13 +1,13 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import android.content.Intent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,27 +31,17 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.automirrored.filled.HelpOutline
-import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
@@ -60,24 +50,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -106,8 +90,6 @@ import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel.ReelState
-import com.houseofmmminq.macaco.util.AppActions
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -118,17 +100,10 @@ fun JournalListScreen(
     viewModel: JournalViewModel,
     onNewEntry: () -> Unit,
     onEntryClick: (String) -> Unit,
-    onProfile: () -> Unit,
-    onSettings: () -> Unit,
-    onLogin: () -> Unit,
-    onHelp: () -> Unit,
-    // True when returning from a drawer-launched screen: reopen the menu so back lands on it.
-    openDrawerOnEnter: Boolean = false,
-    onDrawerConsumed: () -> Unit = {}
+    onProfile: () -> Unit
 ) {
     val entries by viewModel.entries.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
-    val isDarkMode by viewModel.isDarkMode.collectAsState()
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
     val context = LocalContext.current
@@ -173,15 +148,12 @@ fun JournalListScreen(
     val onThisDayEntries = remember(entries) { entries.onThisDayEntries() }
     var onThisDayDismissed by remember { mutableStateOf(false) }
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    // Re-open the menu drawer when returning to the list from a drawer-launched screen, so
-    // pressing back from a menu screen lands back on the menu.
-    LaunchedEffect(openDrawerOnEnter) {
-        if (openDrawerOnEnter) {
-            drawerState.open()
-            onDrawerConsumed()
+    // Hoisted list state drives the collapsing header: once the list scrolls away from the top,
+    // the tall brand block gives way to the compact single-row header (also used in landscape).
+    val listState = rememberLazyListState()
+    val collapsed by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 24
         }
     }
 
@@ -222,340 +194,33 @@ fun JournalListScreen(
         )
     }
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            // Brand-teal icon tint on every row so the menu feels designed, not default-grey.
-            val drawerItemColors = NavigationDrawerItemDefaults.colors(
-                unselectedIconColor = MaterialTheme.colorScheme.primary
-            )
-            ModalDrawerSheet(
-                drawerContainerColor = MaterialTheme.colorScheme.surface,
-                windowInsets = WindowInsets(0)
-            ) {
-                // Branded drawer header: the same splash teal fade + gold "macaco" wordmark as the
-                // app header, with the monkey icon above the signed-in user's name. In landscape on
-                // phones the tall portrait header pushes the bottom nav items (sign-out) off-screen,
-                // so collapse it to a slim horizontal row there.
-                val drawerIsLandscape = LocalConfiguration.current.screenHeightDp < 480
-                if (drawerIsLandscape) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(macacoBrandBackground())
-                            .statusBarsPadding()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .offset(y = 2.dp)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            text = "macaco",
-                            color = SplashGoldBright,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 4.sp
-                        )
-                        if (currentUser != null) {
-                            Text(
-                                text = " · " + currentUser!!.displayName,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.White.copy(alpha = 0.75f)
-                            )
-                        }
-                        Spacer(Modifier.weight(1f))
-                        if (currentUser != null) {
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primaryContainer)
-                                    .clickable {
-                                        scope.launch { drawerState.close() }
-                                        onProfile()
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                if (profilePhotoUri != null) {
-                                    AsyncImage(
-                                        model = profilePhotoUri,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(32.dp)
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                } else {
-                                    Text(
-                                        currentUser!!.displayName.take(1).uppercase(),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(macacoBrandBackground())
-                            .statusBarsPadding()
-                            .padding(horizontal = 20.dp, vertical = 24.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_launcher_foreground),
-                                contentDescription = null,
-                                modifier = Modifier.size(64.dp)
-                            )
-                            Column(
-                                modifier = Modifier.offset(y = (-8).dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = "macaco",
-                                    color = SplashGoldBright,
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Light,
-                                    letterSpacing = 5.sp
-                                )
-                                Text(
-                                    text = "Roam Freely. Forget Nothing.",
-                                    color = SplashGold.copy(alpha = 0.82f),
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Light,
-                                    letterSpacing = 1.sp
-                                )
-                                Spacer(Modifier.height(8.dp))
-                                if (currentUser != null) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(44.dp)
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.primaryContainer)
-                                            .clickable {
-                                                scope.launch { drawerState.close() }
-                                                onProfile()
-                                            },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        if (profilePhotoUri != null) {
-                                            AsyncImage(
-                                                model = profilePhotoUri,
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .size(44.dp)
-                                                    .clip(CircleShape),
-                                                contentScale = ContentScale.Crop
-                                            )
-                                        } else {
-                                            Text(
-                                                currentUser!!.displayName.take(2).uppercase(),
-                                                style = MaterialTheme.typography.labelLarge,
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                                            )
-                                        }
-                                    }
-                                    Spacer(Modifier.height(4.dp))
-                                }
-                                Text(
-                                    text = currentUser?.displayName ?: stringResource(R.string.drawer_not_signed_in),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color.White.copy(alpha = 0.85f),
-                                    modifier = if (currentUser != null) Modifier.clickable {
-                                        scope.launch { drawerState.close() }
-                                        onProfile()
-                                    } else Modifier
-                                )
-                            }
-                        }
-                    }
-                }
-
-                // Post-header items fill the remaining sheet height (weight, so the portrait
-                // weight-spacer below still pins Sign Out to the bottom). In landscape the total
-                // item height (~442dp) exceeds the short screen, so make that region scrollable.
-                Column(
-                    modifier = if (drawerIsLandscape)
-                        Modifier
-                            .weight(1f)
-                            .verticalScroll(rememberScrollState())
-                    else
-                        Modifier.weight(1f)
-                ) {
-                Spacer(Modifier.height(if (drawerIsLandscape) 4.dp else 8.dp))
-
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.common_settings)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        onSettings()
-                    }
-                )
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        horizontal = 16.dp,
-                        vertical = if (drawerIsLandscape) 4.dp else 8.dp
-                    )
-                )
-
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.settings_dark_mode)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = {
-                        Icon(
-                            if (isDarkMode) Icons.Filled.DarkMode else Icons.Filled.LightMode,
-                            contentDescription = null
-                        )
-                    },
-                    badge = {
-                        Switch(
-                            checked = isDarkMode,
-                            onCheckedChange = { viewModel.toggleDarkMode() }
-                        )
-                    },
-                    onClick = { viewModel.toggleDarkMode() }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.drawer_share_app)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.Share, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        AppActions.shareApp(context, entries.size)
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.drawer_rate_us)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.Filled.StarRate, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        AppActions.requestReview(context)
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text(stringResource(R.string.drawer_help)) },
-                    selected = false,
-                    colors = drawerItemColors,
-                    icon = { Icon(Icons.AutoMirrored.Filled.HelpOutline, contentDescription = null) },
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        onHelp()
-                    }
-                )
-
-                // Portrait: weight spacer pins Sign Out to the drawer bottom. Landscape: a fixed
-                // spacer instead, so the weight doesn't push Sign Out below the short screen edge.
-                if (drawerIsLandscape) {
-                    Spacer(Modifier.height(4.dp))
-                } else {
-                    Spacer(Modifier.weight(1f))
-                }
-
-                HorizontalDivider(
-                    modifier = Modifier.padding(
-                        horizontal = 16.dp,
-                        vertical = if (drawerIsLandscape) 4.dp else 8.dp
-                    )
-                )
-
-                if (currentUser != null) {
-                    NavigationDrawerItem(
-                        label = {
-                            Text(stringResource(R.string.common_sign_out), color = MaterialTheme.colorScheme.error)
-                        },
-                        selected = false,
-                    colors = drawerItemColors,
-                        icon = {
-                            Icon(
-                                Icons.AutoMirrored.Filled.Logout,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        },
-                        onClick = {
-                            scope.launch {
-                                drawerState.close()
-                                viewModel.signOut()
-                            }
-                        }
-                    )
-                } else {
-                    NavigationDrawerItem(
-                        label = { Text(stringResource(R.string.common_sign_in)) },
-                        selected = false,
-                    colors = drawerItemColors,
-                        icon = { Icon(Icons.Filled.Person, contentDescription = null) },
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            onLogin()
-                        }
-                    )
-                }
-
-                Spacer(Modifier.height(if (drawerIsLandscape) 4.dp else 8.dp))
-                }
-            }
-        }
-    ) {
-        Scaffold(
+    Scaffold(
             topBar = {
                 // Branded header: the splash's deep-teal radial fade behind the icon, with the
-                // gold "macaco" wordmark styled to match the splash. Kept compact; the drawer menu
-                // and profile avatar ride the top so navigation stays reachable.
-                // In landscape on phones (short screen) the tall centered brand block eats ~33% of
-                // the height, so collapse it to a single slim row. Tablets stay tall (~750dp+).
+                // gold "macaco" wordmark styled to match the splash. The profile avatar rides the
+                // top so Profile stays reachable (the drawer was retired — its items moved to
+                // Profile). The tall centred brand block collapses to the compact single row both
+                // in landscape (short screen) AND once the list scrolls (collapsed), animated.
                 val isLandscape = LocalConfiguration.current.screenHeightDp < 480
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(macacoBrandBackground())
                         .statusBarsPadding()
-                        .padding(bottom = if (isLandscape) 0.dp else 4.dp)
+                        .padding(bottom = if (isLandscape || collapsed) 0.dp else 4.dp)
+                        .animateContentSize()
                 ) {
-                  if (isLandscape) {
-                    // ── Compact landscape header: single slim row, brand content centred ──
-                    // The hamburger (left) and avatar (right) are both fixed 40dp so the brand
-                    // block, in a weight(1f) Box, is centred symmetrically between them.
+                  if (isLandscape || collapsed) {
+                    // ── Compact header: single slim row, brand content centred ──
+                    // A fixed 40dp leading spacer (matching the trailing avatar anchor) keeps the
+                    // centred brand block symmetric now that the hamburger is gone.
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 4.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            onClick = { scope.launch { drawerState.open() } },
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                Icons.Filled.Menu,
-                                contentDescription = stringResource(R.string.journal_list_menu_cd),
-                                tint = Color.White
-                            )
-                        }
+                        Spacer(Modifier.size(40.dp))
 
                         Box(
                             modifier = Modifier.weight(1f),
@@ -635,24 +300,16 @@ fun JournalListScreen(
                         }
                     }
                   } else {
-                    // Menu and avatar ride the top edge; the brand block overlays them centered,
-                    // so the icon sits flush at the top with no dead space above it.
+                    // The avatar rides the top edge; the brand block overlays it centered, so the
+                    // icon sits flush at the top with no dead space above it. A 40dp leading spacer
+                    // (matching the avatar anchor) keeps the row balanced now the hamburger is gone.
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            onClick = { scope.launch { drawerState.open() } },
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                Icons.Filled.Menu,
-                                contentDescription = stringResource(R.string.journal_list_menu_cd),
-                                tint = Color.White
-                            )
-                        }
+                        Spacer(Modifier.size(40.dp))
                         Spacer(Modifier.weight(1f))
                         if (currentUser != null) {
                             if (profilePhotoUri != null) {
@@ -711,19 +368,14 @@ fun JournalListScreen(
                                 fontWeight = FontWeight.Light,
                                 letterSpacing = 3.sp
                             )
-                            Text(
-                                text = "Roam Freely. Forget Nothing.",
-                                color = SplashGold.copy(alpha = 0.82f),
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Light,
-                                letterSpacing = 1.sp
-                            )
+                            // Slogan removed from this daily-open surface; it stays on the
+                            // splash/login/purchase screens (the persuasion moments).
                             if (entries.isNotEmpty()) {
                                 val count = visibleEntries.size
                                 val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
                                 Text(
                                     memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = MaterialTheme.typography.labelMedium,
                                     color = SplashGold.copy(alpha = 0.8f)
                                 )
                             }
@@ -775,6 +427,7 @@ fun JournalListScreen(
                     entries.isEmpty() -> EmptyState(modifier = Modifier.fillMaxSize())
                     visibleEntries.isEmpty() -> NoMatchState(modifier = Modifier.fillMaxSize())
                     else -> LazyColumn(
+                        state = listState,
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(
                             start = listHorizontalPadding,
@@ -833,7 +486,6 @@ fun JournalListScreen(
                 }
             }
         }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

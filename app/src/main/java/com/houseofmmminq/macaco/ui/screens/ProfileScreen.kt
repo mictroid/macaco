@@ -32,9 +32,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Folder
@@ -71,6 +75,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -86,6 +91,7 @@ import coil.compose.AsyncImage
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.AuthProvider
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import com.houseofmmminq.macaco.util.AppActions
 import com.houseofmmminq.macaco.util.ImageStorage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,6 +102,8 @@ fun ProfileScreen(
     onSignOut: () -> Unit,
     onLogin: () -> Unit,
     onSubscription: () -> Unit,
+    onSettings: () -> Unit,
+    onHelp: () -> Unit,
     onDeleteAccount: (String?, (Result<Unit>) -> Unit) -> Unit
 ) {
     val currentUser by viewModel.currentUser.collectAsState()
@@ -494,6 +502,16 @@ fun ProfileScreen(
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
                     }
+
+                    // Utility rows relocated from the retired navigation drawer (left pane is the
+                    // scrollable one in landscape; the right pane is a fixed Box).
+                    Spacer(Modifier.height(4.dp))
+                    ProfileUtilityCard(
+                        onSettings = onSettings,
+                        onHelp = onHelp,
+                        entryCount = entries.size
+                    )
+                    Spacer(Modifier.height(8.dp))
                 } else {
                     Spacer(Modifier.height(32.dp))
                     Text("🔑", fontSize = 48.sp)
@@ -891,6 +909,15 @@ fun ProfileScreen(
                     )
                 }
 
+                // Utility rows relocated from the retired navigation drawer.
+                Spacer(Modifier.height(8.dp))
+                ProfileUtilityCard(
+                    onSettings = onSettings,
+                    onHelp = onHelp,
+                    entryCount = entries.size
+                )
+                Spacer(Modifier.height(8.dp))
+
             } else {
                 // Not signed in
                 Spacer(Modifier.height(56.dp))
@@ -1029,5 +1056,50 @@ private fun StatItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** Utility rows relocated from the retired navigation drawer. */
+@Composable
+private fun ProfileUtilityCard(
+    onSettings: () -> Unit,
+    onHelp: () -> Unit,
+    entryCount: Int
+) {
+    val context = LocalContext.current
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column {
+            ProfileUtilityRow(Icons.Filled.Settings, stringResource(R.string.common_settings), onSettings)
+            HorizontalDivider(Modifier.padding(horizontal = 16.dp))
+            ProfileUtilityRow(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.drawer_help), onHelp)
+            HorizontalDivider(Modifier.padding(horizontal = 16.dp))
+            ProfileUtilityRow(Icons.Filled.Share, stringResource(R.string.drawer_share_app)) {
+                AppActions.shareApp(context, entryCount)
+            }
+            HorizontalDivider(Modifier.padding(horizontal = 16.dp))
+            ProfileUtilityRow(Icons.Filled.StarRate, stringResource(R.string.drawer_rate_us)) {
+                AppActions.requestReview(context)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileUtilityRow(icon: ImageVector, label: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
+        Spacer(Modifier.width(16.dp))
+        Text(label, style = MaterialTheme.typography.bodyLarge)
     }
 }
