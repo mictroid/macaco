@@ -6,6 +6,8 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,11 +49,11 @@ internal fun macacoBrandBackground(): Brush = Brush.radialGradient(
     1f to SplashTealEdge
 )
 
-private const val LOGO_FADE_IN_MS = 850
-private const val TEXT_FADE_IN_MS = 750
-private const val TEXT_FADE_IN_DELAY_MS = 350L   // wordmark/tagline trail the logo
-private const val HOLD_MS = 2300L                // fully-revealed dwell time (~5s total splash)
-private const val FADE_OUT_MS = 750              // dissolve into the app
+private const val LOGO_FADE_IN_MS = 450
+private const val TEXT_FADE_IN_MS = 350
+private const val TEXT_FADE_IN_DELAY_MS = 100L   // wordmark/tagline trail the logo
+private const val HOLD_MS = 400L                 // fully-revealed dwell (~1.5s total splash)
+private const val FADE_OUT_MS = 300              // dissolve into the app
 
 /**
  * Branded launch screen: the Macaco monkey on a deep-ocean teal gradient with the wordmark and
@@ -83,7 +85,12 @@ fun SplashScreen(onFinished: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(macacoBrandBackground()),
+            .background(macacoBrandBackground())
+            // Tap anywhere skips straight into the app (no ripple — it's a full-screen surface).
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { currentOnFinished() },
         contentAlignment = Alignment.Center
     ) {
         Column(

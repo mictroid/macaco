@@ -193,6 +193,7 @@
     <string name="profile_no_account_subtitle">サインインしてデバイス間で思い出を同期し、クラウドに安全に保存しましょう。</string>
 
     <string name="purchase_tagline">あなただけの旅日記</string>
+    <string name="purchase_free_limit_reached">無料の思い出3件を使い切りました — プレミアムで無制限に</string>
     <string name="purchase_feature_unlimited">無制限の日記エントリー</string>
     <string name="purchase_feature_photos">すべての思い出に写真を添付</string>
     <string name="purchase_feature_sync">すべてのデバイスで同期</string>

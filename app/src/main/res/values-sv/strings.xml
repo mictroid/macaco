@@ -169,6 +169,7 @@
     <string name="profile_no_account_subtitle">Logga in för att synka dina minnen mellan enheter och hålla dem säkra i molnet.</string>
 
     <string name="purchase_tagline">Din personliga resedagbok</string>
+    <string name="purchase_free_limit_reached">Du har använt dina 3 gratis minnen — bli Premium för obegränsat</string>
     <string name="purchase_feature_unlimited">Obegränsat antal dagboksanteckningar</string>
     <string name="purchase_feature_photos">Bifoga foton till varje minne</string>
     <string name="purchase_feature_sync">Synka på alla dina enheter</string>

@@ -329,6 +329,7 @@
 
     <!-- Purchase -->
     <string name="purchase_tagline">Your personal travel diary</string>
+    <string name="purchase_free_limit_reached">You\'ve used your 3 free memories — go premium for unlimited</string>
     <string name="purchase_feature_unlimited">Unlimited journal entries</string>
     <string name="purchase_feature_photos">Attach photos to every memory</string>
     <string name="purchase_feature_sync">Sync across all your devices</string>

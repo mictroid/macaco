@@ -196,6 +196,7 @@
     <string name="profile_no_account_subtitle">Log in om je herinneringen op al je apparaten te synchroniseren en veilig in de cloud te bewaren.</string>
 
     <string name="purchase_tagline">Jouw persoonlijk reisdagboek</string>
+    <string name="purchase_free_limit_reached">Je hebt je 3 gratis herinneringen gebruikt — word Premium voor onbeperkt</string>
     <string name="purchase_feature_unlimited">Onbeperkte dagboekvermeldingen</string>
     <string name="purchase_feature_photos">Voeg foto\'s toe aan elke herinnering</string>
     <string name="purchase_feature_sync">Synchroniseer op al je apparaten</string>

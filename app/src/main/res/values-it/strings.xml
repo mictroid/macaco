@@ -196,6 +196,7 @@
     <string name="profile_no_account_subtitle">Accedi per sincronizzare i tuoi ricordi su tutti i dispositivi e tenerli al sicuro nel cloud.</string>
 
     <string name="purchase_tagline">Il tuo diario di viaggio personale</string>
+    <string name="purchase_free_limit_reached">Hai usato i tuoi 3 ricordi gratuiti — passa a Premium per un accesso illimitato</string>
     <string name="purchase_feature_unlimited">Voci del diario illimitate</string>
     <string name="purchase_feature_photos">Allega foto a ogni ricordo</string>
     <string name="purchase_feature_sync">Sincronizzazione su tutti i tuoi dispositivi</string>

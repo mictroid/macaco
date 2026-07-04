@@ -196,6 +196,7 @@
     <string name="profile_no_account_subtitle">Inicia sesión para sincronizar tus recuerdos entre dispositivos y mantenerlos seguros en la nube.</string>
 
     <string name="purchase_tagline">Tu diario de viaje personal</string>
+    <string name="purchase_free_limit_reached">Has usado tus 3 recuerdos gratis — hazte Premium para acceso ilimitado</string>
     <string name="purchase_feature_unlimited">Entradas de diario ilimitadas</string>
     <string name="purchase_feature_photos">Añade fotos a cada recuerdo</string>
     <string name="purchase_feature_sync">Sincroniza en todos tus dispositivos</string>

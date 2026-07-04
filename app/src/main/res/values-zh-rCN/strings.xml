@@ -193,6 +193,7 @@
     <string name="profile_no_account_subtitle">登录后可跨设备同步回忆，并安全保存至云端。</string>
 
     <string name="purchase_tagline">您的私人旅行日记</string>
+    <string name="purchase_free_limit_reached">你已用完 3 条免费回忆 — 升级高级版即可无限使用</string>
     <string name="purchase_feature_unlimited">无限量日记条目</string>
     <string name="purchase_feature_photos">为每段回忆附上照片</string>
     <string name="purchase_feature_sync">在所有设备间同步</string>

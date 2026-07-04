@@ -196,6 +196,7 @@
     <string name="profile_no_account_subtitle">Connectez-vous pour synchroniser vos souvenirs sur tous vos appareils et les conserver en sécurité dans le cloud.</string>
 
     <string name="purchase_tagline">Votre journal de voyage personnel</string>
+    <string name="purchase_free_limit_reached">Vous avez utilisé vos 3 souvenirs gratuits — passez à Premium pour un accès illimité</string>
     <string name="purchase_feature_unlimited">Entrées de journal illimitées</string>
     <string name="purchase_feature_photos">Ajoutez des photos à chaque souvenir</string>
     <string name="purchase_feature_sync">Synchronisation sur tous vos appareils</string>

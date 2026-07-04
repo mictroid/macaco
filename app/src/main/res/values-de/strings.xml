@@ -205,6 +205,7 @@
 
     <!-- Purchase -->
     <string name="purchase_tagline">Dein persönliches Reisetagebuch</string>
+    <string name="purchase_free_limit_reached">Du hast deine 3 kostenlosen Erinnerungen genutzt — hol dir Premium für unbegrenzt</string>
     <string name="purchase_feature_unlimited">Unbegrenzte Tagebucheinträge</string>
     <string name="purchase_feature_photos">Fotos zu jeder Erinnerung hinzufügen</string>
     <string name="purchase_feature_sync">Auf allen deinen Geräten synchronisieren</string>

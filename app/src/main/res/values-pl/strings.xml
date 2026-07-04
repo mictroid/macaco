@@ -202,6 +202,7 @@
     <string name="profile_no_account_subtitle">Zaloguj się, aby synchronizować wspomnienia na wszystkich urządzeniach i przechowywać je bezpiecznie w chmurze.</string>
 
     <string name="purchase_tagline">Twój osobisty dziennik podróży</string>
+    <string name="purchase_free_limit_reached">Wykorzystałeś swoje 3 darmowe wspomnienia — przejdź na Premium, aby korzystać bez ograniczeń</string>
     <string name="purchase_feature_unlimited">Nieograniczona liczba wpisów</string>
     <string name="purchase_feature_photos">Dołącz zdjęcia do każdego wspomnienia</string>
     <string name="purchase_feature_sync">Synchronizacja na wszystkich urządzeniach</string>

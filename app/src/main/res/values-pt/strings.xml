@@ -196,6 +196,7 @@
     <string name="profile_no_account_subtitle">Entre para sincronizar suas lembranças entre dispositivos e mantê-las seguras na nuvem.</string>
 
     <string name="purchase_tagline">Seu diário de viagem pessoal</string>
+    <string name="purchase_free_limit_reached">Você usou suas 3 memórias grátis — seja Premium para acesso ilimitado</string>
     <string name="purchase_feature_unlimited">Entradas ilimitadas no diário</string>
     <string name="purchase_feature_photos">Anexe fotos a cada memória</string>
     <string name="purchase_feature_sync">Sincronize em todos os seus dispositivos</string>

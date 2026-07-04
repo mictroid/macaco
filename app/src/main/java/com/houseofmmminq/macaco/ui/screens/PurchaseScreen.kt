@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,6 +55,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.CloudSync
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoLibrary
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
@@ -61,7 +64,11 @@ import com.revenuecat.purchases.Package
 private enum class PlanSelection { Monthly, Annual, Lifetime }
 
 @Composable
-fun PurchaseScreen(viewModel: JournalViewModel) {
+fun PurchaseScreen(
+    viewModel: JournalViewModel,
+    onBack: (() -> Unit)? = null,   // null = not dismissible (kept for any gated usage)
+    showFreeLimitNote: Boolean = false
+) {
     val context = LocalContext.current
     val activity = remember(context) { context.findActivity() }
     val offerings by viewModel.offerings.collectAsState()
@@ -141,6 +148,16 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                 color = Color.White.copy(alpha = 0.9f),
                 textAlign = TextAlign.Center
             )
+
+            if (showFreeLimitNote) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    stringResource(R.string.purchase_free_limit_reached),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = SplashGoldBright,
+                    textAlign = TextAlign.Center
+                )
+            }
 
             Spacer(Modifier.height(8.dp))
 
@@ -308,6 +325,23 @@ fun PurchaseScreen(viewModel: JournalViewModel) {
                         }
                     )
                 }
+            }
+        }
+
+        // Drawn last so it sits above the scrollable content Column and stays tappable.
+        if (onBack != null) {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .statusBarsPadding()
+                    .padding(4.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.common_close),
+                    tint = Color.White
+                )
             }
         }
     }

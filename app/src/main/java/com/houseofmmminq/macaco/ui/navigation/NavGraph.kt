@@ -75,6 +75,9 @@ private fun List<TravelEntry>.toTripSuggestions(): List<String> =
 // Re-lock after this many ms in the background.
 private const val LOCK_TIMEOUT_MS = 30_000L
 
+// Entries a signed-in user can create before the paywall appears at the next creation.
+private const val FREE_ENTRY_LIMIT = 3
+
 @Composable
 fun NavGraph(
     viewModel: JournalViewModel,
@@ -131,8 +134,8 @@ fun NavGraph(
         return
     }
 
-    // Show the lock screen over everything when the journal is locked (only after login+purchase).
-    if (appLockEnabled && isAppLocked && currentUser != null && isPurchased == true) {
+    // Show the lock screen over everything when the journal is locked (only after login).
+    if (appLockEnabled && isAppLocked && currentUser != null) {
         AppLockScreen(onUnlocked = { viewModel.unlock() })
         return
     }
@@ -155,22 +158,29 @@ fun NavGraph(
             )
         }
 
-        // Logged in but not yet purchased
-        isPurchased == false -> {
-            PurchaseScreen(viewModel = viewModel)
-        }
-
-        // Logged in and purchased — full journal
+        // Logged in — full journal. Premium is enforced per-feature (backup, reel) and at
+        // entry creation beyond the free limit (see goToNewEntry), not as an app-wide wall.
         else -> {
             val navController = rememberNavController()
             // Set when navigating to a drawer-launched screen so the menu reopens on return.
             var reopenDrawer by remember { mutableStateOf(false) }
 
+            val entryCount = viewModel.entries.collectAsState().value.size
+            // isPurchased == false is the only state that gates; null (still loading) lets the
+            // user through — worst case one extra free entry, never a wrongly-blocked premium user.
+            val goToNewEntry: () -> Unit = {
+                if (isPurchased == false && entryCount >= FREE_ENTRY_LIMIT) {
+                    navController.navigate(Screen.Paywall.route)
+                } else {
+                    navController.navigate(Screen.NewEntry.route)
+                }
+            }
+
             // Deep link from the journal-reminder notification: jump straight to the new-entry
             // screen. Only reachable here (signed-in + purchased), so the gates are respected.
             LaunchedEffect(openNewEntry) {
                 if (openNewEntry) {
-                    navController.navigate(Screen.NewEntry.route)
+                    goToNewEntry()
                     onOpenNewEntryConsumed()
                 }
             }
@@ -195,7 +205,7 @@ fun NavGraph(
                         viewModel = viewModel,
                         openDrawerOnEnter = reopenDrawer,
                         onDrawerConsumed = { reopenDrawer = false },
-                        onNewEntry = { navController.navigate(Screen.NewEntry.route) },
+                        onNewEntry = goToNewEntry,
                         onEntryClick = { id ->
                             navController.navigate(Screen.EntryDetail.createRoute(id))
                         },
@@ -329,6 +339,18 @@ fun NavGraph(
                     SubscriptionInfoScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable(Screen.Paywall.route) {
+                    // After a successful purchase the entitlement flips; pop back into the journal.
+                    LaunchedEffect(isPurchased) {
+                        if (isPurchased == true) navController.popBackStack()
+                    }
+                    PurchaseScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() },
+                        showFreeLimitNote = true
                     )
                 }
 
