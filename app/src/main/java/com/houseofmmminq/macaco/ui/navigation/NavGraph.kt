@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
@@ -29,7 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -369,7 +372,11 @@ private val tabRoutes = setOf(Screen.JournalList.route, Screen.Adventures.route,
 
 @Composable
 private fun MacacoBottomNavBar(navController: NavController, currentRoute: String?) {
-    NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
+    val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.primary,
+        modifier = if (isLandscape) Modifier.height(48.dp) else Modifier
+    ) {
         val itemColors = NavigationBarItemDefaults.colors(
             selectedIconColor = MaterialTheme.colorScheme.secondaryContainer,
             unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.55f),
@@ -388,7 +395,7 @@ private fun MacacoBottomNavBar(navController: NavController, currentRoute: Strin
                     contentDescription = null
                 )
             },
-            label = { Text(stringResource(R.string.nav_journal)) }
+            label = if (isLandscape) null else ({ Text(stringResource(R.string.nav_journal)) })
         )
         NavigationBarItem(
             selected = currentRoute == Screen.Adventures.route,
@@ -401,7 +408,7 @@ private fun MacacoBottomNavBar(navController: NavController, currentRoute: Strin
                     contentDescription = null
                 )
             },
-            label = { Text(stringResource(R.string.drawer_adventures)) }
+            label = if (isLandscape) null else ({ Text(stringResource(R.string.drawer_adventures)) })
         )
         NavigationBarItem(
             selected = currentRoute == Screen.Profile.route,
@@ -414,7 +421,7 @@ private fun MacacoBottomNavBar(navController: NavController, currentRoute: Strin
                     contentDescription = null
                 )
             },
-            label = { Text(stringResource(R.string.common_profile)) }
+            label = if (isLandscape) null else ({ Text(stringResource(R.string.common_profile)) })
         )
     }
 }

@@ -412,52 +412,63 @@ fun MapScreen(
                 .statusBarsPadding()
         ) {
           if (isLandscape) {
-            // ── Compact landscape header: single slim row ──────────────────────
-            Row(
+            // ── Compact landscape header: two-line Column (icon+wordmark / title+count) ──
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .offset(y = (-2).dp)
-                )
-                Spacer(Modifier.width(6.dp))
-                Text(
-                    text = "macaco",
-                    color = SplashGoldBright,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light,
-                    letterSpacing = 3.sp
-                )
-                Text(
-                    text = " · " + stringResource(R.string.map_adventures_title),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
-                if (locations.isNotEmpty()) {
-                    val mappedCount = locations.count { it in geocodedLocations }
+                // Line 1: icon + "macaco" wordmark
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .offset(y = (-1).dp)
+                    )
+                    Spacer(Modifier.width(5.dp))
                     Text(
-                        text = " · " + stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
-                        color = SplashGold.copy(alpha = 0.70f),
-                        fontSize = 12.sp,
-                        fontFamily = MacacoFontFamily
+                        text = "macaco",
+                        color = SplashGoldBright,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
+                        letterSpacing = 3.sp
                     )
                 }
-                // Globe-spanning hint — compact, dot-separated, same line (reuses the localized
-                // portrait hint string).
-                if (globeSpanning) {
+                // Line 2: Adventures title + location count + globe hint
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     Text(
-                        text = " · " + stringResource(R.string.map_globe_spanning_hint),
+                        text = stringResource(R.string.map_adventures_title),
                         style = MaterialTheme.typography.labelSmall,
-                        color = SplashGold.copy(alpha = 0.75f),
-                        letterSpacing = 0.5.sp
+                        color = Color.White.copy(alpha = 0.85f)
                     )
+                    if (locations.isNotEmpty()) {
+                        val mappedCount = locations.count { it in geocodedLocations }
+                        Text(
+                            text = " · " + stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
+                            color = SplashGold.copy(alpha = 0.70f),
+                            fontSize = 12.sp,
+                            fontFamily = MacacoFontFamily
+                        )
+                    }
+                    // Globe-spanning hint — compact, dot-separated (reuses the localized
+                    // portrait hint string).
+                    if (globeSpanning) {
+                        Text(
+                            text = " · " + stringResource(R.string.map_globe_spanning_hint),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = SplashGold.copy(alpha = 0.75f),
+                            letterSpacing = 0.5.sp
+                        )
+                    }
                 }
             }
           } else {
