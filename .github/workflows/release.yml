@@ -63,19 +63,7 @@ jobs:
           EOF
           echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/wif-creds.json" >> "$GITHUB_ENV"
 
-      # TEMPORARY: build the signed AAB only (no publish) so it can be uploaded manually via the
-      # Play Console UI. This is a one-off to break the photo/video-permissions declaration
-      # chicken-and-egg: Play won't expose the video declaration until it has *processed* a bundle
-      # requesting READ_MEDIA_VIDEO, but `publishReleaseBundle` 403s at commit before that can
-      # happen. Revert to `publishReleaseBundle` once the declaration is submitted.
-      - name: Build signed release bundle
+      - name: Build and publish to Play internal testing
         run: |
           chmod +x gradlew
-          ./gradlew bundleRelease --stacktrace
-
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-aab
-          path: app/build/outputs/bundle/release/*.aab
-          if-no-files-found: error
+          ./gradlew publishReleaseBundle --stacktrace
