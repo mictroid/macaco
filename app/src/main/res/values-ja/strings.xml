@@ -364,6 +364,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">このクリップを使用</string>
     <string name="video_processing">動画を圧縮しています…</string>
+    <string name="video_add_failed">この動画はこのデバイスで処理できませんでした</string>
     <string name="video_play_cd">動画を再生</string>
     <string name="help_section_media">写真と動画</string>
     <string name="help_faq_video_add_q">エントリーに動画を追加するには？</string>

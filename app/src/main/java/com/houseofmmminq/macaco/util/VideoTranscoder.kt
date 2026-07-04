@@ -17,6 +17,8 @@ import kotlin.coroutines.resume
 object VideoTranscoder {
 
     const val MAX_DURATION_MS = 15_000L
+    // Recorded "15 s" clips report slightly over (container overhead); accept up to +1 s.
+    private const val DURATION_TOLERANCE_MS = 1_000L
 
     /**
      * Transcodes [sourceUri] to H.264 720p / 2 Mbps + AAC 96 kbps.
@@ -36,9 +38,11 @@ object VideoTranscoder {
         onProgress: (Float) -> Unit = {}
     ): File? = withContext(Dispatchers.IO) {
         val outFile = File(context.cacheDir, "transcode_${System.currentTimeMillis()}.mp4")
+        // Hoisted above the try so both the failure callback and the catch block can consult it
+        // when deciding whether the fallback-to-original is allowed (see the duration guard below).
+        val totalMs = getDurationMs(context, sourceUri)
         try {
             val keepMs = minOf(durationMs, MAX_DURATION_MS)
-            val totalMs = getDurationMs(context, sourceUri)
 
             // otaliastudios ClipDataSource(source, trimStartUs, trimEndUs) trims from BOTH ends
             // (start offset + amount off the tail), NOT (start, duration). To keep the window
@@ -82,12 +86,17 @@ object VideoTranscoder {
                         override fun onTranscodeFailed(exception: Throwable) {
                             // Some devices' MediaCodec can't decode+re-encode the picked source
                             // (e.g. the Galaxy S8+/Exynos/API28 fails with "Failed to stop the
-                            // muxer"). Rather than silently drop the video, fall back to storing the
-                            // ORIGINAL clip unchanged so a tile always appears — no size reduction /
-                            // no trim, but the feature works instead of no-op'ing.
-                            android.util.Log.e("VideoTranscoder", "transcode failed — using original", exception)
+                            // muxer"). Fall back to storing the ORIGINAL clip — but ONLY if it fits
+                            // the 15 s cap (recorded clips always do). A longer source can't be
+                            // trimmed on this device, and storing it whole would blow past the size
+                            // budget (gallery + Drive), so fail and let the caller inform the user.
+                            android.util.Log.e("VideoTranscoder", "transcode failed", exception)
                             outFile.delete()
-                            cont.resume(copyOriginalToCache(context, sourceUri))
+                            cont.resume(
+                                if (totalMs in 1..MAX_DURATION_MS + DURATION_TOLERANCE_MS)
+                                    copyOriginalToCache(context, sourceUri)
+                                else null
+                            )
                         }
                     })
                     .transcode()
@@ -98,10 +107,11 @@ object VideoTranscoder {
             throw e
         } catch (e: Throwable) {
             // Any synchronous setup failure (bad trim values, unreadable source, muxer init, …)
-            // falls back to the original clip so a tile still appears instead of crashing / no-op'ing.
-            android.util.Log.e("VideoTranscoder", "transcode setup failed — using original", e)
+            // falls back to the original clip — but only if the source fits the 15 s cap, so a
+            // failed setup on a long clip can't smuggle a full-length original into storage/Drive.
+            android.util.Log.e("VideoTranscoder", "transcode setup failed", e)
             outFile.delete()
-            copyOriginalToCache(context, sourceUri)
+            if (totalMs in 1..MAX_DURATION_MS + DURATION_TOLERANCE_MS) copyOriginalToCache(context, sourceUri) else null
         }
     }
 

@@ -341,6 +341,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">Använd det här klippet</string>
     <string name="video_processing">Komprimerar video…</string>
+    <string name="video_add_failed">Den här videon kunde inte bearbetas på den här enheten</string>
     <string name="video_play_cd">Spela upp video</string>
     <string name="help_section_media">Foton och videor</string>
     <string name="help_faq_video_add_q">Hur lägger jag till en video i en anteckning?</string>

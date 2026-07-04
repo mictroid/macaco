@@ -376,6 +376,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">Użyj tego klipu</string>
     <string name="video_processing">Kompresowanie filmu…</string>
+    <string name="video_add_failed">Nie można przetworzyć tego filmu na tym urządzeniu</string>
     <string name="video_play_cd">Odtwórz film</string>
     <string name="help_section_media">Zdjęcia i filmy</string>
     <string name="help_faq_video_add_q">Jak dodać film do wpisu?</string>

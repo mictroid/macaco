@@ -116,6 +116,7 @@ import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.util.AppActions
 import com.houseofmmminq.macaco.util.ImageStorage
+import com.houseofmmminq.macaco.util.VideoThumbnails
 import com.houseofmmminq.macaco.util.VideoTranscoder
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import kotlin.math.absoluteValue
@@ -1250,7 +1251,7 @@ fun VideoEntryTile(uri: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var showPlayer by remember { mutableStateOf(false) }
 
-    val thumbnail = remember(uri) { VideoTranscoder.getFirstFrame(context, Uri.parse(uri)) }
+    val thumbnail = VideoThumbnails.rememberThumbnail(uri).value
 
     Box(modifier = modifier.clickable { showPlayer = true }, contentAlignment = Alignment.Center) {
         if (thumbnail != null) {

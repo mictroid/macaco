@@ -368,6 +368,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">Utiliser ce clip</string>
     <string name="video_processing">Compression de la vidéo…</string>
+    <string name="video_add_failed">Cette vidéo n\'a pas pu être traitée sur cet appareil</string>
     <string name="video_play_cd">Lire la vidéo</string>
     <string name="help_section_media">Photos et vidéos</string>
     <string name="help_faq_video_add_q">Comment ajouter une vidéo à une entrée ?</string>

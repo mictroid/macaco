@@ -364,6 +364,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">使用此片段</string>
     <string name="video_processing">正在压缩视频…</string>
+    <string name="video_add_failed">无法在此设备上处理该视频</string>
     <string name="video_play_cd">播放视频</string>
     <string name="help_section_media">照片和视频</string>
     <string name="help_faq_video_add_q">如何为条目添加视频？</string>

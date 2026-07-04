@@ -368,6 +368,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">Deze clip gebruiken</string>
     <string name="video_processing">Video comprimeren…</string>
+    <string name="video_add_failed">Deze video kon niet worden verwerkt op dit apparaat</string>
     <string name="video_play_cd">Video afspelen</string>
     <string name="help_section_media">Foto\'s en video\'s</string>
     <string name="help_faq_video_add_q">Hoe voeg ik een video toe aan een item?</string>

@@ -399,6 +399,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">Use this clip</string>
     <string name="video_processing">Compressing video…</string>
+    <string name="video_add_failed">This video couldn\'t be processed on this device</string>
     <string name="video_play_cd">Play video</string>
     <string name="help_section_media">Photos &amp; Videos</string>
     <string name="help_faq_video_add_q">How do I add a video to an entry?</string>

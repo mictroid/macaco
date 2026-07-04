@@ -88,17 +88,27 @@ class MainActivity : AppCompatActivity() {
             // After a reinstall the app no longer owns those files, so it needs media-read permission
             // to display them again — request it once on launch.
             val context = LocalContext.current
-            val mediaPermission = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_MEDIA_IMAGES
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Manifest.permission.READ_EXTERNAL_STORAGE
-                else -> Manifest.permission.WRITE_EXTERNAL_STORAGE // <=28: grants the read+write storage group
+            // API 33+ splits media access per type — request BOTH so reinstalled devices can
+            // re-read entry photos (Pictures/Macaco) AND videos (Movies/Macaco). Below 33 the
+            // legacy storage permissions cover both types.
+            val mediaPermissions = when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                )
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                else -> arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE) // <=28: read+write group
             }
             val permissionLauncher = rememberLauncherForActivityResult(
-                ActivityResultContracts.RequestPermission()
+                ActivityResultContracts.RequestMultiplePermissions()
             ) {}
             LaunchedEffect(Unit) {
-                if (ContextCompat.checkSelfPermission(context, mediaPermission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionLauncher.launch(mediaPermission)
+                val missing = mediaPermissions.filter {
+                    ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
+                }
+                if (missing.isNotEmpty()) {
+                    permissionLauncher.launch(missing.toTypedArray())
                 }
             }
 

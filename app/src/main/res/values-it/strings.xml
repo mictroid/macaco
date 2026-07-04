@@ -368,6 +368,7 @@
     <string name="video_trim_window">%1$s → %2$s</string>
     <string name="video_trim_confirm">Usa questo clip</string>
     <string name="video_processing">Compressione del video…</string>
+    <string name="video_add_failed">Impossibile elaborare questo video su questo dispositivo</string>
     <string name="video_play_cd">Riproduci video</string>
     <string name="help_section_media">Foto e video</string>
     <string name="help_faq_video_add_q">Come aggiungo un video a una voce?</string>

@@ -110,6 +110,7 @@ import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.util.Cities
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
+import com.houseofmmminq.macaco.util.VideoThumbnails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -214,14 +215,33 @@ fun NewEditEntryScreen(
     var pendingVideoUriString by rememberSaveable { mutableStateOf<String?>(null) }
     val pendingVideoUri: Uri? = pendingVideoUriString?.let(Uri::parse)
 
-    // Trim dialog state — shown when a picked video is longer than 15 s.
-    var videoToTrim by remember { mutableStateOf<Uri?>(null) }
-    var videoToDuration by remember { mutableStateOf(0L) }
+    // Long videos waiting for the trim dialog — head of the list is the one on screen. One dialog
+    // pops per queue head, so multi-selecting several >15 s clips no longer drops all but the last.
+    // `remember`, not saveable: a Uri queue of picker grants wouldn't survive process death anyway.
+    var trimQueue by remember { mutableStateOf<List<Pair<Uri, Long>>>(emptyList()) }
 
     // Transcoding progress — null when idle, 0f→1f when active.
     var transcodingProgress by remember { mutableStateOf<Float?>(null) }
 
     val coroutineScope = rememberCoroutineScope()
+
+    // Shared store-the-result step for every transcode path (record, pick, trim). Toasts when the
+    // clip couldn't be processed (e.g. the fallback refused an over-length source per Change 1).
+    val storeTranscoded: (java.io.File?) -> Unit = { file ->
+        if (file == null) {
+            android.widget.Toast.makeText(
+                context, context.getString(R.string.video_add_failed), android.widget.Toast.LENGTH_LONG
+            ).show()
+        } else {
+            ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
+                sessionAdded = sessionAdded + stored
+                videoUris = videoUris + stored
+                videoFileIds = videoFileIds + ""
+                mediaOrder = mediaOrder + stored
+            }
+            file.delete()
+        }
+    }
 
     // Derived display list: uri → "photo" or "video". Follows mediaOrder for any uris it lists, then
     // appends anything not yet in mediaOrder (e.g. photos added via the photo picker, which don't
@@ -305,15 +325,7 @@ fun NewEditEntryScreen(
                 )
                 transcodingProgress = null
                 ImageStorage.clear(context, ImageStorage.VIDEO_TEMP)
-                outFile?.let { file ->
-                    ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
-                        file.delete()
-                        sessionAdded = sessionAdded + stored
-                        videoUris = videoUris + stored
-                        videoFileIds = videoFileIds + ""
-                        mediaOrder = mediaOrder + stored
-                    }
-                }
+                storeTranscoded(outFile)
             }
         } else {
             ImageStorage.clear(context, ImageStorage.VIDEO_TEMP)
@@ -339,32 +351,24 @@ fun NewEditEntryScreen(
         ActivityResultContracts.PickMultipleVisualMedia(maxItems = MAX_VIDEOS)
     ) { uris ->
         val canAdd = MAX_VIDEOS - videoUris.size
-        if (canAdd > 0) {
-            uris.take(canAdd).forEach { uri ->
-                val durationMs = VideoTranscoder.getDurationMs(context, uri)
-                if (durationMs <= VideoTranscoder.MAX_DURATION_MS) {
-                    // Short enough — transcode immediately without a trim UI.
-                    transcodingProgress = 0f
-                    coroutineScope.launch {
-                        val outFile = VideoTranscoder.transcode(
-                            context, uri, onProgress = { transcodingProgress = it }
-                        )
-                        transcodingProgress = null
-                        outFile?.let { file ->
-                            ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
-                                file.delete()
-                                sessionAdded = sessionAdded + stored
-                                videoUris = videoUris + stored
-                                videoFileIds = videoFileIds + ""
-                                mediaOrder = mediaOrder + stored
-                            }
-                        }
-                    }
-                } else {
-                    // Longer clip — ask the user to trim before transcoding.
-                    videoToTrim = uri
-                    videoToDuration = durationMs
+        if (canAdd <= 0) return@rememberLauncherForActivityResult
+        val (short, long) = uris.take(canAdd).partition { uri ->
+            VideoTranscoder.getDurationMs(context, uri) <= VideoTranscoder.MAX_DURATION_MS
+        }
+        // Long clips queue for one-at-a-time trim dialogs.
+        trimQueue = trimQueue + long.map { it to VideoTranscoder.getDurationMs(context, it) }
+        // Short clips transcode SEQUENTIALLY in one coroutine so the shared progress overlay stays
+        // up (and coherent) until the last one finishes.
+        if (short.isNotEmpty()) {
+            transcodingProgress = 0f
+            coroutineScope.launch {
+                short.forEach { uri ->
+                    val outFile = VideoTranscoder.transcode(
+                        context, uri, onProgress = { transcodingProgress = it }
+                    )
+                    storeTranscoded(outFile)
                 }
+                transcodingProgress = null
             }
         }
     }
@@ -900,14 +904,14 @@ fun NewEditEntryScreen(
         }
     }
 
-    // Trim dialog — shown when a gallery-picked video is longer than 15 s.
-    val trimUri = videoToTrim
-    if (trimUri != null) {
+    // Trim dialog — one per queue head; confirming/dismissing advances the queue so multiple
+    // long picks are each trimmed in turn instead of all-but-the-last being dropped.
+    trimQueue.firstOrNull()?.let { (trimUri, trimDuration) ->
         VideoTrimDialog(
             sourceUri = trimUri,
-            durationMs = videoToDuration,
+            durationMs = trimDuration,
             onTrimConfirmed = { startMs ->
-                videoToTrim = null
+                trimQueue = trimQueue.drop(1)
                 transcodingProgress = 0f
                 coroutineScope.launch {
                     val outFile = VideoTranscoder.transcode(
@@ -915,28 +919,29 @@ fun NewEditEntryScreen(
                         onProgress = { transcodingProgress = it }
                     )
                     transcodingProgress = null
-                    outFile?.let { file ->
-                        ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
-                            file.delete()
-                            sessionAdded = sessionAdded + stored
-                            videoUris = videoUris + stored
-                            videoFileIds = videoFileIds + ""
-                            mediaOrder = mediaOrder + stored
-                        }
-                    }
+                    storeTranscoded(outFile)
                 }
             },
-            onDismiss = { videoToTrim = null }
+            onDismiss = { trimQueue = trimQueue.drop(1) }
         )
     }
 
     // Transcoding overlay — full-screen scrim + circular progress, above the app bar.
+    // Consumes ALL input (taps + back) so Save can't commit a half-processed entry.
     val progress = transcodingProgress
+    BackHandler(enabled = progress != null) { /* swallow while transcoding */ }
     if (progress != null) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f)),
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            awaitPointerEvent().changes.forEach { it.consume() }
+                        }
+                    }
+                },
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -1459,8 +1464,7 @@ private fun formatMmSs(ms: Long): String {
 
 @Composable
 private fun VideoThumbnailTile(uri: String) {
-    val context = LocalContext.current
-    val bitmap = remember(uri) { VideoTranscoder.getFirstFrame(context, Uri.parse(uri)) }
+    val bitmap = VideoThumbnails.rememberThumbnail(uri).value
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (bitmap != null) {
             androidx.compose.foundation.Image(
