@@ -1,6 +1,6 @@
 What's new:
-• Try Macaco free — write your first entries before subscribing, with a faster startup
-• Cleaner navigation: quick actions now live on a redesigned Profile screen
-• Bigger, easier-to-tap controls and better accessibility throughout
-• App colours now follow your chosen theme more consistently
-• Tidier layouts in landscape for the journal, map and Profile
+• Add videos to your entries — now straight from an entry, not just while editing
+• Photo and video buttons are front and centre when adding memories
+• More reliable video saving on a wider range of devices
+• Cleaner single-column layout on tablets
+• Assorted polish and stability fixes
