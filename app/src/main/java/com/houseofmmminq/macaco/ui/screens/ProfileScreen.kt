@@ -724,7 +724,7 @@ fun ProfileScreen(
                     Text(
                         text = "Roam Freely. Forget Nothing.",
                         color = SplashGold.copy(alpha = 0.82f),
-                        fontSize = 10.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Light,
                         letterSpacing = 1.sp
                     )

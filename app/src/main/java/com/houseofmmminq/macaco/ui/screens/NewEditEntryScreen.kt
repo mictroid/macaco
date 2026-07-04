@@ -10,6 +10,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -93,6 +94,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -678,10 +680,7 @@ fun NewEditEntryScreen(
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
-                                    .padding(4.dp)
-                                    .size(20.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.Black.copy(alpha = 0.6f))
+                                    .size(44.dp)
                                     .clickable {
                                         if (type == "photo") {
                                             val idx = photoUris.indexOf(uri)
@@ -704,14 +703,23 @@ fun NewEditEntryScreen(
                                             sessionAdded = sessionAdded - uri
                                         }
                                     },
-                                contentAlignment = Alignment.Center
+                                contentAlignment = Alignment.TopEnd
                             ) {
-                                Icon(
-                                    Icons.Filled.Close,
-                                    contentDescription = stringResource(R.string.new_entry_remove_photo_cd),
-                                    tint = Color.White,
-                                    modifier = Modifier.size(12.dp)
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .size(20.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.Black.copy(alpha = 0.6f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Close,
+                                        contentDescription = stringResource(R.string.new_entry_remove_photo_cd),
+                                        tint = Color.White,
+                                        modifier = Modifier.size(12.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -1389,7 +1397,7 @@ private fun MoodChip(emoji: String, selected: Boolean, onClick: () -> Unit) {
                 // Unselected: neutral surface so the emoji reads clearly at rest.
                 if (selected) SplashGold else MaterialTheme.colorScheme.surfaceVariant
             )
-            .clickable(onClick = onClick),
+            .selectable(selected = selected, onClick = onClick, role = Role.RadioButton),
         contentAlignment = Alignment.Center
     ) {
         Text(emoji, fontSize = 26.sp)

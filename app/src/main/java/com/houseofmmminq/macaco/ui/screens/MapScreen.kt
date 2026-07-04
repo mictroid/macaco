@@ -445,7 +445,7 @@ fun MapScreen(
                     Text(
                         text = " · " + stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
                         color = SplashGold.copy(alpha = 0.70f),
-                        fontSize = 11.sp,
+                        fontSize = 12.sp,
                         fontFamily = MacacoFontFamily
                     )
                 }
@@ -493,7 +493,7 @@ fun MapScreen(
                     Text(
                         stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
                         color = SplashGold.copy(alpha = 0.70f),
-                        fontSize = 11.sp,
+                        fontSize = 12.sp,
                         fontFamily = MacacoFontFamily
                     )
                 }

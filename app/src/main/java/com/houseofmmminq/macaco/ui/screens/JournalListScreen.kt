@@ -50,6 +50,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -464,7 +465,6 @@ fun JournalListScreen(
                                         entry = entry,
                                         cachedDrivePhotos = cachedDrivePhotos,
                                         selectedTags = selectedTags,
-                                        onTagClick = { viewModel.toggleTagFilter(it) },
                                         onClick = { onEntryClick(entry.id) }
                                     )
                                 }
@@ -477,7 +477,6 @@ fun JournalListScreen(
                                     entry = entry,
                                     cachedDrivePhotos = cachedDrivePhotos,
                                     selectedTags = selectedTags,
-                                    onTagClick = { viewModel.toggleTagFilter(it) },
                                     onClick = { onEntryClick(entry.id) }
                                 )
                             }
@@ -680,7 +679,6 @@ private fun EntryCard(
     entry: TravelEntry,
     cachedDrivePhotos: Map<String, String>,
     selectedTags: Set<String>,
-    onTagClick: (String) -> Unit,
     onClick: () -> Unit
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
@@ -737,8 +735,7 @@ private fun EntryCard(
                         val overflow = entry.tags.size - visibleTags.size
                         TagChips(
                             tags = visibleTags,
-                            selectedTags = selectedTags,
-                            onTagClick = onTagClick
+                            selectedTags = selectedTags
                         )
                         if (overflow > 0) {
                             Spacer(Modifier.width(4.dp))
@@ -816,7 +813,6 @@ private fun EntryCard(
 private fun TagChips(
     tags: List<String>,
     selectedTags: Set<String>,
-    onTagClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -841,7 +837,6 @@ private fun TagChips(
                         if (isSelected) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.secondaryContainer
                     )
-                    .clickable { onTagClick(tag) }
                     .padding(horizontal = 8.dp, vertical = 3.dp)
             )
         }
@@ -879,7 +874,8 @@ private fun OnThisDayBanner(
                 )
                 Box(
                     modifier = Modifier
-                        .size(24.dp)
+                        .minimumInteractiveComponentSize()
+                        .size(40.dp)
                         .clip(CircleShape)
                         .clickable(onClick = onDismiss),
                     contentAlignment = Alignment.Center
