@@ -86,16 +86,21 @@ object VideoTranscoder {
                         override fun onTranscodeFailed(exception: Throwable) {
                             // Some devices' MediaCodec can't decode+re-encode the picked source
                             // (e.g. the Galaxy S8+/Exynos/API28 fails with "Failed to stop the
-                            // muxer"). Fall back to storing the ORIGINAL clip — but ONLY if it fits
-                            // the 15 s cap (recorded clips always do). A longer source can't be
-                            // trimmed on this device, and storing it whole would blow past the size
-                            // budget (gallery + Drive), so fail and let the caller inform the user.
+                            // muxer"; some A53 HEVC clips fail ClipDataSource+MediaCodec init).
                             android.util.Log.e("VideoTranscoder", "transcode failed", exception)
                             outFile.delete()
+                            // First try extracting just the wanted window with MediaExtractor +
+                            // MediaMuxer (no re-encode, so no MediaCodec) — this preserves the user's
+                            // trim on devices where the re-encode fails. Only fall back to copying the
+                            // whole ORIGINAL when no trim applies AND it fits the 15 s cap (storing a
+                            // long clip whole would blow the gallery + Drive size budget).
+                            val muxerResult = if (trimStartMs > 0L || keepMs < totalMs)
+                                trimWithMuxer(context, sourceUri, trimStartMs, keepMs) else null
                             cont.resume(
-                                if (totalMs in 1..MAX_DURATION_MS + DURATION_TOLERANCE_MS)
-                                    copyOriginalToCache(context, sourceUri)
-                                else null
+                                muxerResult
+                                    ?: if (totalMs in 1..MAX_DURATION_MS + DURATION_TOLERANCE_MS)
+                                        copyOriginalToCache(context, sourceUri)
+                                    else null
                             )
                         }
                     })
@@ -106,12 +111,19 @@ object VideoTranscoder {
             outFile.delete()
             throw e
         } catch (e: Throwable) {
-            // Any synchronous setup failure (bad trim values, unreadable source, muxer init, …)
-            // falls back to the original clip — but only if the source fits the 15 s cap, so a
-            // failed setup on a long clip can't smuggle a full-length original into storage/Drive.
+            // Any synchronous setup failure (bad trim values, unreadable source, muxer init, …).
+            // Try the no-re-encode muxer trim first (works where MediaCodec setup failed), then fall
+            // back to the whole original — but only if it fits the 15 s cap, so a failed setup on a
+            // long clip can't smuggle a full-length original into storage/Drive.
             android.util.Log.e("VideoTranscoder", "transcode setup failed", e)
             outFile.delete()
-            if (totalMs in 1..MAX_DURATION_MS + DURATION_TOLERANCE_MS) copyOriginalToCache(context, sourceUri) else null
+            val keepMs = minOf(durationMs, MAX_DURATION_MS)
+            val muxerResult = if (trimStartMs > 0L || keepMs < totalMs)
+                trimWithMuxer(context, sourceUri, trimStartMs, keepMs) else null
+            muxerResult
+                ?: if (totalMs in 1..MAX_DURATION_MS + DURATION_TOLERANCE_MS)
+                    copyOriginalToCache(context, sourceUri)
+                else null
         }
     }
 
@@ -128,6 +140,91 @@ object VideoTranscoder {
         } ?: false
         if (ok) fallback else { fallback.delete(); null }
     }.getOrNull()
+
+    /**
+     * Extracts the window [trimStartMs, trimStartMs + keepMs] from [sourceUri] using
+     * MediaExtractor + MediaMuxer (no re-encode). Returns the output File on success, null on failure.
+     * Output codec/resolution match the source (not normalized to 720p/H.264 like transcode()), but
+     * it avoids MediaCodec entirely so it works on devices where the re-encoding transcode fails.
+     */
+    private fun trimWithMuxer(
+        context: Context,
+        sourceUri: Uri,
+        trimStartMs: Long,
+        keepMs: Long
+    ): File? = runCatching {
+        val outFile = File(context.cacheDir, "mux_${System.currentTimeMillis()}.mp4")
+        val extractor = android.media.MediaExtractor()
+        extractor.setDataSource(context, sourceUri, null)
+
+        val muxer = android.media.MediaMuxer(
+            outFile.absolutePath,
+            android.media.MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4
+        )
+
+        val trackIndexMap = mutableMapOf<Int, Int>() // extractor track → muxer track
+        for (i in 0 until extractor.trackCount) {
+            val format = extractor.getTrackFormat(i)
+            val mime = format.getString(android.media.MediaFormat.KEY_MIME) ?: continue
+            if (mime.startsWith("video/") || mime.startsWith("audio/")) {
+                val muxerTrack = muxer.addTrack(format)
+                trackIndexMap[i] = muxerTrack
+                extractor.selectTrack(i)
+            }
+        }
+
+        if (trackIndexMap.isEmpty()) {
+            muxer.release()
+            extractor.release()
+            outFile.delete()
+            return@runCatching null
+        }
+
+        val trimStartUs = trimStartMs * 1000L
+        val trimEndUs = (trimStartMs + keepMs) * 1000L
+        extractor.seekTo(trimStartUs, android.media.MediaExtractor.SEEK_TO_PREVIOUS_SYNC)
+
+        muxer.start()
+
+        val buffer = java.nio.ByteBuffer.allocate(1 * 1024 * 1024) // 1 MB
+        val bufferInfo = android.media.MediaCodec.BufferInfo()
+        var firstPresentationTimeUs = Long.MIN_VALUE
+
+        while (true) {
+            val sampleSize = extractor.readSampleData(buffer, 0)
+            if (sampleSize < 0) break
+
+            val presentationTimeUs = extractor.sampleTime
+            if (presentationTimeUs > trimEndUs) break
+            if (presentationTimeUs < trimStartUs) {
+                extractor.advance()
+                continue
+            }
+
+            if (firstPresentationTimeUs == Long.MIN_VALUE) {
+                firstPresentationTimeUs = presentationTimeUs
+            }
+
+            val muxerTrack = trackIndexMap[extractor.sampleTrackIndex] ?: run { extractor.advance(); continue }
+
+            bufferInfo.offset = 0
+            bufferInfo.size = sampleSize
+            bufferInfo.presentationTimeUs = presentationTimeUs - firstPresentationTimeUs
+            bufferInfo.flags = extractor.sampleFlags
+
+            muxer.writeSampleData(muxerTrack, buffer, bufferInfo)
+            extractor.advance()
+        }
+
+        muxer.stop()
+        muxer.release()
+        extractor.release()
+
+        outFile
+    }.getOrElse { e ->
+        android.util.Log.e("VideoTranscoder", "trimWithMuxer failed", e)
+        null
+    }
 
     /** Returns the duration of [uri] in milliseconds, or 0 on failure. */
     fun getDurationMs(context: Context, uri: Uri): Long = runCatching {

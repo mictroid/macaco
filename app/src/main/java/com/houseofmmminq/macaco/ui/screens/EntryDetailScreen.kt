@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -56,9 +57,11 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -66,6 +69,7 @@ import com.houseofmmminq.macaco.R
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -84,11 +88,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
@@ -114,6 +120,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
+import com.houseofmmminq.macaco.ui.components.VideoTrimDialog
 import com.houseofmmminq.macaco.util.AppActions
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.VideoThumbnails
@@ -121,6 +128,7 @@ import com.houseofmmminq.macaco.util.VideoTranscoder
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import kotlin.math.absoluteValue
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 
@@ -188,6 +196,57 @@ fun EntryDetailScreen(
             if (stored.isNotEmpty()) {
                 val e = latestEntry.value
                 onSaveEntry(e.copy(photoUris = (e.photoUris + stored).distinct()))
+            }
+        }
+    }
+
+    // ── Add-video support for the "+" tile ──────────────────────────────────────
+    // Tapping "+" now opens a small Photo/Video chooser. Picking video mirrors NewEditEntryScreen:
+    // short clips transcode directly, long ones queue for the trim dialog, then the result is stored
+    // to the gallery and appended to the current entry (which auto-uploads to Drive on save).
+    val MAX_VIDEOS = 3
+    var showAddMediaDialog by remember { mutableStateOf(false) }
+    var transcodingProgress by remember { mutableStateOf<Float?>(null) }
+    var trimQueue by remember { mutableStateOf<List<Pair<Uri, Long>>>(emptyList()) }
+    val coroutineScope = rememberCoroutineScope()
+
+    val storeTranscoded: (java.io.File?) -> Unit = { file ->
+        if (file == null) {
+            Toast.makeText(context, context.getString(R.string.video_add_failed), Toast.LENGTH_LONG).show()
+        } else {
+            ImageStorage.persistVideoToGallery(context, file)?.let { stored ->
+                val e = latestEntry.value
+                onSaveEntry(
+                    e.copy(
+                        videoUris = e.videoUris + stored,
+                        videoFileIds = e.videoFileIds + ""
+                    )
+                )
+            }
+            file.delete()
+        }
+    }
+
+    val addVideoLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(maxItems = MAX_VIDEOS)
+    ) { uris ->
+        val canAdd = MAX_VIDEOS - latestEntry.value.videoUris.size
+        if (canAdd > 0) {
+            val (short, long) = uris.take(canAdd).partition { uri ->
+                VideoTranscoder.getDurationMs(context, uri) <= VideoTranscoder.MAX_DURATION_MS
+            }
+            trimQueue = trimQueue + long.map { it to VideoTranscoder.getDurationMs(context, it) }
+            if (short.isNotEmpty()) {
+                transcodingProgress = 0f
+                coroutineScope.launch {
+                    short.forEach { uri ->
+                        val outFile = VideoTranscoder.transcode(
+                            context, uri, onProgress = { transcodingProgress = it }
+                        )
+                        storeTranscoded(outFile)
+                    }
+                    transcodingProgress = null
+                }
             }
         }
     }
@@ -340,12 +399,8 @@ fun EntryDetailScreen(
             val isLandscape = configuration.screenHeightDp < 480 ||
                 (isTablet && configuration.screenWidthDp > configuration.screenHeightDp)
             if (isLandscape && photoCount > 0) {
-                val launchAddPhoto = {
-                    onSuppressAutoLock()
-                    addPhotoLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }
+                // The "+" tile now opens a Photo/Video chooser rather than the photo picker directly.
+                val launchAddPhoto = { showAddMediaDialog = true }
                 Row(modifier = Modifier.fillMaxSize()) {
                     // Left panel: photo / collage fills the panel height.
                     Box(
@@ -620,12 +675,8 @@ fun EntryDetailScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                val launchAddPhoto = {
-                    onSuppressAutoLock()
-                    addPhotoLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }
+                // The "+" tile now opens a Photo/Video chooser rather than the photo picker directly.
+                val launchAddPhoto = { showAddMediaDialog = true }
                 when {
                     photoCount == 0 -> Box(
                         modifier = Modifier
@@ -966,6 +1017,113 @@ fun EntryDetailScreen(
                         Icons.Filled.Close,
                         contentDescription = stringResource(R.string.common_close),
                         tint = Color.White
+                    )
+                }
+            }
+        }
+
+        // "+" tile media chooser — Add Photo / Add Video.
+        if (showAddMediaDialog) {
+            AlertDialog(
+                onDismissRequest = { showAddMediaDialog = false },
+                title = { Text(stringResource(R.string.new_entry_add_photo)) },
+                text = {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    showAddMediaDialog = false
+                                    onSuppressAutoLock()
+                                    addPhotoLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                }
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Filled.PhotoLibrary, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Spacer(Modifier.width(16.dp))
+                            Text(stringResource(R.string.new_entry_photo_choose), style = MaterialTheme.typography.bodyLarge)
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    showAddMediaDialog = false
+                                    if (latestEntry.value.videoUris.size < MAX_VIDEOS) {
+                                        onSuppressAutoLock()
+                                        addVideoLauncher.launch(
+                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
+                                        )
+                                    }
+                                }
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Filled.Videocam, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Spacer(Modifier.width(16.dp))
+                            Text(stringResource(R.string.new_entry_video_gallery), style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { showAddMediaDialog = false }) {
+                        Text(stringResource(R.string.common_cancel))
+                    }
+                }
+            )
+        }
+
+        // Trim dialog — one per queued long clip; confirming/dismissing advances the queue.
+        trimQueue.firstOrNull()?.let { (trimUri, trimDuration) ->
+            VideoTrimDialog(
+                sourceUri = trimUri,
+                durationMs = trimDuration,
+                onTrimConfirmed = { startMs ->
+                    trimQueue = trimQueue.drop(1)
+                    transcodingProgress = 0f
+                    coroutineScope.launch {
+                        val outFile = VideoTranscoder.transcode(
+                            context, trimUri, trimStartMs = startMs,
+                            onProgress = { transcodingProgress = it }
+                        )
+                        transcodingProgress = null
+                        storeTranscoded(outFile)
+                    }
+                },
+                onDismiss = { trimQueue = trimQueue.drop(1) }
+            )
+        }
+
+        // Transcoding overlay — blocks input while processing.
+        val transcodeProgress = transcodingProgress
+        if (transcodeProgress != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                    .pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                awaitPointerEvent().changes.forEach { it.consume() }
+                            }
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator(
+                        progress = { transcodeProgress },
+                        modifier = Modifier.size(56.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        stringResource(R.string.video_processing),
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }

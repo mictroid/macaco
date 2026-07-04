@@ -65,7 +65,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -109,6 +108,7 @@ import coil.compose.AsyncImage
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
+import com.houseofmmminq.macaco.ui.components.VideoTrimDialog
 import com.houseofmmminq.macaco.util.Cities
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
@@ -624,6 +624,27 @@ fun NewEditEntryScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(end = 16.dp)
                 ) {
+                    // + Photo / + Video first so they're always visible without scrolling past the
+                    // media. They're not URIs and never enter mediaOrder, so their position has no
+                    // effect on drag-reorder (which only touches the media tiles below).
+                    item {
+                        AddMediaButton(
+                            icon = Icons.Filled.PhotoCamera,
+                            label = stringResource(R.string.new_entry_add_photo_short),
+                            onClick = { showPhotoSourceDialog = true }
+                        )
+                    }
+
+                    if (videoUris.size < MAX_VIDEOS) {
+                        item {
+                            AddMediaButton(
+                                icon = Icons.Filled.Videocam,
+                                label = stringResource(R.string.new_entry_add_video_short),
+                                onClick = { showVideoSourceDialog = true }
+                            )
+                        }
+                    }
+
                     itemsIndexed(displayMedia, key = { _, pair -> pair.first }) { index, (uri, type) ->
                         val isDragging = draggingUri == uri
                         Box(
@@ -721,26 +742,6 @@ fun NewEditEntryScreen(
                                     )
                                 }
                             }
-                        }
-                    }
-
-                    // + Photo button always present.
-                    item {
-                        AddMediaButton(
-                            icon = Icons.Filled.PhotoCamera,
-                            label = stringResource(R.string.new_entry_add_photo_short),
-                            onClick = { showPhotoSourceDialog = true }
-                        )
-                    }
-
-                    // + Video button while under the per-entry video cap.
-                    if (videoUris.size < MAX_VIDEOS) {
-                        item {
-                            AddMediaButton(
-                                icon = Icons.Filled.Videocam,
-                                label = stringResource(R.string.new_entry_add_video_short),
-                                onClick = { showVideoSourceDialog = true }
-                            )
                         }
                     }
                 }
@@ -1403,72 +1404,6 @@ private fun MoodChip(emoji: String, selected: Boolean, onClick: () -> Unit) {
     ) {
         Text(emoji, fontSize = 26.sp)
     }
-}
-
-/**
- * Shown when a gallery-picked video is > 15 seconds. Lets the user choose which 15-second window to
- * keep by dragging a slider over the clip's duration.
- */
-@Composable
-private fun VideoTrimDialog(
-    sourceUri: Uri,
-    durationMs: Long,
-    onTrimConfirmed: (trimStartMs: Long) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val context = LocalContext.current
-    val maxStart = (durationMs - VideoTranscoder.MAX_DURATION_MS).coerceAtLeast(0L)
-    var trimStartMs by remember { mutableStateOf(0L) }
-
-    // First-frame thumbnail preview.
-    val thumbnail = remember(sourceUri) { VideoTranscoder.getFirstFrame(context, sourceUri) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.video_trim_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (thumbnail != null) {
-                    androidx.compose.foundation.Image(
-                        bitmap = thumbnail.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(140.dp)
-                            .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                Text(
-                    text = stringResource(
-                        R.string.video_trim_window,
-                        formatMmSs(trimStartMs),
-                        formatMmSs(trimStartMs + VideoTranscoder.MAX_DURATION_MS)
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Slider(
-                    value = trimStartMs.toFloat() / maxStart.coerceAtLeast(1L),
-                    onValueChange = { trimStartMs = (it * maxStart).toLong() },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { onTrimConfirmed(trimStartMs) }) {
-                Text(stringResource(R.string.video_trim_confirm))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.common_cancel)) }
-        }
-    )
-}
-
-private fun formatMmSs(ms: Long): String {
-    val s = ms / 1000
-    return "%d:%02d".format(s / 60, s % 60)
 }
 
 @Composable
