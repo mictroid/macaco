@@ -200,6 +200,7 @@
     <string name="profile_memories">Erinnerungen</string>
     <string name="profile_locations">Orte</string>
     <string name="profile_photos">Fotos</string>
+    <string name="profile_media">Medien</string>
     <string name="profile_no_account_title">Kein Konto verbunden</string>
     <string name="profile_no_account_subtitle">Melde dich an, um deine Erinnerungen geräteübergreifend zu synchronisieren und sicher in der Cloud zu speichern.</string>
 

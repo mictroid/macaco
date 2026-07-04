@@ -324,6 +324,7 @@
     <string name="profile_trips">Trips</string>
     <string name="profile_locations">Locations</string>
     <string name="profile_photos">Photos</string>
+    <string name="profile_media">Media</string>
     <string name="profile_no_account_title">No account connected</string>
     <string name="profile_no_account_subtitle">Sign in to sync your memories across devices and keep them safe in the cloud.</string>
 

@@ -192,6 +192,7 @@
     <string name="profile_memories">Ricordi</string>
     <string name="profile_locations">Luoghi</string>
     <string name="profile_photos">Foto</string>
+    <string name="profile_media">Media</string>
     <string name="profile_no_account_title">Nessun account collegato</string>
     <string name="profile_no_account_subtitle">Accedi per sincronizzare i tuoi ricordi su tutti i dispositivi e tenerli al sicuro nel cloud.</string>
 

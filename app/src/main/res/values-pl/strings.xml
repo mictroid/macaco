@@ -198,6 +198,7 @@
     <string name="profile_memories">Wspomnienia</string>
     <string name="profile_locations">Lokalizacje</string>
     <string name="profile_photos">Zdjęcia</string>
+    <string name="profile_media">Multimedia</string>
     <string name="profile_no_account_title">Brak połączonego konta</string>
     <string name="profile_no_account_subtitle">Zaloguj się, aby synchronizować wspomnienia na wszystkich urządzeniach i przechowywać je bezpiecznie w chmurze.</string>
 

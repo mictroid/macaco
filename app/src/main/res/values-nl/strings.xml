@@ -192,6 +192,7 @@
     <string name="profile_memories">Herinneringen</string>
     <string name="profile_locations">Locaties</string>
     <string name="profile_photos">Foto\'s</string>
+    <string name="profile_media">Media</string>
     <string name="profile_no_account_title">Geen account gekoppeld</string>
     <string name="profile_no_account_subtitle">Log in om je herinneringen op al je apparaten te synchroniseren en veilig in de cloud te bewaren.</string>
 

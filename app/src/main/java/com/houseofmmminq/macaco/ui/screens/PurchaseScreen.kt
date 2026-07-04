@@ -96,7 +96,15 @@ fun PurchaseScreen(
         PlanSelection.Lifetime -> stringResource(R.string.purchase_cta_lifetime, lifetimePrice)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    // The paywall is designed dark (white copy, dark plan cards) — paint the whole screen in
+    // the brand dark instead of inheriting the theme background, which is white in light mode
+    // and made the lower half unreadable. SplashTealEdge is the radial's edge colour, so the
+    // 300dp glow header below blends into it seamlessly.
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SplashTealEdge)
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()

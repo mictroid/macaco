@@ -189,6 +189,7 @@
     <string name="profile_memories">回忆</string>
     <string name="profile_locations">地点</string>
     <string name="profile_photos">照片</string>
+    <string name="profile_media">媒体</string>
     <string name="profile_no_account_title">未连接账号</string>
     <string name="profile_no_account_subtitle">登录后可跨设备同步回忆，并安全保存至云端。</string>
 

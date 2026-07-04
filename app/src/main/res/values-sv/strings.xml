@@ -165,6 +165,7 @@
     <string name="profile_memories">Minnen</string>
     <string name="profile_locations">Platser</string>
     <string name="profile_photos">Foton</string>
+    <string name="profile_media">Media</string>
     <string name="profile_no_account_title">Inget konto anslutet</string>
     <string name="profile_no_account_subtitle">Logga in för att synka dina minnen mellan enheter och hålla dem säkra i molnet.</string>
 

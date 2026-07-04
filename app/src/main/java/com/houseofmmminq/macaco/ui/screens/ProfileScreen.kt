@@ -13,21 +13,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -46,7 +42,6 @@ import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.WorkspacePremium
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -79,7 +74,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -115,11 +109,6 @@ fun ProfileScreen(
     var deleteInProgress by remember { mutableStateOf(false) }
     var deleteError by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
-    // 2-pane only on phones in landscape (short screen). Tablets always use the single-column
-    // portrait layout — the two-pane layout looked cramped on large screens, and the redesigned
-    // single-column view (2-column action grid) reads well tall-and-wide too.
-    val isLandscape = configuration.screenHeightDp < 480
 
     var showPhotoSourceSheet by remember { mutableStateOf(false) }
     // Saveable as a string: the camera app backgrounds us and the OS may kill the process;
@@ -312,371 +301,15 @@ fun ProfileScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-      if (isLandscape) {
-        // Hoisted so both the left (stats) and right (Trips stat) panes can read it. (v3)
-        val tripCount = entries
-            .mapNotNull { it.tripName?.trim()?.ifBlank { null } }
-            .distinct()
-            .size
-        // ── LANDSCAPE: full-width header + two-pane Row ─────────────────────────────────
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Full-width compact header — moved OUT of the left pane so it spans the screen. (v3)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(macacoBrandBackground())
-                    .statusBarsPadding()
-            ) {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 4.dp)
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.common_back),
-                        tint = Color.White
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(vertical = 4.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .offset(y = (-2).dp)
-                    )
-                    Text(
-                        text = "macaco",
-                        color = SplashGoldBright,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 3.sp
-                    )
-                }
-                // Avatar thumbnail pinned to end (tappable shortcut to change photo)
-                val headerPhotoModel: Any? = profilePhotoUri ?: currentUser?.photoUrl
-                if (headerPhotoModel != null) {
-                    AsyncImage(
-                        model = headerPhotoModel,
-                        contentDescription = stringResource(R.string.profile_photo_cd),
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(end = 12.dp)
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .clickable { showPhotoSourceSheet = true },
-                        contentScale = ContentScale.Crop,
-                        error = rememberVectorPainter(Icons.Default.Person)
-                    )
-                }
-            }
-
-            // Two-pane Row below the full-width header
-            Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
-            // LEFT PANE — identity info (scrollable, no header)
-            Column(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .fillMaxHeight()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val user = currentUser
-                if (user != null) {
-                    Spacer(Modifier.height(8.dp))
-
-                    // Avatar — slightly smaller in landscape
-                    Box(
-                        modifier = Modifier
-                            .size(88.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.background),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .clip(CircleShape)
-                                .clickable { showPhotoSourceSheet = true },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            val displayPhotoModel: Any? = profilePhotoUri ?: user.photoUrl
-                            if (displayPhotoModel != null) {
-                                AsyncImage(
-                                    model = displayPhotoModel,
-                                    contentDescription = stringResource(R.string.profile_photo_cd),
-                                    modifier = Modifier
-                                        .size(80.dp)
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.Crop,
-                                    error = rememberVectorPainter(Icons.Default.Person)
-                                )
-                            } else {
-                                Box(
-                                    modifier = Modifier
-                                        .size(80.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        user.displayName.take(2).uppercase(),
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                }
-                            }
-                            // Camera badge
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .size(24.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    Icons.Filled.CameraAlt,
-                                    contentDescription = stringResource(R.string.profile_change_photo_cd),
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.size(14.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        user.displayName,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        user.email,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.secondaryContainer
-                    ) {
-                        Text(
-                            text = when (user.provider) {
-                                AuthProvider.Google -> stringResource(R.string.profile_google_account)
-                                AuthProvider.Email  -> stringResource(R.string.profile_email_account)
-                                AuthProvider.Guest  -> stringResource(R.string.profile_guest)
-                            },
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
-                    Spacer(Modifier.height(12.dp))
-
-                    // tripCount hoisted above the isLandscape branch (v3) — no local decl here.
-                    // Stats card moved to the right pane in v4 (see below).
-
-                    val memberSince = user.createdAt?.let { millis ->
-                        java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
-                            .format(java.util.Date(millis))
-                    }
-                    if (memberSince != null) {
-                        Text(
-                            text = stringResource(R.string.profile_member_since, memberSince),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 12.dp)
-                        )
-                    }
-
-                    // Utility rows relocated from the retired navigation drawer (left pane is the
-                    // scrollable one in landscape; the right pane is a fixed Box).
-                    Spacer(Modifier.height(4.dp))
-                    ProfileUtilityCard(
-                        onSettings = onSettings,
-                        onHelp = onHelp,
-                        entryCount = entries.size
-                    )
-                    Spacer(Modifier.height(8.dp))
-                } else {
-                    Spacer(Modifier.height(32.dp))
-                    Text("🔑", fontSize = 48.sp)
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        stringResource(R.string.profile_no_account_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(Modifier.height(6.dp))
-                    Text(
-                        stringResource(R.string.profile_no_account_subtitle),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
-                }
-            } // end LEFT PANE
-
-            // RIGHT PANE — Trips stat + side-by-side actions (v3)
-            Box(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .fillMaxHeight()
-                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.End))
-                    .padding(horizontal = 20.dp)
-            ) {
-                if (currentUser != null) {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        // Stats card — moved from the left pane (v4)
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surface
-                            ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                StatItem(
-                                    value = "${entries.size}",
-                                    label = stringResource(R.string.profile_memories)
-                                )
-                                if (tripCount > 0) {
-                                    Box(
-                                        modifier = Modifier
-                                            .width(1.dp).height(36.dp)
-                                            .background(MaterialTheme.colorScheme.outlineVariant)
-                                    )
-                                    StatItem(
-                                        value = tripCount.toString(),
-                                        label = stringResource(R.string.profile_trips)
-                                    )
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .width(1.dp).height(36.dp)
-                                        .background(MaterialTheme.colorScheme.outlineVariant)
-                                )
-                                StatItem(
-                                    value = entries.mapNotNull { it.location.ifBlank { null } }
-                                        .distinct().size.toString(),
-                                    label = stringResource(R.string.profile_locations)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .width(1.dp).height(36.dp)
-                                        .background(MaterialTheme.colorScheme.outlineVariant)
-                                )
-                                StatItem(
-                                    value = entries.sumOf { it.photoUris.size }.toString(),
-                                    label = stringResource(R.string.profile_photos)
-                                )
-                            }
-                        }
-                        // Subscribe + Sign Out side-by-side
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            OutlinedButton(
-                                onClick = onSubscription,
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Text(
-                                    stringResource(R.string.common_subscription),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                            OutlinedButton(
-                                onClick = { showSignOutDialog = true },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(12.dp),
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = MaterialTheme.colorScheme.error
-                                )
-                            ) {
-                                Text(
-                                    stringResource(R.string.common_sign_out),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                        // Delete Account
-                        TextButton(
-                            onClick = { showDeleteAccountDialog = true },
-                            colors = ButtonDefaults.textButtonColors(
-                                contentColor = MaterialTheme.colorScheme.error
-                            )
-                        ) {
-                            Text(
-                                stringResource(R.string.profile_delete_account),
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                    }
-                } else {
-                    Button(
-                        onClick = onLogin,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(stringResource(R.string.common_sign_in), fontWeight = FontWeight.SemiBold)
-                    }
-                }
-                // Macaco logo pinned to bottom of right pane
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 8.dp)
-                )
-            } // end RIGHT PANE
-            } // end two-pane Row
-        } // end landscape Column
-      } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -704,7 +337,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
-                        .padding(top = 6.dp, bottom = 44.dp),
+                        .padding(top = 4.dp, bottom = 32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
@@ -728,7 +361,7 @@ fun ProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(y = (-44).dp)
+                    .offset(y = (-32).dp)
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -798,7 +431,7 @@ fun ProfileScreen(
                 }
                 }
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(6.dp))
 
                 Text(
                     user.displayName,
@@ -812,7 +445,7 @@ fun ProfileScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(6.dp))
 
                 Surface(
                     shape = RoundedCornerShape(20.dp),
@@ -830,7 +463,7 @@ fun ProfileScreen(
                     )
                 }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(10.dp))
 
                 // Number of distinct named trips; the Trips stat is hidden when this is 0 so
                 // users who never name a trip aren't shown an empty counter.
@@ -849,7 +482,7 @@ fun ProfileScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 14.dp, horizontal = 16.dp),
+                            .padding(vertical = 10.dp, horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -883,26 +516,15 @@ fun ProfileScreen(
                                 .background(MaterialTheme.colorScheme.outlineVariant)
                         )
                         StatItem(
-                            value = entries.sumOf { it.photoUris.size }.toString(),
-                            label = stringResource(R.string.profile_photos)
+                            value = entries.sumOf { it.photoUris.size + it.videoUris.size }.toString(),
+                            label = stringResource(R.string.profile_media)
                         )
                     }
                 }
 
-                val memberSince = user.createdAt?.let { millis ->
-                    java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
-                        .format(java.util.Date(millis))
-                }
-                if (memberSince != null) {
-                    Text(
-                        text = stringResource(R.string.profile_member_since, memberSince),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-                // Utility + action buttons now render as a 2-column grid in the pinned
-                // section below (see ProfileActionTile), so nothing further here.
+                // "Member since" moved to the footer, below Delete Account (see action section).
+                // Utility + action buttons render as a 2-column grid in the action section
+                // below (see ProfileActionTile), so nothing further here.
 
             } else {
                 // Not signed in
@@ -923,19 +545,24 @@ fun ProfileScreen(
                 )
             }
             }
-        } // scrollable content Column
-        } // weight(1f) Box
+            // Seam between the identity zone and the actions zone. Chrome policy: content
+            // chrome follows the theme — `secondary` renders macaco gold on the default theme.
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp),
+                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.35f)
+            )
 
-            // Action buttons pinned at the bottom, laid out as a compact 2-column grid so
-            // Settings / Help / Share / Rate / Subscription / Sign Out all fit without scrolling
-            // (replaces the old single-column utility card + stacked buttons + branded footer).
-            if (currentUser != null) {
-                val gridSpacing = 8.dp
+            // Action buttons in-flow after the stats (v3), laid out as a compact 2-column grid
+            // so Settings / Help / Share / Rate / Subscription / Sign Out all fit.
+            val user = currentUser
+            if (user != null) {
+                val gridSpacing = 6.dp
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .widthIn(max = 560.dp)
                         .padding(horizontal = 24.dp)
-                        .padding(top = 12.dp),
+                        .padding(top = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(gridSpacing)
                 ) {
                     Row(
@@ -992,7 +619,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
-                        .padding(top = 4.dp, bottom = 12.dp),
+                        .padding(top = 2.dp, bottom = 6.dp),
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                 ) {
                     Icon(
@@ -1002,6 +629,22 @@ fun ProfileScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.profile_delete_account))
+                }
+                // "Member since" as footer metadata under Delete Account (moved here in v3).
+                val memberSince = user.createdAt?.let { millis ->
+                    java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
+                        .format(java.util.Date(millis))
+                }
+                if (memberSince != null) {
+                    Text(
+                        text = stringResource(R.string.profile_member_since, memberSince),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 2.dp, bottom = 4.dp)
+                    )
                 }
             } else {
                 Button(
@@ -1015,9 +658,9 @@ fun ProfileScreen(
                     Text(stringResource(R.string.common_sign_in), fontWeight = FontWeight.SemiBold)
                 }
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(4.dp))
         }
-      } // end else (portrait)
+      }
     }
 }
 
@@ -1032,7 +675,7 @@ private fun RowScope.ProfileActionTile(
     Card(
         modifier = Modifier
             .weight(1f)
-            .heightIn(min = 64.dp)
+            .heightIn(min = 56.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -1041,9 +684,9 @@ private fun RowScope.ProfileActionTile(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 8.dp),
+                .padding(vertical = 8.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Icon(
                 icon,
@@ -1068,50 +711,5 @@ private fun StatItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-/** Utility rows relocated from the retired navigation drawer. */
-@Composable
-private fun ProfileUtilityCard(
-    onSettings: () -> Unit,
-    onHelp: () -> Unit,
-    entryCount: Int
-) {
-    val context = LocalContext.current
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column {
-            ProfileUtilityRow(Icons.Filled.Settings, stringResource(R.string.common_settings), onSettings)
-            HorizontalDivider(Modifier.padding(horizontal = 16.dp))
-            ProfileUtilityRow(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.drawer_help), onHelp)
-            HorizontalDivider(Modifier.padding(horizontal = 16.dp))
-            ProfileUtilityRow(Icons.Filled.Share, stringResource(R.string.drawer_share_app)) {
-                AppActions.shareApp(context, entryCount)
-            }
-            HorizontalDivider(Modifier.padding(horizontal = 16.dp))
-            ProfileUtilityRow(Icons.Filled.StarRate, stringResource(R.string.drawer_rate_us)) {
-                AppActions.requestReview(context)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfileUtilityRow(icon: ImageVector, label: String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
-        Spacer(Modifier.width(16.dp))
-        Text(label, style = MaterialTheme.typography.bodyLarge)
     }
 }

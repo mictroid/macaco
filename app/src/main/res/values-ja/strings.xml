@@ -189,6 +189,7 @@
     <string name="profile_memories">思い出</string>
     <string name="profile_locations">場所</string>
     <string name="profile_photos">写真</string>
+    <string name="profile_media">メディア</string>
     <string name="profile_no_account_title">アカウントが未接続です</string>
     <string name="profile_no_account_subtitle">サインインしてデバイス間で思い出を同期し、クラウドに安全に保存しましょう。</string>
 

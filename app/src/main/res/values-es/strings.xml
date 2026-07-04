@@ -192,6 +192,7 @@
     <string name="profile_memories">Recuerdos</string>
     <string name="profile_locations">Ubicaciones</string>
     <string name="profile_photos">Fotos</string>
+    <string name="profile_media">Multimedia</string>
     <string name="profile_no_account_title">Sin cuenta vinculada</string>
     <string name="profile_no_account_subtitle">Inicia sesión para sincronizar tus recuerdos entre dispositivos y mantenerlos seguros en la nube.</string>
 

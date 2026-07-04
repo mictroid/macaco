@@ -227,36 +227,36 @@ fun JournalListScreen(
                             modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
                             ) {
                                 Image(
                                     painter = painterResource(R.drawable.ic_launcher_foreground),
                                     contentDescription = null,
-                                    modifier = Modifier.size(22.dp)
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .offset(y = (-2).dp)   // optical: adaptive icon sits low
                                 )
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    text = "macaco",
+                                    color = SplashGoldBright,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Light,
+                                    letterSpacing = 4.sp
+                                )
+                                if (entries.isNotEmpty()) {
+                                    val count = visibleEntries.size
+                                    val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
                                     Text(
-                                        text = "macaco",
-                                        color = SplashGoldBright,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Light,
-                                        letterSpacing = 3.sp
+                                        text = " · " + memoriesText +
+                                            if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = SplashGold.copy(alpha = 0.7f),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
-                                    if (entries.isNotEmpty()) {
-                                        val count = visibleEntries.size
-                                        val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
-                                        Text(
-                                            text = " · " + memoriesText +
-                                                if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = SplashGold.copy(alpha = 0.7f)
-                                        )
-                                    }
                                 }
                             }
                         }
