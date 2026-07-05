@@ -1,6 +1,6 @@
 What's new:
-• Cleaner, consistent app branding across the journal, map, and Help screens
-• Landscape and tablet layouts now line up properly everywhere
-• Fixed content sitting under the navigation bar in landscape
-• Slimmer, branded headers that tuck away as you scroll
-• Assorted polish and stability fixes
+• Roomier onboarding in landscape — intro text no longer overlaps the Next button
+• Slimmer Adventures map header in landscape leaves more room for the map
+• Tidier Entry Detail header with the logo stacked neatly above the wordmark
+• Journal list no longer clips behind the front camera cutout
+• Profile photo now lines up cleanly with the list below it
