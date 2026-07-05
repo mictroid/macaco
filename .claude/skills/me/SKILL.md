@@ -1,5 +1,6 @@
 ---
 name: me
+model: sonnet
 description: Email the user (michael.tromp78@gmail.com) a recap of the relevant content — a session summary, a recommendation, a checklist, etc. Use when the user says "send that to my email", "email me this", "/me", or otherwise wants the current discussion delivered to their inbox. Creates a Gmail draft (the connected Gmail connector cannot send directly).
 ---
 

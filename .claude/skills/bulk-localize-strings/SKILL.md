@@ -1,5 +1,6 @@
 ---
 name: bulk-localize-strings
+model: sonnet
 description: Add (or edit) string resource keys across all of Macaco's locale strings.xml files at once. Use when a brief or feature needs a new user-facing string, or when inserting/translating keys into res/values*/strings.xml. Handles the 11 locales and the PowerShell UTF-8/BOM trap that mangles CJK and accented translations.
 ---
 

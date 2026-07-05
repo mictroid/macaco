@@ -1,5 +1,7 @@
 ---
 name: ship-to-play
+model: haiku
+effort: low
 description: Release the Macaco app to Play closed testing via the WIF GitHub Actions workflow. Use when the user wants to bump the version, ship/publish, push to Play, or dispatch a release. Bumps versionCode, refreshes the (otherwise stale) release notes, pushes, verifies the remote, dispatches release.yml, and records the run ID + dispatch timestamp.
 ---
 
