@@ -1,6 +1,3 @@
 What's new:
-• Roomier onboarding in landscape — intro text no longer overlaps the Next button
-• Slimmer Adventures map header in landscape leaves more room for the map
-• Tidier Entry Detail header with the logo stacked neatly above the wordmark
-• Journal list no longer clips behind the front camera cutout
-• Profile photo now lines up cleanly with the list below it
+• Tablet landscape now fills the full screen width — no more wide empty margins beside your journal and Help pages
+• Fixed the "New Entry" button being partly hidden behind the navigation bar in landscape

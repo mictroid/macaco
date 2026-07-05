@@ -408,7 +408,12 @@ fun JournalListScreen(
                     icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                     text = { Text(stringResource(R.string.common_new_entry)) },
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    // Scaffold's contentWindowInsets is zeroed on this screen (hand-managed
+                    // insets elsewhere), so the FAB needs its own — otherwise it renders behind
+                    // the system nav bar in landscape (nav bar sits on the side edge there, not
+                    // the bottom), as seen on the Galaxy A53.
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) { data -> MacacoSnackbar(data) } },
