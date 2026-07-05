@@ -1,7 +1,6 @@
 ---
 name: context-checkpoint
-model: haiku
-effort: low
+model: sonnet
 description: Checkpoint the session and recommend /clear to stay economical with tokens. Use when the context-budget hook warns the transcript is large, when the native context indicator is high, at a natural task boundary, or when the user asks whether to /clear. Saves everything to memory first, then recommends /clear and states exactly what was saved.
 ---
 
