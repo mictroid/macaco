@@ -2,6 +2,17 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-05 — vc60 (1.6, closed testing)
+
+- **vc60 / 1.6 — DISPATCHED 2026-07-05 17:37 +02:00** (WIF run `28745924842`, bump commit `d113df4`,
+  impl `c19a628`). `landscape-layout-consistency-v2` brief (5 changes, 4 files): Adventures map
+  landscape header 3→2 lines, Entry Detail brand block stacked icon-above-wordmark, onboarding pager
+  reserves bottom-controls height so intro copy can't overlap "Next" in landscape, journal list
+  content inset `navigationBars`→`safeDrawing`-horizontal (camera-cutout fix) + profile avatar padding
+  → `macacoContentGutter()`. Verified vs live source; deviation: added the `remember`/`setValue`
+  imports the brief's Change-3 list omitted. Not yet confirmed / not on-device verified (shipped on
+  explicit request). Detail in `worklog-2026-07-05.md`.
+
 ## 2026-07-04 → 07-05 — vc55–vc59 rollup (1.6, closed testing)
 
 Condensed summary of five version bumps that only got *dated* worklog entries at the time (the rolling
