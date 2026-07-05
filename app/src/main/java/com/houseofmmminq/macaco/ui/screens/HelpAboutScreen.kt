@@ -1,18 +1,29 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,16 +43,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,6 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
+import com.houseofmmminq.macaco.ui.theme.macacoContentGutter
 import com.houseofmmminq.macaco.util.AppActions
 
 /** A named FAQ section: a teal section label and its Q&A pairs (question id to answer id). */
@@ -126,71 +138,136 @@ fun HelpAboutScreen(onBack: () -> Unit) {
         }.getOrNull().orEmpty()
     }
 
+    val scrollState = rememberScrollState()
+    val collapsed by remember {
+        derivedStateOf { scrollState.value > 24 }
+    }
+    val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.help_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
+            // Collapsing brand header, matching the journal list: tall brand block at rest,
+            // slim centred row when scrolled or in landscape; scroll-hides in landscape.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(macacoBrandBackground())
+                    .statusBarsPadding()
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            ) {
+                AnimatedVisibility(
+                    visible = !(isLandscape && collapsed),
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth().animateContentSize()) {
+                        if (isLandscape || collapsed) {
+                            // ── Compact: back start, brand centred, 40dp trailing anchor ──
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = stringResource(R.string.common_back),
+                                        tint = Color.White
+                                    )
+                                }
+                                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Image(
+                                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(32.dp)
+                                                .offset(y = (-2).dp)
+                                        )
+                                        Spacer(Modifier.width(6.dp))
+                                        Text(
+                                            text = "macaco",
+                                            color = SplashGoldBright,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Light,
+                                            letterSpacing = 4.sp
+                                        )
+                                        Text(
+                                            text = " · " + stringResource(R.string.help_title),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = SplashGold.copy(alpha = 0.7f),
+                                            maxLines = 1
+                                        )
+                                    }
+                                }
+                                Spacer(Modifier.size(40.dp))   // symmetric trailing anchor
+                            }
+                        } else {
+                            // ── Expanded: back rides the top edge, brand block centred ──
+                            IconButton(
+                                onClick = onBack,
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .padding(4.dp)
+                            ) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(R.string.common_back),
+                                    tint = Color.White
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 12.dp, bottom = 16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(64.dp)
+                                )
+                                Column(
+                                    modifier = Modifier.offset(y = (-10).dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "macaco",
+                                        color = SplashGoldBright,
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.Light,
+                                        letterSpacing = 6.sp
+                                    )
+                                    Text(
+                                        text = "Roam Freely. Forget Nothing.",
+                                        color = SplashGold.copy(alpha = 0.82f),
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Light,
+                                        letterSpacing = 1.sp
+                                    )
+                                    Spacer(Modifier.size(4.dp))
+                                    Text(
+                                        stringResource(R.string.settings_version_value, versionLabel),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+                        }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
+                }
+            }
         }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .verticalScroll(scrollState)   // hoisted — see Change 6
+                .padding(horizontal = macacoContentGutter(), vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // ── Branded header band: the Macaco splash identity (teal radial + gold wordmark)
-            //    with the icon, slogan, and app version. ──
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(macacoBrandBackground())
-                    .padding(vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier.size(88.dp)
-                )
-                Column(
-                    modifier = Modifier.offset(y = (-12).dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "macaco",
-                        color = SplashGoldBright,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 6.sp
-                    )
-                    Text(
-                        text = "Roam Freely. Forget Nothing.",
-                        color = SplashGold.copy(alpha = 0.82f),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 1.sp
-                    )
-                    Spacer(Modifier.size(6.dp))
-                    Text(
-                        stringResource(R.string.settings_version_value, versionLabel),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                }
-            }
-
             // ── Feedback CTAs: quick paths to request a feature or report an issue ──
             Row(
                 modifier = Modifier.fillMaxWidth(),

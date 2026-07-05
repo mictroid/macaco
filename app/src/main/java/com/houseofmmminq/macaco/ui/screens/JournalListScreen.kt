@@ -1,7 +1,10 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,6 +27,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -89,6 +93,7 @@ import com.houseofmmminq.macaco.data.model.tagsByFrequency
 import com.houseofmmminq.macaco.ui.components.MacacoSnackbar
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
+import com.houseofmmminq.macaco.ui.theme.macacoContentGutter
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel.ReelState
 import java.text.SimpleDateFormat
@@ -208,10 +213,22 @@ fun JournalListScreen(
                         .fillMaxWidth()
                         .background(macacoBrandBackground())
                         .statusBarsPadding()
-                        .padding(bottom = if (isLandscape || collapsed) 0.dp else 4.dp)
-                        .animateContentSize()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                 ) {
-                  if (isLandscape || collapsed) {
+                  // Landscape: the compact row scrolls away entirely (the brand strip behind the
+                  // status bar stays). Portrait keeps the tall→compact collapse.
+                  AnimatedVisibility(
+                      visible = !(isLandscape && collapsed),
+                      enter = expandVertically(),
+                      exit = shrinkVertically()
+                  ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = if (isLandscape || collapsed) 0.dp else 4.dp)
+                            .animateContentSize()
+                    ) {
+                      if (isLandscape || collapsed) {
                     // ── Compact header: single slim row, brand content centred ──
                     // A fixed 40dp leading spacer (matching the trailing avatar anchor) keeps the
                     // centred brand block symmetric now that the hamburger is gone.
@@ -383,6 +400,8 @@ fun JournalListScreen(
                         }
                     }
                   }
+                    }
+                  }
                 }
             },
             floatingActionButton = {
@@ -421,9 +440,9 @@ fun JournalListScreen(
                         onClear = { viewModel.clearTagFilter() }
                     )
                 }
-                // Wider side gutters on tablets (sw600dp+) so the single-column list doesn't stretch.
-                val listHorizontalPadding =
-                    if (LocalConfiguration.current.screenWidthDp >= 600) 80.dp else 16.dp
+                // Shared width rule (ContentWidth.kt): content capped at MacacoContentMaxWidth
+                // and centred, so the journal list and Help & About line up on wide screens.
+                val listHorizontalPadding = macacoContentGutter()
                 when {
                     entries.isEmpty() -> EmptyState(modifier = Modifier.fillMaxSize())
                     visibleEntries.isEmpty() -> NoMatchState(modifier = Modifier.fillMaxSize())

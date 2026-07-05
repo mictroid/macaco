@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -26,12 +27,18 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -64,6 +71,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.houseofmmminq.macaco.R
 import androidx.compose.material3.AlertDialog
@@ -80,8 +88,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -276,8 +282,29 @@ fun EntryDetailScreen(
     Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
+            // Slim brand header (~48dp vs TopAppBar's 64dp). macacoBrandBackground() headers
+            // are brand moments per the chrome policy, so the fixed splash palette is correct
+            // here — this replaces the previous theme-primary TopAppBar.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(macacoBrandBackground())
+                    .statusBarsPadding()
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back),
+                            tint = Color.White
+                        )
+                    }
                     // Orientation among entries — only worth showing once there's more than one.
                     if (entries.size > 1) {
                         AnimatedContent(
@@ -290,40 +317,47 @@ fun EntryDetailScreen(
                             Text(
                                 text = "$pageNumber / ${entries.size}",
                                 style = MaterialTheme.typography.labelLarge,
-                                // Match the header's back/share/edit/delete icons (onPrimary) so the
-                                // counter is legible on the teal header across all themes.
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = SplashGold,
+                                modifier = Modifier.padding(start = 2.dp)
                             )
                         }
                     }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { shareEntry(context, currentEntry, cachedDrivePhotos) }) {
-                        Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.entry_detail_share_cd))
-                    }
-                    IconButton(onClick = { onEdit(currentEntry.id) }) {
-                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.entry_detail_edit_cd))
-                    }
-                    IconButton(onClick = { showDeleteDialog = true }) {
-                        Icon(
-                            Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.entry_detail_delete_cd)
+                    Spacer(Modifier.weight(1f))
+                    // Brand block, centred in the leftover space. Wordmark drops on narrow
+                    // screens so it can't collide with the action cluster.
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .offset(y = (-2).dp)
+                    )
+                    if (LocalConfiguration.current.screenWidthDp >= 420) {
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            text = "macaco",
+                            color = SplashGoldBright,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Light,
+                            letterSpacing = 4.sp
                         )
                     }
-                },
-                // Branded header: the active theme's primary colour with on-primary icons, so it
-                // reads as a header band across all themes (not hardcoded teal).
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            )
+                    Spacer(Modifier.weight(1f))
+                    IconButton(onClick = { shareEntry(context, currentEntry, cachedDrivePhotos) }, modifier = Modifier.size(40.dp)) {
+                        Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.entry_detail_share_cd), tint = Color.White)
+                    }
+                    IconButton(onClick = { onEdit(currentEntry.id) }, modifier = Modifier.size(40.dp)) {
+                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.entry_detail_edit_cd), tint = Color.White)
+                    }
+                    IconButton(onClick = { showDeleteDialog = true }, modifier = Modifier.size(40.dp)) {
+                        Icon(
+                            Icons.Filled.Delete,
+                            contentDescription = stringResource(R.string.entry_detail_delete_cd),
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->

@@ -13,17 +13,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -362,6 +366,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .offset(y = (-32).dp)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -548,7 +553,9 @@ fun ProfileScreen(
             // Seam between the identity zone and the actions zone. Chrome policy: content
             // chrome follows the theme — `secondary` renders macaco gold on the default theme.
             HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp),
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                    .padding(horizontal = 24.dp, vertical = 10.dp),
                 color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.35f)
             )
 
@@ -561,6 +568,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .widthIn(max = 560.dp)
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                         .padding(horizontal = 24.dp)
                         .padding(top = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(gridSpacing)
@@ -618,6 +626,7 @@ fun ProfileScreen(
                     onClick = { showDeleteAccountDialog = true },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                         .padding(horizontal = 24.dp)
                         .padding(top = 2.dp, bottom = 6.dp),
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
@@ -643,6 +652,7 @@ fun ProfileScreen(
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                             .padding(top = 2.dp, bottom = 4.dp)
                     )
                 }
