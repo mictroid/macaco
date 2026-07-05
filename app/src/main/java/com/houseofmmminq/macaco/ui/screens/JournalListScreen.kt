@@ -251,7 +251,7 @@ fun JournalListScreen(
                             Image(
                                 painter = painterResource(R.drawable.ic_launcher_foreground),
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(48.dp)
                             )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
