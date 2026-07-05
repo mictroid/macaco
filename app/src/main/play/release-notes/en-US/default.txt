@@ -1,6 +1,6 @@
 What's new:
-• Refreshed Profile screen — tighter spacing and one clean single-column layout everywhere
-• Your stats now count videos too, under a new "Media" total
-• Bigger, clearer app branding in the journal header
-• Upgrade screen now looks right in light mode
+• Cleaner, consistent app branding across the journal, map, and Help screens
+• Landscape and tablet layouts now line up properly everywhere
+• Fixed content sitting under the navigation bar in landscape
+• Slimmer, branded headers that tuck away as you scroll
 • Assorted polish and stability fixes
