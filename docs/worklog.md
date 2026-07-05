@@ -8,7 +8,8 @@ Condensed summary of five version bumps that only got *dated* worklog entries at
 log was skipped). Full detail — commits, run IDs, deviations, on-device verification — is in
 `worklog-2026-07-04.md` (vc55–58) and `worklog-2026-07-05.md` (vc59). Newest first:
 
-- **vc59 / 1.6 — DISPATCHED 2026-07-05** (WIF run `28739282883`, bump commit `93d5817`). Landscape/tablet
+- **vc59 / 1.6 — SHIPPED (✅ confirmed) 2026-07-05** (WIF run `28739282883`, 6m14s, PUBLISHED to closed
+  testing; bump commit `93d5817`). Landscape/tablet
   layout batch: the **landscape-layout-consistency** brief (7 changes, `5b10e65` — shared 840dp content
   gutter `macacoContentGutter()`, horizontal safe-drawing insets fixing the A53 side-nav, slim
   collapsing brand headers on Journal/Help/Entry Detail) plus on-device **header refinements** (`6fa8d2f`
