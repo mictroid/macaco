@@ -5,6 +5,19 @@ description: Implement a Cowork code brief (docs/code-brief-*.md) for the Macaco
 
 # Implement a Cowork brief
 
+## Token discipline (read first)
+The **verify-and-implement core stays in this (Opus) context** — signature/import verification is
+judgment work where a wrong call breaks the build. But the token-heavy *mechanical* steps must NOT
+pour their output into this transcript. Two rules govern the whole run:
+
+- **Delegate the noisy mechanics to a subagent** (build, and the 11-locale string localization).
+  The subagent runs in a throwaway context and returns only a one-line result (pass/fail + any real
+  errors). Gradle spew and 11 locale diffs never touch the main window. See steps 3–4.
+- **Read tight, don't re-read.** For verification, read only the relevant range of a target file
+  (grep for the symbol, then read a focused window) — not the whole file "to be safe." Never re-read
+  a file you just edited; Edit/Write already confirmed the change. Never read raw build output here —
+  it comes back filtered from the subagent.
+
 Cowork writes implementation briefs as `docs/code-brief-*.md`. As of 2026-06-21 it drafts from the
 **correct** repo (`mictroid/macaco`, package `com.houseofmmminq.macaco`) — it was given an explicit
 workspace directive + `docs/cowork-repo-source-of-truth.md`. (Historically it drafted off the stale
@@ -69,17 +82,25 @@ an edit — the brief may be targeting a version that no longer exists.
   existing pattern (e.g. the SettingsScreen progress card uses
   `com.houseofmmminq.macaco.data.sync.JournalBackup.ImportPhase` fully-qualified — match it).
 - Match surrounding code style (comment density, naming, idiom).
-- For new user-facing strings, add the key to **all 11 locales** — use the `bulk-localize-strings`
-  skill (don't leave non-English locales missing the key).
+- **New user-facing strings → delegate to a subagent.** Decide the key name and the English value
+  yourself (that's the judgment part), then spawn a subagent to add the key across **all 11 locales**
+  via the `bulk-localize-strings` skill. Instruct it to return only "done" or the specific failure —
+  the 11 locale diffs stay out of this context. Do NOT edit the locale files inline here.
 
-### 4. Build
-Run a build to prove it compiles (see `build-env` memory — `gradlew` needs JAVA_HOME set to the
-Android Studio JBR):
-```powershell
-$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"; .\gradlew assembleDebug 2>&1 | Select-String "BUILD SUCCESSFUL|BUILD FAILED|error:|e: "
-```
+### 4. Build — delegate to a subagent
+Do NOT run gradle in this context; its output balloons the transcript. Spawn a subagent (Agent tool,
+`general-purpose`) with a precise instruction:
+
+> Run this from the repo root and report back ONLY one line — either `BUILD SUCCESSFUL`, or the
+> `error:`/`e:` lines if it failed. Do not paste the full log.
+> ```powershell
+> $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"; .\gradlew assembleDebug 2>&1 | Select-String "BUILD SUCCESSFUL|BUILD FAILED|error:|e: "
+> ```
+
 `compileDebugKotlin` is fine for a faster Kotlin-only check; use `assembleDebug` when resources
-(strings) changed.
+(strings) changed — tell the subagent which. If it returns errors, fix them here (you have the code
+context) and re-delegate the build. One subagent can do both the localize and the build in sequence
+if you're adding strings.
 
 ### 5. Archive + commit
 - Move the brief to `docs/DONE/` (`Move-Item docs\code-brief-*.md docs\DONE\`).
