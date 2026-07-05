@@ -280,7 +280,9 @@ fun JournalListScreen(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .size(40.dp)
-                                .padding(end = 4.dp),
+                                // Matches the list/tag-row gutter below, instead of a fixed 4dp —
+                                // keeps the avatar aligned with content at every screen width.
+                                .padding(end = macacoContentGutter()),
                             contentAlignment = Alignment.Center
                         ) {
                             if (currentUser != null) {
@@ -321,7 +323,8 @@ fun JournalListScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 4.dp),
+                            // Matches the list/tag-row gutter below, instead of a fixed 4dp.
+                            .padding(horizontal = macacoContentGutter()),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Spacer(Modifier.size(40.dp))
@@ -332,7 +335,6 @@ fun JournalListScreen(
                                     model = profilePhotoUri,
                                     contentDescription = stringResource(R.string.common_profile),
                                     modifier = Modifier
-                                        .padding(end = 12.dp)
                                         .size(28.dp)
                                         .clip(CircleShape)
                                         .clickable { onProfile() },
@@ -341,7 +343,6 @@ fun JournalListScreen(
                             } else {
                                 Box(
                                     modifier = Modifier
-                                        .padding(end = 12.dp)
                                         .size(28.dp)
                                         .clip(CircleShape)
                                         .background(Color.White)
@@ -418,7 +419,11 @@ fun JournalListScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.End))
+                    // safeDrawing (not just navigationBars) so BOTH the nav-bar side and the
+                    // front-camera-cutout side get inset — matches the header (line 213) and
+                    // Help & About's default Scaffold insets, so the two screens' content widths
+                    // agree and entries never render behind the cutout.
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                     // Faint teal wash from the top so the page isn't a flat slab behind the cards.
                     .background(
                         Brush.verticalGradient(

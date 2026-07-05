@@ -32,12 +32,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +58,12 @@ fun OnboardingScreen(onComplete: () -> Unit) {
     val pagerState = rememberPagerState(pageCount = { 4 })
     val scope = rememberCoroutineScope()
     val isLastPage = pagerState.currentPage == 3
+    // Short screens (phone landscape) get smaller art + tighter spacing so intro copy has room
+    // once bottomControlsHeightPx below is reserved — otherwise centring across the full height
+    // pushes content down into the dots/button.
+    val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+    val density = LocalDensity.current
+    var bottomControlsHeightPx by remember { mutableIntStateOf(0) }
 
     Box(
         modifier = Modifier
@@ -60,7 +72,14 @@ fun OnboardingScreen(onComplete: () -> Unit) {
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+        HorizontalPager(
+            state = pagerState,
+            // Reserve space for the bottom dots/button (measured below) so centred content never
+            // runs into them — was the direct cause of intro text overlapping "Next" in landscape.
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = with(density) { bottomControlsHeightPx.toDp() })
+        ) { page ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -73,18 +92,18 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                         Image(
                             painter = painterResource(R.drawable.ic_launcher_foreground),
                             contentDescription = null,
-                            modifier = Modifier.size(140.dp)
+                            modifier = Modifier.size(if (isLandscape) 84.dp else 140.dp)
                         )
-                        Spacer(Modifier.height(32.dp))
+                        Spacer(Modifier.height(if (isLandscape) 12.dp else 32.dp))
                         Text(
                             "macaco",
                             color = SplashGoldBright,
-                            fontSize = 40.sp,
+                            fontSize = if (isLandscape) 28.sp else 40.sp,
                             fontWeight = FontWeight.Light,
                             fontFamily = MacacoFontFamily,
                             letterSpacing = 10.sp
                         )
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(if (isLandscape) 6.dp else 12.dp))
                         Text(
                             "Roam Freely. Forget Nothing.",
                             color = SplashGold.copy(alpha = 0.80f),
@@ -98,27 +117,32 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                     1 -> OnboardingSlide(
                         icon = Icons.Outlined.Cloud,
                         title = "Your journal,\nalways with you",
-                        body = "Every memory syncs to the cloud instantly. Write on your phone, relive anywhere."
+                        body = "Every memory syncs to the cloud instantly. Write on your phone, relive anywhere.",
+                        compact = isLandscape
                     )
                     2 -> OnboardingSlide(
                         icon = Icons.Outlined.Shield,
                         title = "Private.\nYours. Forever.",
-                        body = "No ads. No social feed. One purchase — lifetime access, no subscription."
+                        body = "No ads. No social feed. One purchase — lifetime access, no subscription.",
+                        compact = isLandscape
                     )
                     3 -> OnboardingSlide(
                         icon = Icons.Outlined.Explore,
                         title = "Ready to roam?",
-                        body = "Sign in to start capturing your adventures."
+                        body = "Sign in to start capturing your adventures.",
+                        compact = isLandscape
                     )
                 }
             }
         }
 
-        // Bottom controls
+        // Bottom controls — onSizeChanged (placed before the bottom padding in the modifier
+        // chain, so it captures the padding too) feeds bottomControlsHeightPx above.
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 40.dp),
+                .onSizeChanged { bottomControlsHeightPx = it.height }
+                .padding(bottom = if (isLandscape) 16.dp else 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -141,7 +165,7 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                 }
             }
 
-            Spacer(Modifier.height(28.dp))
+            Spacer(Modifier.height(if (isLandscape) 16.dp else 28.dp))
 
             Button(
                 onClick = {
@@ -189,32 +213,32 @@ fun OnboardingScreen(onComplete: () -> Unit) {
 }
 
 @Composable
-private fun OnboardingSlide(icon: ImageVector, title: String, body: String) {
+private fun OnboardingSlide(icon: ImageVector, title: String, body: String, compact: Boolean = false) {
     Icon(
         imageVector = icon,
         contentDescription = null,
         tint = SplashGold,
-        modifier = Modifier.size(88.dp)
+        modifier = Modifier.size(if (compact) 56.dp else 88.dp)
     )
-    Spacer(Modifier.height(32.dp))
+    Spacer(Modifier.height(if (compact) 16.dp else 32.dp))
     Text(
         title,
         color = SplashGoldBright,
-        fontSize = 26.sp,
+        fontSize = if (compact) 20.sp else 26.sp,
         fontWeight = FontWeight.SemiBold,
         fontFamily = MacacoFontFamily,
         textAlign = TextAlign.Center,
-        lineHeight = 34.sp
+        lineHeight = if (compact) 26.sp else 34.sp
     )
-    Spacer(Modifier.height(16.dp))
+    Spacer(Modifier.height(if (compact) 8.dp else 16.dp))
     Text(
         body,
         color = SplashGold.copy(alpha = 0.80f),
-        fontSize = 15.sp,
+        fontSize = if (compact) 13.sp else 15.sp,
         fontWeight = FontWeight.Light,
         fontFamily = MacacoFontFamily,
         textAlign = TextAlign.Center,
-        lineHeight = 22.sp,
+        lineHeight = if (compact) 18.sp else 22.sp,
         letterSpacing = 0.3.sp
     )
 }

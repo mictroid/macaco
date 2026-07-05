@@ -416,12 +416,13 @@ fun MapScreen(
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
           if (isLandscape) {
-            // ── Compact landscape header: icon on its own centred row (matching Journal),
-            //    then wordmark, then title+count. ──
+            // ── Compact landscape header: icon on its own centred row, then a single row
+            //    combining wordmark + title + count + globe hint — matches Journal's two-line
+            //    compact recipe (this used to be 3 lines and visibly ate more of the map). ──
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                    .padding(vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Line 1: icon alone, centred
@@ -430,21 +431,20 @@ fun MapScreen(
                     contentDescription = null,
                     modifier = Modifier.size(48.dp)
                 )
-                // Line 2: "macaco" wordmark
-                Text(
-                    text = "macaco",
-                    color = SplashGoldBright,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Light,
-                    letterSpacing = 3.sp
-                )
-                // Line 3: Adventures title + location count + globe hint
+                // Line 2: wordmark + title + location count + globe hint, all in one row
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.map_adventures_title),
+                        text = "macaco",
+                        color = SplashGoldBright,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
+                        letterSpacing = 3.sp
+                    )
+                    Text(
+                        text = " · " + stringResource(R.string.map_adventures_title),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White.copy(alpha = 0.85f)
                     )

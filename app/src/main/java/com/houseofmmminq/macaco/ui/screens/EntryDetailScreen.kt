@@ -323,24 +323,25 @@ fun EntryDetailScreen(
                         }
                     }
                     Spacer(Modifier.weight(1f))
-                    // Brand block, centred in the leftover space. Wordmark drops on narrow
+                    // Brand block, centred in the leftover space. Icon stacked above the
+                    // wordmark (matches Journal/Map/Help & About's compact-header convention —
+                    // this used to sit inline, the odd one out). Wordmark drops on narrow
                     // screens so it can't collide with the action cluster.
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .offset(y = (-2).dp)
-                    )
-                    if (LocalConfiguration.current.screenWidthDp >= 420) {
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text = "macaco",
-                            color = SplashGoldBright,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 4.sp
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(28.dp)
                         )
+                        if (LocalConfiguration.current.screenWidthDp >= 420) {
+                            Text(
+                                text = "macaco",
+                                color = SplashGoldBright,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Light,
+                                letterSpacing = 3.sp
+                            )
+                        }
                     }
                     Spacer(Modifier.weight(1f))
                     IconButton(onClick = { shareEntry(context, currentEntry, cachedDrivePhotos) }, modifier = Modifier.size(40.dp)) {
