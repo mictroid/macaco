@@ -1,3 +1,4 @@
 What's new:
 • Tablet landscape now fills the full screen width — no more wide empty margins beside your journal and Help pages
 • Fixed the "New Entry" button being partly hidden behind the navigation bar in landscape
+• Date picker no longer lets you switch into the broken calendar grid in landscape — it stays on the tidy month/day/year fields
