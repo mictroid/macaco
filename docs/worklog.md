@@ -2,6 +2,16 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-05 — vc61 (1.6, closed testing)
+
+- **vc61 / 1.6 — DISPATCHED** 2026-07-05 (WIF run `28748681635`, bump commit `9a0dd11`, impl commits
+  `f53eff8`/`8c346c8`; not yet confirmed). 3-fix landscape batch: `content-width-landscape` (tablet
+  landscape skips the 840dp gutter cap on `smallestScreenWidthDp >= 600`; "New Entry" FAB gets a
+  `safeDrawing` inset so it clears the A53 side nav) + `datepicker-landscape-v2` (DatePicker
+  `showModeToggle` locked to `!isDatePickerLandscape` for the picker's whole lifetime, not just its
+  initial mode). Both briefs verified vs live source, no deviations, moved to `docs/DONE/`. Not yet
+  on-device verified. Detail in `worklog-2026-07-05.md`.
+
 ## 2026-07-05 — vc60 (1.6, closed testing)
 
 - **vc60 / 1.6 — SHIPPED (✅ confirmed) 2026-07-05 17:37 +02:00** (WIF run `28745924842`, bump commit
