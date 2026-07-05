@@ -2,6 +2,41 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-04 → 07-05 — vc55–vc59 rollup (1.6, closed testing)
+
+Condensed summary of five version bumps that only got *dated* worklog entries at the time (the rolling
+log was skipped). Full detail — commits, run IDs, deviations, on-device verification — is in
+`worklog-2026-07-04.md` (vc55–58) and `worklog-2026-07-05.md` (vc59). Newest first:
+
+- **vc59 / 1.6 — DISPATCHED 2026-07-05** (WIF run `28739282883`, bump commit `93d5817`). Landscape/tablet
+  layout batch: the **landscape-layout-consistency** brief (7 changes, `5b10e65` — shared 840dp content
+  gutter `macacoContentGutter()`, horizontal safe-drawing insets fixing the A53 side-nav, slim
+  collapsing brand headers on Journal/Help/Entry Detail) plus on-device **header refinements** (`6fa8d2f`
+  + icon-size fix — unified landscape brand headers with the icon on its own centred row across
+  Journal/Help/Adventures, collapsed→centred-icon-only at full size, Profile back-arrow removed).
+  A53-verified except the final at-rest icon-size bump (shipped without verify at user's request).
+- **vc58 / 1.6 — SHIPPED (✅ confirmed)** 2026-07-04 (run `28720023922`, `2fd2691`). UI-polish batch, 3
+  briefs (`061411f`): **journal-header-icon-size** (collapsed brand → side-by-side row, shorter bar),
+  **paywall-background** (PurchaseScreen paints its own `SplashTealEdge` backdrop so light-mode copy is
+  readable), **profile-portrait-padding v3** (single-column Profile for every size/orientation — deleted
+  the ~355-line landscape two-pane branch; Photos stat → **Media** counting videos, +1 locale key ×11).
+- **vc57 / 1.6 — SHIPPED (dispatched)** 2026-07-04 (run `28713363830`, `90c3add`). Video batch (3 briefs,
+  `20471e2`, all A53-verified): **media-buttons-front** (+Photo/+Video pinned first in the media row),
+  **video-transcode-error** (`trimWithMuxer()` mux-copy fallback for trims that fail re-encode on
+  A53 HEVC / S8+ muxer), **entry-detail-video-add** (the "+" tile opens a Photo/Video chooser; shared
+  `VideoTrimDialog.kt`). Plus **profile-single-column** `74d622d` (tablets in every orientation get the
+  redesign; two-pane trigger narrowed to `screenHeightDp < 480`).
+- **vc56 / 1.6 — SHIPPED (✅ confirmed)** 2026-07-04 (run `28712094107`, `c5783d4`). UX chain (5 briefs):
+  first-run-funnel (soft 3-entry paywall gate), journal-list-navigation, touch-targets-a11y,
+  theme-chrome-policy, landscape-compact-header — plus the **Profile portrait redesign** `15a163c` (user
+  request: branded footer removed, 2-column action grid, tighter identity/stats — fits without scrolling
+  on the A53). On-device verify owed only for the soft paywall (needs a non-premium account).
+- **vc55 / 1.6 — SHIPPED (✅ confirmed)** 2026-07-04 (run `28703462176`, `50a2084`). The vc54-video-QA
+  sweep: 9 Fable-QA briefs (V1–V12), all verified vs live source, committed to master together and
+  shipped in one bump (the "3 ships by risk" split was staged-rollout planning, not separate builds).
+  First `READ_MEDIA_VIDEO` release since the vc54 Play declaration — **confirmed the declaration
+  persists**, `publishReleaseBundle` committed with no 403.
+
 ## 2026-07-04 — vc54 PUBLISHED; Play photo/video permissions declaration unblocked
 
 vc54 (video feature go-live) was dispatched 2026-07-03 but the run (`28685107862`) **failed at the
