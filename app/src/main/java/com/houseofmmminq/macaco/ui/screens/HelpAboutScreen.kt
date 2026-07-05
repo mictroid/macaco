@@ -1,9 +1,6 @@
 package com.houseofmmminq.macaco.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +13,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -154,62 +150,32 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                     .background(macacoBrandBackground())
                     .statusBarsPadding()
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                    .animateContentSize()
             ) {
-                AnimatedVisibility(
-                    visible = !(isLandscape && collapsed),
-                    enter = expandVertically(),
-                    exit = shrinkVertically()
-                ) {
-                    Box(modifier = Modifier.fillMaxWidth().animateContentSize()) {
-                        if (isLandscape || collapsed) {
-                            // ── Compact: back start, brand centred, 40dp trailing anchor ──
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = stringResource(R.string.common_back),
-                                        tint = Color.White
-                                    )
-                                }
-                                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Image(
-                                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .size(32.dp)
-                                                .offset(y = (-2).dp)
-                                        )
-                                        Spacer(Modifier.width(6.dp))
-                                        Text(
-                                            text = "macaco",
-                                            color = SplashGoldBright,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Light,
-                                            letterSpacing = 4.sp
-                                        )
-                                        Text(
-                                            text = " · " + stringResource(R.string.help_title),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = SplashGold.copy(alpha = 0.7f),
-                                            maxLines = 1
-                                        )
-                                    }
-                                }
-                                Spacer(Modifier.size(40.dp))   // symmetric trailing anchor
-                            }
-                        } else {
-                            // ── Expanded: back rides the top edge, brand block centred ──
+                when {
+                    collapsed -> {
+                        // ── Collapsed (any orientation): slim bar, the macaco icon centred in
+                        //    the brand fade — no wordmark. Icon keeps its full (uncollapsed)
+                        //    size; a bottom padding nudges it up toward the fade's centre. ──
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher_foreground),
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp)
+                            )
+                        }
+                    }
+                    isLandscape -> {
+                        // ── Landscape at rest: icon on its own centred row (matching Adventures
+                        //    & the portrait block), wordmark + page label beneath it; back rides
+                        //    the top-start corner. ──
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             IconButton(
                                 onClick = onBack,
-                                modifier = Modifier
-                                    .align(Alignment.TopStart)
-                                    .padding(4.dp)
+                                modifier = Modifier.align(Alignment.TopStart).size(40.dp)
                             ) {
                                 Icon(
                                     Icons.AutoMirrored.Filled.ArrowBack,
@@ -220,39 +186,82 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 12.dp, bottom = 16.dp),
+                                    .padding(vertical = 4.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Image(
                                     painter = painterResource(R.drawable.ic_launcher_foreground),
                                     contentDescription = null,
-                                    modifier = Modifier.size(64.dp)
+                                    modifier = Modifier.size(32.dp)
                                 )
-                                Column(
-                                    modifier = Modifier.offset(y = (-10).dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = "macaco",
                                         color = SplashGoldBright,
-                                        fontSize = 22.sp,
+                                        fontSize = 16.sp,
                                         fontWeight = FontWeight.Light,
-                                        letterSpacing = 6.sp
+                                        letterSpacing = 4.sp
                                     )
                                     Text(
-                                        text = "Roam Freely. Forget Nothing.",
-                                        color = SplashGold.copy(alpha = 0.82f),
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Light,
-                                        letterSpacing = 1.sp
-                                    )
-                                    Spacer(Modifier.size(4.dp))
-                                    Text(
-                                        stringResource(R.string.settings_version_value, versionLabel),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = Color.White.copy(alpha = 0.8f)
+                                        text = " · " + stringResource(R.string.help_title),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = SplashGold.copy(alpha = 0.7f),
+                                        maxLines = 1
                                     )
                                 }
+                            }
+                        }
+                    }
+                    else -> {
+                        // ── Portrait at rest: full expanded brand block. ──
+                        IconButton(
+                            onClick = onBack,
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(4.dp)
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.common_back),
+                                tint = Color.White
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp, bottom = 16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher_foreground),
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp)
+                            )
+                            // No pull-up here: the icon stands alone on its own row with clear
+                            // space above the wordmark.
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "macaco",
+                                    color = SplashGoldBright,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Light,
+                                    letterSpacing = 6.sp
+                                )
+                                Text(
+                                    text = "Roam Freely. Forget Nothing.",
+                                    color = SplashGold.copy(alpha = 0.82f),
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Light,
+                                    letterSpacing = 1.sp
+                                )
+                                Spacer(Modifier.size(4.dp))
+                                Text(
+                                    stringResource(R.string.settings_version_value, versionLabel),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.White.copy(alpha = 0.8f)
+                                )
                             }
                         }
                     }

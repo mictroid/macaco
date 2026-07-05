@@ -33,7 +33,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
@@ -97,7 +96,6 @@ import com.houseofmmminq.macaco.util.ImageStorage
 @Composable
 fun ProfileScreen(
     viewModel: JournalViewModel,
-    onBack: () -> Unit,
     onSignOut: () -> Unit,
     onLogin: () -> Unit,
     onSubscription: () -> Unit,
@@ -325,18 +323,8 @@ fun ProfileScreen(
                     .background(macacoBrandBackground())
                     .statusBarsPadding()
             ) {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(4.dp)
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.common_back),
-                        tint = Color.White
-                    )
-                }
+                // Profile is a bottom-nav tab (reached via the nav bar), so a back arrow here
+                // is redundant — the brand block stands alone, centred.
                 Column(
                     modifier = Modifier
                         .align(Alignment.Center)

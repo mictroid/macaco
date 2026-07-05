@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -410,37 +411,34 @@ fun MapScreen(
                 .fillMaxWidth()
                 .background(macacoBrandBackground())
                 .statusBarsPadding()
+                // Match the page content's horizontal insets (side nav bar / cutout) so the
+                // centred brand block stays centred with the rest of the page in landscape.
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
           if (isLandscape) {
-            // ── Compact landscape header: two-line Column (icon+wordmark / title+count) ──
+            // ── Compact landscape header: icon on its own centred row (matching Journal),
+            //    then wordmark, then title+count. ──
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Line 1: icon + "macaco" wordmark
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(18.dp)
-                            .offset(y = (-1).dp)
-                    )
-                    Spacer(Modifier.width(5.dp))
-                    Text(
-                        text = "macaco",
-                        color = SplashGoldBright,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 3.sp
-                    )
-                }
-                // Line 2: Adventures title + location count + globe hint
+                // Line 1: icon alone, centred
+                Image(
+                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp)
+                )
+                // Line 2: "macaco" wordmark
+                Text(
+                    text = "macaco",
+                    color = SplashGoldBright,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Light,
+                    letterSpacing = 3.sp
+                )
+                // Line 3: Adventures title + location count + globe hint
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
@@ -482,7 +480,7 @@ fun MapScreen(
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = null,
-                    modifier = Modifier.size(44.dp).offset(y = 4.dp)
+                    modifier = Modifier.size(48.dp)
                 )
                 Text(
                     text = "macaco",

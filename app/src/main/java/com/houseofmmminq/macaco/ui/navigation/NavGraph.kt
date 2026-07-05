@@ -311,7 +311,6 @@ fun NavGraph(
                 composable(Screen.Profile.route) {
                     ProfileScreen(
                         viewModel = viewModel,
-                        onBack = { navController.popBackStack() },
                         // On sign-out currentUser becomes null, NavGraph auto-shows LoginScreen
                         onSignOut = { navController.popBackStack() },
                         onLogin = {

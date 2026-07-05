@@ -1,10 +1,7 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import android.content.Intent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -214,48 +211,49 @@ fun JournalListScreen(
                         .background(macacoBrandBackground())
                         .statusBarsPadding()
                         .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                        .animateContentSize()
                 ) {
-                  // Landscape: the compact row scrolls away entirely (the brand strip behind the
-                  // status bar stays). Portrait keeps the tall→compact collapse.
-                  AnimatedVisibility(
-                      visible = !(isLandscape && collapsed),
-                      enter = expandVertically(),
-                      exit = shrinkVertically()
-                  ) {
+                  // Collapsed (any orientation): the header reduces to a slim bar with just
+                  // the macaco icon centred in the brand fade (the brand strip behind the
+                  // status bar also stays). Not collapsed: portrait tall block / landscape
+                  // compact row.
+                  if (collapsed) {
+                    // Icon keeps its full (uncollapsed) size; a bottom padding nudges it up so
+                    // it falls nearer the centre of the brand fade.
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+                  } else {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = if (isLandscape || collapsed) 0.dp else 4.dp)
+                            .padding(bottom = if (isLandscape) 0.dp else 4.dp)
                             .animateContentSize()
                     ) {
-                      if (isLandscape || collapsed) {
-                    // ── Compact header: single slim row, brand content centred ──
-                    // A fixed 40dp leading spacer (matching the trailing avatar anchor) keeps the
-                    // centred brand block symmetric now that the hamburger is gone.
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 4.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Spacer(Modifier.size(40.dp))
-
-                        Box(
-                            modifier = Modifier.weight(1f),
-                            contentAlignment = Alignment.Center
+                      if (isLandscape) {
+                    // ── Compact landscape header: icon on its own centred row (matching
+                    // Adventures & the portrait block), wordmark + count beneath it, avatar
+                    // anchored to the top-end corner so Profile stays reachable. ──
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(32.dp)
-                                        .offset(y = (-2).dp)   // optical: adaptive icon sits low
-                                )
-                                Spacer(Modifier.width(6.dp))
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher_foreground),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = "macaco",
                                     color = SplashGoldBright,
@@ -278,10 +276,9 @@ fun JournalListScreen(
                             }
                         }
 
-                        // Right anchor: 40dp-wide Box matches the hamburger width so the centre
-                        // stays symmetric even when no avatar is present.
                         Box(
                             modifier = Modifier
+                                .align(Alignment.TopEnd)
                                 .size(40.dp)
                                 .padding(end = 4.dp),
                             contentAlignment = Alignment.Center
@@ -731,7 +728,9 @@ private fun EntryCard(
             )
 
             Column(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                // Horizontal padding matches Help & About's cards (gutter + 16dp) so the two
+                // list screens' content lines up on the left.
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Row(
@@ -1105,7 +1104,7 @@ private fun MonthHeader(month: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 6.dp, bottom = 2.dp),
+            .padding(top = 6.dp, bottom = 2.dp, start = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
