@@ -520,7 +520,15 @@ fun NewEditEntryScreen(
             },
             colors = pickerColors
         ) {
-            DatePicker(state = datePickerState, colors = pickerColors)
+            DatePicker(
+                state = datePickerState,
+                colors = pickerColors,
+                // Hide the mode-toggle icon in landscape/short screens: the M3 calendar grid
+                // overflows there (this is the v1 fix's initialDisplayMode = Input), but without
+                // this the toggle icon still lets the user switch back into the broken grid.
+                // Portrait is unaffected — toggle stays available, both modes still reachable.
+                showModeToggle = !isDatePickerLandscape
+            )
         }
     }
 
