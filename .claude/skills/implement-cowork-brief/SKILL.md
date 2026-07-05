@@ -116,7 +116,9 @@ if you're adding strings.
 
 ### 6. Update the durable record
 Per the `worklog-on-change` convention, update the dated worklog (`docs/worklog-YYYY-MM-DD.md`), the
-briefs ledger, and the `current-state` memory — note each brief, file(s), and any deviation.
+briefs ledger, and the `current-state` memory — note each brief, file(s), and any deviation. Then run
+the `sync-cowork-status` skill so the cheap-subagent reconciler confirms the archived brief + worklog +
+push all agree and the rolling `docs/worklog.md` isn't left behind.
 
 ## Shipping
 Implementing a brief does **not** publish it. If the user wants it released, use the `ship-to-play`

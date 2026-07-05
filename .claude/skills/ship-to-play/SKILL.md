@@ -70,6 +70,10 @@ memory). Record the **local dispatch time** you printed above plus the run ID.
   (`https://github.com/mictroid/macaco/actions/runs/<run-id>`).
 - Update the dated worklog (`docs/worklog-YYYY-MM-DD.md`) and the `current-state` memory with: HEAD SHA,
   "origin == HEAD verified", run ID, dispatch timestamp, and the batch contents. Commit + push that.
+- **Roll the new versionCode into the *rolling* summary too.** Invoke the `sync-cowork-status` skill so
+  the cheap-subagent reconciler folds a line for this vc into `docs/worklog.md` (updating only the dated
+  worklog is exactly the leak that made Cowork stop at vc54 while vc55–59 had shipped). Fold its commit
+  into this same push per `batch-doc-pushes`.
 - State plainly that the run is **dispatched, not confirmed** — it can be checked later with
   `gh run list` (builds typically take ~6 min). Do not block waiting for it.
 
