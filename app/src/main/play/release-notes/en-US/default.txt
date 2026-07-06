@@ -1,4 +1,5 @@
 What's new:
-• Tablet landscape now fills the full screen width — no more wide empty margins beside your journal and Help pages
-• Fixed the "New Entry" button being partly hidden behind the navigation bar in landscape
-• Date picker no longer lets you switch into the broken calendar grid in landscape — it stays on the tidy month/day/year fields
+• The "macaco" header now looks identical on every screen — same monkey icon and wordmark on Journal, Adventures, Profile, Settings and Help
+• Journal and Help now fill the full screen width in landscape on phones too, not just tablets
+• Your Profile header tidies down to just the icon as you scroll
+• The Adventures map header shrinks out of the way the moment you start panning or zooming, giving you more map
