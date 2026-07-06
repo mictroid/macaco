@@ -2,6 +2,18 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-06 — header/layout bug-fix batch (implemented, not yet shipped)
+
+- **2 Cowork briefs, 5 fixes — commit `ef52c22`, NOT yet version-bumped/dispatched.** All verified vs
+  live source first, no deviations, `assembleDebug` clean. `profile-map-header-fixes`: ProfileScreen
+  avatar/wordmark overlap in landscape (offset now tracks `bannerBottomPadding` not hardcoded -32dp);
+  JournalList portrait "X memories" count missing (bare trailing lambda bound to `landscapeTrailing` →
+  named `portraitTrailing =`); Map header collapsing on open (arm pan-detection after `cameraPositioned`
+  + 400ms settle). `settings-profile-tablet-fixes`: SettingsClickRow opt-in `stackedValue` layout for
+  App Permissions (title no longer wraps mid-word); Profile action tiles 1 row of 6 on tablet landscape
+  (`isWideLayout`) so Delete Account fits without scrolling. Both briefs → `docs/DONE/`. Detail in
+  `worklog-2026-07-06.md`.
+
 ## 2026-07-06 — vc62 (1.6, closed testing)
 
 - **vc62 / 1.6 — SHIPPED ✅ 2026-07-06** (WIF run `28783329685` CONFIRMED SUCCESS ~6m9s, bump commit
