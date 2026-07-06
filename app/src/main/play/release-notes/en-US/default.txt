@@ -1,5 +1,6 @@
 What's new:
-• The "macaco" header now looks identical on every screen — same monkey icon and wordmark on Journal, Adventures, Profile, Settings and Help
-• Journal and Help now fill the full screen width in landscape on phones too, not just tablets
-• Your Profile header tidies down to just the icon as you scroll
-• The Adventures map header shrinks out of the way the moment you start panning or zooming, giving you more map
+• Fixed the Profile header in landscape so your photo no longer overlaps the "macaco" wordmark
+• Your journal now shows the "X memories" count in portrait, not just landscape
+• The Adventures map header stays put when you open the screen and only tidies away once you start exploring
+• Settings "App Permissions" title no longer breaks awkwardly across lines
+• On tablets in landscape, Delete Account is now visible without scrolling
