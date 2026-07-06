@@ -338,20 +338,21 @@ fun JournalListScreen(
 
                     MacacoBrandBlock(
                         isLandscape = false,
-                        modifier = Modifier.align(Alignment.TopCenter)
-                    ) {
-                        // Slogan removed from this daily-open surface; it stays on the
-                        // splash/login/purchase screens (the persuasion moments).
-                        if (entries.isNotEmpty()) {
-                            val count = visibleEntries.size
-                            val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
-                            Text(
-                                memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = SplashGold.copy(alpha = 0.8f)
-                            )
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        portraitTrailing = {
+                            // Slogan removed from this daily-open surface; it stays on the
+                            // splash/login/purchase screens (the persuasion moments).
+                            if (entries.isNotEmpty()) {
+                                val count = visibleEntries.size
+                                val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
+                                Text(
+                                    memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = SplashGold.copy(alpha = 0.8f)
+                                )
+                            }
                         }
-                    }
+                    )
                   }
                     }
                   }

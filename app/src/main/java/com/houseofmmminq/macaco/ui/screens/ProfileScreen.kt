@@ -325,6 +325,10 @@ fun ProfileScreen(
             // (stats + settings buttons) overflows the screen; inert (never true) when everything fits,
             // which today means portrait on a typical phone.
             val collapsed by remember { derivedStateOf { profileScrollState.value > 24 } }
+            // Single source of truth for the banner's bottom clearance — reused below for the content
+            // pull-up offset so the two can never drift out of sync (that drift was the landscape/collapsed
+            // overlap bug: offset was hardcoded to -32dp while this value could be as low as 8dp).
+            val bannerBottomPadding = if (collapsed) 8.dp else if (isLandscape) 12.dp else 32.dp
             // Branded banner: splash teal radial with the gold "macaco" wordmark.
             // The avatar below overlaps its bottom edge.
             Box(
@@ -342,18 +346,17 @@ fun ProfileScreen(
                     collapsed = collapsed,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .padding(
-                            top = 4.dp,
-                            bottom = if (collapsed) 8.dp else if (isLandscape) 12.dp else 32.dp
-                        )
+                        .padding(top = 4.dp, bottom = bannerBottomPadding)
                 )
             }
 
-            // Content pulled up so the avatar overlaps the banner's bottom edge.
+            // Content pulled up so the avatar overlaps the banner's bottom edge — offset now tracks
+            // bannerBottomPadding instead of a hardcoded -32dp, so it can never pull the avatar further up
+            // than the banner actually reserved (which was landing it on top of the wordmark in landscape).
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(y = (-32).dp)
+                    .offset(y = -bannerBottomPadding)
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -552,60 +555,66 @@ fun ProfileScreen(
             val user = currentUser
             if (user != null) {
                 val gridSpacing = 6.dp
+                // Tablets stay single-column even in landscape (see code-brief-profile-single-column.md — the
+                // old 2-pane layout looked cramped), but that column was sized for tall/narrow phone screens.
+                // On a tablet in landscape the available height is comparatively short, so the 3-row action
+                // grid below was forcing the whole screen to scroll just to reach Delete Account. Reclaim the
+                // space by using the tablet's spare width instead: one row of 6 tiles rather than 3 rows of 2.
+                val isWideLayout = LocalConfiguration.current.screenWidthDp >= 600 &&
+                    LocalConfiguration.current.screenWidthDp > LocalConfiguration.current.screenHeightDp
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .widthIn(max = 560.dp)
+                        .widthIn(max = if (isWideLayout) 760.dp else 560.dp)
                         .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                         .padding(horizontal = 24.dp)
                         .padding(top = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(gridSpacing)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(gridSpacing),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        ProfileActionTile(
-                            Icons.Filled.Settings,
-                            stringResource(R.string.common_settings),
-                            onClick = onSettings
-                        )
-                        ProfileActionTile(
-                            Icons.AutoMirrored.Filled.HelpOutline,
-                            stringResource(R.string.drawer_help),
-                            onClick = onHelp
-                        )
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(gridSpacing),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        ProfileActionTile(
-                            Icons.Filled.Share,
-                            stringResource(R.string.drawer_share_app),
-                            onClick = { AppActions.shareApp(context, entries.size) }
-                        )
-                        ProfileActionTile(
-                            Icons.Filled.StarRate,
-                            stringResource(R.string.drawer_rate_us),
-                            onClick = { AppActions.requestReview(context) }
-                        )
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(gridSpacing),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        ProfileActionTile(
-                            Icons.Outlined.WorkspacePremium,
-                            stringResource(R.string.common_subscription),
-                            onClick = onSubscription
-                        )
-                        ProfileActionTile(
-                            Icons.AutoMirrored.Filled.Logout,
-                            stringResource(R.string.common_sign_out),
-                            tint = MaterialTheme.colorScheme.error,
-                            onClick = { showSignOutDialog = true }
-                        )
+                    if (isWideLayout) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            ProfileActionTile(Icons.Filled.Settings, stringResource(R.string.common_settings), onClick = onSettings)
+                            ProfileActionTile(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.drawer_help), onClick = onHelp)
+                            ProfileActionTile(Icons.Filled.Share, stringResource(R.string.drawer_share_app), onClick = { AppActions.shareApp(context, entries.size) })
+                            ProfileActionTile(Icons.Filled.StarRate, stringResource(R.string.drawer_rate_us), onClick = { AppActions.requestReview(context) })
+                            ProfileActionTile(Icons.Outlined.WorkspacePremium, stringResource(R.string.common_subscription), onClick = onSubscription)
+                            ProfileActionTile(
+                                Icons.AutoMirrored.Filled.Logout,
+                                stringResource(R.string.common_sign_out),
+                                tint = MaterialTheme.colorScheme.error,
+                                onClick = { showSignOutDialog = true }
+                            )
+                        }
+                    } else {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            ProfileActionTile(Icons.Filled.Settings, stringResource(R.string.common_settings), onClick = onSettings)
+                            ProfileActionTile(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.drawer_help), onClick = onHelp)
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            ProfileActionTile(Icons.Filled.Share, stringResource(R.string.drawer_share_app), onClick = { AppActions.shareApp(context, entries.size) })
+                            ProfileActionTile(Icons.Filled.StarRate, stringResource(R.string.drawer_rate_us), onClick = { AppActions.requestReview(context) })
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            ProfileActionTile(Icons.Outlined.WorkspacePremium, stringResource(R.string.common_subscription), onClick = onSubscription)
+                            ProfileActionTile(
+                                Icons.AutoMirrored.Filled.Logout,
+                                stringResource(R.string.common_sign_out),
+                                tint = MaterialTheme.colorScheme.error,
+                                onClick = { showSignOutDialog = true }
+                            )
+                        }
                     }
                 }
                 // GDPR/Play-required in-app account deletion — de-emphasised full-width text

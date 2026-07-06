@@ -409,13 +409,25 @@ fun MapScreen(
         // collapse it to a single slim row. Tablets stay tall (~750dp+) and keep the full header.
         val isLandscape = LocalConfiguration.current.screenHeightDp < 480
 
+        // The initial "fit all pins" camera move (and, for globe-spanning sets, the follow-up
+        // re-center move) also toggles cameraPositionState.isMoving — without this guard the header
+        // below latches collapsed the instant that auto-fit happens, before the user ever touches the
+        // map. Arm user-gesture detection only after the auto-fit has had time to fully settle.
+        var readyToDetectUserPan by remember { mutableStateOf(false) }
+        LaunchedEffect(cameraPositioned) {
+            if (cameraPositioned) {
+                delay(400) // lets any auto-fit isMoving pulse (incl. the globe-spanning re-center) finish
+                readyToDetectUserPan = true
+            }
+        }
+
         // Once the user starts panning/zooming, collapse the header down to the icon and keep it
         // that way for the rest of this visit to the screen — maximizes map space during active
         // exploration, in either orientation. Latched (not live-bound to isMoving) so the header
         // doesn't pop back open every time a drag settles between pans.
         var hasMovedMap by remember { mutableStateOf(false) }
         LaunchedEffect(cameraPositionState.isMoving) {
-            if (cameraPositionState.isMoving) hasMovedMap = true
+            if (cameraPositionState.isMoving && readyToDetectUserPan) hasMovedMap = true
         }
 
         Box(
