@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
+import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.ui.theme.macacoContentGutter
 import com.houseofmmminq.macaco.util.AppActions
 
@@ -155,18 +156,8 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                 when {
                     collapsed -> {
                         // ── Collapsed (any orientation): slim bar, the macaco icon centred in
-                        //    the brand fade — no wordmark. Icon keeps its full (uncollapsed)
-                        //    size; a bottom padding nudges it up toward the fade's centre. ──
-                        Box(
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_launcher_foreground),
-                                contentDescription = null,
-                                modifier = Modifier.size(64.dp)
-                            )
-                        }
+                        //    the brand fade — no wordmark. ──
+                        MacacoBrandBlock(isLandscape = isLandscape, collapsed = true)
                     }
                     isLandscape -> {
                         // ── Landscape at rest: icon on its own centred row (matching Adventures
@@ -183,32 +174,16 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                                     tint = Color.White
                                 )
                             }
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                            MacacoBrandBlock(
+                                isLandscape = true,
+                                modifier = Modifier.padding(vertical = 4.dp)
                             ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(64.dp)
+                                Text(
+                                    text = " · " + stringResource(R.string.help_title),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = SplashGold.copy(alpha = 0.7f),
+                                    maxLines = 1
                                 )
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = "macaco",
-                                        color = SplashGoldBright,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Light,
-                                        letterSpacing = 4.sp
-                                    )
-                                    Text(
-                                        text = " · " + stringResource(R.string.help_title),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = SplashGold.copy(alpha = 0.7f),
-                                        maxLines = 1
-                                    )
-                                }
                             }
                         }
                     }
@@ -226,43 +201,23 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                                 tint = Color.White
                             )
                         }
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 12.dp, bottom = 16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        MacacoBrandBlock(
+                            isLandscape = false,
+                            modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_launcher_foreground),
-                                contentDescription = null,
-                                modifier = Modifier.size(64.dp)
+                            Text(
+                                text = "Roam Freely. Forget Nothing.",
+                                color = SplashGold.copy(alpha = 0.82f),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Light,
+                                letterSpacing = 1.sp
                             )
-                            // No pull-up here: the icon stands alone on its own row with clear
-                            // space above the wordmark.
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = "macaco",
-                                    color = SplashGoldBright,
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Light,
-                                    letterSpacing = 6.sp
-                                )
-                                Text(
-                                    text = "Roam Freely. Forget Nothing.",
-                                    color = SplashGold.copy(alpha = 0.82f),
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Light,
-                                    letterSpacing = 1.sp
-                                )
-                                Spacer(Modifier.size(4.dp))
-                                Text(
-                                    stringResource(R.string.settings_version_value, versionLabel),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
-                            }
+                            Spacer(Modifier.size(4.dp))
+                            Text(
+                                stringResource(R.string.settings_version_value, versionLabel),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
                         }
                     }
                 }

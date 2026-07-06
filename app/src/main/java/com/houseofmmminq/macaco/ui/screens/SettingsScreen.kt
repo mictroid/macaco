@@ -100,6 +100,7 @@ import coil.compose.AsyncImage
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.houseofmmminq.macaco.R
+import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.data.auth.FirebaseConfig
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.ui.screens.isBiometricAvailable
@@ -377,29 +378,15 @@ fun SettingsScreen(
                                 tint = Color.White
                             )
                         }
-                        Column(
-                            modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        MacacoBrandBlock(
+                            isLandscape = true,
+                            modifier = Modifier.align(Alignment.Center)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_launcher_foreground),
-                                contentDescription = null,
-                                modifier = Modifier.size(22.dp)
+                            Text(
+                                text = " · " + stringResource(R.string.common_settings),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White.copy(alpha = 0.85f)
                             )
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = "macaco",
-                                    color = SplashGoldBright,
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Light,
-                                    letterSpacing = 3.sp
-                                )
-                                Text(
-                                    text = " · " + stringResource(R.string.common_settings),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = Color.White.copy(alpha = 0.85f)
-                                )
-                            }
                         }
                     }
                 } else {
@@ -415,25 +402,12 @@ fun SettingsScreen(
                             tint = Color.White
                         )
                     }
-                    Column(
+                    MacacoBrandBlock(
+                        isLandscape = false,
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .fillMaxWidth()
-                            .padding(top = 2.dp, bottom = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .padding(top = 2.dp, bottom = 10.dp)
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier.size(44.dp).offset(y = 4.dp)
-                        )
-                        Text(
-                            text = "macaco",
-                            color = SplashGoldBright,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Light,
-                            letterSpacing = 5.sp
-                        )
                         Text(
                             stringResource(R.string.common_settings),
                             style = MaterialTheme.typography.labelMedium,

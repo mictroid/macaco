@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
@@ -74,6 +75,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.houseofmmminq.macaco.R
+import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.ui.theme.MacacoFontFamily
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
@@ -406,6 +408,16 @@ fun MapScreen(
         // In landscape on phones (short screen) the tall centered brand block eats ~120dp of map;
         // collapse it to a single slim row. Tablets stay tall (~750dp+) and keep the full header.
         val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+
+        // Once the user starts panning/zooming, collapse the header down to the icon and keep it
+        // that way for the rest of this visit to the screen — maximizes map space during active
+        // exploration, in either orientation. Latched (not live-bound to isMoving) so the header
+        // doesn't pop back open every time a drag settles between pans.
+        var hasMovedMap by remember { mutableStateOf(false) }
+        LaunchedEffect(cameraPositionState.isMoving) {
+            if (cameraPositionState.isMoving) hasMovedMap = true
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -414,35 +426,18 @@ fun MapScreen(
                 // Match the page content's horizontal insets (side nav bar / cutout) so the
                 // centred brand block stays centred with the rest of the page in landscape.
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                .animateContentSize()
         ) {
-          if (isLandscape) {
-            // ── Compact landscape header: icon on its own centred row, then a single row
-            //    combining wordmark + title + count + globe hint — matches Journal's two-line
-            //    compact recipe (this used to be 3 lines and visibly ate more of the map). ──
-            Column(
+            MacacoBrandBlock(
+                isLandscape = isLandscape,
+                collapsed = hasMovedMap,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Line 1: icon alone, centred
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-                // Line 2: wordmark + title + location count + globe hint, all in one row
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "macaco",
-                        color = SplashGoldBright,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 3.sp
-                    )
+                    .align(Alignment.Center)
+                    .padding(
+                        top = if (isLandscape) 4.dp else 2.dp,
+                        bottom = if (hasMovedMap) 8.dp else if (isLandscape) 4.dp else 10.dp
+                    ),
+                landscapeTrailing = {
                     Text(
                         text = " · " + stringResource(R.string.map_adventures_title),
                         style = MaterialTheme.typography.labelSmall,
@@ -467,55 +462,35 @@ fun MapScreen(
                             letterSpacing = 0.5.sp
                         )
                     }
-                }
-            }
-          } else {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .fillMaxWidth()
-                    .padding(top = 2.dp, bottom = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-                Text(
-                    text = "macaco",
-                    color = SplashGoldBright,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Light,
-                    letterSpacing = 5.sp
-                )
-                Text(
-                    stringResource(R.string.map_adventures_title),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
-                if (locations.isNotEmpty()) {
-                    // geocodedLocations is an append-only cache (never pruned when entries are
-                    // edited/deleted), so its raw size can exceed the current location count —
-                    // count only the overlap with today's unique locations.
-                    val mappedCount = locations.count { it in geocodedLocations }
+                },
+                portraitTrailing = {
                     Text(
-                        stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
-                        color = SplashGold.copy(alpha = 0.70f),
-                        fontSize = 12.sp,
-                        fontFamily = MacacoFontFamily
+                        stringResource(R.string.map_adventures_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White.copy(alpha = 0.85f)
                     )
+                    if (locations.isNotEmpty()) {
+                        // geocodedLocations is an append-only cache (never pruned when entries are
+                        // edited/deleted), so its raw size can exceed the current location count —
+                        // count only the overlap with today's unique locations.
+                        val mappedCount = locations.count { it in geocodedLocations }
+                        Text(
+                            stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
+                            color = SplashGold.copy(alpha = 0.70f),
+                            fontSize = 12.sp,
+                            fontFamily = MacacoFontFamily
+                        )
+                    }
+                    if (globeSpanning) {
+                        Text(
+                            stringResource(R.string.map_globe_spanning_hint),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = SplashGold.copy(alpha = 0.75f),
+                            letterSpacing = 0.5.sp
+                        )
+                    }
                 }
-                if (globeSpanning) {
-                    Text(
-                        stringResource(R.string.map_globe_spanning_hint),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = SplashGold.copy(alpha = 0.75f),
-                        letterSpacing = 0.5.sp
-                    )
-                }
-            }
-          }
+            )
         }
 
         // weight(1f) (not fillMaxSize) so mapSizePx measures the REMAINING height after the header,

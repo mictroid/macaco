@@ -87,6 +87,7 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.onThisDayEntries
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
+import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.ui.components.MacacoSnackbar
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
@@ -220,16 +221,7 @@ fun JournalListScreen(
                   if (collapsed) {
                     // Icon keeps its full (uncollapsed) size; a bottom padding nudges it up so
                     // it falls nearer the centre of the brand fade.
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
+                    MacacoBrandBlock(isLandscape = isLandscape, collapsed = true)
                   } else {
                     Box(
                         modifier = Modifier
@@ -242,37 +234,21 @@ fun JournalListScreen(
                     // Adventures & the portrait block), wordmark + count beneath it, avatar
                     // anchored to the top-end corner so Profile stays reachable. ──
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        MacacoBrandBlock(
+                            isLandscape = true,
+                            modifier = Modifier.padding(vertical = 4.dp)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_launcher_foreground),
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp)
-                            )
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (entries.isNotEmpty()) {
+                                val count = visibleEntries.size
+                                val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
                                 Text(
-                                    text = "macaco",
-                                    color = SplashGoldBright,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Light,
-                                    letterSpacing = 4.sp
+                                    text = " · " + memoriesText +
+                                        if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = SplashGold.copy(alpha = 0.7f),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
-                                if (entries.isNotEmpty()) {
-                                    val count = visibleEntries.size
-                                    val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
-                                    Text(
-                                        text = " · " + memoriesText +
-                                            if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = SplashGold.copy(alpha = 0.7f),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
                             }
                         }
 
@@ -360,41 +336,20 @@ fun JournalListScreen(
                         }
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopCenter),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    MacacoBrandBlock(
+                        isLandscape = false,
+                        modifier = Modifier.align(Alignment.TopCenter)
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp)
-                        )
-                        // Pull the wordmark up into the adaptive icon's bottom padding so it sits
-                        // snug under the monkey, with the splash slogan and count beneath.
-                        Column(
-                            modifier = Modifier.offset(y = (-10).dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                        // Slogan removed from this daily-open surface; it stays on the
+                        // splash/login/purchase screens (the persuasion moments).
+                        if (entries.isNotEmpty()) {
+                            val count = visibleEntries.size
+                            val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
                             Text(
-                                text = "macaco",
-                                color = SplashGoldBright,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Light,
-                                letterSpacing = 3.sp
+                                memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = SplashGold.copy(alpha = 0.8f)
                             )
-                            // Slogan removed from this daily-open surface; it stays on the
-                            // splash/login/purchase screens (the persuasion moments).
-                            if (entries.isNotEmpty()) {
-                                val count = visibleEntries.size
-                                val memoriesText = pluralStringResource(R.plurals.journal_list_memories, count, count)
-                                Text(
-                                    memoriesText + if (selectedTags.isNotEmpty()) " · ${stringResource(R.string.journal_list_filtered)}" else "",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = SplashGold.copy(alpha = 0.8f)
-                                )
-                            }
                         }
                     }
                   }

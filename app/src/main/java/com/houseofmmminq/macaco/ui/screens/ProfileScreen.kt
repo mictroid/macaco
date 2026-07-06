@@ -63,8 +63,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.animation.animateContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,6 +79,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -87,6 +90,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.houseofmmminq.macaco.R
+import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.data.model.AuthProvider
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.util.AppActions
@@ -308,45 +312,41 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+        val profileScrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(profileScrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Branded banner: splash teal radial with the back button and gold "macaco" wordmark.
+            val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+            // Collapses once the page scrolls — currently only reachable in states where the content
+            // (stats + settings buttons) overflows the screen; inert (never true) when everything fits,
+            // which today means portrait on a typical phone.
+            val collapsed by remember { derivedStateOf { profileScrollState.value > 24 } }
+            // Branded banner: splash teal radial with the gold "macaco" wordmark.
             // The avatar below overlaps its bottom edge.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(macacoBrandBackground())
                     .statusBarsPadding()
+                    .animateContentSize()
             ) {
                 // Profile is a bottom-nav tab (reached via the nav bar), so a back arrow here
-                // is redundant — the brand block stands alone, centred.
-                Column(
+                // is redundant — the brand block stands alone, centred. No page-label subtitle,
+                // to match Journal's header exactly.
+                MacacoBrandBlock(
+                    isLandscape = isLandscape,
+                    collapsed = collapsed,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .fillMaxWidth()
-                        .padding(top = 4.dp, bottom = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .offset(y = 4.dp)
-                    )
-                    Text(
-                        text = "macaco",
-                        color = SplashGoldBright,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Light,
-                        letterSpacing = 5.sp
-                    )
-                }
+                        .padding(
+                            top = 4.dp,
+                            bottom = if (collapsed) 8.dp else if (isLandscape) 12.dp else 32.dp
+                        )
+                )
             }
 
             // Content pulled up so the avatar overlaps the banner's bottom edge.
