@@ -4,8 +4,9 @@ Running log of notable work sessions. Newest first.
 
 ## 2026-07-06 — vc62 (1.6, closed testing)
 
-- **vc62 / 1.6 — DISPATCHED 2026-07-06** (WIF run `28783329685`, bump commit `fc44bfe`, impl commit
-  `d9ac9d4`). Not yet confirmed / not on-device verified (user waived verification). Brand-header
+- **vc62 / 1.6 — SHIPPED ✅ 2026-07-06** (WIF run `28783329685` CONFIRMED SUCCESS ~6m9s, bump commit
+  `fc44bfe`, impl commit `d9ac9d4`). Published to closed testing; not on-device verified (user waived
+  verification). Brand-header
   consistency batch (3 briefs): `content-width-landscape-v2` (`macacoContentGutter()` drops the
   tablet-only gate — any landscape, phone or tablet, skips the 840dp cap), `macaco-brand-header-consistency`
   (new shared `MacacoBrandBlock.kt` unifying icon/wordmark sizing across Journal, Map, Profile, Settings,
