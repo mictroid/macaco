@@ -2,9 +2,16 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-07-06 — header/layout bug-fix batch (implemented, not yet shipped)
+## 2026-07-06 — vc63 (1.6, closed testing)
 
-- **2 Cowork briefs, 5 fixes — commit `ef52c22`, NOT yet version-bumped/dispatched.** All verified vs
+- **vc63 / 1.6 — DISPATCHED 2026-07-06** (WIF run `28794549192`, dispatched 15:19:26 +0200, bump commit
+  `8b9187d`, impl commit `ef52c22`). Header/layout bug-fix batch (2 briefs, 5 fixes); origin == HEAD
+  verified before dispatch; NOT yet confirmed, shipped without on-device verify. Detail below +
+  `worklog-2026-07-06.md`.
+
+## 2026-07-06 — header/layout bug-fix batch (shipped in vc63)
+
+- **2 Cowork briefs, 5 fixes — commit `ef52c22`.** All verified vs
   live source first, no deviations, `assembleDebug` clean. `profile-map-header-fixes`: ProfileScreen
   avatar/wordmark overlap in landscape (offset now tracks `bannerBottomPadding` not hardcoded -32dp);
   JournalList portrait "X memories" count missing (bare trailing lambda bound to `landscapeTrailing` →
