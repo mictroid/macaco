@@ -371,8 +371,12 @@ fun MapScreen(
     //
     // Antimeridian note: uses simple -180..+180 longitude comparison. Edge case where the viewport
     // straddles the antimeridian is rare and handled by the globeSpanning logic above.
-    LaunchedEffect(cameraPositionState.position, geocodedLocations, mapSizePx) {
-        if (mapSizePx.width <= 0 || geocodedLocations.isEmpty()) return@LaunchedEffect
+    LaunchedEffect(cameraPositionState.position, geocodedLocations, mapSizePx, cameraPositioned) {
+        // Wait for the real "fit all pins" camera position — otherwise this runs once against the
+        // arbitrary default framing (LatLng(20,0), zoom 2) before the fit-all move happens, and the
+        // chevrons pop into view during the loading scrim instead of only once there's an actual
+        // map to navigate on.
+        if (!cameraPositioned || mapSizePx.width <= 0 || geocodedLocations.isEmpty()) return@LaunchedEffect
 
         val pos = cameraPositionState.position
         val camLng = pos.target.longitude
@@ -435,9 +439,17 @@ fun MapScreen(
                 .fillMaxWidth()
                 .background(macacoBrandBackground())
                 .statusBarsPadding()
-                // Match the page content's horizontal insets (side nav bar / cutout) so the
-                // centred brand block stays centred with the rest of the page in landscape.
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                // Only the EXPANDED header's trailing wordmark/label content extends sideways far
+                // enough to need nav-bar clearance (see docs/DONE/code-brief-map-nav-bar.md). Once
+                // collapsed, the header is just a centred icon with nothing to clip — and the map
+                // below is edge-to-edge with no matching inset — so skip the inset there and centre
+                // on the TRUE screen width instead. Keeping the inset in both states was centring the
+                // collapsed icon on a narrower axis than the full-bleed map behind it, making it look
+                // shifted left of centre.
+                .then(
+                    if (hasMovedMap) Modifier
+                    else Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                )
                 .animateContentSize()
         ) {
             MacacoBrandBlock(
@@ -578,14 +590,18 @@ fun MapScreen(
             // Loading scrim — opaque, so the arbitrary default camera position is never seen.
             // Drops away once the camera has been positioned over the user's places (or the timeout
             // fires). (When there are no locations, the empty-state above covers the map instead.)
+            // Uses the same brand teal as the header (not colorScheme.background) so this reads as
+            // a continuation of the branded header rather than a hard cut to blank white — that cut
+            // was what made the ~1s load feel like a "flash" on navigation (diagnosed from a screen
+            // recording on the A53; see brief intro).
             if (locations.isNotEmpty() && !cameraPositioned && !revealTimedOut) {
                 Box(
                     modifier = Modifier
                         .matchParentSize()
-                        .background(MaterialTheme.colorScheme.background),
+                        .background(macacoBrandBackground()),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    CircularProgressIndicator(color = SplashGoldBright)
                 }
             }
 

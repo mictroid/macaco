@@ -70,6 +70,9 @@ class AdventureReelEncoder(private val context: Context) {
         typeface = android.graphics.Typeface.DEFAULT
     }
     private val logoPaint = Paint().apply { alpha = 38 }       // ~15% opacity
+    // Fully opaque — drawn inside the location pill, whose dark background guarantees contrast
+    // regardless of the photo behind it (unlike the 15%-alpha floating watermark above).
+    private val pillLogoPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { isFilterBitmap = true }
 
     // Raw ARGB matching the app's existing brand tokens (SplashTealMid / SplashGoldBright in
     // ui/screens/SplashScreen.kt) — can't reference a Compose Color from this render context, so
@@ -208,8 +211,9 @@ class AdventureReelEncoder(private val context: Context) {
 
         // ── Main render loop ──────────────────────────────────────────────────────────────────
         val logoBitmap = loadLogoBitmap(sizePx = 48)
-        val outroLogoBitmap = loadLogoBitmap(sizePx = 160)
-        val qrBitmap = loadQrBitmap(targetSizePx = 420)
+        val pillLogoBitmap = loadLogoBitmap(sizePx = 28)
+        val outroLogoBitmap = loadLogoBitmap(sizePx = 140)
+        val qrBitmap = loadQrBitmap(targetSizePx = 360)
         try {
             var prevBitmap: Bitmap? = null
             var framesRendered = 0
@@ -231,7 +235,7 @@ class AdventureReelEncoder(private val context: Context) {
                         postFrame { canvas ->
                             drawKenBurns(canvas, prev, 1f, PHOTO_FRAMES - 1)
                             drawKenBurns(canvas, bitmap, alpha, f)
-                            drawBranding(canvas, logoBitmap, meta.overlayText)
+                            drawBranding(canvas, logoBitmap, pillLogoBitmap, meta.overlayText)
                         }
                         drainEncoder(false)
                         framesRendered++
@@ -250,7 +254,7 @@ class AdventureReelEncoder(private val context: Context) {
                     coroutineContext.ensureActive()
                     postFrame { canvas ->
                         drawKenBurns(canvas, bitmap, 1f, f)
-                        drawBranding(canvas, logoBitmap, meta.overlayText)
+                        drawBranding(canvas, logoBitmap, pillLogoBitmap, meta.overlayText)
                     }
                     drainEncoder(false)
                     framesRendered++
@@ -292,6 +296,7 @@ class AdventureReelEncoder(private val context: Context) {
             drainEncoder(true)
         } finally {
             logoBitmap?.recycle()
+            pillLogoBitmap?.recycle()
             outroLogoBitmap?.recycle()
             qrBitmap?.recycle()
             runCatching { encoder.stop() }
@@ -377,16 +382,18 @@ class AdventureReelEncoder(private val context: Context) {
         canvas.drawColor(OUTRO_BG_COLOR)
 
         outroLogo?.let { logo ->
-            canvas.drawBitmap(logo, (WIDTH - logo.width) / 2f, 260f, outroLogoPaint)
+            canvas.drawBitmap(logo, (WIDTH - logo.width) / 2f, 180f, outroLogoPaint)
         }
-        canvas.drawText("macaco", WIDTH / 2f, 470f, outroTitlePaint)
-        canvas.drawText(context.getString(R.string.reel_outro_tagline), WIDTH / 2f, 508f, outroTaglinePaint)
+        canvas.drawText("macaco", WIDTH / 2f, 380f, outroTitlePaint)
+        canvas.drawText(context.getString(R.string.reel_outro_tagline), WIDTH / 2f, 416f, outroTaglinePaint)
 
+        // Deliberately nothing drawn between here and cardTop below — that gap straddles the frame's
+        // true vertical center (y=640), where paused video players render their own play/pause icon.
         qr?.let { qrBitmap ->
-            val cardPad = 28f
+            val cardPad = 24f
             val cardSize = qrBitmap.width + cardPad * 2
             val cardLeft = (WIDTH - cardSize) / 2f
-            val cardTop = 580f
+            val cardTop = 800f
             canvas.drawRoundRect(
                 android.graphics.RectF(cardLeft, cardTop, cardLeft + cardSize, cardTop + cardSize),
                 32f, 32f, outroCardPaint
@@ -394,7 +401,7 @@ class AdventureReelEncoder(private val context: Context) {
             canvas.drawBitmap(qrBitmap, cardLeft + cardPad, cardTop + cardPad, null)
             canvas.drawText(
                 context.getString(R.string.reel_outro_cta),
-                WIDTH / 2f, cardTop + cardSize + 56f, outroCtaPaint
+                WIDTH / 2f, cardTop + cardSize + 50f, outroCtaPaint
             )
         }
 
@@ -408,7 +415,12 @@ class AdventureReelEncoder(private val context: Context) {
      *
      * Call this AFTER drawKenBurns so branding always sits on top.
      */
-    private fun drawBranding(canvas: Canvas, logoBitmap: Bitmap?, overlayText: String?) {
+    private fun drawBranding(
+        canvas: Canvas,
+        logoBitmap: Bitmap?,
+        pillLogoBitmap: Bitmap?,
+        overlayText: String?
+    ) {
         // ── Location pill ──────────────────────────────────────────────────────
         if (overlayText != null) {
             // Use the pre-allocated class fields — never allocate Paint inside the render loop.
@@ -417,6 +429,12 @@ class AdventureReelEncoder(private val context: Context) {
                 24f, 24f,
                 pillPaint
             )
+            // Small opaque glyph inside the pill — guaranteed contrast against pillPaint's dark
+            // background regardless of the photo behind it. Left-inset, vertically centred in the
+            // 72px-tall pill: (72 - 28) / 2 = 22.
+            pillLogoBitmap?.let { glyph ->
+                canvas.drawBitmap(glyph, 48f, 1174f, pillLogoPaint)
+            }
             // Vertically centre text within the pill (pill midpoint y = 1188; baseline ≈ 1196).
             canvas.drawText(overlayText, 360f, 1196f, textPaint)
         }

@@ -301,36 +301,26 @@ fun ProfileScreen(
         )
     }
 
+    val profileScrollState = rememberScrollState()
+    val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+    // Collapses once the page scrolls — currently only reachable in states where the content
+    // (stats + settings buttons) overflows the screen; inert (never true) when everything fits,
+    // which today means portrait on a typical phone.
+    val collapsed by remember { derivedStateOf { profileScrollState.value > 24 } }
+    // Single source of truth for the banner's bottom clearance — reused below for the content
+    // pull-up offset so the two can never drift out of sync (that drift was the landscape/collapsed
+    // overlap bug: offset was hardcoded to -32dp while this value could be as low as 8dp).
+    val bannerBottomPadding = if (collapsed) 8.dp else if (isLandscape) 12.dp else 32.dp
+
     Scaffold(
         // The branded teal banner runs edge-to-edge under the status bar; opt out of the default
         // top inset and re-apply it inside the banner instead.
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-        val profileScrollState = rememberScrollState()
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .verticalScroll(profileScrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            val isLandscape = LocalConfiguration.current.screenHeightDp < 480
-            // Collapses once the page scrolls — currently only reachable in states where the content
-            // (stats + settings buttons) overflows the screen; inert (never true) when everything fits,
-            // which today means portrait on a typical phone.
-            val collapsed by remember { derivedStateOf { profileScrollState.value > 24 } }
-            // Single source of truth for the banner's bottom clearance — reused below for the content
-            // pull-up offset so the two can never drift out of sync (that drift was the landscape/collapsed
-            // overlap bug: offset was hardcoded to -32dp while this value could be as low as 8dp).
-            val bannerBottomPadding = if (collapsed) 8.dp else if (isLandscape) 12.dp else 32.dp
-            // Branded banner: splash teal radial with the gold "macaco" wordmark.
-            // The avatar below overlaps its bottom edge.
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            // Pinned above the scrollable body — same pattern as Journal/Help & About, so the
+            // header stays visible (shrunk to icon-only) instead of scrolling away with the
+            // rest of the page once the user scrolls past it.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -349,7 +339,20 @@ fun ProfileScreen(
                         .padding(top = 4.dp, bottom = bannerBottomPadding)
                 )
             }
-
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(profileScrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             // Content pulled up so the avatar overlaps the banner's bottom edge — offset now tracks
             // bannerBottomPadding instead of a hardcoded -32dp, so it can never pull the avatar further up
             // than the banner actually reserved (which was landing it on top of the wordmark in landscape).

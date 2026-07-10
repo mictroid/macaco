@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Macaco — Travel Journal</title>
+  <!-- Short redirect target for the Adventure Reel QR code + share-sheet link. Encoding this
+       short URL instead of the full Play Store link keeps the QR code less dense (fewer,
+       bigger modules), which survives platform video re-compression and small-screen scanning
+       much better. All the actual UTM/referrer attribution logic lives here, not in the app or
+       the QR pixels, so it can be changed without touching Android code or regenerating assets.
+       Served via GitHub Pages from this repo's existing push-to-master pipeline (same mechanism
+       as /privacy-policy.html and /terms-of-service.html). -->
+  <meta http-equiv="refresh" content="0;url=https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco&referrer=utm_source%3Dreel_share%26utm_medium%3Dvideo%26utm_campaign%3Dadventure_reel">
+  <script>
+    location.replace(
+      "https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco&referrer=utm_source%3Dreel_share%26utm_medium%3Dvideo%26utm_campaign%3Dadventure_reel"
+    );
+  </script>
+</head>
+<body>
+  <p>
+    Redirecting to Macaco on Google Play…
+    <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco&referrer=utm_source%3Dreel_share%26utm_medium%3Dvideo%26utm_campaign%3Dadventure_reel">
+      Tap here if you're not redirected automatically.
+    </a>
+  </p>
+</body>
+</html>

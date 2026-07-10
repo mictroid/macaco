@@ -93,7 +93,7 @@
     <string name="reel_generating_subtitle">%1$s wordt gemaakt</string>
     <string name="reel_share_chooser">Avontuur-reel delen</string>
     <string name="reel_no_photos_error">Geen foto\'s gevonden voor deze reis</string>
-    <string name="reel_outro_tagline">Je reizen, bewaard</string>
+    <string name="reel_outro_tagline">Elke reis, onthouden</string>
     <string name="reel_outro_cta">Scan om Macaco te krijgen</string>
     <string name="reel_share_caption">Gemaakt met 🐒 Macaco — download de app: %1$s</string>
     <string name="reel_error_generic">Kan de reel niet maken. Probeer het opnieuw.</string>

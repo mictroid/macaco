@@ -91,7 +91,7 @@
     <string name="reel_generating_subtitle">%1$sを作成中</string>
     <string name="reel_share_chooser">アドベンチャーリールを共有</string>
     <string name="reel_no_photos_error">この旅行の写真が見つかりません</string>
-    <string name="reel_outro_tagline">旅の記録を、大切に</string>
+    <string name="reel_outro_tagline">すべての旅を、記憶に</string>
     <string name="reel_outro_cta">スキャンして Macaco を入手</string>
     <string name="reel_share_caption">🐒 Macaco で作成 — アプリを入手：%1$s</string>
     <string name="reel_error_generic">リールを作成できませんでした。もう一度お試しください。</string>

@@ -93,7 +93,7 @@
     <string name="reel_generating_subtitle">Skapar %1$s</string>
     <string name="reel_share_chooser">Dela äventyrsreel</string>
     <string name="reel_no_photos_error">Inga foton hittades för den här resan</string>
-    <string name="reel_outro_tagline">Dina resor, sparade</string>
+    <string name="reel_outro_tagline">Varje resa, ihågkommen</string>
     <string name="reel_outro_cta">Skanna för att hämta Macaco</string>
     <string name="reel_share_caption">Skapad med 🐒 Macaco – hämta appen: %1$s</string>
     <string name="reel_error_generic">Det gick inte att skapa reelen. Försök igen.</string>

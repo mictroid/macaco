@@ -23,8 +23,10 @@ object AppActions {
     // Play's own referrer parameter (not a webpage UTM) — Firebase Analytics' automatic Install
     // Referrer collection reads this at first_open and attributes the install to
     // reel_share / video / adventure_reel in the Acquisition report, no extra SDK needed.
-    // Keep in sync with the QR encoded in res/drawable-nodpi/reel_qr_code.png — if this URL ever
-    // changes, regenerate that PNG from design/macaco_adventure_reel_qr.png's source URL too.
+    // Deliberately the FULL url, not the short QR redirect (r/index.html / reel_qr_code.png) —
+    // this is human-visible text in the share sheet, and a recognizable play.google.com domain
+    // is worth more here than the character savings that matter for QR pixel density. Don't
+    // "simplify" this to match the QR's short link.
     const val REEL_SHARE_URL = "$LISTING_URL&referrer=" +
         "utm_source%3Dreel_share%26utm_medium%3Dvideo%26utm_campaign%3Dadventure_reel"
 

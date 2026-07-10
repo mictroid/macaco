@@ -97,7 +97,7 @@
     <string name="reel_generating_subtitle">%1$s wird erstellt</string>
     <string name="reel_share_chooser">Abenteuer-Reel teilen</string>
     <string name="reel_no_photos_error">Keine Fotos für diese Reise gefunden</string>
-    <string name="reel_outro_tagline">Deine Reisen, gesichert</string>
+    <string name="reel_outro_tagline">Jede Reise, für immer</string>
     <string name="reel_outro_cta">Scannen, um Macaco zu holen</string>
     <string name="reel_share_caption">Erstellt mit 🐒 Macaco – hol dir die App: %1$s</string>
     <string name="reel_error_generic">Reel konnte nicht erstellt werden. Bitte versuche es erneut.</string>
