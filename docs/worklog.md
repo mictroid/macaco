@@ -4,8 +4,8 @@ Running log of notable work sessions. Newest first.
 
 ## 2026-07-10 — vc64 (1.6, closed testing)
 
-- **vc64 / 1.6 — DISPATCHED 2026-07-10** (WIF run `29104228834`, dispatched 17:35:15 +0200, commit
-  `1f1eba4`). 5-brief batch: entry-detail header logo centering (Box+align true-center), landscape
+- **vc64 / 1.6 — SHIPPED ✅ 2026-07-10** (WIF run `29104228834` CONFIRMED SUCCESS ~6m41s, published
+  to closed testing; dispatched 17:35:15 +0200, commit `1f1eba4`). 5-brief batch: entry-detail header logo centering (Box+align true-center), landscape
   collapsed header shrink (icon 48→28dp), location search diacritic-insensitive matching (NFD fold,
   Naxos→Náxos), settings backup export/import paywall navigation, adventure reel branded outro card +
   QR + tracked share link (3 strings × 11 locales). All 5 briefs → `docs/DONE/`. Detail in
