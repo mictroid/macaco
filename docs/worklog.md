@@ -4,7 +4,7 @@ Running log of notable work sessions. Newest first.
 
 ## 2026-07-10 — vc65 (1.6, closed testing)
 
-- **vc65 / 1.6 — DISPATCHED 2026-07-10** (run `29110384308`, commit `d56ec66`): 3-brief vc64 follow-up
+- **vc65 / 1.6 — SHIPPED ✅ 2026-07-10** (run `29110384308` CONFIRMED SUCCESS ~6m13s, published to closed testing; commit `d56ec66`): 3-brief vc64 follow-up
   batch — reel outro v2 (card repositioned clear of the video-player pause-icon zone + opaque
   pill-glyph mid-reel branding + tagline "Every trip, remembered" ×11 + short-redirect QR/r-index.html),
   header-alignment (Map collapsed-icon centres on true width; Profile banner hoisted into Scaffold
