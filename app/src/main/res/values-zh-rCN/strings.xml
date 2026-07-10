@@ -91,6 +91,9 @@
     <string name="reel_generating_subtitle">正在生成%1$s</string>
     <string name="reel_share_chooser">分享冒险短片</string>
     <string name="reel_no_photos_error">未找到此行程的照片</string>
+    <string name="reel_outro_tagline">留住你的旅程</string>
+    <string name="reel_outro_cta">扫码获取 Macaco</string>
+    <string name="reel_share_caption">由 🐒 Macaco 制作 — 下载应用：%1$s</string>
     <string name="reel_error_generic">无法创建影片。请重试。</string>
     <string name="map_adventures_title">冒险</string>
     <string name="map_locations_mapped">已在地图上标记 %2$d 个地点中的 %1$d 个</string>

@@ -292,42 +292,51 @@ fun EntryDetailScreen(
                     .statusBarsPadding()
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
             ) {
-                Row(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(horizontal = 4.dp, vertical = 4.dp)
                 ) {
-                    IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.common_back),
-                            tint = Color.White
-                        )
-                    }
-                    // Orientation among entries — only worth showing once there's more than one.
-                    if (entries.size > 1) {
-                        AnimatedContent(
-                            targetState = entriesPagerState.currentPage + 1,
-                            transitionSpec = {
-                                fadeIn(animationSpec = tween(150)) togetherWith fadeOut(animationSpec = tween(150))
-                            },
-                            label = "entryCounter"
-                        ) { pageNumber ->
-                            Text(
-                                text = "$pageNumber / ${entries.size}",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = SplashGold,
-                                modifier = Modifier.padding(start = 2.dp)
+                    // Leading cluster: back button + page counter, pinned to the start.
+                    Row(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.common_back),
+                                tint = Color.White
                             )
                         }
+                        // Orientation among entries — only worth showing once there's more than one.
+                        if (entries.size > 1) {
+                            AnimatedContent(
+                                targetState = entriesPagerState.currentPage + 1,
+                                transitionSpec = {
+                                    fadeIn(animationSpec = tween(150)) togetherWith fadeOut(animationSpec = tween(150))
+                                },
+                                label = "entryCounter"
+                            ) { pageNumber ->
+                                Text(
+                                    text = "$pageNumber / ${entries.size}",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = SplashGold,
+                                    modifier = Modifier.padding(start = 2.dp)
+                                )
+                            }
+                        }
                     }
-                    Spacer(Modifier.weight(1f))
-                    // Brand block, centred in the leftover space. Icon stacked above the
-                    // wordmark (matches Journal/Map/Help & About's compact-header convention —
-                    // this used to sit inline, the odd one out). Wordmark drops on narrow
-                    // screens so it can't collide with the action cluster.
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    // Brand block, pinned to the true center of the header. Previously this sat
+                    // in the leftover space between two weighted spacers, which only centers it
+                    // when the leading (back+counter) and trailing (3 icons) clusters are the
+                    // same width — they aren't, so the logo drifted left. Icon stacked above the
+                    // wordmark (matches Journal/Map/Help & About's compact-header convention).
+                    // Wordmark drops on narrow screens so it can't collide with the action cluster.
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Image(
                             painter = painterResource(R.drawable.ic_launcher_foreground),
                             contentDescription = null,
@@ -343,19 +352,24 @@ fun EntryDetailScreen(
                             )
                         }
                     }
-                    Spacer(Modifier.weight(1f))
-                    IconButton(onClick = { shareEntry(context, currentEntry, cachedDrivePhotos) }, modifier = Modifier.size(40.dp)) {
-                        Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.entry_detail_share_cd), tint = Color.White)
-                    }
-                    IconButton(onClick = { onEdit(currentEntry.id) }, modifier = Modifier.size(40.dp)) {
-                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.entry_detail_edit_cd), tint = Color.White)
-                    }
-                    IconButton(onClick = { showDeleteDialog = true }, modifier = Modifier.size(40.dp)) {
-                        Icon(
-                            Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.entry_detail_delete_cd),
-                            tint = Color.White
-                        )
+                    // Trailing cluster: share/edit/delete, pinned to the end.
+                    Row(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { shareEntry(context, currentEntry, cachedDrivePhotos) }, modifier = Modifier.size(40.dp)) {
+                            Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.entry_detail_share_cd), tint = Color.White)
+                        }
+                        IconButton(onClick = { onEdit(currentEntry.id) }, modifier = Modifier.size(40.dp)) {
+                            Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.entry_detail_edit_cd), tint = Color.White)
+                        }
+                        IconButton(onClick = { showDeleteDialog = true }, modifier = Modifier.size(40.dp)) {
+                            Icon(
+                                Icons.Filled.Delete,
+                                contentDescription = stringResource(R.string.entry_detail_delete_cd),
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }

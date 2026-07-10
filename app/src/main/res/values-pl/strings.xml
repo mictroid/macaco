@@ -97,6 +97,9 @@
     <string name="reel_generating_subtitle">Tworzenie %1$s</string>
     <string name="reel_share_chooser">Udostępnij Reel z podróży</string>
     <string name="reel_no_photos_error">Nie znaleziono zdjęć dla tej podróży</string>
+    <string name="reel_outro_tagline">Twoje podróże, zapisane</string>
+    <string name="reel_outro_cta">Zeskanuj, aby pobrać Macaco</string>
+    <string name="reel_share_caption">Utworzono w 🐒 Macaco — pobierz aplikację: %1$s</string>
     <string name="reel_error_generic">Nie udało się utworzyć reela. Spróbuj ponownie.</string>
     <string name="map_adventures_title">Przygody</string>
     <string name="map_locations_mapped">%1$d z %2$d miejsc na mapie</string>

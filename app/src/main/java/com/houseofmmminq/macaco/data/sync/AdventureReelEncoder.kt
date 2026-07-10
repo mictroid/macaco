@@ -50,6 +50,8 @@ class AdventureReelEncoder(private val context: Context) {
         private const val BITRATE = 2_000_000       // 2 Mbps — good quality, ~15 MB/min
         private const val PHOTO_FRAMES  = 90        // 3 s per photo at 30 fps
         private const val FADE_FRAMES   = 15        // 0.5 s cross-dissolve
+        private const val OUTRO_FADE_FRAMES = 15    // 0.5 s fade from last photo into the outro card
+        private const val OUTRO_HOLD_FRAMES = 45    // 1.5 s hold — long enough to actually scan the QR
         private const val MIME = "video/avc"
     }
 
@@ -69,6 +71,36 @@ class AdventureReelEncoder(private val context: Context) {
     }
     private val logoPaint = Paint().apply { alpha = 38 }       // ~15% opacity
 
+    // Raw ARGB matching the app's existing brand tokens (SplashTealMid / SplashGoldBright in
+    // ui/screens/SplashScreen.kt) — can't reference a Compose Color from this render context, so
+    // these are re-declared as plain Ints. Keep in sync if the Splash palette ever changes.
+    // Declared before the outro Paints below because those read these in their initializers —
+    // Kotlin initializes properties top-to-bottom, so the colours must exist first.
+    private val OUTRO_BG_COLOR = android.graphics.Color.rgb(0x0A, 0x4A, 0x58)   // SplashTealMid
+    private val OUTRO_GOLD = android.graphics.Color.rgb(0xF0, 0xC8, 0x40)       // SplashGoldBright
+
+    // Outro end-card Paints. Same android.graphics.Paint-into-video-frame rationale as the fields
+    // above — hardcoded ARGB is correct here, not a Compose theming violation.
+    private val outroLayerPaint = Paint()   // alpha set per-frame in drawOutroCard for the fade-in
+    private val outroLogoPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { isFilterBitmap = true }
+    private val outroTitlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = OUTRO_GOLD
+        textSize = 56f
+        textAlign = Paint.Align.CENTER
+        typeface = android.graphics.Typeface.DEFAULT_BOLD
+    }
+    private val outroTaglinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = android.graphics.Color.argb(196, 0xF0, 0xC8, 0x40)   // gold at ~77% opacity
+        textSize = 24f
+        textAlign = Paint.Align.CENTER
+    }
+    private val outroCardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = android.graphics.Color.WHITE }
+    private val outroCtaPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = android.graphics.Color.WHITE
+        textSize = 26f
+        textAlign = Paint.Align.CENTER
+    }
+
     suspend fun encode(
         photos: List<ReelPhotoMeta>,
         outputName: String,
@@ -77,8 +109,8 @@ class AdventureReelEncoder(private val context: Context) {
         val outFile = File(context.cacheDir, outputName).also { it.delete() }
         val totalPhotos = photos.size
         // Total frames: each photo has PHOTO_FRAMES, plus FADE_FRAMES overlap between consecutive.
-        val totalFrames = (totalPhotos * PHOTO_FRAMES + (totalPhotos - 1) * FADE_FRAMES)
-            .coerceAtLeast(1)
+        val totalFrames = (totalPhotos * PHOTO_FRAMES + (totalPhotos - 1) * FADE_FRAMES
+            + OUTRO_FADE_FRAMES + OUTRO_HOLD_FRAMES).coerceAtLeast(1)
 
         // ── Configure encoder ─────────────────────────────────────────────────────────────────
         val format = MediaFormat.createVideoFormat(MIME, WIDTH, HEIGHT).apply {
@@ -176,6 +208,8 @@ class AdventureReelEncoder(private val context: Context) {
 
         // ── Main render loop ──────────────────────────────────────────────────────────────────
         val logoBitmap = loadLogoBitmap(sizePx = 48)
+        val outroLogoBitmap = loadLogoBitmap(sizePx = 160)
+        val qrBitmap = loadQrBitmap(targetSizePx = 420)
         try {
             var prevBitmap: Bitmap? = null
             var framesRendered = 0
@@ -225,6 +259,32 @@ class AdventureReelEncoder(private val context: Context) {
 
                 prevBitmap = bitmap
             }
+
+            // ── Branded outro card ───────────────────────────────────────────────────
+            // Fades the last photo into a branded end-card so the reel carries attribution
+            // even after it's reposted or screenshotted off-platform. Reuses the same cosine
+            // ease as the photo-to-photo dissolve above.
+            prevBitmap?.let { lastPhoto ->
+                for (f in 0 until OUTRO_FADE_FRAMES) {
+                    coroutineContext.ensureActive()
+                    val alpha = (0.5f - 0.5f * cos(PI * f.toDouble() / OUTRO_FADE_FRAMES)).toFloat()
+                    postFrame { canvas ->
+                        drawKenBurns(canvas, lastPhoto, 1f, PHOTO_FRAMES - 1)
+                        drawOutroCard(canvas, outroLogoBitmap, qrBitmap, alpha)
+                    }
+                    drainEncoder(false)
+                    framesRendered++
+                    onProgress((framesRendered.toFloat() / totalFrames).coerceAtMost(1f))
+                }
+                for (f in 0 until OUTRO_HOLD_FRAMES) {
+                    coroutineContext.ensureActive()
+                    postFrame { canvas -> drawOutroCard(canvas, outroLogoBitmap, qrBitmap, 1f) }
+                    drainEncoder(false)
+                    framesRendered++
+                    onProgress((framesRendered.toFloat() / totalFrames).coerceAtMost(1f))
+                }
+            }
+
             prevBitmap?.recycle()
             check(framesRendered > 0) {
                 context.getString(R.string.reel_no_photos_error)
@@ -232,6 +292,8 @@ class AdventureReelEncoder(private val context: Context) {
             drainEncoder(true)
         } finally {
             logoBitmap?.recycle()
+            outroLogoBitmap?.recycle()
+            qrBitmap?.recycle()
             runCatching { encoder.stop() }
             encoder.release()
             if (muxerStarted) runCatching { muxer.stop() }
@@ -288,6 +350,56 @@ class AdventureReelEncoder(private val context: Context) {
         drawable.draw(c)
         bm
     }.getOrNull()
+
+    /**
+     * Decodes the branded QR-code drawable (drawable-nodpi/reel_qr_code.png — the same tracked
+     * Play Store link as AppActions.REEL_SHARE_URL) and scales it to [targetSizePx] for the outro
+     * card. Source is 1848×1848; inSampleSize=4 avoids decoding full resolution just to downscale.
+     */
+    private fun loadQrBitmap(targetSizePx: Int): Bitmap? = runCatching {
+        val opts = BitmapFactory.Options().apply { inSampleSize = 4 }
+        val raw = BitmapFactory.decodeResource(context.resources, R.drawable.reel_qr_code, opts)
+            ?: return@runCatching null
+        Bitmap.createScaledBitmap(raw, targetSizePx, targetSizePx, true).also {
+            if (it !== raw) raw.recycle()
+        }
+    }.getOrNull()
+
+    /**
+     * Branded end-card: dark-teal background, macaco wordmark + monkey mark, and a white-carded
+     * QR code. Composited via `saveLayer` so the whole card fades in as one unit over [alpha]
+     * (0f..1f) rather than each element fading independently.
+     */
+    private fun drawOutroCard(canvas: Canvas, outroLogo: Bitmap?, qr: Bitmap?, alpha: Float) {
+        outroLayerPaint.alpha = (alpha * 255).roundToInt().coerceIn(0, 255)
+        val saveCount = canvas.saveLayer(0f, 0f, WIDTH.toFloat(), HEIGHT.toFloat(), outroLayerPaint)
+
+        canvas.drawColor(OUTRO_BG_COLOR)
+
+        outroLogo?.let { logo ->
+            canvas.drawBitmap(logo, (WIDTH - logo.width) / 2f, 260f, outroLogoPaint)
+        }
+        canvas.drawText("macaco", WIDTH / 2f, 470f, outroTitlePaint)
+        canvas.drawText(context.getString(R.string.reel_outro_tagline), WIDTH / 2f, 508f, outroTaglinePaint)
+
+        qr?.let { qrBitmap ->
+            val cardPad = 28f
+            val cardSize = qrBitmap.width + cardPad * 2
+            val cardLeft = (WIDTH - cardSize) / 2f
+            val cardTop = 580f
+            canvas.drawRoundRect(
+                android.graphics.RectF(cardLeft, cardTop, cardLeft + cardSize, cardTop + cardSize),
+                32f, 32f, outroCardPaint
+            )
+            canvas.drawBitmap(qrBitmap, cardLeft + cardPad, cardTop + cardPad, null)
+            canvas.drawText(
+                context.getString(R.string.reel_outro_cta),
+                WIDTH / 2f, cardTop + cardSize + 56f, outroCtaPaint
+            )
+        }
+
+        canvas.restoreToCount(saveCount)
+    }
 
     /**
      * Composites the branding layer onto [canvas]:

@@ -20,6 +20,14 @@ object AppActions {
     private const val PACKAGE = "com.houseofmmminq.macaco"
     private const val LISTING_URL = "https://play.google.com/store/apps/details?id=$PACKAGE"
 
+    // Play's own referrer parameter (not a webpage UTM) — Firebase Analytics' automatic Install
+    // Referrer collection reads this at first_open and attributes the install to
+    // reel_share / video / adventure_reel in the Acquisition report, no extra SDK needed.
+    // Keep in sync with the QR encoded in res/drawable-nodpi/reel_qr_code.png — if this URL ever
+    // changes, regenerate that PNG from design/macaco_adventure_reel_qr.png's source URL too.
+    const val REEL_SHARE_URL = "$LISTING_URL&referrer=" +
+        "utm_source%3Dreel_share%26utm_medium%3Dvideo%26utm_campaign%3Dadventure_reel"
+
     const val SUPPORT_EMAIL = "houseofmmminq@gmail.com"
     // Hosted on GitHub Pages from privacy-policy.html at the repo root.
     const val PRIVACY_POLICY_URL = "https://mictroid.github.io/macaco/privacy-policy.html"

@@ -1,6 +1,6 @@
 What's new:
-• Fixed the Profile header in landscape so your photo no longer overlaps the "macaco" wordmark
-• Your journal now shows the "X memories" count in portrait, not just landscape
-• The Adventures map header stays put when you open the screen and only tidies away once you start exploring
-• Settings "App Permissions" title no longer breaks awkwardly across lines
-• On tablets in landscape, Delete Account is now visible without scrolling
+• Adventure Reels now end with a branded card + QR code, and sharing adds a link back to the app
+• Location search now finds accented places — type "Naxos" to match "Náxos", "Fira" for "Firá"
+• The entry logo now sits perfectly centered in the header, in both portrait and landscape
+• In landscape, the header now shrinks properly as you scroll so you see more of your journal
+• Tapping Backup Export/Import without Premium now takes you straight to the upgrade screen

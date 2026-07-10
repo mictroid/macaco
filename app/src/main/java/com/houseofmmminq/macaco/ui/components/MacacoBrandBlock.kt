@@ -46,14 +46,21 @@ fun MacacoBrandBlock(
 ) {
     when {
         collapsed -> {
+            // Landscape is already height-constrained (that's why isLandscape triggers below
+            // 480dp), so its collapsed state needs to actually shrink, not just drop the
+            // wordmark while keeping the full portrait-sized icon. 28dp matches the compact
+            // icon size EntryDetailScreen's own (non-collapsing) header already uses. Portrait
+            // keeps the original 48dp/8dp — matches Journal's reference header, unchanged.
+            val collapsedIconSize = if (isLandscape) 28.dp else MacacoBrandIconSize
+            val collapsedBottomPadding = if (isLandscape) 4.dp else 8.dp
             Box(
-                modifier = modifier.fillMaxWidth().padding(bottom = 8.dp),
+                modifier = modifier.fillMaxWidth().padding(bottom = collapsedBottomPadding),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = null,
-                    modifier = Modifier.size(MacacoBrandIconSize)
+                    modifier = Modifier.size(collapsedIconSize)
                 )
             }
         }

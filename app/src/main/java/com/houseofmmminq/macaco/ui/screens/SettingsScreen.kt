@@ -137,7 +137,8 @@ private val SUPPORTED_LANGUAGES = listOf(
 @Composable
 fun SettingsScreen(
     viewModel: JournalViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToPaywall: () -> Unit
 ) {
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val appTheme by viewModel.appTheme.collectAsState()
@@ -761,13 +762,13 @@ fun SettingsScreen(
                 importProgress = importProgress,
                 onExport = {
                     if (isPurchased == true) showExportDialog = true
-                    else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
+                    else onNavigateToPaywall()
                 },
                 onImport = {
                     if (isPurchased == true) {
                         pickerPending = true
                         backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
-                    } else Toast.makeText(context, context.getString(R.string.settings_backup_premium_required), Toast.LENGTH_LONG).show()
+                    } else onNavigateToPaywall()
                 }
             )
 

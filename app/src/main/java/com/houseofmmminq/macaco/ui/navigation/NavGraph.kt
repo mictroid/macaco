@@ -327,7 +327,8 @@ fun NavGraph(
                 composable(Screen.Settings.route) {
                     SettingsScreen(
                         viewModel = viewModel,
-                        onBack = { navController.popBackStack() }
+                        onBack = { navController.popBackStack() },
+                        onNavigateToPaywall = { navController.navigate(Screen.Paywall.route) }
                     )
                 }
 

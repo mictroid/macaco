@@ -91,6 +91,7 @@ import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.ui.components.MacacoSnackbar
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
+import com.houseofmmminq.macaco.util.AppActions
 import com.houseofmmminq.macaco.ui.theme.macacoContentGutter
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel.ReelState
@@ -174,6 +175,10 @@ fun JournalListScreen(
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     type = "video/mp4"
                     putExtra(Intent.EXTRA_STREAM, state.uri)
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        context.getString(R.string.reel_share_caption, AppActions.REEL_SHARE_URL)
+                    )
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
                 context.startActivity(

@@ -93,6 +93,9 @@
     <string name="reel_generating_subtitle">Creando %1$s</string>
     <string name="reel_share_chooser">Compartir Reel de aventura</string>
     <string name="reel_no_photos_error">No se encontraron fotos para este viaje</string>
+    <string name="reel_outro_tagline">Tus viajes, guardados</string>
+    <string name="reel_outro_cta">Escanea para obtener Macaco</string>
+    <string name="reel_share_caption">Hecho con 🐒 Macaco: descarga la app: %1$s</string>
     <string name="reel_error_generic">No se pudo crear el reel. Inténtalo de nuevo.</string>
     <string name="map_adventures_title">Aventuras</string>
     <string name="map_locations_mapped">%1$d de %2$d lugares en el mapa</string>

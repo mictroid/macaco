@@ -179,6 +179,9 @@
     <string name="reel_generating_subtitle">Building %1$s</string>
     <string name="reel_share_chooser">Share Adventure Reel</string>
     <string name="reel_no_photos_error">No photos found for this trip</string>
+    <string name="reel_outro_tagline">Your travels, saved</string>
+    <string name="reel_outro_cta">Scan to get Macaco</string>
+    <string name="reel_share_caption">Made with 🐒 Macaco — get the app: %1$s</string>
     <string name="reel_error_generic">Couldn\'t create the reel. Please try again.</string>
     <string name="map_adventures_title">Adventures</string>
     <string name="map_locations_mapped">%1$d of %2$d locations mapped</string>

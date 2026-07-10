@@ -1113,7 +1113,7 @@ private fun LocationField(
         val q = value.trim()
         if (q.isBlank()) emptyList()
         else {
-            val past = suggestions.filter { it.startsWith(q, ignoreCase = true) }
+            val past = suggestions.filter { Cities.matchesPrefix(it, q) }
             (past + Cities.search(cities, q, limit = 8))
                 .distinctBy { it.lowercase() }
                 .filterNot { it.equals(q, ignoreCase = true) }
