@@ -1,6 +1,6 @@
 What's new:
-• Adventure Reels now end with a branded card + QR code, and sharing adds a link back to the app
-• Location search now finds accented places — type "Naxos" to match "Náxos", "Fira" for "Firá"
-• The entry logo now sits perfectly centered in the header, in both portrait and landscape
-• In landscape, the header now shrinks properly as you scroll so you see more of your journal
-• Tapping Backup Export/Import without Premium now takes you straight to the upgrade screen
+• Adventure Reels: cleaner branded ending that no longer clashes with the player's pause button
+• The macaco logo now shows on every reel frame, even over bright photos
+• Smoother switch to the Adventures map — no more white flash while it loads
+• Your Profile header now stays put as you scroll instead of sliding away
+• Fixed the Adventures logo drifting off-center in landscape
