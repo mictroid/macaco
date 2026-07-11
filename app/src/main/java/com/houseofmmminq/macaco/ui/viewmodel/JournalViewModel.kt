@@ -21,9 +21,11 @@ import java.io.File
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
+import com.houseofmmminq.macaco.data.sync.TripShareManager
 import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.util.ImageStorage
+import com.houseofmmminq.macaco.util.PhotoRollScanner
 import com.houseofmmminq.macaco.util.ReminderScheduler
 import com.houseofmmminq.macaco.util.WeatherLookup
 import android.location.Geocoder
@@ -256,6 +258,86 @@ class JournalViewModel(
     }
 
     fun reelConsumed() { _reelState.value = ReelState.Idle }
+
+    // ── Camera-roll auto-suggested entries ──────────────────────────────────────────────────────
+    private val _suggestedClusters = MutableStateFlow<List<PhotoRollScanner.PhotoCluster>>(emptyList())
+    val suggestedClusters: StateFlow<List<PhotoRollScanner.PhotoCluster>> = _suggestedClusters.asStateFlow()
+
+    // Guards the MediaStore scan to once per process — scanning is not free.
+    @Volatile private var suggestionsScanned = false
+
+    /** Scans the camera roll for recent geotagged photos not yet journaled and publishes any
+     *  clusters (minus dismissed ones) to [suggestedClusters]. Runs at most once per process.
+     *  Caller must already hold READ_MEDIA_IMAGES/READ_EXTERNAL_STORAGE + ACCESS_MEDIA_LOCATION. */
+    fun checkForSuggestedEntries(context: Context) {
+        if (suggestionsScanned) return
+        suggestionsScanned = true
+        viewModelScope.launch(Dispatchers.IO) {
+            val dismissed = preferencesManager.dismissedPhotoClusters.first()
+            _suggestedClusters.value = PhotoRollScanner.scan(context, entries.value)
+                .filterNot { it.startMillis.toString() in dismissed }
+        }
+    }
+
+    fun dismissSuggestedCluster(cluster: PhotoRollScanner.PhotoCluster) {
+        viewModelScope.launch {
+            preferencesManager.dismissPhotoCluster(cluster.startMillis.toString())
+            _suggestedClusters.value = _suggestedClusters.value - cluster
+        }
+    }
+
+    // Seed for pre-filling NewEditEntryScreen from an accepted suggestion — read once, then
+    // cleared, same one-shot-consumption shape as ReelState.Ready.
+    data class EntrySeed(val title: String, val location: String, val dateMillis: Long, val photoUris: List<String>)
+    private val _pendingEntrySeed = MutableStateFlow<EntrySeed?>(null)
+    val pendingEntrySeed: StateFlow<EntrySeed?> = _pendingEntrySeed.asStateFlow()
+
+    fun acceptSuggestedCluster(cluster: PhotoRollScanner.PhotoCluster) {
+        _pendingEntrySeed.value = EntrySeed(
+            title = cluster.placeName ?: "",
+            location = cluster.placeName ?: "",
+            dateMillis = cluster.startMillis,
+            photoUris = cluster.photoUris.map { it.toString() }
+        )
+        _suggestedClusters.value = _suggestedClusters.value - cluster
+    }
+
+    fun entrySeedConsumed() { _pendingEntrySeed.value = null }
+
+    // ── Shared view-only trip links ─────────────────────────────────────────────────────────────
+    // NOTE: not shippable/testable until the /shared_trips Firestore + Storage security rules are
+    // applied in the Firebase console (see docs/code-brief-shared-trip-links.md). Until then every
+    // createTripShare falls into the Error branch with a permission-denied message.
+    private val tripShareManager = TripShareManager()
+
+    sealed class TripShareState {
+        object Idle : TripShareState()
+        object Creating : TripShareState()
+        data class Ready(val url: String) : TripShareState()
+        data class Error(val message: String) : TripShareState()
+    }
+    private val _tripShareState = MutableStateFlow<TripShareState>(TripShareState.Idle)
+    val tripShareState: StateFlow<TripShareState> = _tripShareState.asStateFlow()
+
+    fun createTripShare(tripName: String, entries: List<TravelEntry>, expiryDays: Int?) {
+        val uid = authRepository.currentUser.value?.uid ?: return
+        viewModelScope.launch {
+            _tripShareState.value = TripShareState.Creating
+            val result = tripShareManager.createShareLink(uid, tripName, entries, expiryDays)
+            _tripShareState.value = result.fold(
+                onSuccess = { TripShareState.Ready(it.url) },
+                onFailure = {
+                    TripShareState.Error(it.message ?: appContext.getString(R.string.trip_share_error_generic))
+                }
+            )
+        }
+    }
+
+    fun revokeTripShare(shareId: String, photoCount: Int) {
+        viewModelScope.launch { tripShareManager.revokeShareLink(shareId, photoCount) }
+    }
+
+    fun tripShareConsumed() { _tripShareState.value = TripShareState.Idle }
 
     val isDarkMode: StateFlow<Boolean> = preferencesManager.isDarkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)

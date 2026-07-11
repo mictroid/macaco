@@ -110,6 +110,7 @@ import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.components.VideoTrimDialog
 import com.houseofmmminq.macaco.util.Cities
+import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
 import com.houseofmmminq.macaco.util.VideoThumbnails
@@ -158,14 +159,22 @@ fun NewEditEntryScreen(
     tripSuggestions: List<String> = emptyList(),
     customMoods: List<String> = emptyList(),
     onAddCustomMood: (String) -> Unit = {},
-    onSuppressAutoLock: () -> Unit = {}
+    onSuppressAutoLock: () -> Unit = {},
+    // Pre-fill seed from an accepted camera-roll suggestion (create-mode only). onSeedConsumed
+    // clears the one-shot seed once this screen has captured it into local state.
+    seed: JournalViewModel.EntrySeed? = null,
+    onSeedConsumed: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    // An existingEntry always wins in edit mode; the suggestion seed only applies to new entries.
+    val effectiveSeed = if (existingEntry != null) null else seed
 
     // rememberSaveable so an in-progress draft survives process death (phone lock → low-memory kill).
-    var title by rememberSaveable { mutableStateOf(existingEntry?.title ?: "") }
-    var location by rememberSaveable { mutableStateOf(existingEntry?.location ?: "") }
-    var dateMillis by rememberSaveable { mutableStateOf(existingEntry?.dateMillis ?: System.currentTimeMillis()) }
+    var title by rememberSaveable { mutableStateOf(existingEntry?.title ?: effectiveSeed?.title ?: "") }
+    var location by rememberSaveable { mutableStateOf(existingEntry?.location ?: effectiveSeed?.location ?: "") }
+    var dateMillis by rememberSaveable {
+        mutableStateOf(existingEntry?.dateMillis ?: effectiveSeed?.dateMillis ?: System.currentTimeMillis())
+    }
     var mood by rememberSaveable { mutableStateOf(existingEntry?.mood ?: "") }
     var description by rememberSaveable { mutableStateOf(existingEntry?.description ?: "") }
     var photoUris by rememberSaveable(stateSaver = StringListSaver) {
@@ -308,6 +317,27 @@ fun NewEditEntryScreen(
             pendingCameraUriString = uri.toString()
             onSuppressAutoLock()
             cameraLauncher.launch(uri)
+        }
+    }
+
+    // Seed photos from an accepted camera-roll suggestion. The seed carries the ORIGINAL
+    // camera-roll URIs, which (unlike the picker/camera flows above) haven't been copied into
+    // Pictures/Macaco yet — so persist them the same way here so they survive relaunch/uninstall
+    // and are Drive-syncable, then attach. Runs once; the seed is then consumed so it can't refire
+    // (photoUris is rememberSaveable, so a later process-death restore won't re-add).
+    LaunchedEffect(Unit) {
+        if (effectiveSeed != null) {
+            val stored = withContext(Dispatchers.IO) {
+                effectiveSeed.photoUris.mapNotNull {
+                    ImageStorage.persistToGallery(context, android.net.Uri.parse(it))
+                }
+            }
+            if (stored.isNotEmpty()) {
+                sessionAdded = sessionAdded + stored
+                photoUris = photoUris + stored
+                driveIds = driveIds + List(stored.size) { "" }
+            }
+            onSeedConsumed()
         }
     }
 

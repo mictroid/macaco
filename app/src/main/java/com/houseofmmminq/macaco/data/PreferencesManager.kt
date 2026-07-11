@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -29,6 +30,7 @@ class PreferencesManager(private val context: Context) {
     private val KEY_ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
     private val KEY_CUSTOM_MOODS = stringPreferencesKey("custom_moods")
     private val KEY_COVER_HINT_COUNT = intPreferencesKey("cover_hint_count")
+    private val KEY_DISMISSED_SUGGESTIONS = stringSetPreferencesKey("dismissed_photo_clusters")
 
     companion object {
         const val DEFAULT_REMINDER_INTERVAL_DAYS = 4
@@ -158,5 +160,19 @@ class PreferencesManager(private val context: Context) {
 
     suspend fun setOnboardingComplete() {
         context.dataStore.edit { it[KEY_ONBOARDING_COMPLETE] = true }
+    }
+
+    // Camera-roll suggestion clusters the user has dismissed, keyed by their stable start time
+    // (MediaStore ids aren't guaranteed stable across a re-import, so start time is the key). The
+    // key string is computed by the caller (cluster.startMillis.toString()), keeping this a plain
+    // key/value store.
+    val dismissedPhotoClusters: Flow<Set<String>> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_DISMISSED_SUGGESTIONS] ?: emptySet() }
+
+    suspend fun dismissPhotoCluster(clusterKey: String) {
+        context.dataStore.edit {
+            it[KEY_DISMISSED_SUGGESTIONS] = (it[KEY_DISMISSED_SUGGESTIONS] ?: emptySet()) + clusterKey
+        }
     }
 }

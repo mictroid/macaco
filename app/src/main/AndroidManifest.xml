@@ -22,6 +22,11 @@
          (recording itself happens in the system camera app, which holds its own
          RECORD_AUDIO grant — we don't need one). -->
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <!-- Required (API 29+) to read unredacted GPS EXIF from camera-roll photos this app didn't
+         create — load-bearing for the auto-suggested-entries feature (util/PhotoRollScanner.kt):
+         without it MediaStore hands back location-redacted copies and no cluster is ever found.
+         Runtime-requested together with the media-read permission, only when the feature runs. -->
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <!-- Resolve the system video-capture intent (API 30+ package-visibility rules). -->
     <queries>

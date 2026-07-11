@@ -1,6 +1,13 @@
 package com.houseofmmminq.macaco.ui.screens
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,11 +46,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
@@ -52,6 +63,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -65,6 +77,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,8 +86,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -93,6 +108,7 @@ import com.houseofmmminq.macaco.ui.components.MacacoSnackbar
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
 import com.houseofmmminq.macaco.util.AppActions
+import com.houseofmmminq.macaco.util.PhotoRollScanner
 import com.houseofmmminq.macaco.ui.theme.macacoContentGutter
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel.ReelState
@@ -203,6 +219,44 @@ fun JournalListScreen(
             progress = gen.progress,
             onCancel = { viewModel.cancelReel() }
         )
+    }
+
+    // ── Shared view-only trip links ─────────────────────────────────────────────────────────────
+    // Which trip's share dialog is open (name to its entries), or null.
+    var shareDialogTrip by remember { mutableStateOf<Pair<String, List<TravelEntry>>?>(null) }
+    val tripShareState by viewModel.tripShareState.collectAsState()
+    shareDialogTrip?.let { (name, tripEntries) ->
+        ShareTripDialog(
+            tripName = name,
+            state = tripShareState,
+            onCreate = { expiryDays -> viewModel.createTripShare(name, tripEntries, expiryDays) },
+            onDismiss = {
+                viewModel.tripShareConsumed()
+                shareDialogTrip = null
+            }
+        )
+    }
+
+    // ── Camera-roll auto-suggested entries ──────────────────────────────────────────────────────
+    val suggestedClusters by viewModel.suggestedClusters.collectAsState()
+    // Reading the camera roll needs the media-read permission (API-split) AND ACCESS_MEDIA_LOCATION
+    // for unredacted GPS EXIF. Evaluated on each composition so granting flips the prompt away.
+    fun hasSuggestionPermission(): Boolean {
+        val readPerm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            Manifest.permission.READ_MEDIA_IMAGES else Manifest.permission.READ_EXTERNAL_STORAGE
+        return ContextCompat.checkSelfPermission(context, readPerm) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_MEDIA_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED
+    }
+    // One-time (per process) dismissal of the permission-invite card, so declining doesn't re-nag.
+    var suggestionInviteDismissed by rememberSaveable { mutableStateOf(false) }
+    val suggestionPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { if (hasSuggestionPermission()) viewModel.checkForSuggestedEntries(context) }
+    // Scan on entry if the permission is already granted (returning users). New users tap the
+    // invite card, which requests the permission and then scans in the launcher callback above.
+    LaunchedEffect(Unit) {
+        if (hasSuggestionPermission()) viewModel.checkForSuggestedEntries(context)
     }
 
     Scaffold(
@@ -464,6 +518,39 @@ fun JournalListScreen(
                                 )
                             }
                         }
+                        // Camera-roll suggestions: an invite card while the permission isn't granted
+                        // (never a cold OS dialog on open), then one card per detected photo cluster.
+                        if (!hasSuggestionPermission() && !suggestionInviteDismissed) {
+                            item(key = "suggestion_permission") {
+                                SuggestionPermissionCard(
+                                    onAllow = {
+                                        // Requesting backgrounds the app briefly — don't let that
+                                        // trip the app-lock re-lock timer on return.
+                                        viewModel.suppressAutoLockOnce()
+                                        val readPerm =
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                                                Manifest.permission.READ_MEDIA_IMAGES
+                                            else Manifest.permission.READ_EXTERNAL_STORAGE
+                                        suggestionPermissionLauncher.launch(
+                                            arrayOf(readPerm, Manifest.permission.ACCESS_MEDIA_LOCATION)
+                                        )
+                                    },
+                                    onDismiss = { suggestionInviteDismissed = true }
+                                )
+                            }
+                        }
+                        suggestedClusters.forEach { cluster ->
+                            item(key = "suggestion-${cluster.startMillis}") {
+                                SuggestionCard(
+                                    cluster = cluster,
+                                    onDismiss = { viewModel.dismissSuggestedCluster(cluster) },
+                                    onCreate = {
+                                        viewModel.acceptSuggestedCluster(cluster)
+                                        onNewEntry()
+                                    }
+                                )
+                            }
+                        }
                         if (hasTrips) {
                             tripSections.forEach { (trip, sectionEntries) ->
                                 item(key = "trip-header-$trip") {
@@ -471,7 +558,8 @@ fun JournalListScreen(
                                         tripName = trip,
                                         entryCount = sectionEntries.size,
                                         isPurchased = isPurchased == true,
-                                        onCreateReel = { viewModel.startReel(trip, sectionEntries) }
+                                        onCreateReel = { viewModel.startReel(trip, sectionEntries) },
+                                        onShare = { shareDialogTrip = trip to sectionEntries }
                                     )
                                 }
                                 items(sectionEntries, key = { it.id }) { entry ->
@@ -859,6 +947,210 @@ private fun TagChips(
     }
 }
 
+// Share-a-trip dialog: mandatory expiry choice (defaulting to 30 days, never-expire an explicit
+// opt-in), the required disclosure text, then the created link with copy/share actions. Backed by
+// the /shared_trips Firestore + Storage path — createTripShare fails until the console security
+// rules are applied (see docs/code-brief-shared-trip-links.md).
+@Composable
+private fun ShareTripDialog(
+    tripName: String,
+    state: JournalViewModel.TripShareState,
+    onCreate: (Int?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    val clipboard = LocalClipboardManager.current
+    // 7 / 30 / null(never) — default 30; never-expire must be an explicit choice, not the default.
+    var expiryDays by remember { mutableStateOf<Int?>(30) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.trip_share_title, tripName)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    stringResource(R.string.trip_share_disclosure),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                when (state) {
+                    is JournalViewModel.TripShareState.Ready -> {
+                        Text(
+                            state.url,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    is JournalViewModel.TripShareState.Error -> {
+                        Text(
+                            state.message,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    else -> {
+                        Text(
+                            stringResource(R.string.trip_share_expiry_label),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        ExpiryOption(stringResource(R.string.trip_share_expiry_7d), expiryDays == 7) { expiryDays = 7 }
+                        ExpiryOption(stringResource(R.string.trip_share_expiry_30d), expiryDays == 30) { expiryDays = 30 }
+                        ExpiryOption(stringResource(R.string.trip_share_expiry_never), expiryDays == null) { expiryDays = null }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            when (state) {
+                is JournalViewModel.TripShareState.Creating ->
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                is JournalViewModel.TripShareState.Ready -> {
+                    Row {
+                        TextButton(onClick = {
+                            clipboard.setText(AnnotatedString(state.url))
+                            Toast.makeText(context, R.string.trip_share_copied, Toast.LENGTH_SHORT).show()
+                        }) { Text(stringResource(R.string.trip_share_copy)) }
+                        TextButton(onClick = {
+                            val send = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, state.url)
+                            }
+                            context.startActivity(Intent.createChooser(send, null))
+                        }) { Text(stringResource(R.string.trip_share_action)) }
+                    }
+                }
+                // Idle and Error both offer the create action (Error just retries).
+                else -> TextButton(onClick = { onCreate(expiryDays) }) {
+                    Text(stringResource(R.string.trip_share_create))
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.common_cancel)) }
+        }
+    )
+}
+
+@Composable
+private fun ExpiryOption(label: String, selected: Boolean, onSelect: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onSelect),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(selected = selected, onClick = onSelect)
+        Text(label, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+// Invite card shown (once, dismissibly) when the camera-roll suggestion permission isn't granted —
+// a soft opt-in so users who don't want the feature never see a cold OS permission dialog.
+@Composable
+private fun SuggestionPermissionCard(
+    onAllow: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.PhotoLibrary,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    stringResource(R.string.photo_suggestion_permission_title),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.photo_suggestion_permission_not_now))
+                }
+                Spacer(Modifier.width(4.dp))
+                Button(onClick = onAllow) {
+                    Text(stringResource(R.string.photo_suggestion_permission_allow))
+                }
+            }
+        }
+    }
+}
+
+// One detected camera-roll cluster: a place + date range + photo count, with dismiss / create-entry.
+@Composable
+private fun SuggestionCard(
+    cluster: PhotoRollScanner.PhotoCluster,
+    onDismiss: () -> Unit,
+    onCreate: () -> Unit
+) {
+    val dayFormat = remember { SimpleDateFormat("MMM d", Locale.getDefault()) }
+    val dateRange = remember(cluster.startMillis, cluster.endMillis) {
+        val start = dayFormat.format(Date(cluster.startMillis))
+        val end = dayFormat.format(Date(cluster.endMillis))
+        if (start == end) start else "$start – $end"
+    }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("📷", fontSize = 16.sp)
+                Spacer(Modifier.width(6.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        stringResource(R.string.photo_suggestion_title, cluster.placeName ?: dateRange),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Text(
+                        stringResource(
+                            R.string.photo_suggestion_subtitle, cluster.photoUris.size, dateRange
+                        ),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.photo_suggestion_dismiss))
+                }
+                Spacer(Modifier.width(4.dp))
+                Button(onClick = onCreate) {
+                    Text(stringResource(R.string.photo_suggestion_create))
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun OnThisDayBanner(
     entries: List<TravelEntry>,
@@ -1018,7 +1310,8 @@ private fun TripHeader(
     tripName: String,
     entryCount: Int,
     isPurchased: Boolean,
-    onCreateReel: () -> Unit
+    onCreateReel: () -> Unit,
+    onShare: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -1043,6 +1336,18 @@ private fun TripHeader(
         )
         if (isPurchased) {
             Spacer(Modifier.width(8.dp))
+            IconButton(
+                onClick = onShare,
+                modifier = Modifier.size(28.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Share,
+                    contentDescription = stringResource(R.string.trip_share_action),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            Spacer(Modifier.width(4.dp))
             IconButton(
                 onClick = onCreateReel,
                 modifier = Modifier.size(28.dp)

@@ -232,6 +232,7 @@ fun NavGraph(
 
                 composable(Screen.NewEntry.route) {
                     val entries by viewModel.entries.collectAsState()
+                    val pendingSeed by viewModel.pendingEntrySeed.collectAsState()
                     NewEditEntryScreen(
                         existingEntry = null,
                         onSave = { entry ->
@@ -244,7 +245,9 @@ fun NavGraph(
                         tripSuggestions = entries.toTripSuggestions(),
                         customMoods = viewModel.customMoods.collectAsState().value,
                         onAddCustomMood = { viewModel.addCustomMood(it) },
-                        onSuppressAutoLock = { viewModel.suppressAutoLockOnce() }
+                        onSuppressAutoLock = { viewModel.suppressAutoLockOnce() },
+                        seed = pendingSeed,
+                        onSeedConsumed = { viewModel.entrySeedConsumed() }
                     )
                 }
 
