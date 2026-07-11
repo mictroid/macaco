@@ -129,6 +129,7 @@ import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.components.VideoTrimDialog
 import com.houseofmmminq.macaco.util.AppActions
 import com.houseofmmminq.macaco.util.ImageStorage
+import com.houseofmmminq.macaco.util.WeatherLookup
 import com.houseofmmminq.macaco.util.VideoThumbnails
 import com.houseofmmminq.macaco.util.VideoTranscoder
 import com.houseofmmminq.macaco.ui.theme.heroGradientColors
@@ -603,6 +604,18 @@ fun EntryDetailScreen(
                                             )
                                         )
                                     }
+                                    entry.weatherCode?.let { code ->
+                                        val (icon, label) = WeatherLookup.describe(context, code)
+                                        val tempLabel = entry.weatherTempMaxC?.let { WeatherLookup.formatTemp(context, it) }
+                                        AssistChip(
+                                            onClick = {},
+                                            label = { Text(if (tempLabel != null) "$icon $tempLabel" else "$icon $label") },
+                                            colors = AssistChipDefaults.assistChipColors(
+                                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                                labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        )
+                                    }
                                     AssistChip(
                                         onClick = {},
                                         label = { Text(formatDate(entry.dateMillis)) },
@@ -890,6 +903,18 @@ fun EntryDetailScreen(
                                 colors = AssistChipDefaults.assistChipColors(
                                     labelColor = MaterialTheme.colorScheme.primary,
                                     leadingIconContentColor = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                        entry.weatherCode?.let { code ->
+                            val (icon, label) = WeatherLookup.describe(context, code)
+                            val tempLabel = entry.weatherTempMaxC?.let { WeatherLookup.formatTemp(context, it) }
+                            AssistChip(
+                                onClick = {},
+                                label = { Text(if (tempLabel != null) "$icon $tempLabel" else "$icon $label") },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    labelColor = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                             )
                         }

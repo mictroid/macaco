@@ -26,6 +26,12 @@ data class TravelEntry(
     // mediaOrder: all media URIs (photos + videos) in user-defined display order.
     // Empty on old entries = backward-compatible: photos displayed first, then videos.
     val mediaOrder: List<String> = emptyList(),
+    // ── Weather (added post-vc-print-book) ───────────────────────────────────
+    // Fetched once, lazily, after an entry is first saved (see JournalViewModel.saveEntry).
+    // null = not yet fetched, fetch failed, or the entry predates this feature. Never fetched for
+    // future-dated entries (Open-Meteo's archive API is historical only).
+    val weatherCode: Int? = null,
+    val weatherTempMaxC: Double? = null,
 )
 
 /**
@@ -53,3 +59,21 @@ fun List<TravelEntry>.tagsByFrequency(): List<String> =
         .entries
         .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
         .map { it.key }
+
+/**
+ * Entries whose title, description, location, tags, or trip name contain [query]
+ * (case-insensitive, substring match). Blank query returns an empty list — the search screen
+ * shows a placeholder rather than the whole journal, since "empty query, show everything" isn't
+ * useful for a search screen the same way it is for the main list.
+ */
+fun List<TravelEntry>.matchingSearch(query: String): List<TravelEntry> {
+    val q = query.trim()
+    if (q.isBlank()) return emptyList()
+    return filter { entry ->
+        entry.title.contains(q, ignoreCase = true) ||
+            entry.description.contains(q, ignoreCase = true) ||
+            entry.location.contains(q, ignoreCase = true) ||
+            entry.tags.any { it.contains(q, ignoreCase = true) } ||
+            entry.tripName?.contains(q, ignoreCase = true) == true
+    }.sortedByDescending { it.dateMillis }
+}

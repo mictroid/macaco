@@ -25,6 +25,7 @@ import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.ReminderScheduler
+import com.houseofmmminq.macaco.util.WeatherLookup
 import android.location.Geocoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -429,6 +430,25 @@ class JournalViewModel(
                                 )
                             )
                         }
+                    }
+                }
+            }
+
+            // Weather: one lazy background fetch per entry, independent of the Drive upload
+            // above — a failed/slow weather lookup must never block or race photo/video sync.
+            if (entry.weatherCode == null && entry.location.isNotBlank() &&
+                entry.dateMillis <= System.currentTimeMillis()
+            ) {
+                launch {
+                    val result = WeatherLookup.fetch(appContext, entry.location, entry.dateMillis)
+                        ?: return@launch
+                    val latest = entries.value.find { it.id == entry.id } ?: entry
+                    // Only patch in weather if nothing else already raced in a value (e.g. the
+                    // user re-saved the entry again before this fetch returned).
+                    if (latest.weatherCode == null) {
+                        cloudEntrySync.save(
+                            latest.copy(weatherCode = result.weatherCode, weatherTempMaxC = result.tempMaxC)
+                        )
                     }
                 }
             }

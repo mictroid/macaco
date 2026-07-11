@@ -58,6 +58,7 @@ import com.houseofmmminq.macaco.ui.screens.NewEditEntryScreen
 import com.houseofmmminq.macaco.ui.screens.ProfileScreen
 import com.houseofmmminq.macaco.ui.screens.PurchaseScreen
 import com.houseofmmminq.macaco.ui.screens.SettingsScreen
+import com.houseofmmminq.macaco.ui.screens.SearchScreen
 import com.houseofmmminq.macaco.ui.screens.SplashScreen
 import com.houseofmmminq.macaco.ui.screens.SubscriptionInfoScreen
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
@@ -207,7 +208,18 @@ fun NavGraph(
                         onEntryClick = { id ->
                             navController.navigate(Screen.EntryDetail.createRoute(id))
                         },
-                        onProfile = { navController.navigateToTab(Screen.Profile.route) }
+                        onProfile = { navController.navigateToTab(Screen.Profile.route) },
+                        onSearch = { navController.navigate(Screen.Search.route) }
+                    )
+                }
+
+                composable(Screen.Search.route) {
+                    SearchScreen(
+                        viewModel = viewModel,
+                        onEntryClick = { id ->
+                            navController.navigate(Screen.EntryDetail.createRoute(id))
+                        },
+                        onBack = { navController.popBackStack() }
                     )
                 }
 

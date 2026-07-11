@@ -39,6 +39,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -105,7 +106,8 @@ fun JournalListScreen(
     viewModel: JournalViewModel,
     onNewEntry: () -> Unit,
     onEntryClick: (String) -> Unit,
-    onProfile: () -> Unit
+    onProfile: () -> Unit,
+    onSearch: () -> Unit
 ) {
     val entries by viewModel.entries.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
@@ -257,6 +259,23 @@ fun JournalListScreen(
                             }
                         }
 
+                        // Search sits in the opposite (TopStart) corner so the two controls don't
+                        // crowd one corner in the shorter landscape header.
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .size(40.dp)
+                                .padding(start = macacoContentGutter()),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IconButton(onClick = onSearch) {
+                                Icon(
+                                    Icons.Filled.Search,
+                                    contentDescription = stringResource(R.string.search_action),
+                                    tint = Color.White
+                                )
+                            }
+                        }
                         Box(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
@@ -308,7 +327,15 @@ fun JournalListScreen(
                             .padding(horizontal = macacoContentGutter()),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Spacer(Modifier.size(40.dp))
+                        // Leading search button — same 40dp footprint as the old leading spacer,
+                        // so the centred MacacoBrandBlock (drawn on top) stays centred.
+                        IconButton(onClick = onSearch, modifier = Modifier.size(40.dp)) {
+                            Icon(
+                                Icons.Filled.Search,
+                                contentDescription = stringResource(R.string.search_action),
+                                tint = Color.White
+                            )
+                        }
                         Spacer(Modifier.weight(1f))
                         if (currentUser != null) {
                             if (profilePhotoUri != null) {
@@ -662,7 +689,7 @@ private fun EntryPhotoArea(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EntryCard(
+fun EntryCard(
     entry: TravelEntry,
     cachedDrivePhotos: Map<String, String>,
     selectedTags: Set<String>,

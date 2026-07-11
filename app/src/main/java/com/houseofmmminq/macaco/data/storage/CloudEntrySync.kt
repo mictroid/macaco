@@ -86,7 +86,9 @@ class CloudEntrySync(
                             videoFileIds = (doc.get("videoFileIds") as? List<*>)
                                 ?.filterIsInstance<String>() ?: emptyList(),
                             mediaOrder = (doc.get("mediaOrder") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList()
+                                ?.filterIsInstance<String>() ?: emptyList(),
+                            weatherCode = doc.getLong("weatherCode")?.toInt(),
+                            weatherTempMaxC = doc.getDouble("weatherTempMaxC")
                         )
                     }.getOrNull()
                 }
@@ -127,6 +129,8 @@ class CloudEntrySync(
         "tripName" to tripName,
         "videoUris" to videoUris,
         "videoFileIds" to videoFileIds,
-        "mediaOrder" to mediaOrder
+        "mediaOrder" to mediaOrder,
+        "weatherCode" to weatherCode,
+        "weatherTempMaxC" to weatherTempMaxC
     )
 }

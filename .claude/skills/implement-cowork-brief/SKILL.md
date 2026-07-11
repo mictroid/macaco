@@ -83,13 +83,15 @@ an edit — the brief may be targeting a version that no longer exists.
   `com.houseofmmminq.macaco.data.sync.JournalBackup.ImportPhase` fully-qualified — match it).
 - Match surrounding code style (comment density, naming, idiom).
 - **New user-facing strings → delegate to a subagent.** Decide the key name and the English value
-  yourself (that's the judgment part), then spawn a subagent to add the key across **all 11 locales**
-  via the `bulk-localize-strings` skill. Instruct it to return only "done" or the specific failure —
-  the 11 locale diffs stay out of this context. Do NOT edit the locale files inline here.
+  yourself (that's the judgment part), then spawn a subagent **with `model: "sonnet"`** to add the key
+  across **all 11 locales** via the `bulk-localize-strings` skill (Sonnet is enough for the translation
+  mechanics — never spawn this on the inherited Opus). Instruct it to return only "done" or the specific
+  failure — the 11 locale diffs stay out of this context. Do NOT edit the locale files inline here.
 
 ### 4. Build — delegate to a subagent
 Do NOT run gradle in this context; its output balloons the transcript. Spawn a subagent (Agent tool,
-`general-purpose`) with a precise instruction:
+`general-purpose`, **`model: "haiku"`** — the build step only runs gradle and greps its output, so
+never let it inherit the Opus main-loop model) with a precise instruction:
 
 > Run this from the repo root and report back ONLY one line — either `BUILD SUCCESSFUL`, or the
 > `error:`/`e:` lines if it failed. Do not paste the full log.
