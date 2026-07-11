@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded-rect dark-teal fill (matches OUTRO_BG / SplashTealMid used elsewhere) for the corner
+     radius modern launchers expect widgets to respect. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#0A4A58" />
+    <corners android:radius="16dp" />
+</shape>

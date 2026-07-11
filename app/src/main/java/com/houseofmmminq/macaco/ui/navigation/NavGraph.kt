@@ -46,8 +46,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
+import com.houseofmmminq.macaco.data.model.locations
 import com.houseofmmminq.macaco.data.model.tagsByFrequency
+import com.houseofmmminq.macaco.data.model.tripNames
 import com.houseofmmminq.macaco.ui.screens.MapScreen
+import com.houseofmmminq.macaco.ui.screens.PrintExportScreen
+import com.houseofmmminq.macaco.ui.screens.YearInTravelScreen
 import com.houseofmmminq.macaco.ui.screens.AppLockScreen
 import com.houseofmmminq.macaco.ui.screens.OnboardingScreen
 import com.houseofmmminq.macaco.ui.screens.EntryDetailScreen
@@ -62,18 +66,6 @@ import com.houseofmmminq.macaco.ui.screens.SearchScreen
 import com.houseofmmminq.macaco.ui.screens.SplashScreen
 import com.houseofmmminq.macaco.ui.screens.SubscriptionInfoScreen
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
-
-/** Distinct, non-blank locations from existing entries, for the location autocomplete. */
-private fun List<TravelEntry>.toLocationSuggestions(): List<String> =
-    mapNotNull { it.location.trim().ifBlank { null } }
-        .distinct()
-        .sorted()
-
-/** Distinct trip names from existing entries, most-recently-used first. */
-private fun List<TravelEntry>.toTripSuggestions(): List<String> =
-    mapNotNull { it.tripName?.trim()?.ifBlank { null } }
-        .distinct()
-        .sorted()
 
 // Re-lock after this many ms in the background.
 private const val LOCK_TIMEOUT_MS = 30_000L
@@ -240,9 +232,9 @@ fun NavGraph(
                             navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() },
-                        locationSuggestions = entries.toLocationSuggestions(),
+                        locationSuggestions = entries.locations(),
                         tagSuggestions = entries.tagsByFrequency(),
-                        tripSuggestions = entries.toTripSuggestions(),
+                        tripSuggestions = entries.tripNames(),
                         customMoods = viewModel.customMoods.collectAsState().value,
                         onAddCustomMood = { viewModel.addCustomMood(it) },
                         onSuppressAutoLock = { viewModel.suppressAutoLockOnce() },
@@ -307,9 +299,9 @@ fun NavGraph(
                             navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() },
-                        locationSuggestions = entries.toLocationSuggestions(),
+                        locationSuggestions = entries.locations(),
                         tagSuggestions = entries.tagsByFrequency(),
-                        tripSuggestions = entries.toTripSuggestions(),
+                        tripSuggestions = entries.tripNames(),
                         customMoods = viewModel.customMoods.collectAsState().value,
                         onAddCustomMood = { viewModel.addCustomMood(it) },
                         onSuppressAutoLock = { viewModel.suppressAutoLockOnce() }
@@ -335,6 +327,7 @@ fun NavGraph(
                         onSubscription = { navController.navigate(Screen.Subscription.route) },
                         onSettings = { navController.navigate(Screen.Settings.route) },
                         onHelp = { navController.navigate(Screen.HelpAbout.route) },
+                        onYearInTravel = { navController.navigate(Screen.YearInTravel.route) },
                         onDeleteAccount = { password, callback -> viewModel.deleteAccount(password, callback) }
                     )
                 }
@@ -343,7 +336,22 @@ fun NavGraph(
                     SettingsScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
-                        onNavigateToPaywall = { navController.navigate(Screen.Paywall.route) }
+                        onNavigateToPaywall = { navController.navigate(Screen.Paywall.route) },
+                        onPrintBook = { navController.navigate(Screen.PrintExport.route) }
+                    )
+                }
+
+                composable(Screen.PrintExport.route) {
+                    PrintExportScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable(Screen.YearInTravel.route) {
+                    YearInTravelScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() }
                     )
                 }
 

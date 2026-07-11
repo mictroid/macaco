@@ -37,6 +37,7 @@ import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.StarRate
@@ -105,6 +106,7 @@ fun ProfileScreen(
     onSubscription: () -> Unit,
     onSettings: () -> Unit,
     onHelp: () -> Unit,
+    onYearInTravel: () -> Unit,
     onDeleteAccount: (String?, (Result<Unit>) -> Unit) -> Unit
 ) {
     val currentUser by viewModel.currentUser.collectAsState()
@@ -579,6 +581,7 @@ fun ProfileScreen(
                             horizontalArrangement = Arrangement.spacedBy(gridSpacing),
                             modifier = Modifier.fillMaxWidth()
                         ) {
+                            ProfileActionTile(Icons.Filled.CalendarMonth, stringResource(R.string.year_recap_action), onClick = onYearInTravel)
                             ProfileActionTile(Icons.Filled.Settings, stringResource(R.string.common_settings), onClick = onSettings)
                             ProfileActionTile(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.drawer_help), onClick = onHelp)
                             ProfileActionTile(Icons.Filled.Share, stringResource(R.string.drawer_share_app), onClick = { AppActions.shareApp(context, entries.size) })
@@ -592,6 +595,12 @@ fun ProfileScreen(
                             )
                         }
                     } else {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            ProfileActionTile(Icons.Filled.CalendarMonth, stringResource(R.string.year_recap_action), onClick = onYearInTravel)
+                        }
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(gridSpacing),
                             modifier = Modifier.fillMaxWidth()
@@ -716,8 +725,9 @@ private fun RowScope.ProfileActionTile(
     }
 }
 
+// Not private: reused by YearInTravelScreen's stat grid (same package).
 @Composable
-private fun StatItem(value: String, label: String) {
+internal fun StatItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

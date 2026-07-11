@@ -68,6 +68,18 @@
             android:name=".util.SnoozeReceiver"
             android:exported="false" />
 
+        <!-- "On This Day" home-screen widget. -->
+        <receiver
+            android:name=".ui.widget.OnThisDayWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/on_this_day_widget_info" />
+        </receiver>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />

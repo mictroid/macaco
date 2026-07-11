@@ -51,6 +51,7 @@ import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Print
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Sync
@@ -138,7 +139,8 @@ private val SUPPORTED_LANGUAGES = listOf(
 fun SettingsScreen(
     viewModel: JournalViewModel,
     onBack: () -> Unit,
-    onNavigateToPaywall: () -> Unit
+    onNavigateToPaywall: () -> Unit,
+    onPrintBook: () -> Unit
 ) {
     val isDarkMode by viewModel.isDarkMode.collectAsState()
     val appTheme by viewModel.appTheme.collectAsState()
@@ -800,6 +802,19 @@ fun SettingsScreen(
                     }
                 )
             }
+
+            // ── Print Book (premium) ──────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+            SettingsSectionHeader(stringResource(R.string.print_book_title))
+
+            SettingsClickRow(
+                icon = Icons.Filled.Print,
+                title = stringResource(R.string.print_book_title),
+                value = if (isPurchased == true) stringResource(R.string.print_book_subtitle)
+                else stringResource(R.string.print_premium_required),
+                onClick = { if (isPurchased == true) onPrintBook() else onNavigateToPaywall() },
+                stackedValue = true
+            )
 
             // ── Subscription ──────────────────────────────────────────────────
             Spacer(Modifier.height(4.dp))

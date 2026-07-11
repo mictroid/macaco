@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-11 — feature batch 3: home-widget + print-book + year-recap (local, NOT yet shipped)
+
+- **Final batch of the 7-brief Cowork drop — implemented, not yet shipped** (head vc66): 3 briefs,
+  each verified vs live source first, 31 new string keys localized across 11 locales (Sonnet
+  subagent), `assembleDebug` BUILD SUCCESSFUL, all → `docs/DONE/`.
+  - **home-widget**: "On This Day" home-screen widget (`AppWidgetProvider`/`RemoteViews`, no new dep) —
+    own cold-process-safe one-shot Firestore query, refresh nudge on save/delete. New
+    `ui/widget/OnThisDayWidgetProvider.kt` + widget xml/layout/drawable + manifest receiver.
+  - **print-book**: premium A4 print-ready PDF "book" via `PdfDocument` (cover/first-page/photo-pages/
+    branded outro), trip/location/custom selection, SAF save + share. New `PrintBookExporter.kt` +
+    `PrintExportScreen.kt`; Settings entry point.
+  - **year-recap**: "Year in Travel" annual stat card + shareable 1080×1920 branded PNG. New
+    `YearRecapRenderer.kt` + `YearInTravelScreen.kt`; Profile action tile.
+  - Deviations (all in `worklog-2026-07-11.md`): widget `await` import add; print-book 4 call-sites +
+    `pagesWritten` on `Ready`; year-recap `Date`/`Locale` imports + full-width Profile tile placement.
+
 ## 2026-07-11 — reel-outro-hold-and-brand-icon-size (local, NOT yet shipped)
 
 - **reel-outro-hold-and-brand-icon-size — implemented, awaiting next bump** (commit `a5a2758`,

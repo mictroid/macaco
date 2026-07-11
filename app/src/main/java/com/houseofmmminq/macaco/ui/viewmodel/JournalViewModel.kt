@@ -21,7 +21,9 @@ import java.io.File
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
+import com.houseofmmminq.macaco.data.sync.PrintBookExporter
 import com.houseofmmminq.macaco.data.sync.TripShareManager
+import com.houseofmmminq.macaco.ui.widget.OnThisDayWidgetProvider
 import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.util.ImageStorage
@@ -259,6 +261,35 @@ class JournalViewModel(
 
     fun reelConsumed() { _reelState.value = ReelState.Idle }
 
+    // ── Print Book PDF export ───────────────────────────────────────────────────────────────────
+    // Stateless helper, same shape as journalBackup — built from appContext.
+    private val printBookExporter = PrintBookExporter(appContext)
+
+    sealed class PrintExportState {
+        object Idle : PrintExportState()
+        object Generating : PrintExportState()
+        data class Ready(val uri: Uri, val pagesWritten: Int, val photosSkipped: Int) : PrintExportState()
+        data class Error(val message: String) : PrintExportState()
+    }
+
+    private val _printExportState = MutableStateFlow<PrintExportState>(PrintExportState.Idle)
+    val printExportState: StateFlow<PrintExportState> = _printExportState.asStateFlow()
+
+    fun exportPrintBook(dest: Uri, config: PrintBookExporter.BookConfig) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _printExportState.value = PrintExportState.Generating
+            val result = printBookExporter.export(dest, config)
+            _printExportState.value = result.fold(
+                onSuccess = { PrintExportState.Ready(dest, it.pagesWritten, it.photosSkipped) },
+                onFailure = { e ->
+                    PrintExportState.Error(e.message ?: appContext.getString(R.string.print_export_error_generic))
+                }
+            )
+        }
+    }
+
+    fun printExportConsumed() { _printExportState.value = PrintExportState.Idle }
+
     // ── Camera-roll auto-suggested entries ──────────────────────────────────────────────────────
     private val _suggestedClusters = MutableStateFlow<List<PhotoRollScanner.PhotoCluster>>(emptyList())
     val suggestedClusters: StateFlow<List<PhotoRollScanner.PhotoCluster>> = _suggestedClusters.asStateFlow()
@@ -483,6 +514,7 @@ class JournalViewModel(
                 ImageStorage.delete(appContext, old.videoUris - entry.videoUris.toSet())
             }
             cloudEntrySync.save(entry)
+            OnThisDayWidgetProvider.requestUpdate(appContext)
             // Upload new photos AND videos to Drive in ONE background pass with ONE merged save.
             // Two separate launches used to race: each saved latest.copy(<its>FileIds), and the
             // later writer could read a `latest` predating the earlier save, reverting its IDs to
@@ -544,6 +576,7 @@ class JournalViewModel(
                 ImageStorage.delete(appContext, it.videoUris)
             }
             cloudEntrySync.delete(id)
+            OnThisDayWidgetProvider.requestUpdate(appContext)
         }
     }
 

@@ -1,7 +1,10 @@
 package com.houseofmmminq.macaco.data.model
 
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 @Serializable
@@ -76,4 +79,65 @@ fun List<TravelEntry>.matchingSearch(query: String): List<TravelEntry> {
             entry.tags.any { it.contains(q, ignoreCase = true) } ||
             entry.tripName?.contains(q, ignoreCase = true) == true
     }.sortedByDescending { it.dateMillis }
+}
+
+/** The single entry the home-screen widget shows: the most recent "on this day" match if one
+ *  exists, otherwise the most recently created entry overall, or null for an empty journal. */
+fun List<TravelEntry>.widgetHighlight(): TravelEntry? =
+    onThisDayEntries().firstOrNull() ?: maxByOrNull { it.dateMillis }
+
+/** Distinct trip names from these entries, alphabetical. Shared by the entry-editor autocomplete
+ *  and the Print Book selection screen. */
+fun List<TravelEntry>.tripNames(): List<String> =
+    mapNotNull { it.tripName?.trim()?.ifBlank { null } }
+        .distinct()
+        .sorted()
+
+/** Distinct, non-blank locations from these entries, alphabetical. */
+fun List<TravelEntry>.locations(): List<String> =
+    mapNotNull { it.location.trim().ifBlank { null } }
+        .distinct()
+        .sorted()
+
+/** This entry's calendar year (device default time zone, matching how dates are entered/shown
+ *  everywhere else in the app). */
+private fun TravelEntry.year(): Int =
+    Calendar.getInstance().apply { timeInMillis = dateMillis }.get(Calendar.YEAR)
+
+/** Entries whose date falls in [year]. */
+fun List<TravelEntry>.inYear(year: Int): List<TravelEntry> = filter { it.year() == year }
+
+/** Distinct years that have at least one entry, most recent first — populates the year picker. */
+fun List<TravelEntry>.entryYears(): List<Int> = map { it.year() }.distinct().sortedDescending()
+
+data class YearRecap(
+    val year: Int,
+    val entryCount: Int,
+    val tripCount: Int,
+    val locationCount: Int,
+    val mediaCount: Int,
+    val topMood: String?,
+    val topTag: String?,
+    val busiestMonth: String?
+)
+
+/** Aggregates [this] (already the whole journal — filters internally) into a [YearRecap] for
+ *  [year]. Returns a recap with all-zero counts if the year has no entries, rather than null —
+ *  the screen always has something to render, even if empty. */
+fun List<TravelEntry>.toYearRecap(year: Int): YearRecap {
+    val yearEntries = inYear(year)
+    val monthFormat = SimpleDateFormat("MMMM", Locale.getDefault())
+    return YearRecap(
+        year = year,
+        entryCount = yearEntries.size,
+        tripCount = yearEntries.mapNotNull { it.tripName?.trim()?.ifBlank { null } }.distinct().size,
+        locationCount = yearEntries.mapNotNull { it.location.trim().ifBlank { null } }.distinct().size,
+        mediaCount = yearEntries.sumOf { it.photoUris.size + it.videoUris.size },
+        topMood = yearEntries.map { it.mood }.filter { it.isNotBlank() }
+            .groupingBy { it }.eachCount().maxByOrNull { it.value }?.key,
+        topTag = yearEntries.tagsByFrequency().firstOrNull(),
+        busiestMonth = yearEntries
+            .groupingBy { monthFormat.format(Date(it.dateMillis)) }
+            .eachCount().maxByOrNull { it.value }?.key
+    )
 }
