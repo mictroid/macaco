@@ -2,6 +2,13 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-11 — vc66 (1.6, closed testing)
+
+- **vc66 / 1.6 — DISPATCHED 2026-07-11** (run `29144641904`, impl `40af595`, bump `5b6e29e`): 4-brief
+  batch — reel short-share-URL fix, video-only Drive download fix (data-loss), paywall+Swedish locale
+  completion (10 locales, 0 missing), release hygiene (MapCamera log strip + backup-rule exclusion +
+  comment drift). Detail in `worklog-2026-07-11.md`.
+
 ## 2026-07-10 — vc65 (1.6, closed testing)
 
 - **vc65 / 1.6 — SHIPPED ✅ 2026-07-10** (run `29110384308` CONFIRMED SUCCESS ~6m13s, published to closed testing; commit `d56ec66`): 3-brief vc64 follow-up
