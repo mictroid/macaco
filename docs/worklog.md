@@ -2,7 +2,27 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-07-11 — feature batch 3: home-widget + print-book + year-recap (local, NOT yet shipped)
+## 2026-07-11 — vc67 (1.6, closed testing) — SHIPPED the whole feature drop + 3 on-device fixes
+
+- **vc67 dispatched — WIF run `29162265184`** (bump+notes `523877d`, fixes `1c1b2d2`; origin == HEAD
+  verified before dispatch; dispatched 19:47:43 +0200). One build ships the three previously-unshipped
+  feature batches (1: weather-stamp + entry-search `801b88e`; 2: camera-roll suggestions +
+  shared-trip-links `88bd2b0`; 3: home-widget + print-book + year-recap `45b3e5f`) plus three fixes
+  found during S8+ on-device testing:
+  - **Profile header** — avatar no longer clipped under the branded topBar (removed the upward offset
+    that let the teal banner, drawn over the body, paint over the avatar top). Verified on device.
+  - **Print Book PDF** — was writing a 0-byte file: an unguarded `openInputStream` on a stale media URI
+    (photo from another device on a cloud-synced entry) threw and aborted the whole export. Now fully
+    fault-tolerant (`decodeForPrint` wrapped, recycle only after `finishPage`, photos resolved via the
+    Drive cache, `ensurePhotosCached()` awaited before render, `Error` state surfaced). Verified: proper
+    multi-page PDF generates.
+  - **Camera-roll suggestions** — "Allow" did nothing on Android 14+ (ACCESS_MEDIA_LOCATION can't be
+    granted in the same request as the read permission); now gated on the read permission with
+    media-location requested as a second step.
+  - Detail in `worklog-2026-07-11.md`. **Open:** confirm the run; verify photo embedding + camera-roll
+    Allow from a Play build on an owning account / Android 14+ device.
+
+## 2026-07-11 — feature batch 3: home-widget + print-book + year-recap (shipped in vc67)
 
 - **Final batch of the 7-brief Cowork drop — implemented, not yet shipped** (head vc66): 3 briefs,
   each verified vs live source first, 31 new string keys localized across 11 locales (Sonnet
