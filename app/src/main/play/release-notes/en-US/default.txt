@@ -1,6 +1,6 @@
 What's new:
-• Adventure Reels: cleaner branded ending that no longer clashes with the player's pause button
-• The macaco logo now shows on every reel frame, even over bright photos
-• Smoother switch to the Adventures map — no more white flash while it loads
-• Your Profile header now stays put as you scroll instead of sliding away
-• Fixed the Adventures logo drifting off-center in landscape
+• Fixed videos not reappearing on your other devices or after reinstalling
+• The paywall and more screens are now fully translated in every supported language
+• Adventure Reels now share a short, clean link instead of a long messy one
+• Extra Swedish translations across the map, reminders and sharing
+• Behind-the-scenes cleanup for a more polished release
