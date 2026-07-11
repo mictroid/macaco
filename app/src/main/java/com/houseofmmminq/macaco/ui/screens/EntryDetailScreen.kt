@@ -340,7 +340,9 @@ fun EntryDetailScreen(
                         Image(
                             painter = painterResource(R.drawable.ic_launcher_foreground),
                             contentDescription = null,
-                            modifier = Modifier.size(28.dp)
+                            // 36dp — matches MacacoBrandBlock's landscape-collapsed icon size so
+                            // every screen's compact header icon is the same size again.
+                            modifier = Modifier.size(36.dp)
                         )
                         if (LocalConfiguration.current.screenWidthDp >= 420) {
                             Text(

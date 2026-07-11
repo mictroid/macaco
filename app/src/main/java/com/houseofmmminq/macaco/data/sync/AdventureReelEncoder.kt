@@ -51,7 +51,11 @@ class AdventureReelEncoder(private val context: Context) {
         private const val PHOTO_FRAMES  = 90        // 3 s per photo at 30 fps
         private const val FADE_FRAMES   = 15        // 0.5 s cross-dissolve
         private const val OUTRO_FADE_FRAMES = 15    // 0.5 s fade from last photo into the outro card
-        private const val OUTRO_HOLD_FRAMES = 45    // 1.5 s hold — long enough to actually scan the QR
+        // 4 s hold — matches PHOTO_FRAMES' 3 s-per-photo dwell plus a margin, since scanning a QR
+        // (raise camera, focus, lock) takes longer than just looking at a photo. Previously 45
+        // frames / 1.5 s, which real shares showed wasn't enough time before the clip ended or
+        // looped back to the first photo, making the app hard to find again.
+        private const val OUTRO_HOLD_FRAMES = 120   // 4 s hold
         private const val MIME = "video/avc"
     }
 
