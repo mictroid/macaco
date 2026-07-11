@@ -377,4 +377,24 @@
     <string name="help_faq_video_add_a">点按条目编辑器中的“视频”按钮，选择“录制片段”即可直接用相机拍摄最长 15 秒的视频，或选择“从相册选择”以选取已有视频。相册中超过 15 秒的视频可在保存前裁剪到你想要的片段。每个条目最多可添加 3 个视频。</string>
     <string name="help_faq_video_length_q">视频最长可以多长？会占用多少空间？</string>
     <string name="help_faq_video_length_a">视频限制为 15 秒。Macaco 会自动将每个片段压缩到约 4 MB（720p，H.264），以控制你的存储空间和 Drive 配额。只要在设置中已连接 Drive，视频就会与照片一起备份到 Google Drive。</string>
+    <string name="help_feedback_feature_subject">Macaco – 功能建议</string>
+    <string name="help_feedback_issue_subject">Macaco – 问题反馈</string>
+    <string name="purchase_best_value">超值之选</string>
+    <string name="purchase_cancel_anytime">随时取消</string>
+    <string name="purchase_cta_annual">免费试用7天</string>
+    <string name="purchase_cta_lifetime">购买终身版 — %s</string>
+    <string name="purchase_cta_monthly">开通月度版 — %s</string>
+    <string name="purchase_free_trial">免费7天，之后 %s / 年</string>
+    <string name="purchase_most_popular">最受欢迎</string>
+    <string name="purchase_once">一次性付款</string>
+    <string name="purchase_own_forever">一次付费，永久拥有</string>
+    <string name="purchase_per_month">/ 月</string>
+    <string name="purchase_per_year">/ 年</string>
+    <string name="purchase_plan_annual">年度版</string>
+    <string name="purchase_plan_lifetime">终身版</string>
+    <string name="purchase_plan_monthly">月度版</string>
+    <string name="purchase_save_50">比月付节省50%</string>
+    <string name="purchase_trial_note">试用期内随时取消，不会产生任何费用</string>
+    <string name="settings_drive_connected_as">已连接为 %s</string>
+    <string name="settings_drive_disconnect">断开连接</string>
 </resources>

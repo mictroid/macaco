@@ -95,7 +95,7 @@ class JournalBackup(private val context: Context) {
                     }
                     // Full export bundles video bytes too (720p/2Mbps ≤15s ≈ 4 MB each), streamed —
                     // never readBytes() a multi-MB clip into heap. Compact skips videos to stay
-                    // small; their Drive IDs survive for downloadMissingVideos re-fetch.
+                    // small; their Drive IDs survive for DrivePhotoSync.downloadMissing() re-fetch.
                     val videoPaths = if (compact) entry.videoUris else {
                         entry.videoUris.mapIndexedNotNull { i, uriString ->
                             val path = "videos/${entry.id}_$i.mp4"
@@ -317,7 +317,7 @@ class JournalBackup(private val context: Context) {
                 // Bundled videos (Full backups, videoUris = "videos/…" zip paths) re-materialize
                 // into Movies/Macaco; persistVideoToGallery takes the temp File directly, no heap
                 // copy. Compact/legacy backups carry real URIs (no "videos/" prefix) — keep them
-                // AND their videoFileIds so downloadMissingVideos re-fetches from Drive.
+                // AND their videoFileIds so DrivePhotoSync.downloadMissing() re-fetches from Drive.
                 val videosBundled = entry.videoUris.any { it.startsWith("videos/") }
                 val newVideoUris = if (!videosBundled) entry.videoUris else {
                     entry.videoUris.mapNotNull { path ->

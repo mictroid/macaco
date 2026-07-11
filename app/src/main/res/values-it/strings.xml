@@ -381,4 +381,24 @@
     <string name="help_faq_video_add_a">Tocca il pulsante Video nell\'editor delle voci e scegli «Registra clip» per registrare fino a 15 secondi direttamente con la fotocamera, oppure «Scegli dalla galleria» per selezionare un video esistente. I video della galleria più lunghi di 15 secondi possono essere ritagliati sul momento desiderato prima di salvare. Puoi aggiungere fino a 3 video per voce.</string>
     <string name="help_faq_video_length_q">Quanto può durare un video e quanto spazio occupa?</string>
     <string name="help_faq_video_length_a">I video sono limitati a 15 secondi. Macaco comprime automaticamente ogni clip a circa 4 MB (720p, H.264), così lo spazio di archiviazione e la quota di Drive restano sotto controllo. I video vengono salvati su Google Drive insieme alle foto finché Drive è collegato nelle Impostazioni.</string>
+    <string name="help_feedback_feature_subject">Macaco – Richiesta funzionalità</string>
+    <string name="help_feedback_issue_subject">Macaco – Segnalazione problema</string>
+    <string name="purchase_best_value">Migliore offerta</string>
+    <string name="purchase_cancel_anytime">Disdici quando vuoi</string>
+    <string name="purchase_cta_annual">Prova gratis per 7 giorni</string>
+    <string name="purchase_cta_lifetime">Acquista A vita — %s</string>
+    <string name="purchase_cta_monthly">Inizia il mensile — %s</string>
+    <string name="purchase_free_trial">7 giorni gratis, poi %s / anno</string>
+    <string name="purchase_most_popular">Il più popolare</string>
+    <string name="purchase_once">una tantum</string>
+    <string name="purchase_own_forever">Paghi una volta, è tuo per sempre</string>
+    <string name="purchase_per_month">/ mese</string>
+    <string name="purchase_per_year">/ anno</string>
+    <string name="purchase_plan_annual">Annuale</string>
+    <string name="purchase_plan_lifetime">A vita</string>
+    <string name="purchase_plan_monthly">Mensile</string>
+    <string name="purchase_save_50">Risparmia il 50% rispetto al mensile</string>
+    <string name="purchase_trial_note">Disdici durante la prova e non ti verrà addebitato nulla</string>
+    <string name="settings_drive_connected_as">Connesso come %s</string>
+    <string name="settings_drive_disconnect">Disconnetti</string>
 </resources>

@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val vm: JournalViewModel = viewModel(factory = factory)
 
-            // Entry photos live in shared storage (Pictures/Wanderlog) so they survive uninstalls.
+            // Entry photos live in shared storage (Pictures/Macaco) so they survive uninstalls.
             // After a reinstall the app no longer owns those files, so it needs media-read permission
             // to display them again — request it once on launch.
             val context = LocalContext.current

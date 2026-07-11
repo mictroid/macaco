@@ -377,4 +377,24 @@
     <string name="help_faq_video_add_a">エントリーエディターの「動画」ボタンをタップし、「クリップを録画」を選ぶとカメラで最大15秒まで直接撮影でき、「ギャラリーから選択」を選ぶと既存の動画を選べます。15秒を超えるギャラリーの動画は、保存前に好きな場面にトリミングできます。1つのエントリーにつき最大3本の動画を追加できます。</string>
     <string name="help_faq_video_length_q">動画の長さの上限と、使用する容量はどのくらいですか？</string>
     <string name="help_faq_video_length_a">動画は15秒までに制限されています。Macacoは各クリップを自動的に約4MB（720p、H.264）に圧縮するので、ストレージやDriveの容量を抑えられます。設定でDriveが接続されていれば、動画は写真と一緒にGoogleドライブにバックアップされます。</string>
+    <string name="help_feedback_feature_subject">Macaco – 機能リクエスト</string>
+    <string name="help_feedback_issue_subject">Macaco – 不具合報告</string>
+    <string name="purchase_best_value">一番お得</string>
+    <string name="purchase_cancel_anytime">いつでもキャンセル可能</string>
+    <string name="purchase_cta_annual">7日間無料で試す</string>
+    <string name="purchase_cta_lifetime">買い切りを購入 — %s</string>
+    <string name="purchase_cta_monthly">月額プランを開始 — %s</string>
+    <string name="purchase_free_trial">7日間無料、その後 %s / 年</string>
+    <string name="purchase_most_popular">一番人気</string>
+    <string name="purchase_once">一回払い</string>
+    <string name="purchase_own_forever">一度の支払いでずっと使える</string>
+    <string name="purchase_per_month">/ 月</string>
+    <string name="purchase_per_year">/ 年</string>
+    <string name="purchase_plan_annual">年額</string>
+    <string name="purchase_plan_lifetime">買い切り</string>
+    <string name="purchase_plan_monthly">月額</string>
+    <string name="purchase_save_50">月額より50%お得</string>
+    <string name="purchase_trial_note">無料期間中にキャンセルすれば料金はかかりません</string>
+    <string name="settings_drive_connected_as">%s として接続中</string>
+    <string name="settings_drive_disconnect">接続を解除</string>
 </resources>

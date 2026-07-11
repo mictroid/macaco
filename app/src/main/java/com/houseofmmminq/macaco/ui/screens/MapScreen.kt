@@ -301,11 +301,6 @@ fun MapScreen(
                 fitLatCenter = latCenter
                 fitLngCenter = lngCenter
 
-                Log.d("MapCamera", "v11: lngSpan=${"%.1f".format(lngSpan)}° density=$density " +
-                    "lngZ=${"%.2f".format(lngZoom)} latZ=${"%.2f".format(latZoom)} " +
-                    "→zoom=$zoom map=${mapSizePx.width}×${mapSizePx.height}px " +
-                    "center=(${"%+.1f".format(latCenter)},${"%+.1f".format(lngCenter)})")
-
                 CameraUpdateFactory.newLatLngZoom(LatLng(latCenter, lngCenter), zoom)
             }
 
@@ -322,8 +317,6 @@ fun MapScreen(
                 // Read back what the SDK actually applied — may differ from requestedZoom if the SDK
                 // clamped it (portrait Mercator floor: ~zoom 2.0 on a full-height phone).
                 val appliedZoom = cameraPositionState.position.zoom
-                Log.d("MapCamera", "v12: applied zoom=$appliedZoom (requested=$requestedZoom) " +
-                    "clamp=${if (appliedZoom > requestedZoom + 0.2f) "YES — SDK floor active" else "no"}")
                 globeSpanning = appliedZoom > requestedZoom + 0.2f
 
                 // v13: when clamped, some pins fall off the left/right edge; reframe the latitude on
@@ -345,8 +338,6 @@ fun MapScreen(
                     } else fitLatCenter
 
                     if (abs(latCenterVisible - fitLatCenter) > 0.5) {
-                        Log.d("MapCamera", "v13: lat reframe ${"%.1f".format(fitLatCenter)}→" +
-                            "${"%.1f".format(latCenterVisible)} (${visibleLatlngs.size} visible pins)")
                         runCatching {
                             cameraPositionState.move(
                                 CameraUpdateFactory.newLatLngZoom(

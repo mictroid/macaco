@@ -392,4 +392,22 @@
     <string name="help_faq_video_add_a">Tippe im Eintragseditor auf die Schaltfläche „Video“ und wähle „Clip aufnehmen“, um bis zu 15 Sekunden direkt mit deiner Kamera aufzunehmen, oder „Aus Galerie wählen“, um ein vorhandenes Video auszuwählen. Galerievideos, die länger als 15 Sekunden sind, kannst du vor dem Speichern auf den gewünschten Moment zuschneiden. Du kannst bis zu 3 Videos pro Eintrag hinzufügen.</string>
     <string name="help_faq_video_length_q">Wie lang darf ein Video sein und wie viel Speicher belegt es?</string>
     <string name="help_faq_video_length_a">Videos sind auf 15 Sekunden begrenzt. Macaco komprimiert jeden Clip automatisch auf etwa 4 MB (720p, H.264), damit dein Speicher und dein Drive-Kontingent überschaubar bleiben. Videos werden zusammen mit deinen Fotos in Google Drive gesichert, solange Drive in den Einstellungen verbunden ist.</string>
+    <string name="help_feedback_feature_subject">Macaco – Funktionswunsch</string>
+    <string name="help_feedback_issue_subject">Macaco – Problembericht</string>
+    <string name="purchase_best_value">Bestes Angebot</string>
+    <string name="purchase_cancel_anytime">Jederzeit kündbar</string>
+    <string name="purchase_cta_annual">7 Tage gratis testen</string>
+    <string name="purchase_cta_lifetime">Lifetime kaufen — %s</string>
+    <string name="purchase_cta_monthly">Monatlich starten — %s</string>
+    <string name="purchase_free_trial">7 Tage gratis, danach %s / Jahr</string>
+    <string name="purchase_most_popular">Am beliebtesten</string>
+    <string name="purchase_once">einmalig</string>
+    <string name="purchase_own_forever">Einmal zahlen, für immer nutzen</string>
+    <string name="purchase_per_month">/ Monat</string>
+    <string name="purchase_per_year">/ Jahr</string>
+    <string name="purchase_plan_annual">Jährlich</string>
+    <string name="purchase_plan_lifetime">Lifetime</string>
+    <string name="purchase_plan_monthly">Monatlich</string>
+    <string name="purchase_save_50">Spare 50 % gegenüber monatlich</string>
+    <string name="purchase_trial_note">Während der Testphase jederzeit kündbar – es wird nichts berechnet</string>
 </resources>

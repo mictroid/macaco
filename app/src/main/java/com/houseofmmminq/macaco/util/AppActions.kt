@@ -20,15 +20,14 @@ object AppActions {
     private const val PACKAGE = "com.houseofmmminq.macaco"
     private const val LISTING_URL = "https://play.google.com/store/apps/details?id=$PACKAGE"
 
-    // Play's own referrer parameter (not a webpage UTM) — Firebase Analytics' automatic Install
-    // Referrer collection reads this at first_open and attributes the install to
-    // reel_share / video / adventure_reel in the Acquisition report, no extra SDK needed.
-    // Deliberately the FULL url, not the short QR redirect (r/index.html / reel_qr_code.png) —
-    // this is human-visible text in the share sheet, and a recognizable play.google.com domain
-    // is worth more here than the character savings that matter for QR pixel density. Don't
-    // "simplify" this to match the QR's short link.
-    const val REEL_SHARE_URL = "$LISTING_URL&referrer=" +
-        "utm_source%3Dreel_share%26utm_medium%3Dvideo%26utm_campaign%3Dadventure_reel"
+    // Short redirect (r/index.html, served via the same GitHub Pages pipeline as
+    // privacy-policy.html) that forwards to the full Play Store URL with the referrer-tagged
+    // UTM. Used for BOTH the share-caption text and the QR (res/drawable-nodpi/reel_qr_code.png,
+    // design/macaco_adventure_reel_qr.png) — the full URL with its URL-encoded referrer string
+    // renders as an unreadable wall of text in a chat bubble, which reads as spammier than a
+    // short link regardless of domain. The actual attribution logic (utm_source/medium/campaign)
+    // lives in r/index.html, not here — edit that file if the tracked destination ever changes.
+    const val REEL_SHARE_URL = "https://mictroid.github.io/macaco/r/"
 
     const val SUPPORT_EMAIL = "houseofmmminq@gmail.com"
     // Hosted on GitHub Pages from privacy-policy.html at the repo root.

@@ -381,4 +381,24 @@
     <string name="help_faq_video_add_a">Tik op de knop Video in de itemeditor en kies “Clip opnemen” om tot 15 seconden rechtstreeks met je camera op te nemen, of “Kies uit galerij” om een bestaande video te selecteren. Video\'s uit de galerij die langer zijn dan 15 seconden kun je vóór het opslaan inkorten tot het gewenste moment. Je kunt maximaal 3 video\'s per item toevoegen.</string>
     <string name="help_faq_video_length_q">Hoe lang mag een video zijn en hoeveel ruimte gebruikt die?</string>
     <string name="help_faq_video_length_a">Video\'s zijn beperkt tot 15 seconden. Macaco comprimeert elke clip automatisch tot ongeveer 4 MB (720p, H.264), zodat je opslag en Drive-quota beheersbaar blijven. Video\'s worden samen met je foto\'s geback-upt naar Google Drive zolang Drive is verbonden in Instellingen.</string>
+    <string name="help_feedback_feature_subject">Macaco – Functieverzoek</string>
+    <string name="help_feedback_issue_subject">Macaco – Probleemmelding</string>
+    <string name="purchase_best_value">Beste deal</string>
+    <string name="purchase_cancel_anytime">Altijd opzegbaar</string>
+    <string name="purchase_cta_annual">Probeer 7 dagen gratis</string>
+    <string name="purchase_cta_lifetime">Koop Lifetime — %s</string>
+    <string name="purchase_cta_monthly">Start maandelijks — %s</string>
+    <string name="purchase_free_trial">7 dagen gratis, daarna %s / jaar</string>
+    <string name="purchase_most_popular">Populairste keuze</string>
+    <string name="purchase_once">eenmalig</string>
+    <string name="purchase_own_forever">Eén keer betalen, voor altijd van jou</string>
+    <string name="purchase_per_month">/ maand</string>
+    <string name="purchase_per_year">/ jaar</string>
+    <string name="purchase_plan_annual">Jaarlijks</string>
+    <string name="purchase_plan_lifetime">Lifetime</string>
+    <string name="purchase_plan_monthly">Maandelijks</string>
+    <string name="purchase_save_50">Bespaar 50% t.o.v. maandelijks</string>
+    <string name="purchase_trial_note">Zeg op tijdens de proefperiode en je betaalt niets</string>
+    <string name="settings_drive_connected_as">Verbonden als %s</string>
+    <string name="settings_drive_disconnect">Verbinding verbreken</string>
 </resources>

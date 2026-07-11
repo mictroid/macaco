@@ -247,7 +247,6 @@ class DrivePhotoSync(private val context: Context) {
                     (entry.photoUris.getOrNull(i)?.let { !isUriAccessible(it) } ?: true)
             }
         }.distinct()
-        if (needed.isEmpty()) return@withContext
 
         val neededVideos = entries.flatMap { entry ->
             entry.videoFileIds.filterIndexed { i, id ->

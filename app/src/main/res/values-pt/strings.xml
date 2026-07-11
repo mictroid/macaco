@@ -381,4 +381,24 @@
     <string name="help_faq_video_add_a">Toque no botão Vídeo no editor de entradas e escolha “Gravar clipe” para capturar até 15 segundos diretamente com a câmera, ou “Escolher da galeria” para selecionar um vídeo existente. Vídeos da galeria com mais de 15 segundos podem ser cortados para o momento desejado antes de salvar. Você pode adicionar até 3 vídeos por entrada.</string>
     <string name="help_faq_video_length_q">Qual é a duração máxima de um vídeo e quanto espaço ele ocupa?</string>
     <string name="help_faq_video_length_a">Os vídeos são limitados a 15 segundos. O Macaco comprime automaticamente cada clipe para cerca de 4 MB (720p, H.264), mantendo o seu armazenamento e a cota do Drive sob controle. Os vídeos são salvos no Google Drive junto com as suas fotos, desde que o Drive esteja conectado nas Configurações.</string>
+    <string name="help_feedback_feature_subject">Macaco – Sugestão de recurso</string>
+    <string name="help_feedback_issue_subject">Macaco – Relato de problema</string>
+    <string name="purchase_best_value">Melhor oferta</string>
+    <string name="purchase_cancel_anytime">Cancele quando quiser</string>
+    <string name="purchase_cta_annual">Experimente 7 dias grátis</string>
+    <string name="purchase_cta_lifetime">Comprar Vitalício — %s</string>
+    <string name="purchase_cta_monthly">Começar Mensal — %s</string>
+    <string name="purchase_free_trial">7 dias grátis, depois %s / ano</string>
+    <string name="purchase_most_popular">Mais popular</string>
+    <string name="purchase_once">pagamento único</string>
+    <string name="purchase_own_forever">Pague uma vez, seu para sempre</string>
+    <string name="purchase_per_month">/ mês</string>
+    <string name="purchase_per_year">/ ano</string>
+    <string name="purchase_plan_annual">Anual</string>
+    <string name="purchase_plan_lifetime">Vitalício</string>
+    <string name="purchase_plan_monthly">Mensal</string>
+    <string name="purchase_save_50">Economize 50% em relação ao mensal</string>
+    <string name="purchase_trial_note">Cancele durante o teste e nada será cobrado</string>
+    <string name="settings_drive_connected_as">Conectado como %s</string>
+    <string name="settings_drive_disconnect">Desconectar</string>
 </resources>

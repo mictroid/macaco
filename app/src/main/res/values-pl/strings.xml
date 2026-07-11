@@ -389,4 +389,24 @@
     <string name="help_faq_video_add_a">Dotknij przycisku Film w edytorze wpisu i wybierz „Nagraj klip”, aby nagrać do 15 sekund bezpośrednio kamerą, lub „Wybierz z galerii”, aby wybrać istniejący film. Filmy z galerii dłuższe niż 15 sekund można przed zapisaniem przyciąć do wybranego momentu. Do każdego wpisu możesz dodać maksymalnie 3 filmy.</string>
     <string name="help_faq_video_length_q">Jak długi może być film i ile zajmuje miejsca?</string>
     <string name="help_faq_video_length_a">Filmy są ograniczone do 15 sekund. Macaco automatycznie kompresuje każdy klip do około 4 MB (720p, H.264), dzięki czemu Twoja pamięć i limit Dysku pozostają pod kontrolą. Filmy są kopiowane na Dysk Google razem ze zdjęciami, o ile Dysk jest połączony w Ustawieniach.</string>
+    <string name="help_feedback_feature_subject">Macaco – Propozycja funkcji</string>
+    <string name="help_feedback_issue_subject">Macaco – Zgłoszenie problemu</string>
+    <string name="purchase_best_value">Najlepsza oferta</string>
+    <string name="purchase_cancel_anytime">Anuluj w każdej chwili</string>
+    <string name="purchase_cta_annual">Wypróbuj 7 dni za darmo</string>
+    <string name="purchase_cta_lifetime">Kup dożywotni — %s</string>
+    <string name="purchase_cta_monthly">Zacznij miesięczny — %s</string>
+    <string name="purchase_free_trial">7 dni za darmo, potem %s / rok</string>
+    <string name="purchase_most_popular">Najpopularniejszy</string>
+    <string name="purchase_once">jednorazowo</string>
+    <string name="purchase_own_forever">Zapłać raz, korzystaj na zawsze</string>
+    <string name="purchase_per_month">/ miesiąc</string>
+    <string name="purchase_per_year">/ rok</string>
+    <string name="purchase_plan_annual">Roczny</string>
+    <string name="purchase_plan_lifetime">Dożywotni</string>
+    <string name="purchase_plan_monthly">Miesięczny</string>
+    <string name="purchase_save_50">Oszczędź 50% względem miesięcznego</string>
+    <string name="purchase_trial_note">Anuluj w okresie próbnym, a nic nie zapłacisz</string>
+    <string name="settings_drive_connected_as">Połączono jako %s</string>
+    <string name="settings_drive_disconnect">Odłącz</string>
 </resources>
