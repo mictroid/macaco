@@ -138,34 +138,43 @@ fun PrintExportScreen(
                     coverPhotoUri = coverPhotoUri,
                     firstPagePhotoUri = firstPagePhotoUri,
                     firstPageCaption = firstPageCaption,
-                    entries = selectedEntries
+                    entries = selectedEntries,
+                    cachedDrivePhotos = cachedDrivePhotos
                 )
             )
         }
     }
 
-    // On a finished export, surface a Share action; consume the state afterward so it doesn't fire
-    // again on recomposition.
+    // On a finished export, surface a Share action; on a failure, show the error. Consume the
+    // state afterward so it doesn't fire again on recomposition.
     LaunchedEffect(exportState) {
-        val ready = exportState as? JournalViewModel.PrintExportState.Ready ?: return@LaunchedEffect
-        val msg = if (ready.photosSkipped > 0) {
-            context.getString(R.string.print_export_done_warn, ready.photosSkipped)
-        } else {
-            context.getString(R.string.print_export_done, ready.pagesWritten)
-        }
-        val result = snackbarHost.showSnackbar(
-            message = msg,
-            actionLabel = context.getString(R.string.print_export_share)
-        )
-        if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
-            val share = Intent(Intent.ACTION_SEND).apply {
-                type = "application/pdf"
-                putExtra(Intent.EXTRA_STREAM, ready.uri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        when (val state = exportState) {
+            is JournalViewModel.PrintExportState.Ready -> {
+                val msg = if (state.photosSkipped > 0) {
+                    context.getString(R.string.print_export_done_warn, state.photosSkipped)
+                } else {
+                    context.getString(R.string.print_export_done, state.pagesWritten)
+                }
+                val result = snackbarHost.showSnackbar(
+                    message = msg,
+                    actionLabel = context.getString(R.string.print_export_share)
+                )
+                if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
+                    val share = Intent(Intent.ACTION_SEND).apply {
+                        type = "application/pdf"
+                        putExtra(Intent.EXTRA_STREAM, state.uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    context.startActivity(Intent.createChooser(share, null))
+                }
+                viewModel.printExportConsumed()
             }
-            context.startActivity(Intent.createChooser(share, null))
+            is JournalViewModel.PrintExportState.Error -> {
+                snackbarHost.showSnackbar(state.message)
+                viewModel.printExportConsumed()
+            }
+            else -> Unit
         }
-        viewModel.printExportConsumed()
     }
 
     val generating = exportState is JournalViewModel.PrintExportState.Generating

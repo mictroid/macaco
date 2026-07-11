@@ -278,7 +278,17 @@ class JournalViewModel(
     fun exportPrintBook(dest: Uri, config: PrintBookExporter.BookConfig) {
         viewModelScope.launch(Dispatchers.IO) {
             _printExportState.value = PrintExportState.Generating
-            val result = printBookExporter.export(dest, config)
+            // Cloud-synced entries can have dead local photoUris (the photo was taken on another
+            // device); the readable copy lives in Drive. Await a download of anything not already
+            // cached — same pass exportBackup uses — so the book contains real photos instead of
+            // placeholder pages. Falls back to the current cache snapshot if Drive is unreachable.
+            val cached = if (drivePhotoSync.isDriveConnected()) {
+                runCatching { drivePhotoSync.ensurePhotosCached(config.entries) }
+                    .getOrDefault(drivePhotoSync.cachedPhotoUris.value)
+            } else {
+                drivePhotoSync.cachedPhotoUris.value
+            }
+            val result = printBookExporter.export(dest, config.copy(cachedDrivePhotos = cached))
             _printExportState.value = result.fold(
                 onSuccess = { PrintExportState.Ready(dest, it.pagesWritten, it.photosSkipped) },
                 onFailure = { e ->

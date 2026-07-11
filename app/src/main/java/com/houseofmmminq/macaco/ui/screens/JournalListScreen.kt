@@ -239,24 +239,43 @@ fun JournalListScreen(
 
     // ── Camera-roll auto-suggested entries ──────────────────────────────────────────────────────
     val suggestedClusters by viewModel.suggestedClusters.collectAsState()
-    // Reading the camera roll needs the media-read permission (API-split) AND ACCESS_MEDIA_LOCATION
-    // for unredacted GPS EXIF. Evaluated on each composition so granting flips the prompt away.
-    fun hasSuggestionPermission(): Boolean {
+    // Reading the camera roll needs the media-read permission (API-split). ACCESS_MEDIA_LOCATION is
+    // *additionally* needed for unredacted GPS EXIF — but on Android 14+ it can't be granted in the
+    // same request as the read permission (it requires the read grant to already be held). So gate
+    // the feature on the read permission alone and request media-location as a second step; if it's
+    // ultimately denied the scan just finds no geotags (handled) instead of the whole feature
+    // silently doing nothing after the user taps Allow. Evaluated per composition so granting flips
+    // the prompt away.
+    fun hasReadPermission(): Boolean {
         val readPerm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             Manifest.permission.READ_MEDIA_IMAGES else Manifest.permission.READ_EXTERNAL_STORAGE
-        return ContextCompat.checkSelfPermission(context, readPerm) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_MEDIA_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(context, readPerm) == PackageManager.PERMISSION_GRANTED
     }
+    fun hasMediaLocationPermission(): Boolean =
+        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_MEDIA_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
     // One-time (per process) dismissal of the permission-invite card, so declining doesn't re-nag.
     var suggestionInviteDismissed by rememberSaveable { mutableStateOf(false) }
+    // Second-step request for ACCESS_MEDIA_LOCATION, fired once the read permission is held. Scans
+    // with whatever we're granted (a no-GPS scan simply finds nothing).
+    val mediaLocationLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { if (hasReadPermission()) viewModel.checkForSuggestedEntries(context) }
     val suggestionPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { if (hasSuggestionPermission()) viewModel.checkForSuggestedEntries(context) }
-    // Scan on entry if the permission is already granted (returning users). New users tap the
+    ) {
+        if (hasReadPermission()) {
+            // Now that read is held, ask for media-location explicitly (Android 14+ won't grant it
+            // in the combined request above); the scan runs from that launcher's callback.
+            if (!hasMediaLocationPermission())
+                mediaLocationLauncher.launch(Manifest.permission.ACCESS_MEDIA_LOCATION)
+            else viewModel.checkForSuggestedEntries(context)
+        }
+    }
+    // Scan on entry if the read permission is already granted (returning users). New users tap the
     // invite card, which requests the permission and then scans in the launcher callback above.
     LaunchedEffect(Unit) {
-        if (hasSuggestionPermission()) viewModel.checkForSuggestedEntries(context)
+        if (hasReadPermission()) viewModel.checkForSuggestedEntries(context)
     }
 
     Scaffold(
@@ -520,7 +539,7 @@ fun JournalListScreen(
                         }
                         // Camera-roll suggestions: an invite card while the permission isn't granted
                         // (never a cold OS dialog on open), then one card per detected photo cluster.
-                        if (!hasSuggestionPermission() && !suggestionInviteDismissed) {
+                        if (!hasReadPermission() && !suggestionInviteDismissed) {
                             item(key = "suggestion_permission") {
                                 SuggestionPermissionCard(
                                     onAllow = {

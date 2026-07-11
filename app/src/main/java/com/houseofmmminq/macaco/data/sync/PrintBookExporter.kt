@@ -38,7 +38,17 @@ class PrintBookExporter(private val context: Context) {
         // Already filtered/ordered by the caller (PrintExportScreen) — this class doesn't
         // know about trips, locations, or tags, it just lays out what it's given.
         val entries: List<TravelEntry>,
+        // Drive-file-id → readable local (cached) URI, so entry photos whose on-device original
+        // is gone still render from their Drive copy — same resolution the rest of the app uses.
+        val cachedDrivePhotos: Map<String, String> = emptyMap(),
     )
+
+    /** Prefer the Drive-cached copy (keyed by driveFileId) when present, else the raw local URI —
+     *  mirrors PrintExportScreen.printDisplayUri / EntryDetailScreen so the book shows the same
+     *  photo the user sees in-app, even after the local original is deleted. */
+    private fun resolvePhotoUri(entry: TravelEntry, index: Int, cached: Map<String, String>): String? =
+        entry.driveFileIds.getOrNull(index)?.takeIf { it.isNotEmpty() }?.let { cached[it] }
+            ?: entry.photoUris.getOrNull(index)
 
     data class ExportResult(val pagesWritten: Int, val photosSkipped: Int)
 
@@ -99,14 +109,17 @@ class PrintBookExporter(private val context: Context) {
 
                 // Cover
                 newPage().also { page ->
-                    if (!drawFullBleedPhoto(page.canvas, config.coverPhotoUri)) photosSkipped++
+                    val bmp = drawFullBleedPhoto(page.canvas, config.coverPhotoUri)
+                    if (config.coverPhotoUri != null && bmp == null) photosSkipped++
                     drawCoverTitle(page.canvas, config.title)
-                    pdf.finishPage(page)
+                    pdf.finishPage(page)   // materializes the page — only now is it safe to recycle
+                    bmp?.recycle()
                 }
 
                 // First page (intro/dedication — user-selected photo + optional caption)
                 newPage().also { page ->
-                    if (!drawFullBleedPhoto(page.canvas, config.firstPagePhotoUri)) photosSkipped++
+                    val bmp = drawFullBleedPhoto(page.canvas, config.firstPagePhotoUri)
+                    if (config.firstPagePhotoUri != null && bmp == null) photosSkipped++
                     if (config.firstPageCaption.isNotBlank()) {
                         page.canvas.drawText(
                             config.firstPageCaption,
@@ -114,17 +127,21 @@ class PrintBookExporter(private val context: Context) {
                         )
                     }
                     pdf.finishPage(page)
+                    bmp?.recycle()
                 }
 
                 // Content — one page per photo; entries with no photos still get one captioned
                 // placeholder page so the entry isn't silently dropped from the book.
                 config.entries.forEach { entry ->
-                    val photos = entry.photoUris.ifEmpty { listOf(null) }
+                    val photos = if (entry.photoUris.isEmpty()) listOf(null)
+                        else entry.photoUris.indices.map { resolvePhotoUri(entry, it, config.cachedDrivePhotos) }
                     photos.forEachIndexed { i, uri ->
                         newPage().also { page ->
-                            if (uri != null && !drawFullBleedPhoto(page.canvas, uri)) photosSkipped++
+                            val bmp = drawFullBleedPhoto(page.canvas, uri)
+                            if (uri != null && bmp == null) photosSkipped++
                             if (i == 0) drawEntryCaption(page.canvas, entry)
                             pdf.finishPage(page)
+                            bmp?.recycle()
                         }
                     }
                 }
@@ -148,24 +165,28 @@ class PrintBookExporter(private val context: Context) {
      * without decoding at full camera resolution. Returns null only if genuinely unreadable
      * (revoked grant, deleted media, Drive-only photo not cached locally).
      */
-    private fun decodeForPrint(uriString: String, targetW: Int, targetH: Int): Bitmap? {
+    private fun decodeForPrint(uriString: String, targetW: Int, targetH: Int): Bitmap? = runCatching {
+        // The WHOLE body is guarded: openInputStream *throws* FileNotFoundException (not null) for a
+        // stale/unknown media URI — e.g. a photo whose on-device original was deleted and now only
+        // exists as a Drive-backed copy. Letting that propagate would abort the entire export and
+        // leave a 0-byte PDF; instead we swallow it here so the caller draws a placeholder for just
+        // that one photo and the rest of the book still renders.
         val uri = Uri.parse(uriString)
         val resolver = context.contentResolver
         val boundsOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        val boundsStream = resolver.openInputStream(uri) ?: return null
-        boundsStream.use { BitmapFactory.decodeStream(it, null, boundsOpts) }
+        resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, boundsOpts) }
+            ?: return@runCatching null
         val rawW = boundsOpts.outWidth
         val rawH = boundsOpts.outHeight
-        if (rawW <= 0 || rawH <= 0) return null
+        if (rawW <= 0 || rawH <= 0) return@runCatching null
 
         var sampleSize = 1
         while (rawW / (sampleSize * 2) >= targetW && rawH / (sampleSize * 2) >= targetH) {
             sampleSize *= 2
         }
         val decodeOpts = BitmapFactory.Options().apply { inSampleSize = sampleSize }
-        val bitmap = runCatching {
-            resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, decodeOpts) }
-        }.getOrNull() ?: return null
+        val bitmap = resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, decodeOpts) }
+            ?: return@runCatching null
 
         val orientation = runCatching {
             resolver.openInputStream(uri)?.use { s ->
@@ -174,15 +195,18 @@ class PrintBookExporter(private val context: Context) {
                 )
             }
         }.getOrNull() ?: ExifInterface.ORIENTATION_NORMAL
-        return ImageStorage.applyExifOrientation(bitmap, orientation)
-    }
+        ImageStorage.applyExifOrientation(bitmap, orientation)
+    }.getOrNull()
 
     /**
      * Draws [uriString] full-bleed across the whole page, center-cropped (same intent as
-     * Compose's ContentScale.Crop). Draws a neutral placeholder fill and returns false if the
-     * photo is null or unreadable — caller counts this toward `photosSkipped`.
+     * Compose's ContentScale.Crop). Draws a neutral placeholder fill and returns null if the
+     * photo is null or unreadable. On success returns the decoded [Bitmap] so the caller can
+     * recycle it *after* `finishPage` — the PdfDocument page canvas only holds a reference to the
+     * bitmap until the page is finished, so recycling here (before finishPage) would crash the
+     * whole export with "Canvas: trying to use a recycled bitmap".
      */
-    private fun drawFullBleedPhoto(canvas: Canvas, uriString: String?): Boolean {
+    private fun drawFullBleedPhoto(canvas: Canvas, uriString: String?): Bitmap? {
         val pageW = PAGE_WIDTH_PT.toFloat()
         val pageH = PAGE_HEIGHT_PT.toFloat()
         val targetW = (PAGE_WIDTH_PT / 72f * TARGET_DPI).toInt()
@@ -190,7 +214,7 @@ class PrintBookExporter(private val context: Context) {
         val bitmap = uriString?.let { decodeForPrint(it, targetW, targetH) }
         if (bitmap == null) {
             canvas.drawRect(0f, 0f, pageW, pageH, placeholderPaint)
-            return false
+            return null
         }
         canvas.save()
         canvas.clipRect(0f, 0f, pageW, pageH)
@@ -201,8 +225,7 @@ class PrintBookExporter(private val context: Context) {
         val top = (pageH - scaledH) / 2f
         canvas.drawBitmap(bitmap, null, RectF(left, top, left + scaledW, top + scaledH), photoPaint)
         canvas.restore()
-        bitmap.recycle()
-        return true
+        return bitmap
     }
 
     private fun drawCoverTitle(canvas: Canvas, title: String) {

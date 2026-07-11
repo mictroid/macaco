@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -355,13 +354,13 @@ fun ProfileScreen(
                 .verticalScroll(profileScrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Content pulled up so the avatar overlaps the banner's bottom edge — offset now tracks
-            // bannerBottomPadding instead of a hardcoded -32dp, so it can never pull the avatar further up
-            // than the banner actually reserved (which was landing it on top of the wordmark in landscape).
+            // The body must NOT pull up into the banner: the banner is the Scaffold topBar, which
+            // Compose draws on top of this body, so any upward offset paints the teal over the top
+            // of the avatar (it looked "tucked under the header", worst on tablets). Sit flush
+            // below the banner instead — the background ring still gives the avatar breathing room.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(y = -bannerBottomPadding)
                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
