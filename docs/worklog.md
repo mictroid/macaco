@@ -2,6 +2,14 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-11 — reel-outro-hold-and-brand-icon-size (local, NOT yet shipped)
+
+- **reel-outro-hold-and-brand-icon-size — implemented, awaiting next bump** (commit `a5a2758`,
+  unpushed as of this writing): 3-change brief, verified vs live source first, `compileDebugKotlin`
+  passed, no deviations. QR outro hold 45→120 frames (1.5s→4s); `MacacoBrandBlock` landscape
+  collapsed icon 28dp→36dp; `EntryDetailScreen` hand-rolled header icon matched to 36dp. Brief →
+  `docs/DONE/`. Detail in `worklog-2026-07-11.md`.
+
 ## 2026-07-11 — vc66 (1.6, closed testing)
 
 - **vc66 / 1.6 — SHIPPED ✅ 2026-07-11** (run `29144641904` CONFIRMED SUCCESS ~6m24s, published to closed testing; impl `40af595`, bump `5b6e29e`): 4-brief
