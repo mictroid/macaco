@@ -2,6 +2,20 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-12 — vc70 (1.6, closed testing) — vc69 review-fixes batch shipped
+
+- **vc70 dispatched — WIF run `29200464388`** (impl `5bb5d7b`, bump+notes `f4e4edd`; origin == HEAD
+  verified before dispatch; dispatched 18:37:13 +0200). Ships the 4-fix batch from the vc69 screenshot
+  review, `code-brief-vc69-review-fixes.md` → `docs/DONE/`. Full detail in
+  `docs/worklog-2026-07-12.md`:
+  - **Change 1** — stale billing-entitlement reads fixed: `refreshEntitlement()` now also runs on
+    every `MainActivity.onResume()`, not just cold start.
+  - **Change 2** — Drive backup wasn't actually gated behind premium; upload/download/"Sync Now" now
+    require `isPurchased`, with lock icon + messaging when connected-but-not-premium.
+  - **Change 3** — Year in Travel stat grid recolored: numbers → teal, labels → gold, teal card border.
+  - **Change 4** — removed the duplicate `MacacoBrandBlock` above the Share button.
+  - **Dispatched, not yet confirmed** — check `gh run list`.
+
 ## 2026-07-12 — vc69 review-fixes batch (implemented, not shipped) — reel icon, Drive gating gap, Year in Travel recolor
 
 `code-brief-vc69-review-fixes.md` implemented and archived to `docs/DONE/`, all 4 changes verified
