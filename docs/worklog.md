@@ -24,7 +24,7 @@ Running log of notable work sessions. Newest first.
   - **profile-avatar-top-spacing** — 14dp spacer so the avatar clears the banner seam.
   - Deviation: the suggestion-grouping brief's `remember(...)` inside `LazyListScope` didn't compile;
     replaced with a plain `groupBy`.
-- Dispatched, not yet confirmed — check `gh run list --workflow=release.yml` (~6 min).
+- **✅ CONFIRMED SUCCESS** (job `86627086634`, 6m52s) — PUBLISHED to closed testing.
 
 ## 2026-07-11 — vc67 (1.6, closed testing) — SHIPPED the whole feature drop + 3 on-device fixes
 
