@@ -1,8 +1,6 @@
 What's new:
-• New "On This Day" home-screen widget resurfaces your past memories
-• Turn any trip into a printable photo book you can save or share as a PDF
-• Year in Travel — a beautiful recap of where your year took you
-• Smart suggestions turn recent camera-roll photos into ready-made entries
-• Share a trip as a private, view-only link
-• Search your whole journal and add a weather stamp to any entry
-• Polish and fixes: profile layout, PDF reliability and photo permissions
+• Print books now render your photos correctly (no more blank pages)
+• Tidy up long journals: tap to collapse trips, months, and Help sections
+• Year in Travel gets a refreshed, on-brand look
+• Repeat photo suggestions from the same place are grouped into one card
+• Cleaner layout: fixed the New Entry button position and profile spacing
