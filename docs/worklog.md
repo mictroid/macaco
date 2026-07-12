@@ -2,6 +2,30 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-12 — vc68 (1.6, closed testing) — 6-brief polish batch
+
+- **vc68 dispatched — WIF run `29184135246`** (impl `3428710`, bump+notes `a646fbc`; origin == HEAD
+  verified before dispatch; dispatched 09:22:28 +0200). Six Cowork briefs, all verified vs live
+  source, `assembleDebug` SUCCESSFUL, installed on the S8+, strings ×11 locales. Detail in
+  `docs/worklog-2026-07-12.md`:
+  - **print-pdf-blank-images-fix** — `decodeForPrint()` bounds read chained off an
+    `inJustDecodeBounds` decode (always null by design), so every print-book page was a gray
+    placeholder. Guard on the stream instead. (The actual cause of vc67's "all placeholders",
+    misdiagnosed there as a test-data artifact.)
+  - **journal-fab-inset-and-suggestion-grouping** — FAB inset narrowed (`safeDrawing` →
+    `navigationBars ∪ displayCutout`, fixes S8 mid-screen FAB); camera-roll suggestions grouped by
+    place (`SuggestionGroupCard`); "1 photos" → "1 photo" plurals.
+  - **reel-icon-placement-and-collapsible-groups** — reel pill glyph 28→34px + anchored to measured
+    text; collapsible trip/month groups on the journal list.
+  - **year-in-travel-recap-v2** — branded the in-app recap screen to match the export (header band,
+    gold year, stat card, brand mark); `StatItem` gains additive color params.
+  - **help-about-collapsible-and-new-features** — collapsible FAQ sections + icons, pinned version
+    label, 3 new sections + 2 folded Q&As (Search, Weather).
+  - **profile-avatar-top-spacing** — 14dp spacer so the avatar clears the banner seam.
+  - Deviation: the suggestion-grouping brief's `remember(...)` inside `LazyListScope` didn't compile;
+    replaced with a plain `groupBy`.
+- Dispatched, not yet confirmed — check `gh run list --workflow=release.yml` (~6 min).
+
 ## 2026-07-11 — vc67 (1.6, closed testing) — SHIPPED the whole feature drop + 3 on-device fixes
 
 - **vc67 dispatched — WIF run `29162265184`** (bump+notes `523877d`, fixes `1c1b2d2`; origin == HEAD
