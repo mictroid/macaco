@@ -745,7 +745,14 @@ fun SettingsScreen(
                 connected = driveConnected,
                 connectedEmail = connectedEmail,
                 syncState = driveSyncState,
-                onConnect = { driveSignInLauncher.launch(driveSignInClient.signInIntent) },
+                premium = isPurchased == true,
+                onConnect = {
+                    if (isPurchased == true) {
+                        driveSignInLauncher.launch(driveSignInClient.signInIntent)
+                    } else {
+                        onNavigateToPaywall()
+                    }
+                },
                 onSyncNow = { viewModel.syncPhotosToGoogleDrive() },
                 onDisconnect = {
                     driveSignInClient.signOut().addOnCompleteListener {
@@ -1048,6 +1055,7 @@ private fun DriveBackupCard(
     connected: Boolean,
     connectedEmail: String?,
     syncState: DrivePhotoSyncState,
+    premium: Boolean,
     onConnect: () -> Unit,
     onSyncNow: () -> Unit,
     onDisconnect: () -> Unit
@@ -1079,10 +1087,13 @@ private fun DriveBackupCard(
                             stringResource(R.string.settings_drive_connected_as, connectedEmail)
                         else if (connected)
                             stringResource(R.string.settings_drive_connected_subtitle)
+                        else if (!premium)
+                            stringResource(R.string.settings_drive_premium_required)
                         else
                             stringResource(R.string.settings_drive_not_connected_subtitle),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (!connected && !premium) MaterialTheme.colorScheme.error
+                                else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

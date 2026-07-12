@@ -52,7 +52,6 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -235,21 +234,6 @@ fun JournalListScreen(
         )
     }
 
-    // ── Shared view-only trip links ─────────────────────────────────────────────────────────────
-    // Which trip's share dialog is open (name to its entries), or null.
-    var shareDialogTrip by remember { mutableStateOf<Pair<String, List<TravelEntry>>?>(null) }
-    val tripShareState by viewModel.tripShareState.collectAsState()
-    shareDialogTrip?.let { (name, tripEntries) ->
-        ShareTripDialog(
-            tripName = name,
-            state = tripShareState,
-            onCreate = { expiryDays -> viewModel.createTripShare(name, tripEntries, expiryDays) },
-            onDismiss = {
-                viewModel.tripShareConsumed()
-                shareDialogTrip = null
-            }
-        )
-    }
 
     // ── Camera-roll auto-suggested entries ──────────────────────────────────────────────────────
     val suggestedClusters by viewModel.suggestedClusters.collectAsState()
@@ -623,8 +607,7 @@ fun JournalListScreen(
                                         isPurchased = isPurchased == true,
                                         collapsed = sectionKey in collapsedSections,
                                         onToggleCollapse = { toggleSection(sectionKey) },
-                                        onCreateReel = { viewModel.startReel(trip, sectionEntries) },
-                                        onShare = { shareDialogTrip = trip to sectionEntries }
+                                        onCreateReel = { viewModel.startReel(trip, sectionEntries) }
                                     )
                                 }
                                 if (sectionKey !in collapsedSections) {
@@ -1023,102 +1006,6 @@ private fun TagChips(
     }
 }
 
-// Share-a-trip dialog: mandatory expiry choice (defaulting to 30 days, never-expire an explicit
-// opt-in), the required disclosure text, then the created link with copy/share actions. Backed by
-// the /shared_trips Firestore + Storage path — createTripShare fails until the console security
-// rules are applied (see docs/code-brief-shared-trip-links.md).
-@Composable
-private fun ShareTripDialog(
-    tripName: String,
-    state: JournalViewModel.TripShareState,
-    onCreate: (Int?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val context = LocalContext.current
-    val clipboard = LocalClipboardManager.current
-    // 7 / 30 / null(never) — default 30; never-expire must be an explicit choice, not the default.
-    var expiryDays by remember { mutableStateOf<Int?>(30) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.trip_share_title, tripName)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(
-                    stringResource(R.string.trip_share_disclosure),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                when (state) {
-                    is JournalViewModel.TripShareState.Ready -> {
-                        Text(
-                            state.url,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    is JournalViewModel.TripShareState.Error -> {
-                        Text(
-                            state.message,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                    else -> {
-                        Text(
-                            stringResource(R.string.trip_share_expiry_label),
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                        ExpiryOption(stringResource(R.string.trip_share_expiry_7d), expiryDays == 7) { expiryDays = 7 }
-                        ExpiryOption(stringResource(R.string.trip_share_expiry_30d), expiryDays == 30) { expiryDays = 30 }
-                        ExpiryOption(stringResource(R.string.trip_share_expiry_never), expiryDays == null) { expiryDays = null }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            when (state) {
-                is JournalViewModel.TripShareState.Creating ->
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-                is JournalViewModel.TripShareState.Ready -> {
-                    Row {
-                        TextButton(onClick = {
-                            clipboard.setText(AnnotatedString(state.url))
-                            Toast.makeText(context, R.string.trip_share_copied, Toast.LENGTH_SHORT).show()
-                        }) { Text(stringResource(R.string.trip_share_copy)) }
-                        TextButton(onClick = {
-                            val send = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, state.url)
-                            }
-                            context.startActivity(Intent.createChooser(send, null))
-                        }) { Text(stringResource(R.string.trip_share_action)) }
-                    }
-                }
-                // Idle and Error both offer the create action (Error just retries).
-                else -> TextButton(onClick = { onCreate(expiryDays) }) {
-                    Text(stringResource(R.string.trip_share_create))
-                }
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.common_cancel)) }
-        }
-    )
-}
-
-@Composable
-private fun ExpiryOption(label: String, selected: Boolean, onSelect: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onSelect),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(selected = selected, onClick = onSelect)
-        Text(label, style = MaterialTheme.typography.bodyMedium)
-    }
-}
-
 // Invite card shown (once, dismissibly) when the camera-roll suggestion permission isn't granted —
 // a soft opt-in so users who don't want the feature never see a cold OS permission dialog.
 @Composable
@@ -1463,8 +1350,7 @@ private fun TripHeader(
     isPurchased: Boolean,
     collapsed: Boolean,
     onToggleCollapse: () -> Unit,
-    onCreateReel: () -> Unit,
-    onShare: () -> Unit
+    onCreateReel: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -1498,18 +1384,6 @@ private fun TripHeader(
         )
         if (isPurchased) {
             Spacer(Modifier.width(8.dp))
-            IconButton(
-                onClick = onShare,
-                modifier = Modifier.size(28.dp)
-            ) {
-                Icon(
-                    Icons.Filled.Share,
-                    contentDescription = stringResource(R.string.trip_share_action),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-            Spacer(Modifier.width(4.dp))
             IconButton(
                 onClick = onCreateReel,
                 modifier = Modifier.size(28.dp)

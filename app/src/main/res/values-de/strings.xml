@@ -253,6 +253,7 @@
     <string name="settings_backup_file_title">In Datei sichern</string>
     <string name="settings_backup_file_subtitle">Speichere alle Einträge und Fotos in einer .zip-Datei, die du überall wiederherstellen kannst</string>
     <string name="settings_backup_premium_required">Eine Premium-Funktion – schalte sie im Abo frei</string>
+    <string name="settings_drive_premium_required">Eine Premium-Funktion — im Abonnement freischalten</string>
     <string name="settings_backup_export">Exportieren</string>
     <string name="settings_backup_import">Importieren</string>
     <string name="settings_import_downloading">Backup wird heruntergeladen…</string>
@@ -357,7 +358,7 @@
     <string name="help_faq_q_photos">Warum erscheinen meine Fotos nicht auf einem anderen Gerät?</string>
     <string name="help_faq_a_photos">Fotos werden auf dem Gerät gespeichert, von dem du sie hinzugefügt hast. Verbinde Google Drive in den Einstellungen oder nutze „In Datei sichern“, um Fotos auf andere Geräte zu übertragen.</string>
     <string name="help_faq_q_backup">Wie sichere ich alles?</string>
-    <string name="help_faq_a_backup">Über Einstellungen → Sichern &amp; Wiederherstellen kannst du alle Einträge und Fotos in eine einzige .zip-Datei exportieren und jederzeit wieder importieren.</string>
+    <string name="help_faq_a_backup">Über Einstellungen → Sichern &amp; Wiederherstellen kannst du alle Einträge und Fotos in eine einzige .zip-Datei exportieren und jederzeit wieder importieren. Sowohl das als auch das automatische Foto-Backup über Google Drive sind Premium-Funktionen.</string>
     <string name="help_faq_q_lock">Kann ich die App sperren?</string>
     <string name="help_faq_a_lock">Ja – aktiviere die App-Sperre über das Menü oder die Einstellungen, um Macaco mit Fingerabdruck, Gesicht oder Bildschirmsperre zu schützen.</string>
     <string name="help_faq_q_billing">Wie kündige ich oder erhalte eine Rückerstattung?</string>
@@ -392,7 +393,7 @@
     <string name="help_faq_transfer_device_q">Auf ein neues Gerät übertragen</string>
     <string name="help_faq_transfer_device_a">Melde dich auf deinem neuen Gerät mit demselben Google- oder E-Mail-Konto an. Deine Einträge werden innerhalb weniger Sekunden automatisch synchronisiert. Über Sichern &amp; Wiederherstellen gespeicherte Fotos werden ebenfalls wiederhergestellt, sobald du die Sicherungsdatei erneut importierst.</string>
     <string name="help_faq_premium_benefits_q">Was bekomme ich mit Premium?</string>
-    <string name="help_faq_premium_benefits_a">Premium schaltet das volle Macaco-Erlebnis frei: unbegrenzte Einträge, die Abenteuerkarte, Adventure-Reel-Video-Diashows, Wischen zwischen Einträgen, eigene Designs und Foto-Backup über Google Drive. Verfügbar als Monats-, Jahres- (mit 7-tägiger kostenloser Testphase) oder Lifetime-Abo.</string>
+    <string name="help_faq_premium_benefits_a">Premium schaltet unbegrenzte Einträge, Adventure-Reel-Video-Diashows, gedruckte Fotobücher, Foto-Backup über Google Drive sowie die vollständige Sicherung/Wiederherstellung als Datei frei. Die Abenteuerkarte, das Wischen zwischen Einträgen und eigene Designs sind für alle kostenlos. Verfügbar als Monats-, Jahres- (mit 7-tägiger kostenloser Testphase) oder Lifetime-Abo.</string>
     <string name="help_faq_premium_broken_q">Premium funktioniert nicht?</string>
     <string name="help_faq_premium_broken_a">Versuche, deinen Kauf wiederherzustellen: Tippe auf dein Profilsymbol, dann auf Abo und auf Kauf wiederherstellen. Stelle sicher, dass du mit demselben Konto angemeldet bist, mit dem du gekauft hast. Wenn es weiterhin nicht funktioniert, kontaktiere uns unter houseofmmminq@gmail.com.</string>
     <string name="help_section_account">Konto</string>

@@ -239,6 +239,7 @@
     <string name="settings_backup_file_title">ファイルにバックアップ</string>
     <string name="settings_backup_file_subtitle">すべての記録と写真を、どこでも復元できる .zip ファイルに保存します</string>
     <string name="settings_backup_premium_required">プレミアム機能です。サブスクリプションからアンロックしてください</string>
+    <string name="settings_drive_premium_required">プレミアム機能です — サブスクリプションから解除できます</string>
     <string name="settings_backup_export">エクスポート</string>
     <string name="settings_backup_import">インポート</string>
     <string name="settings_import_downloading">バックアップをダウンロード中…</string>
@@ -342,7 +343,7 @@
     <string name="help_faq_q_photos">写真が別の端末で表示されないのはなぜですか？</string>
     <string name="help_faq_a_photos">写真は追加した端末に保存されます。端末間で写真を持ち運ぶには、設定で Google Drive を接続するか、「ファイルにバックアップ」を使用してください。</string>
     <string name="help_faq_q_backup">すべてをバックアップするには？</string>
-    <string name="help_faq_a_backup">設定 → バックアップと復元 から、すべての記録と写真を 1 つの .zip ファイルにエクスポートでき、いつでも再インポートできます。</string>
+    <string name="help_faq_a_backup">設定 → バックアップと復元 から、すべての記録と写真を1つの.zipファイルにエクスポートでき、いつでも再インポートできます。この機能と自動のGoogle Drive写真バックアップは、どちらもプレミアム機能です。</string>
     <string name="help_faq_q_lock">アプリをロックできますか？</string>
     <string name="help_faq_a_lock">はい。メニューまたは設定からアプリロックを有効にすると、Macaco を開く際に指紋・顔・画面ロックが必要になります。</string>
     <string name="help_faq_q_billing">解約や返金はどうすればよいですか？</string>
@@ -377,7 +378,7 @@
     <string name="help_faq_transfer_device_q">新しいデバイスへの移行</string>
     <string name="help_faq_transfer_device_a">新しいデバイスで同じ Google またはメールアカウントでサインインしてください。エントリーは数秒で自動的に同期されます。バックアップと復元で保存した写真も、バックアップファイルを再インポートすると復元されます。</string>
     <string name="help_faq_premium_benefits_q">プレミアムで何ができますか？</string>
-    <string name="help_faq_premium_benefits_a">プレミアムでMacacoのすべての機能が使えます：無制限の記録、アドベンチャーマップ、アドベンチャーリールの動画スライドショー、記録間のスワイプ、カスタムテーマ、Google Driveへの写真バックアップ。月額・年額（7日間の無料トライアル付き）・買い切りから選べます。</string>
+    <string name="help_faq_premium_benefits_a">プレミアムでは、無制限の記録、アドベンチャーリールの動画スライドショー、フォトブックの印刷、Google Driveへの写真バックアップ、ファイルへの完全なバックアップ／復元が利用できます。アドベンチャーマップ、記録間のスワイプ、カスタムテーマはすべてのユーザーに無料で提供されます。月額・年額（7日間の無料トライアル付き）・買い切りから選べます。</string>
     <string name="help_faq_premium_broken_q">プレミアムが動作しませんか？</string>
     <string name="help_faq_premium_broken_a">購入を復元してみてください：プロフィールアイコンをタップし、次に「サブスクリプション」をタップして、「購入を復元」をタップします。購入時と同じアカウントでログインしていることを確認してください。それでも解決しない場合は、houseofmmminq@gmail.com までご連絡ください。</string>
     <string name="help_section_account">アカウント</string>

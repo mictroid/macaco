@@ -242,6 +242,7 @@
     <string name="settings_backup_file_title">Backup su file</string>
     <string name="settings_backup_file_subtitle">Salva tutte le voci e le foto in un file .zip ripristinabile ovunque</string>
     <string name="settings_backup_premium_required">Funzione Premium: sbloccala dall\'abbonamento</string>
+    <string name="settings_drive_premium_required">Una funzione Premium — sbloccala dall\'Abbonamento</string>
     <string name="settings_backup_export">Esporta</string>
     <string name="settings_backup_import">Importa</string>
     <string name="settings_import_downloading">Download del backup…</string>
@@ -346,7 +347,7 @@
     <string name="help_faq_q_photos">Perché le mie foto non compaiono su un altro dispositivo?</string>
     <string name="help_faq_a_photos">Le foto vengono salvate sul dispositivo da cui le hai aggiunte. Collega Google Drive nelle Impostazioni, oppure usa «Backup su file», per portare le foto tra i dispositivi.</string>
     <string name="help_faq_q_backup">Come faccio il backup di tutto?</string>
-    <string name="help_faq_a_backup">Impostazioni → Backup e ripristino ti consente di esportare tutte le voci e le foto in un unico file .zip da reimportare in qualsiasi momento.</string>
+    <string name="help_faq_a_backup">Impostazioni → Backup e ripristino ti consente di esportare tutte le voci e le foto in un unico file .zip da reimportare in qualsiasi momento. Sia questa funzione sia il backup automatico delle foto su Google Drive sono funzioni Premium.</string>
     <string name="help_faq_q_lock">Posso bloccare l\'app?</string>
     <string name="help_faq_a_lock">Sì: attiva il Blocco app dal menu o dalle Impostazioni per richiedere impronta, volto o blocco schermo all\'apertura di Macaco.</string>
     <string name="help_faq_q_billing">Come annullo o ottengo un rimborso?</string>
@@ -381,7 +382,7 @@
     <string name="help_faq_transfer_device_q">Trasferisci su un nuovo dispositivo</string>
     <string name="help_faq_transfer_device_a">Accedi con lo stesso account Google o e-mail sul nuovo dispositivo. Le tue voci si sincronizzano automaticamente in pochi secondi. Anche le foto salvate tramite Backup e ripristino verranno ripristinate dopo aver reimportato il file di backup.</string>
     <string name="help_faq_premium_benefits_q">Cosa include premium?</string>
-    <string name="help_faq_premium_benefits_a">Premium sblocca l\'esperienza completa di Macaco: voci illimitate, la mappa delle Avventure, le presentazioni video Adventure Reel, lo scorrimento tra le voci, temi personalizzati e il backup delle foto su Google Drive. Disponibile come Mensile, Annuale (con prova gratuita di 7 giorni) o A vita.</string>
+    <string name="help_faq_premium_benefits_a">Premium sblocca voci illimitate, le presentazioni video Adventure Reel, i libri fotografici stampati, il backup delle foto su Google Drive e il backup/ripristino completo su file. La mappa delle Avventure, lo scorrimento tra le voci e i temi personalizzati sono gratuiti per tutti. Disponibile come Mensile, Annuale (con prova gratuita di 7 giorni) o A vita.</string>
     <string name="help_faq_premium_broken_q">Premium non funziona?</string>
     <string name="help_faq_premium_broken_a">Prova a ripristinare il tuo acquisto: tocca l\'icona del tuo profilo, poi tocca Abbonamento e tocca Ripristina acquisto. Assicurati di aver effettuato l\'accesso con lo stesso account usato al momento dell\'acquisto. Se ancora non funziona, scrivici a houseofmmminq@gmail.com.</string>
     <string name="help_section_account">Account</string>

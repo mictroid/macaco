@@ -215,6 +215,7 @@
     <string name="settings_backup_file_title">Säkerhetskopiera till fil</string>
     <string name="settings_backup_file_subtitle">Spara alla inlägg och foton i en .zip-fil som du kan återställa var som helst</string>
     <string name="settings_backup_premium_required">En Premium-funktion – lås upp den via prenumerationen</string>
+    <string name="settings_drive_premium_required">En Premium-funktion — lås upp den från Prenumeration</string>
     <string name="settings_backup_export">Exportera</string>
     <string name="settings_backup_import">Importera</string>
     <string name="settings_import_downloading">Laddar ner säkerhetskopia…</string>
@@ -319,7 +320,7 @@
     <string name="help_faq_q_photos">Varför syns inte mina foton på en annan enhet?</string>
     <string name="help_faq_a_photos">Foton sparas på enheten du lade till dem från. Anslut Google Drive i Inställningar, eller använd \"Säkerhetskopiera till fil\", för att ta med foton mellan enheter.</string>
     <string name="help_faq_q_backup">Hur säkerhetskopierar jag allt?</string>
-    <string name="help_faq_a_backup">Inställningar → Säkerhetskopiering låter dig exportera alla inlägg och foton till en enda .zip-fil som du kan importera igen när som helst.</string>
+    <string name="help_faq_a_backup">Inställningar → Säkerhetskopiering låter dig exportera alla inlägg och foton till en enda .zip-fil som du kan importera igen när som helst. Både detta och den automatiska fotosäkerhetskopieringen via Google Drive är Premium-funktioner.</string>
     <string name="help_faq_q_lock">Kan jag låsa appen?</string>
     <string name="help_faq_a_lock">Ja – aktivera Applås från menyn eller Inställningar för att kräva ditt fingeravtryck, ansikte eller skärmlås för att öppna Macaco.</string>
     <string name="help_faq_q_billing">Hur avslutar jag eller får återbetalning?</string>
@@ -354,7 +355,7 @@
     <string name="help_faq_transfer_device_q">Överför till en ny enhet</string>
     <string name="help_faq_transfer_device_a">Logga in med samma Google- eller e-postkonto på din nya enhet. Dina inlägg synkroniseras automatiskt inom några sekunder. Foton som sparats via Säkerhetskopiering &amp; återställning återställs också när du importerar säkerhetskopian igen.</string>
     <string name="help_faq_premium_benefits_q">Vad får jag med premium?</string>
-    <string name="help_faq_premium_benefits_a">Premium låser upp hela Macaco-upplevelsen: obegränsade inlägg, äventyrskartan, Adventure Reel-videobildspel, svep mellan inlägg, anpassade teman och fotosäkerhetskopiering via Google Drive. Tillgängligt som Månads-, Års- (med 7 dagars gratis provperiod) eller Livstidsabonnemang.</string>
+    <string name="help_faq_premium_benefits_a">Premium låser upp obegränsade inlägg, Adventure Reel-videobildspel, tryckta fotoböcker, fotosäkerhetskopiering via Google Drive samt fullständig säkerhetskopiering/återställning till en fil. Äventyrskartan, svep mellan inlägg och anpassade teman är gratis för alla. Tillgängligt som Månads-, Års- (med 7 dagars gratis provperiod) eller Livstidsabonnemang.</string>
     <string name="help_faq_premium_broken_q">Fungerar inte premium?</string>
     <string name="help_faq_premium_broken_a">Försök att återställa ditt köp: tryck på din profilikon, tryck sedan på Prenumeration och tryck på Återställ köp. Se till att du är inloggad med samma konto som du använde vid köpet. Om det fortfarande inte fungerar, kontakta oss på houseofmmminq@gmail.com.</string>
     <string name="help_section_account">Konto</string>

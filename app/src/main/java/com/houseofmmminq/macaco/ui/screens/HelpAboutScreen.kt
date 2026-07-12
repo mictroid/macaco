@@ -38,7 +38,6 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Print
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material.icons.outlined.Gavel
@@ -161,14 +160,6 @@ private val FAQ_SECTIONS = listOf(
             R.string.help_faq_year_recap_q to R.string.help_faq_year_recap_a,
         )
     ),
-    // NEW: shared trip links
-    FaqSection(
-        R.string.help_section_trip_sharing,
-        Icons.Filled.Share,
-        listOf(
-            R.string.help_faq_trip_sharing_q to R.string.help_faq_trip_sharing_a,
-        )
-    ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -193,7 +184,9 @@ fun HelpAboutScreen(onBack: () -> Unit) {
     // Session-scoped only (remember, not rememberSaveable/DataStore) — matches the journal list's
     // trip/month collapse convention: a browsing convenience, not a persisted setting. Every fresh
     // screen open starts fully expanded.
-    var collapsedSections by remember { mutableStateOf(setOf<Int>()) }
+    var collapsedSections by remember {
+        mutableStateOf(FAQ_SECTIONS.map { it.titleRes }.toSet())
+    }
     fun toggleSection(key: Int) {
         collapsedSections =
             if (key in collapsedSections) collapsedSections - key else collapsedSections + key
@@ -232,16 +225,28 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                                     tint = Color.White
                                 )
                             }
-                            MacacoBrandBlock(
-                                isLandscape = true,
-                                modifier = Modifier.padding(vertical = 4.dp)
+                            Column(
+                                modifier = Modifier.align(Alignment.Center),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(
-                                    text = " · " + stringResource(R.string.help_title),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = SplashGold.copy(alpha = 0.7f),
-                                    maxLines = 1
-                                )
+                                MacacoBrandBlock(
+                                    isLandscape = true,
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = " · " + stringResource(R.string.help_title),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = SplashGold.copy(alpha = 0.7f),
+                                        maxLines = 1
+                                    )
+                                }
+                                if (versionLabel.isNotEmpty()) {
+                                    Text(
+                                        text = stringResource(R.string.settings_version_value, versionLabel),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = Color.White.copy(alpha = 0.65f)
+                                    )
+                                }
                             }
                         }
                     }
@@ -264,26 +269,19 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                             modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
                         ) {
                             Text(
-                                text = "Roam Freely. Forget Nothing.",
-                                color = SplashGold.copy(alpha = 0.82f),
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Light,
-                                letterSpacing = 1.sp
+                                text = stringResource(R.string.help_title),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = SplashGold.copy(alpha = 0.85f)
                             )
+                            if (versionLabel.isNotEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.settings_version_value, versionLabel),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White.copy(alpha = 0.6f)
+                                )
+                            }
                         }
                     }
-                }
-                // Pinned outside the `when` so it stays visible in every header state —
-                // collapsed, landscape, and portrait-at-rest alike.
-                if (versionLabel.isNotEmpty()) {
-                    Text(
-                        text = stringResource(R.string.settings_version_value, versionLabel),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.65f),
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(top = 8.dp, end = 12.dp)
-                    )
                 }
             }
         }

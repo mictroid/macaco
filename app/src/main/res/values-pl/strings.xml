@@ -248,6 +248,7 @@
     <string name="settings_backup_file_title">Kopia do pliku</string>
     <string name="settings_backup_file_subtitle">Zapisz wszystkie wpisy i zdjęcia w pliku .zip, który możesz przywrócić wszędzie</string>
     <string name="settings_backup_premium_required">Funkcja Premium – odblokuj ją w subskrypcji</string>
+    <string name="settings_drive_premium_required">Funkcja Premium — odblokuj ją w Subskrypcji</string>
     <string name="settings_backup_export">Eksportuj</string>
     <string name="settings_backup_import">Importuj</string>
     <string name="settings_import_downloading">Pobieranie kopii zapasowej…</string>
@@ -354,7 +355,7 @@
     <string name="help_faq_q_photos">Dlaczego moje zdjęcia nie pojawiają się na innym urządzeniu?</string>
     <string name="help_faq_a_photos">Zdjęcia są zapisywane na urządzeniu, z którego je dodano. Połącz Google Drive w Ustawieniach lub użyj „Kopia do pliku”, aby przenosić zdjęcia między urządzeniami.</string>
     <string name="help_faq_q_backup">Jak utworzyć kopię wszystkiego?</string>
-    <string name="help_faq_a_backup">Ustawienia → Kopia i przywracanie pozwala wyeksportować wszystkie wpisy i zdjęcia do jednego pliku .zip, który możesz w każdej chwili ponownie zaimportować.</string>
+    <string name="help_faq_a_backup">Ustawienia → Kopia i przywracanie pozwala wyeksportować wszystkie wpisy i zdjęcia do jednego pliku .zip, który możesz w każdej chwili ponownie zaimportować. Zarówno ta funkcja, jak i automatyczna kopia zapasowa zdjęć w Google Drive to funkcje Premium.</string>
     <string name="help_faq_q_lock">Czy mogę zablokować aplikację?</string>
     <string name="help_faq_a_lock">Tak – włącz Blokadę aplikacji z menu lub Ustawień, aby otwarcie Macaco wymagało odcisku palca, twarzy lub blokady ekranu.</string>
     <string name="help_faq_q_billing">Jak anulować lub uzyskać zwrot?</string>
@@ -389,7 +390,7 @@
     <string name="help_faq_transfer_device_q">Przeniesienie na nowe urządzenie</string>
     <string name="help_faq_transfer_device_a">Zaloguj się na nowym urządzeniu tym samym kontem Google lub e-mail. Twoje wpisy synchronizują się automatycznie w kilka sekund. Zdjęcia zapisane przez Kopię zapasową i przywracanie również zostaną przywrócone po ponownym zaimportowaniu pliku kopii.</string>
     <string name="help_faq_premium_benefits_q">Co daje premium?</string>
-    <string name="help_faq_premium_benefits_a">Premium odblokowuje pełne możliwości Macaco: nieograniczone wpisy, mapę Przygód, pokazy wideo Adventure Reel, przesuwanie między wpisami, własne motywy oraz kopię zapasową zdjęć w Google Drive. Dostępne jako plan miesięczny, roczny (z 7-dniowym bezpłatnym okresem próbnym) lub dożywotni.</string>
+    <string name="help_faq_premium_benefits_a">Premium odblokowuje nieograniczone wpisy, pokazy wideo Adventure Reel, drukowane fotoksiążki, kopię zapasową zdjęć w Google Drive oraz pełną kopię zapasową/przywracanie do pliku. Mapa Przygód, przesuwanie między wpisami i własne motywy są bezpłatne dla wszystkich. Dostępne jako plan miesięczny, roczny (z 7-dniowym bezpłatnym okresem próbnym) lub dożywotni.</string>
     <string name="help_faq_premium_broken_q">Premium nie działa?</string>
     <string name="help_faq_premium_broken_a">Spróbuj przywrócić zakup: dotknij ikony profilu, następnie dotknij Subskrypcja i dotknij Przywróć zakup. Upewnij się, że jesteś zalogowany na tym samym koncie, którego użyto przy zakupie. Jeśli nadal nie działa, napisz do nas na houseofmmminq@gmail.com.</string>
     <string name="help_section_account">Konto</string>

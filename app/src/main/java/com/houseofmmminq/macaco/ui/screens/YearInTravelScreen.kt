@@ -5,19 +5,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Mood
+import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -52,7 +62,7 @@ import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.util.AppActions
 import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun YearInTravelScreen(
     viewModel: JournalViewModel,
@@ -106,6 +116,8 @@ fun YearInTravelScreen(
             Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .navigationBarsPadding()
                 .padding(24.dp)
         ) {
             // Big gold year numeral — mirrors the export PNG's anchor. SplashGold (muted for
@@ -114,7 +126,7 @@ fun YearInTravelScreen(
                 selectedYear.toString(),
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Bold,
-                color = SplashGold,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
@@ -149,46 +161,46 @@ fun YearInTravelScreen(
                     Column(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                             StatItem(value = recap.entryCount.toString(), label = stringResource(R.string.profile_memories), valueColor = SplashGold)
-                            StatItem(value = recap.tripCount.toString(), label = stringResource(R.string.profile_trips), valueColor = SplashGold)
+                            StatItem(value = recap.tripCount.toString(), label = stringResource(R.string.profile_trips), valueColor = MaterialTheme.colorScheme.primary)
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            StatItem(value = recap.locationCount.toString(), label = stringResource(R.string.profile_locations), valueColor = SplashGold)
-                            StatItem(value = recap.mediaCount.toString(), label = stringResource(R.string.profile_media), valueColor = SplashGold)
+                            StatItem(value = recap.locationCount.toString(), label = stringResource(R.string.profile_locations), valueColor = MaterialTheme.colorScheme.primary)
+                            StatItem(value = recap.mediaCount.toString(), label = stringResource(R.string.profile_media), valueColor = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
                 Spacer(Modifier.height(24.dp))
-                recap.topMood?.let {
-                    Text(
-                        stringResource(R.string.year_recap_top_mood, it),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = SplashGold,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                }
-                recap.topTag?.let {
-                    Text(
-                        stringResource(R.string.year_recap_top_tag, it),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = SplashGold,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                }
-                recap.busiestMonth?.let {
-                    Text(
-                        stringResource(R.string.year_recap_busiest_month, it),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = SplashGold,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    recap.topMood?.let {
+                        YearRecapHighlightChip(
+                            icon = Icons.Filled.Mood,
+                            text = stringResource(R.string.year_recap_top_mood, it),
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                    recap.topTag?.let {
+                        YearRecapHighlightChip(
+                            icon = Icons.Filled.Sell,
+                            text = stringResource(R.string.year_recap_top_tag, it),
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                    recap.busiestMonth?.let {
+                        YearRecapHighlightChip(
+                            icon = Icons.Filled.CalendarMonth,
+                            text = stringResource(R.string.year_recap_busiest_month, it),
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
                 }
             }
 
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.height(24.dp))
             MacacoBrandBlock(isLandscape = false, collapsed = true)
             Text(
                 "macaco",
@@ -221,6 +233,39 @@ fun YearInTravelScreen(
                 Text(stringResource(R.string.year_recap_share))
             }
         }
+        }
+    }
+}
+
+@Composable
+private fun YearRecapHighlightChip(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(50),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        tonalElevation = 1.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(18.dp)
+            )
+            Text(
+                text,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
     }
 }

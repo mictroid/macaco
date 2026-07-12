@@ -242,6 +242,7 @@
     <string name="settings_backup_file_title">Back-up naar bestand</string>
     <string name="settings_backup_file_subtitle">Sla al je items en foto\'s op in een .zip-bestand dat je overal kunt herstellen</string>
     <string name="settings_backup_premium_required">Een Premium-functie – ontgrendel deze via het abonnement</string>
+    <string name="settings_drive_premium_required">Een Premium-functie — ontgrendel deze via Abonnement</string>
     <string name="settings_backup_export">Exporteren</string>
     <string name="settings_backup_import">Importeren</string>
     <string name="settings_import_downloading">Back-up downloaden…</string>
@@ -346,7 +347,7 @@
     <string name="help_faq_q_photos">Waarom verschijnen mijn foto\'s niet op een ander apparaat?</string>
     <string name="help_faq_a_photos">Foto\'s worden opgeslagen op het apparaat waarop je ze hebt toegevoegd. Verbind Google Drive in Instellingen, of gebruik \"Back-up naar bestand\", om foto\'s tussen apparaten mee te nemen.</string>
     <string name="help_faq_q_backup">Hoe maak ik een back-up van alles?</string>
-    <string name="help_faq_a_backup">Via Instellingen → Back-up &amp; herstel kun je al je items en foto\'s exporteren naar één .zip-bestand dat je altijd opnieuw kunt importeren.</string>
+    <string name="help_faq_a_backup">Via Instellingen → Back-up &amp; herstel kun je al je items en foto\'s exporteren naar één .zip-bestand dat je altijd opnieuw kunt importeren. Zowel dit als de automatische fotoback-up via Google Drive zijn Premium-functies.</string>
     <string name="help_faq_q_lock">Kan ik de app vergrendelen?</string>
     <string name="help_faq_a_lock">Ja – schakel App-vergrendeling in via het menu of Instellingen om je vingerafdruk, gezicht of schermvergrendeling te vereisen bij het openen van Macaco.</string>
     <string name="help_faq_q_billing">Hoe zeg ik op of vraag ik terugbetaling aan?</string>
@@ -381,7 +382,7 @@
     <string name="help_faq_transfer_device_q">Overzetten naar een nieuw apparaat</string>
     <string name="help_faq_transfer_device_a">Meld je op je nieuwe apparaat aan met hetzelfde Google- of e-mailaccount. Je vermeldingen synchroniseren automatisch binnen enkele seconden. Foto\'s die via Back-up &amp; herstel zijn opgeslagen, worden ook hersteld zodra je het back-upbestand opnieuw importeert.</string>
     <string name="help_faq_premium_benefits_q">Wat krijg ik met premium?</string>
-    <string name="help_faq_premium_benefits_a">Premium ontgrendelt de volledige Macaco-ervaring: onbeperkte items, de Avonturenkaart, Adventure Reel-videodiavoorstellingen, vegen tussen items, aangepaste thema\'s en fotoback-up via Google Drive. Beschikbaar als Maandelijks, Jaarlijks (met gratis proefperiode van 7 dagen) of Lifetime.</string>
+    <string name="help_faq_premium_benefits_a">Premium ontgrendelt onbeperkte items, Adventure Reel-videodiavoorstellingen, gedrukte fotoboeken, fotoback-up via Google Drive en volledige back-up/herstel naar een bestand. De Avonturenkaart, vegen tussen items en aangepaste thema\'s zijn voor iedereen gratis. Beschikbaar als Maandelijks, Jaarlijks (met gratis proefperiode van 7 dagen) of Lifetime.</string>
     <string name="help_faq_premium_broken_q">Werkt premium niet?</string>
     <string name="help_faq_premium_broken_a">Probeer je aankoop te herstellen: tik op je profielpictogram, tik dan op Abonnement en tik op Aankoop herstellen. Zorg dat je bent aangemeld met hetzelfde account dat je bij de aankoop hebt gebruikt. Als het nog steeds niet werkt, neem contact met ons op via houseofmmminq@gmail.com.</string>
     <string name="help_section_account">Account</string>

@@ -242,6 +242,7 @@
     <string name="settings_backup_file_title">Copia en archivo</string>
     <string name="settings_backup_file_subtitle">Guarda todas tus entradas y fotos en un archivo .zip que puedes restaurar en cualquier lugar</string>
     <string name="settings_backup_premium_required">Función Premium: desbloquéala desde la suscripción</string>
+    <string name="settings_drive_premium_required">Una función Premium — desbloquéala desde Suscripción</string>
     <string name="settings_backup_export">Exportar</string>
     <string name="settings_backup_import">Importar</string>
     <string name="settings_import_downloading">Descargando copia de seguridad…</string>
@@ -346,7 +347,7 @@
     <string name="help_faq_q_photos">¿Por qué no aparecen mis fotos en otro dispositivo?</string>
     <string name="help_faq_a_photos">Las fotos se guardan en el dispositivo desde el que las añadiste. Conecta Google Drive en Ajustes, o usa «Copia en archivo», para llevar tus fotos entre dispositivos.</string>
     <string name="help_faq_q_backup">¿Cómo hago una copia de todo?</string>
-    <string name="help_faq_a_backup">En Ajustes → Copia y restauración puedes exportar todas tus entradas y fotos a un único archivo .zip que puedes reimportar cuando quieras.</string>
+    <string name="help_faq_a_backup">Ajustes → Copia y restauración te permite exportar todas tus entradas y fotos a un único archivo .zip que puedes reimportar cuando quieras. Tanto esto como la copia de seguridad automática de fotos en Google Drive son funciones Premium.</string>
     <string name="help_faq_q_lock">¿Puedo bloquear la app?</string>
     <string name="help_faq_a_lock">Sí: activa el Bloqueo de la app desde el menú o los Ajustes para pedir tu huella, rostro o bloqueo de pantalla al abrir Macaco.</string>
     <string name="help_faq_q_billing">¿Cómo cancelo o pido un reembolso?</string>
@@ -381,7 +382,7 @@
     <string name="help_faq_transfer_device_q">Transferir a un nuevo dispositivo</string>
     <string name="help_faq_transfer_device_a">Inicia sesión con la misma cuenta de Google o de correo en tu nuevo dispositivo. Tus entradas se sincronizan automáticamente en unos segundos. Las fotos guardadas con Copia de seguridad y restauración también se restaurarán cuando vuelvas a importar el archivo de copia.</string>
     <string name="help_faq_premium_benefits_q">¿Qué incluye premium?</string>
-    <string name="help_faq_premium_benefits_a">Premium desbloquea la experiencia completa de Macaco: entradas ilimitadas, el mapa de Aventuras, los vídeos de Adventure Reel, deslizar entre entradas, temas personalizados y copia de seguridad de fotos en Google Drive. Disponible como Mensual, Anual (con prueba gratuita de 7 días) o De por vida.</string>
+    <string name="help_faq_premium_benefits_a">Premium desbloquea entradas ilimitadas, los vídeos de Adventure Reel, libros de fotos impresos, la copia de seguridad de fotos en Google Drive y la copia de seguridad y restauración completa en un archivo. El mapa de Aventuras, deslizar entre entradas y los temas personalizados son gratis para todos. Disponible como Mensual, Anual (con prueba gratuita de 7 días) o De por vida.</string>
     <string name="help_faq_premium_broken_q">¿Premium no funciona?</string>
     <string name="help_faq_premium_broken_a">Intenta restaurar tu compra: toca tu icono de perfil, luego toca Suscripción y toca Restaurar compra. Asegúrate de haber iniciado sesión con la misma cuenta que usaste al comprar. Si aún no funciona, escríbenos a houseofmmminq@gmail.com.</string>
     <string name="help_section_account">Cuenta</string>

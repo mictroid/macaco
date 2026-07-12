@@ -22,7 +22,6 @@ import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
 import com.houseofmmminq.macaco.data.sync.PrintBookExporter
-import com.houseofmmminq.macaco.data.sync.TripShareManager
 import com.houseofmmminq.macaco.ui.widget.OnThisDayWidgetProvider
 import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.ui.theme.MapTheme
@@ -344,41 +343,6 @@ class JournalViewModel(
     }
 
     fun entrySeedConsumed() { _pendingEntrySeed.value = null }
-
-    // ── Shared view-only trip links ─────────────────────────────────────────────────────────────
-    // NOTE: not shippable/testable until the /shared_trips Firestore + Storage security rules are
-    // applied in the Firebase console (see docs/code-brief-shared-trip-links.md). Until then every
-    // createTripShare falls into the Error branch with a permission-denied message.
-    private val tripShareManager = TripShareManager()
-
-    sealed class TripShareState {
-        object Idle : TripShareState()
-        object Creating : TripShareState()
-        data class Ready(val url: String) : TripShareState()
-        data class Error(val message: String) : TripShareState()
-    }
-    private val _tripShareState = MutableStateFlow<TripShareState>(TripShareState.Idle)
-    val tripShareState: StateFlow<TripShareState> = _tripShareState.asStateFlow()
-
-    fun createTripShare(tripName: String, entries: List<TravelEntry>, expiryDays: Int?) {
-        val uid = authRepository.currentUser.value?.uid ?: return
-        viewModelScope.launch {
-            _tripShareState.value = TripShareState.Creating
-            val result = tripShareManager.createShareLink(uid, tripName, entries, expiryDays)
-            _tripShareState.value = result.fold(
-                onSuccess = { TripShareState.Ready(it.url) },
-                onFailure = {
-                    TripShareState.Error(it.message ?: appContext.getString(R.string.trip_share_error_generic))
-                }
-            )
-        }
-    }
-
-    fun revokeTripShare(shareId: String, photoCount: Int) {
-        viewModelScope.launch { tripShareManager.revokeShareLink(shareId, photoCount) }
-    }
-
-    fun tripShareConsumed() { _tripShareState.value = TripShareState.Idle }
 
     val isDarkMode: StateFlow<Boolean> = preferencesManager.isDarkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)

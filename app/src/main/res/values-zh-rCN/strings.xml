@@ -239,6 +239,7 @@
     <string name="settings_backup_file_title">备份到文件</string>
     <string name="settings_backup_file_subtitle">将所有条目和照片保存为一个 .zip 文件，可随处恢复</string>
     <string name="settings_backup_premium_required">高级功能 — 请在订阅中解锁</string>
+    <string name="settings_drive_premium_required">高级功能 — 请在订阅中解锁</string>
     <string name="settings_backup_export">导出</string>
     <string name="settings_backup_import">导入</string>
     <string name="settings_import_downloading">正在下载备份…</string>
@@ -342,7 +343,7 @@
     <string name="help_faq_q_photos">为什么我的照片在其他设备上看不到？</string>
     <string name="help_faq_a_photos">照片保存在添加它们的设备上。请在“设置”中连接 Google Drive，或使用“备份到文件”，以便在设备间携带照片。</string>
     <string name="help_faq_q_backup">如何备份所有内容？</string>
-    <string name="help_faq_a_backup">在“设置 → 备份与恢复”中，您可以将所有记录和照片导出为单个 .zip 文件，并随时重新导入。</string>
+    <string name="help_faq_a_backup">在“设置 → 备份与恢复”中，您可以将所有记录和照片导出为单个 .zip 文件，并随时重新导入。此功能与自动的 Google Drive 照片备份均为高级功能。</string>
     <string name="help_faq_q_lock">可以锁定应用吗？</string>
     <string name="help_faq_a_lock">可以 — 在菜单或“设置”中开启应用锁，打开 Macaco 时即需指纹、面容或屏幕锁验证。</string>
     <string name="help_faq_q_billing">如何取消或申请退款？</string>
@@ -377,7 +378,7 @@
     <string name="help_faq_transfer_device_q">转移到新设备</string>
     <string name="help_faq_transfer_device_a">在新设备上使用相同的 Google 或邮箱账号登录。你的条目会在几秒内自动同步。通过备份与恢复保存的照片，在你重新导入备份文件后也会恢复。</string>
     <string name="help_faq_premium_benefits_q">高级版有什么？</string>
-    <string name="help_faq_premium_benefits_a">高级版解锁完整的 Macaco 体验：无限日志条目、冒险地图、冒险短片视频幻灯片、在条目间滑动、自定义主题，以及通过 Google Drive 进行照片备份。提供月度、年度（含 7 天免费试用）或终身方案。</string>
+    <string name="help_faq_premium_benefits_a">高级版解锁无限日志条目、冒险短片视频幻灯片、印刷相册、通过 Google Drive 进行照片备份，以及完整的文件备份与恢复。冒险地图、在条目间滑动和自定义主题所有用户均可免费使用。提供月度、年度（含 7 天免费试用）或终身方案。</string>
     <string name="help_faq_premium_broken_q">高级版无法使用？</string>
     <string name="help_faq_premium_broken_a">尝试恢复购买：点按你的个人资料图标，然后点按“订阅”，再点按“恢复购买”。请确保你登录的是购买时使用的同一账号。如果仍然无效，请通过 houseofmmminq@gmail.com 联系我们。</string>
     <string name="help_section_account">账号</string>
