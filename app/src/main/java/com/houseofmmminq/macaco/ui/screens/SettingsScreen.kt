@@ -1083,17 +1083,28 @@ private fun DriveBackupCard(
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        if (connected && connectedEmail != null)
+                        // A connection can outlive the subscription that created it (the Google
+                        // OAuth grant persists independently of app purchase state), so the
+                        // premium-required message now also covers "connected but not premium".
+                        if (connected && connectedEmail != null && premium)
                             stringResource(R.string.settings_drive_connected_as, connectedEmail)
-                        else if (connected)
+                        else if (connected && premium)
                             stringResource(R.string.settings_drive_connected_subtitle)
                         else if (!premium)
                             stringResource(R.string.settings_drive_premium_required)
                         else
                             stringResource(R.string.settings_drive_not_connected_subtitle),
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (!connected && !premium) MaterialTheme.colorScheme.error
+                        color = if (!premium) MaterialTheme.colorScheme.error
                                 else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (!premium) {
+                    Icon(
+                        Icons.Filled.Lock,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -1145,6 +1156,19 @@ private fun DriveBackupCard(
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Text(stringResource(R.string.settings_drive_connect))
+                }
+            } else if (!premium) {
+                // Connected via a Google grant that outlived the subscription — allow disconnect,
+                // but not further free syncing.
+                OutlinedButton(
+                    onClick = onDisconnect,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text(stringResource(R.string.settings_drive_disconnect))
                 }
             } else if (syncState !is DrivePhotoSyncState.Syncing) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

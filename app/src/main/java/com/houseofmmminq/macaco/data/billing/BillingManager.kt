@@ -123,7 +123,7 @@ class BillingManager(
         }
     }
 
-    private fun refreshEntitlement() {
+    fun refreshEntitlement() {
         Purchases.sharedInstance.getCustomerInfoWith(
             onError = { if (_isPremium.value == null) _isPremium.value = false },
             onSuccess = { info ->

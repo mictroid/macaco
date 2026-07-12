@@ -1,6 +1,7 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,7 +53,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.data.model.entryYears
@@ -156,17 +156,18 @@ fun YearInTravelScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
                 ) {
                     Column(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            StatItem(value = recap.entryCount.toString(), label = stringResource(R.string.profile_memories), valueColor = SplashGold)
-                            StatItem(value = recap.tripCount.toString(), label = stringResource(R.string.profile_trips), valueColor = MaterialTheme.colorScheme.primary)
+                            StatItem(value = recap.entryCount.toString(), label = stringResource(R.string.profile_memories), valueColor = MaterialTheme.colorScheme.primary, labelColor = SplashGold)
+                            StatItem(value = recap.tripCount.toString(), label = stringResource(R.string.profile_trips), valueColor = MaterialTheme.colorScheme.primary, labelColor = SplashGold)
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            StatItem(value = recap.locationCount.toString(), label = stringResource(R.string.profile_locations), valueColor = MaterialTheme.colorScheme.primary)
-                            StatItem(value = recap.mediaCount.toString(), label = stringResource(R.string.profile_media), valueColor = MaterialTheme.colorScheme.primary)
+                            StatItem(value = recap.locationCount.toString(), label = stringResource(R.string.profile_locations), valueColor = MaterialTheme.colorScheme.primary, labelColor = SplashGold)
+                            StatItem(value = recap.mediaCount.toString(), label = stringResource(R.string.profile_media), valueColor = MaterialTheme.colorScheme.primary, labelColor = SplashGold)
                         }
                     }
                 }
@@ -201,16 +202,6 @@ fun YearInTravelScreen(
             }
 
             Spacer(Modifier.height(24.dp))
-            MacacoBrandBlock(isLandscape = false, collapsed = true)
-            Text(
-                "macaco",
-                color = SplashGold,
-                fontWeight = FontWeight.Light,
-                letterSpacing = 3.sp,
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
-                textAlign = TextAlign.Center
-            )
             Button(
                 onClick = {
                     val uri = YearRecapRenderer(context).render(recap) ?: return@Button

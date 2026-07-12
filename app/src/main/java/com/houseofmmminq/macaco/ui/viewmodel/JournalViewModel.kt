@@ -475,7 +475,9 @@ class JournalViewModel(
         // When the entry list changes, download any Drive photos missing on this device.
         viewModelScope.launch {
             cloudEntrySync.entries.collect { entryList ->
-                drivePhotoSync.downloadMissingPhotos(entryList)
+                if (isPurchased.value == true) {
+                    drivePhotoSync.downloadMissingPhotos(entryList)
+                }
             }
         }
     }
@@ -493,7 +495,9 @@ class JournalViewModel(
             // Two separate launches used to race: each saved latest.copy(<its>FileIds), and the
             // later writer could read a `latest` predating the earlier save, reverting its IDs to
             // "" — which re-uploaded those files on the next save (duplicates in Drive).
-            if (entry.photoUris.isNotEmpty() || entry.videoUris.isNotEmpty()) {
+            if (isPurchased.value == true &&
+                (entry.photoUris.isNotEmpty() || entry.videoUris.isNotEmpty())
+            ) {
                 launch {
                     val newPhotoIds =
                         if (entry.photoUris.isNotEmpty()) drivePhotoSync.uploadEntryPhotosOrReport(entry)
@@ -649,6 +653,7 @@ class JournalViewModel(
     }
 
     fun syncPhotosToGoogleDrive() {
+        if (isPurchased.value != true) return
         drivePhotoSync.syncAll(entries.value) { updated ->
             // `updated` was built from the entry list captured at sync start; merge only the
             // Drive-ID lists into the live entry so a mid-sync user edit isn't reverted. Each

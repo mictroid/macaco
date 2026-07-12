@@ -189,6 +189,11 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         appUpdateManager.registerListener(installStateListener)
         checkForUpdate()
+        // Re-check entitlement on every resume — RevenueCat's push listener isn't guaranteed to
+        // fire just because the app came back to the foreground, so a stale premium read from
+        // cold start (or a server-side entitlement change while backgrounded) could otherwise
+        // silently hide reel/Drive-backup/Print-Book for the rest of the process lifetime.
+        (application as TravelJournalApp).billingManager.refreshEntitlement()
     }
 
     override fun onPause() {

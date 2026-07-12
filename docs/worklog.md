@@ -2,6 +2,18 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-12 — vc69 review-fixes batch (implemented, not shipped) — reel icon, Drive gating gap, Year in Travel recolor
+
+`code-brief-vc69-review-fixes.md` implemented and archived to `docs/DONE/`, all 4 changes verified
+vs live source first, `assembleDebug` SUCCESSFUL. Not yet dispatched to Play. Detail in
+`docs/worklog-2026-07-12.md`:
+- **Change 1** — `BillingManager.refreshEntitlement()` now runs on every `MainActivity.onResume()`,
+  not just cold start, so a stale premium read self-heals (candidate cause of a missing reel icon).
+- **Change 2** — Drive backup upload/download/"Sync Now" all gated behind `isPurchased`;
+  `DriveBackupCard` gets a lock icon + hides Sync Now when connected-but-not-premium.
+- **Change 3** — Year in Travel stat grid: numbers → teal, labels → gold (reversed), teal card border.
+- **Change 4** — removed the duplicate `MacacoBrandBlock` above the Share button.
+
 ## 2026-07-12 — vc69 (1.6, closed testing) — 4-brief batch (Help/Year fixes, trip-share retired, Drive premium-gated)
 
 - **vc69 dispatched — WIF run `29192148641`** (impl `fef7cb4`, bump+notes `5b84267`; origin == HEAD
