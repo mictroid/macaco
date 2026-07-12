@@ -1,6 +1,6 @@
 What's new:
-• Print books now render your photos correctly (no more blank pages)
-• Tidy up long journals: tap to collapse trips, months, and Help sections
-• Year in Travel gets a refreshed, on-brand look
-• Repeat photo suggestions from the same place are grouped into one card
-• Cleaner layout: fixed the New Entry button position and profile spacing
+• Year in Travel refreshed: teal-and-gold stats and new highlight chips for your top mood, tag, and busiest month
+• Help & About: FAQ sections now start collapsed, with the version tidied under the logo
+• Fixed the "Share my year" button hiding behind the system bar
+• Trip sharing now goes straight to Adventure Reel — one simple way to share a trip
+• Google Drive photo backup is now part of Premium
