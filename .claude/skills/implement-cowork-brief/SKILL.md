@@ -76,6 +76,16 @@ any "X is already imported / already in scope" claims — those are the claims m
 If a brief's "BEFORE" doesn't match live source, **stop and report the mismatch** rather than forcing
 an edit — the brief may be targeting a version that no longer exists.
 
+**Verify the claimed *problem state*, not just signatures.** A brief can invent the entire premise —
+especially a "fix the broken/truncated/corrupted files" or "restore the deleted X" brief. Seen
+2026-07-12 (vc69): `fix-truncated-uncommitted-files` claimed prior Edit-tool edits had truncated four
+files mid-token and broken the build; the working tree was actually healthy (files ended cleanly, all
+"deleted" strings present, no truncation). Applying it would have duplicated strings and corrupted
+working code. When a brief claims the tree is broken, **prove the breakage first** — read the real
+file tails, grep for the "deleted" symbols, check `</resources>`/brace balance. If the files are fine,
+**do NOT apply it**; report it as a phantom and archive to `docs/DONE/` (resolved no-op) with the
+evidence in the worklog so Cowork stops flagging it. See the `phantom-corruption-brief` memory.
+
 ### 3. Implement
 - Make the edits exactly as specified, **except** correct any verified signature/import errors. Add a
   missing import the brief wrongly assumed; use a fully-qualified name if that matches the file's
