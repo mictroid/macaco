@@ -285,7 +285,7 @@
     <string name="year_recap_share_chooser">分享你的旅行之年</string>
     <string name="year_recap_no_entries">%1$d 年还没有日记</string>
     <string name="photo_suggestion_title">来自%1$s的新照片</string>
-    <string name="photo_suggestion_subtitle">%1$d张照片，%2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s，%2$s</string>
     <string name="photo_suggestion_dismiss">忽略</string>
     <string name="photo_suggestion_create">创建日记</string>
     <string name="photo_suggestion_permission_title">是否允许Macaco根据你最近的照片建议日记？</string>
@@ -462,4 +462,25 @@
     <string name="purchase_trial_note">试用期内随时取消，不会产生任何费用</string>
     <string name="settings_drive_connected_as">已连接为 %s</string>
     <string name="settings_drive_disconnect">断开连接</string>
+    <string name="common_expand">展开</string>
+    <string name="common_collapse">收起</string>
+    <string name="help_section_print_export">打印与导出</string>
+    <string name="help_section_year_recap">旅行年度回顾</string>
+    <string name="help_section_trip_sharing">行程分享</string>
+    <string name="help_faq_search_q">如何搜索我的条目？</string>
+    <string name="help_faq_search_a">在日记界面点按搜索图标并开始输入 — Macaco 会在你输入时匹配标题、地点、描述和标签。</string>
+    <string name="help_faq_weather_q">天气印记来自哪里？</string>
+    <string name="help_faq_weather_a">Macaco 会自动查询条目所在地点和日期的历史天气，并将其作为一个小标签显示在心情和地点旁边。它在后台获取一次 — 无需开启任何设置，只有在该日期有天气数据时才会出现。</string>
+    <string name="help_faq_print_q">我可以把日记打印成一本书吗？</string>
+    <string name="help_faq_print_a">可以 — 打开设置并点按“打印成书”（高级版）。按行程、地点或自定义选择挑选条目，Macaco 会将它们排版成可直接打印的 A4 PDF，带有自定义封面、开篇页和品牌尾页。保存 PDF 或直接分享给打印店或家用打印机 — Macaco 本身不处理打印履约。</string>
+    <string name="help_faq_year_recap_q">什么是旅行年度回顾？</string>
+    <string name="help_faq_year_recap_a">打开你的个人资料并点按“旅行年度回顾”，即可查看当年记录的总结 — 你最忙碌的月份、最常见的心情、最常用的标签等等。点按“分享我的一年”，将其变成可发布或发送的图片。</string>
+    <string name="help_faq_trip_sharing_q">我可以与没有 Macaco 的人分享行程吗？</string>
+    <string name="help_faq_trip_sharing_a">可以 — 在任意行程标题上点按分享，即可创建一个只读网页链接。任何拥有链接的人都可以查看这些条目和照片，无需安装应用或登录。设置有效期（7 天、30 天或永不），并可随时从同一菜单撤销访问权限。</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="other">%d张照片</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="other">%d次访问</item>
+    </plurals>
 </resources>

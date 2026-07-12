@@ -174,8 +174,12 @@ class PrintBookExporter(private val context: Context) {
         val uri = Uri.parse(uriString)
         val resolver = context.contentResolver
         val boundsOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, boundsOpts) }
-            ?: return@runCatching null
+        // decodeStream returns null by design when inJustDecodeBounds is set (it only fills
+        // outWidth/outHeight), so guard on whether the STREAM opened, not on the decode's return
+        // value — otherwise every photo bails here and the book renders all-placeholder. Matches
+        // JournalBackup.compressToBytes's proven pattern.
+        val boundsStream = resolver.openInputStream(uri) ?: return@runCatching null
+        boundsStream.use { BitmapFactory.decodeStream(it, null, boundsOpts) }
         val rawW = boundsOpts.outWidth
         val rawH = boundsOpts.outHeight
         if (rawW <= 0 || rawH <= 0) return@runCatching null

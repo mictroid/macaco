@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -45,6 +47,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Search
@@ -178,6 +182,16 @@ fun JournalListScreen(
         derivedStateOf {
             listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 24
         }
+    }
+
+    // Collapsible trip/month groups: which section keys ("trip:<name>" / "month:<label>") are
+    // currently collapsed. Session-scoped only (remember, not rememberSaveable/DataStore) — every
+    // fresh app open starts fully expanded; this is a browsing convenience, not a setting worth
+    // persisting.
+    var collapsedSections by remember { mutableStateOf(setOf<String>()) }
+    fun toggleSection(key: String) {
+        collapsedSections =
+            if (key in collapsedSections) collapsedSections - key else collapsedSections + key
     }
 
     // Surface cloud-sync failures (load/save/delete) as a snackbar.
@@ -471,10 +485,15 @@ fun JournalListScreen(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     // Scaffold's contentWindowInsets is zeroed on this screen (hand-managed
-                    // insets elsewhere), so the FAB needs its own — otherwise it renders behind
-                    // the system nav bar in landscape (nav bar sits on the side edge there, not
-                    // the bottom), as seen on the Galaxy A53.
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
+                    // insets elsewhere), so the FAB needs its own. Deliberately narrower than
+                    // `safeDrawing` (which also bundles IME + system-gesture insets and was
+                    // observed pushing the FAB to mid-screen on a Galaxy S8) — navigationBars
+                    // covers the side nav bar in landscape (the original A53 bug this modifier
+                    // was added for) and displayCutout covers the front-camera notch on the
+                    // opposite edge, matching the content Column's own cutout handling below.
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.navigationBars.union(WindowInsets.displayCutout)
+                    )
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) { data -> MacacoSnackbar(data) } },
@@ -558,29 +577,78 @@ fun JournalListScreen(
                                 )
                             }
                         }
-                        suggestedClusters.forEach { cluster ->
-                            item(key = "suggestion-${cluster.startMillis}") {
-                                SuggestionCard(
-                                    cluster = cluster,
-                                    onDismiss = { viewModel.dismissSuggestedCluster(cluster) },
-                                    onCreate = {
-                                        viewModel.acceptSuggestedCluster(cluster)
-                                        onNewEntry()
+                        // Clusters sharing a place name (e.g. two separate Berlin visits within
+                        // the scan window) collapse into one grouped card instead of repeating
+                        // near-identical cards back to back. Clusters with no resolved place name
+                        // (geocoding failed/unavailable) always render individually — there's
+                        // nothing to group them on. Accept/dismiss stay per-cluster either way;
+                        // only the visual presentation changes. Plain groupBy (not remember) —
+                        // this runs inside LazyListScope, which is not a @Composable context.
+                        val suggestionsByPlace = suggestedClusters.groupBy { it.placeName }
+                        suggestionsByPlace.forEach { (placeName, clustersForPlace) ->
+                            if (placeName != null && clustersForPlace.size > 1) {
+                                item(key = "suggestion-group-$placeName") {
+                                    SuggestionGroupCard(
+                                        placeName = placeName,
+                                        clusters = clustersForPlace,
+                                        onDismiss = { viewModel.dismissSuggestedCluster(it) },
+                                        onCreate = {
+                                            viewModel.acceptSuggestedCluster(it)
+                                            onNewEntry()
+                                        }
+                                    )
+                                }
+                            } else {
+                                clustersForPlace.forEach { cluster ->
+                                    item(key = "suggestion-${cluster.startMillis}") {
+                                        SuggestionCard(
+                                            cluster = cluster,
+                                            onDismiss = { viewModel.dismissSuggestedCluster(cluster) },
+                                            onCreate = {
+                                                viewModel.acceptSuggestedCluster(cluster)
+                                                onNewEntry()
+                                            }
+                                        )
                                     }
-                                )
+                                }
                             }
                         }
                         if (hasTrips) {
                             tripSections.forEach { (trip, sectionEntries) ->
+                                val sectionKey = "trip:$trip"
                                 item(key = "trip-header-$trip") {
                                     TripHeader(
                                         tripName = trip,
                                         entryCount = sectionEntries.size,
                                         isPurchased = isPurchased == true,
+                                        collapsed = sectionKey in collapsedSections,
+                                        onToggleCollapse = { toggleSection(sectionKey) },
                                         onCreateReel = { viewModel.startReel(trip, sectionEntries) },
                                         onShare = { shareDialogTrip = trip to sectionEntries }
                                     )
                                 }
+                                if (sectionKey !in collapsedSections) {
+                                    items(sectionEntries, key = { it.id }) { entry ->
+                                        EntryCard(
+                                            entry = entry,
+                                            cachedDrivePhotos = cachedDrivePhotos,
+                                            selectedTags = selectedTags,
+                                            onClick = { onEntryClick(entry.id) }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        monthSections.forEach { (month, sectionEntries) ->
+                            val sectionKey = "month:$month"
+                            item(key = "header-$month") {
+                                MonthHeader(
+                                    month = month,
+                                    collapsed = sectionKey in collapsedSections,
+                                    onToggleCollapse = { toggleSection(sectionKey) }
+                                )
+                            }
+                            if (sectionKey !in collapsedSections) {
                                 items(sectionEntries, key = { it.id }) { entry ->
                                     EntryCard(
                                         entry = entry,
@@ -589,17 +657,6 @@ fun JournalListScreen(
                                         onClick = { onEntryClick(entry.id) }
                                     )
                                 }
-                            }
-                        }
-                        monthSections.forEach { (month, sectionEntries) ->
-                            item(key = "header-$month") { MonthHeader(month) }
-                            items(sectionEntries, key = { it.id }) { entry ->
-                                EntryCard(
-                                    entry = entry,
-                                    cachedDrivePhotos = cachedDrivePhotos,
-                                    selectedTags = selectedTags,
-                                    onClick = { onEntryClick(entry.id) }
-                                )
                             }
                         }
                     }
@@ -1145,7 +1202,12 @@ private fun SuggestionCard(
                     )
                     Text(
                         stringResource(
-                            R.string.photo_suggestion_subtitle, cluster.photoUris.size, dateRange
+                            R.string.photo_suggestion_subtitle,
+                            pluralStringResource(
+                                R.plurals.photo_suggestion_photo_count,
+                                cluster.photoUris.size, cluster.photoUris.size
+                            ),
+                            dateRange
                         ),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
@@ -1164,6 +1226,76 @@ private fun SuggestionCard(
                 Spacer(Modifier.width(4.dp))
                 Button(onClick = onCreate) {
                     Text(stringResource(R.string.photo_suggestion_create))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SuggestionGroupCard(
+    placeName: String,
+    clusters: List<PhotoRollScanner.PhotoCluster>,
+    onDismiss: (PhotoRollScanner.PhotoCluster) -> Unit,
+    onCreate: (PhotoRollScanner.PhotoCluster) -> Unit
+) {
+    val dayFormat = remember { SimpleDateFormat("MMM d", Locale.getDefault()) }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("📷", fontSize = 16.sp)
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    stringResource(R.string.photo_suggestion_title, placeName),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+            Text(
+                pluralStringResource(R.plurals.photo_suggestion_visit_count, clusters.size, clusters.size),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                modifier = Modifier.padding(start = 22.dp, top = 2.dp)
+            )
+            Spacer(Modifier.height(6.dp))
+            clusters.sortedBy { it.startMillis }.forEach { cluster ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        stringResource(
+                            R.string.photo_suggestion_subtitle,
+                            pluralStringResource(
+                                R.plurals.photo_suggestion_photo_count,
+                                cluster.photoUris.size, cluster.photoUris.size
+                            ),
+                            dayFormat.format(Date(cluster.startMillis))
+                        ),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.weight(1f)
+                    )
+                    TextButton(
+                        onClick = { onDismiss(cluster) },
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        Text(stringResource(R.string.photo_suggestion_dismiss), style = MaterialTheme.typography.labelSmall)
+                    }
+                    Button(
+                        onClick = { onCreate(cluster) },
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(stringResource(R.string.photo_suggestion_create), style = MaterialTheme.typography.labelSmall)
+                    }
                 }
             }
         }
@@ -1329,6 +1461,8 @@ private fun TripHeader(
     tripName: String,
     entryCount: Int,
     isPurchased: Boolean,
+    collapsed: Boolean,
+    onToggleCollapse: () -> Unit,
     onCreateReel: () -> Unit,
     onShare: () -> Unit
 ) {
@@ -1338,9 +1472,18 @@ private fun TripHeader(
             .padding(top = 10.dp, bottom = 2.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
+            .clickable(onClick = onToggleCollapse)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = if (collapsed) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
+            contentDescription = if (collapsed)
+                stringResource(R.string.common_expand) else stringResource(R.string.common_collapse),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(Modifier.width(6.dp))
         Text(
             tripName,
             style = MaterialTheme.typography.titleSmall,
@@ -1422,13 +1565,22 @@ private fun ReelProgressDialog(
 // Month/year run header: a small gold-uppercase label with a hairline rule trailing off to the
 // right, breaking the list into chapters instead of one unbroken stream of cards.
 @Composable
-private fun MonthHeader(month: String) {
+private fun MonthHeader(month: String, collapsed: Boolean, onToggleCollapse: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 6.dp, bottom = 2.dp, start = 4.dp),
+            .padding(top = 6.dp, bottom = 2.dp, start = 4.dp)
+            .clickable(onClick = onToggleCollapse),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = if (collapsed) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
+            contentDescription = if (collapsed)
+                stringResource(R.string.common_expand) else stringResource(R.string.common_collapse),
+            tint = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(Modifier.width(4.dp))
         Text(
             month.uppercase(),
             style = MaterialTheme.typography.labelMedium,

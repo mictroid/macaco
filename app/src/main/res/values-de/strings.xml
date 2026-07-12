@@ -299,7 +299,7 @@
     <string name="year_recap_share_chooser">Teile dein Reisejahr</string>
     <string name="year_recap_no_entries">Noch keine Einträge für %1$d</string>
     <string name="photo_suggestion_title">Neue Fotos von %1$s</string>
-    <string name="photo_suggestion_subtitle">%1$d Fotos, %2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s, %2$s</string>
     <string name="photo_suggestion_dismiss">Verwerfen</string>
     <string name="photo_suggestion_create">Eintrag erstellen</string>
     <string name="photo_suggestion_permission_title">Soll Macaco Einträge basierend auf deinen letzten Fotos vorschlagen?</string>
@@ -475,4 +475,27 @@
     <string name="purchase_plan_monthly">Monatlich</string>
     <string name="purchase_save_50">Spare 50 % gegenüber monatlich</string>
     <string name="purchase_trial_note">Während der Testphase jederzeit kündbar – es wird nichts berechnet</string>
+    <string name="common_expand">Ausklappen</string>
+    <string name="common_collapse">Einklappen</string>
+    <string name="help_section_print_export">Drucken &amp; Export</string>
+    <string name="help_section_year_recap">Reisejahr</string>
+    <string name="help_section_trip_sharing">Reise teilen</string>
+    <string name="help_faq_search_q">Wie durchsuche ich meine Einträge?</string>
+    <string name="help_faq_search_a">Tippe im Journal-Bildschirm auf das Suchsymbol und beginne zu tippen — Macaco durchsucht beim Tippen Titel, Ort, Beschreibung und Tags.</string>
+    <string name="help_faq_weather_q">Woher kommt der Wetterstempel?</string>
+    <string name="help_faq_weather_a">Macaco ermittelt automatisch das historische Wetter für Ort und Datum eines Eintrags und zeigt es als kleinen Chip neben Stimmung und Ort an. Es wird einmal im Hintergrund abgerufen — es gibt nichts einzuschalten, und es erscheint erst, sobald Wetterdaten für dieses Datum verfügbar sind.</string>
+    <string name="help_faq_print_q">Kann ich mein Journal als Buch drucken?</string>
+    <string name="help_faq_print_a">Ja — öffne die Einstellungen und tippe auf „Buch drucken“ (Premium). Wähle Einträge nach Reise, Ort oder einer eigenen Auswahl aus, und Macaco setzt sie in ein druckfertiges A4-PDF mit eigenem Cover, einer Startseite und einer gebrandeten Abschlussseite. Speichere das PDF oder teile es direkt an einen Druckdienst oder Heimdrucker — Macaco übernimmt den Druck nicht selbst.</string>
+    <string name="help_faq_year_recap_q">Was ist das Reisejahr?</string>
+    <string name="help_faq_year_recap_a">Öffne dein Profil und tippe auf „Reisejahr“ für einen Rückblick auf das Journaling des Jahres — dein aktivster Monat, deine häufigste Stimmung, dein meistgenutzter Tag und mehr. Tippe auf „Mein Jahr teilen“, um daraus ein Bild zum Posten oder Senden zu machen.</string>
+    <string name="help_faq_trip_sharing_q">Kann ich eine Reise mit jemandem teilen, der Macaco nicht hat?</string>
+    <string name="help_faq_trip_sharing_a">Ja — tippe in der Kopfzeile einer Reise auf Teilen, um einen schreibgeschützten Weblink zu erstellen. Jeder mit dem Link kann diese Einträge und Fotos sehen, ohne die App zu installieren oder sich anzumelden. Lege ein Ablaufdatum fest (7 Tage, 30 Tage oder nie) und widerrufe den Zugriff jederzeit über dasselbe Menü.</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="one">%d Foto</item>
+        <item quantity="other">%d Fotos</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="one">%d Besuch</item>
+        <item quantity="other">%d Besuche</item>
+    </plurals>
 </resources>

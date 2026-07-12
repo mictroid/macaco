@@ -284,7 +284,7 @@
     <string name="year_recap_share_chooser">Share your year in travel</string>
     <string name="year_recap_no_entries">No entries yet for %1$d</string>
     <string name="photo_suggestion_title">New photos from %1$s</string>
-    <string name="photo_suggestion_subtitle">%1$d photos, %2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s, %2$s</string>
     <string name="photo_suggestion_dismiss">Dismiss</string>
     <string name="photo_suggestion_create">Create entry</string>
     <string name="photo_suggestion_permission_title">Let Macaco suggest entries from your recent photos?</string>
@@ -477,4 +477,27 @@
     <string name="help_faq_video_add_a">Tap the Video button in the entry editor and choose “Record clip” to capture up to 15 seconds directly from your camera, or “Choose from gallery” to pick an existing video. Gallery videos longer than 15 seconds can be trimmed to the moment you want before saving. You can add up to 3 videos per entry.</string>
     <string name="help_faq_video_length_q">How long can a video be, and how much space does it use?</string>
     <string name="help_faq_video_length_a">Videos are limited to 15 seconds. Macaco automatically compresses each clip to around 4 MB (720p, H.264), so your storage and Drive quota stay under control. Videos are backed up to Google Drive alongside your photos as long as Drive is connected in Settings.</string>
+    <string name="common_expand">Expand</string>
+    <string name="common_collapse">Collapse</string>
+    <string name="help_section_print_export">Print &amp; Export</string>
+    <string name="help_section_year_recap">Year in Travel</string>
+    <string name="help_section_trip_sharing">Trip Sharing</string>
+    <string name="help_faq_search_q">How do I search my entries?</string>
+    <string name="help_faq_search_a">Tap the search icon on the journal screen and start typing — Macaco matches as you type across title, location, description, and tags.</string>
+    <string name="help_faq_weather_q">Where does the weather stamp come from?</string>
+    <string name="help_faq_weather_a">Macaco automatically looks up the historical weather for an entry\'s location and date and shows it as a small chip next to mood and location. It\'s fetched once in the background — there\'s nothing to turn on, and it only appears once weather data is available for that date.</string>
+    <string name="help_faq_print_q">Can I print my journal as a book?</string>
+    <string name="help_faq_print_a">Yes — open Settings and tap \"Print Book\" (premium). Pick entries by trip, location, or a custom selection, and Macaco lays them out into a print-ready A4 PDF with a custom cover, opening page, and a branded closing page. Save the PDF or share it straight to a print shop or home printer — Macaco doesn\'t handle print fulfillment itself.</string>
+    <string name="help_faq_year_recap_q">What is Year in Travel?</string>
+    <string name="help_faq_year_recap_a">Open your profile and tap \"Year in Travel\" for a recap of that year\'s journalling — your busiest month, most common mood, most-used tag, and more. Tap \"Share my year\" to turn it into an image you can post or send.</string>
+    <string name="help_faq_trip_sharing_q">Can I share a trip with someone who doesn\'t have Macaco?</string>
+    <string name="help_faq_trip_sharing_a">Yes — tap Share on any trip header to create a view-only web link. Anyone with the link can see those entries and photos without installing the app or signing in. Set an expiry (7 days, 30 days, or never) and revoke access anytime from the same menu.</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="one">%d photo</item>
+        <item quantity="other">%d photos</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="one">%d visit</item>
+        <item quantity="other">%d visits</item>
+    </plurals>
 </resources>

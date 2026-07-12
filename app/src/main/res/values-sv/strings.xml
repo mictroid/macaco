@@ -261,7 +261,7 @@
     <string name="year_recap_share_chooser">Dela ditt reseår</string>
     <string name="year_recap_no_entries">Inga inlägg ännu för %1$d</string>
     <string name="photo_suggestion_title">Nya foton från %1$s</string>
-    <string name="photo_suggestion_subtitle">%1$d foton, %2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s, %2$s</string>
     <string name="photo_suggestion_dismiss">Avvisa</string>
     <string name="photo_suggestion_create">Skapa anteckning</string>
     <string name="photo_suggestion_permission_title">Ska Macaco föreslå anteckningar utifrån dina senaste foton?</string>
@@ -466,4 +466,27 @@
     <string name="reminder_copy_location_title">Tänker du fortfarande på %1$s? 🌏</string>
     <string name="reminder_copy_new_body">Vart tog Macaco dig idag?</string>
     <string name="reminder_copy_new_title">Res fritt. Glöm inget. 🐒</string>
+    <string name="common_expand">Expandera</string>
+    <string name="common_collapse">Fäll ihop</string>
+    <string name="help_section_print_export">Utskrift och export</string>
+    <string name="help_section_year_recap">Reseår</string>
+    <string name="help_section_trip_sharing">Dela resa</string>
+    <string name="help_faq_search_q">Hur söker jag bland mina inlägg?</string>
+    <string name="help_faq_search_a">Tryck på sökikonen på dagboksskärmen och börja skriva — Macaco matchar medan du skriver i titel, plats, beskrivning och taggar.</string>
+    <string name="help_faq_weather_q">Var kommer väderstämpeln ifrån?</string>
+    <string name="help_faq_weather_a">Macaco slår automatiskt upp det historiska vädret för ett inläggs plats och datum och visar det som en liten bricka bredvid humör och plats. Det hämtas en gång i bakgrunden — det finns inget att slå på, och det visas först när väderdata finns tillgängligt för det datumet.</string>
+    <string name="help_faq_print_q">Kan jag skriva ut min dagbok som en bok?</string>
+    <string name="help_faq_print_a">Ja — öppna Inställningar och tryck på ”Utskriven bok” (premium). Välj inlägg efter resa, plats eller ett eget urval, så sätter Macaco upp dem i en utskriftsklar A4-PDF med eget omslag, öppningssida och en varumärkt avslutningssida. Spara PDF:en eller dela den direkt till en tryckeri eller hemmaskrivare — Macaco sköter inte utskriften själv.</string>
+    <string name="help_faq_year_recap_q">Vad är Reseår?</string>
+    <string name="help_faq_year_recap_a">Öppna din profil och tryck på ”Reseår” för en sammanfattning av årets skrivande — din mest aktiva månad, ditt vanligaste humör, din mest använda tagg och mer. Tryck på ”Dela mitt år” för att göra det till en bild du kan lägga upp eller skicka.</string>
+    <string name="help_faq_trip_sharing_q">Kan jag dela en resa med någon som inte har Macaco?</string>
+    <string name="help_faq_trip_sharing_a">Ja — tryck på Dela i rubriken för en resa för att skapa en skrivskyddad webblänk. Vem som helst med länken kan se de inläggen och bilderna utan att installera appen eller logga in. Ange en giltighetstid (7 dagar, 30 dagar eller aldrig) och återkalla åtkomsten när som helst från samma meny.</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="one">%d foto</item>
+        <item quantity="other">%d foton</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="one">%d besök</item>
+        <item quantity="other">%d besök</item>
+    </plurals>
 </resources>

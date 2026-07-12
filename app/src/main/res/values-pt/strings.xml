@@ -288,7 +288,7 @@
     <string name="year_recap_share_chooser">Compartilhe seu ano de viagens</string>
     <string name="year_recap_no_entries">Ainda não há entradas para %1$d</string>
     <string name="photo_suggestion_title">Novas fotos de %1$s</string>
-    <string name="photo_suggestion_subtitle">%1$d fotos, %2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s, %2$s</string>
     <string name="photo_suggestion_dismiss">Dispensar</string>
     <string name="photo_suggestion_create">Criar entrada</string>
     <string name="photo_suggestion_permission_title">Permitir que o Macaco sugira entradas com base em suas fotos recentes?</string>
@@ -466,4 +466,27 @@
     <string name="purchase_trial_note">Cancele durante o teste e nada será cobrado</string>
     <string name="settings_drive_connected_as">Conectado como %s</string>
     <string name="settings_drive_disconnect">Desconectar</string>
+    <string name="common_expand">Expandir</string>
+    <string name="common_collapse">Recolher</string>
+    <string name="help_section_print_export">Impressão e exportação</string>
+    <string name="help_section_year_recap">Ano em viagens</string>
+    <string name="help_section_trip_sharing">Partilha de viagens</string>
+    <string name="help_faq_search_q">Como pesquiso nas minhas entradas?</string>
+    <string name="help_faq_search_a">Toque no ícone de pesquisa no ecrã do diário e comece a escrever — o Macaco procura enquanto escreve no título, localização, descrição e etiquetas.</string>
+    <string name="help_faq_weather_q">De onde vem o selo do tempo?</string>
+    <string name="help_faq_weather_a">O Macaco procura automaticamente o tempo histórico para a localização e a data de uma entrada e mostra-o como uma pequena etiqueta ao lado do humor e da localização. É obtido uma vez em segundo plano — não há nada para ativar, e só aparece quando há dados meteorológicos disponíveis para essa data.</string>
+    <string name="help_faq_print_q">Posso imprimir o meu diário como um livro?</string>
+    <string name="help_faq_print_a">Sim — abra as Definições e toque em «Livro impresso» (premium). Escolha entradas por viagem, localização ou uma seleção personalizada, e o Macaco compõe-nas num PDF A4 pronto a imprimir com capa personalizada, página de abertura e uma página de fecho com a marca. Guarde o PDF ou partilhe-o diretamente para uma gráfica ou impressora doméstica — o Macaco não trata da impressão em si.</string>
+    <string name="help_faq_year_recap_q">O que é o Ano em viagens?</string>
+    <string name="help_faq_year_recap_a">Abra o seu perfil e toque em «Ano em viagens» para um resumo do diário desse ano — o mês mais ativo, o humor mais comum, a etiqueta mais usada e mais. Toque em «Partilhar o meu ano» para o transformar numa imagem que pode publicar ou enviar.</string>
+    <string name="help_faq_trip_sharing_q">Posso partilhar uma viagem com alguém que não tem o Macaco?</string>
+    <string name="help_faq_trip_sharing_a">Sim — toque em Partilhar no cabeçalho de qualquer viagem para criar uma ligação web só de leitura. Qualquer pessoa com a ligação pode ver essas entradas e fotos sem instalar a app nem iniciar sessão. Defina uma validade (7 dias, 30 dias ou nunca) e revogue o acesso a qualquer momento no mesmo menu.</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="one">%d foto</item>
+        <item quantity="other">%d fotos</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="one">%d visita</item>
+        <item quantity="other">%d visitas</item>
+    </plurals>
 </resources>

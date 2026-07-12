@@ -294,7 +294,7 @@
     <string name="year_recap_share_chooser">Udostępnij swój rok podróży</string>
     <string name="year_recap_no_entries">Brak jeszcze wpisów za %1$d</string>
     <string name="photo_suggestion_title">Nowe zdjęcia z %1$s</string>
-    <string name="photo_suggestion_subtitle">%1$d zdjęć, %2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s, %2$s</string>
     <string name="photo_suggestion_dismiss">Odrzuć</string>
     <string name="photo_suggestion_create">Utwórz wpis</string>
     <string name="photo_suggestion_permission_title">Czy Macaco może sugerować wpisy na podstawie Twoich ostatnich zdjęć?</string>
@@ -474,4 +474,31 @@
     <string name="purchase_trial_note">Anuluj w okresie próbnym, a nic nie zapłacisz</string>
     <string name="settings_drive_connected_as">Połączono jako %s</string>
     <string name="settings_drive_disconnect">Odłącz</string>
+    <string name="common_expand">Rozwiń</string>
+    <string name="common_collapse">Zwiń</string>
+    <string name="help_section_print_export">Drukowanie i eksport</string>
+    <string name="help_section_year_recap">Rok podróży</string>
+    <string name="help_section_trip_sharing">Udostępnianie podróży</string>
+    <string name="help_faq_search_q">Jak przeszukać moje wpisy?</string>
+    <string name="help_faq_search_a">Dotknij ikony wyszukiwania na ekranie dziennika i zacznij pisać — Macaco dopasowuje w trakcie pisania tytuł, lokalizację, opis i tagi.</string>
+    <string name="help_faq_weather_q">Skąd pochodzi stempel pogodowy?</string>
+    <string name="help_faq_weather_a">Macaco automatycznie sprawdza historyczną pogodę dla lokalizacji i daty wpisu i pokazuje ją jako mały znacznik obok nastroju i lokalizacji. Jest pobierana raz w tle — nie trzeba nic włączać, i pojawia się dopiero, gdy dostępne są dane pogodowe dla tej daty.</string>
+    <string name="help_faq_print_q">Czy mogę wydrukować mój dziennik jako książkę?</string>
+    <string name="help_faq_print_a">Tak — otwórz Ustawienia i dotknij „Drukowana książka” (premium). Wybierz wpisy według podróży, lokalizacji lub własnego wyboru, a Macaco złoży je w gotowy do druku PDF A4 z własną okładką, stroną otwierającą i markową stroną końcową. Zapisz PDF lub udostępnij go bezpośrednio do drukarni lub drukarki domowej — Macaco nie obsługuje samego druku.</string>
+    <string name="help_faq_year_recap_q">Czym jest Rok podróży?</string>
+    <string name="help_faq_year_recap_a">Otwórz swój profil i dotknij „Rok podróży”, aby zobaczyć podsumowanie tego roku — najbardziej aktywny miesiąc, najczęstszy nastrój, najczęściej używany tag i więcej. Dotknij „Udostępnij mój rok”, aby zamienić to w obraz do opublikowania lub wysłania.</string>
+    <string name="help_faq_trip_sharing_q">Czy mogę udostępnić podróż komuś, kto nie ma Macaco?</string>
+    <string name="help_faq_trip_sharing_a">Tak — dotknij Udostępnij w nagłówku dowolnej podróży, aby utworzyć link internetowy tylko do odczytu. Każdy, kto ma link, może zobaczyć te wpisy i zdjęcia bez instalowania aplikacji ani logowania. Ustaw wygaśnięcie (7 dni, 30 dni lub nigdy) i cofnij dostęp w dowolnym momencie z tego samego menu.</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="one">%d zdjęcie</item>
+        <item quantity="few">%d zdjęcia</item>
+        <item quantity="many">%d zdjęć</item>
+        <item quantity="other">%d zdjęcia</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="one">%d wizyta</item>
+        <item quantity="few">%d wizyty</item>
+        <item quantity="many">%d wizyt</item>
+        <item quantity="other">%d wizyty</item>
+    </plurals>
 </resources>

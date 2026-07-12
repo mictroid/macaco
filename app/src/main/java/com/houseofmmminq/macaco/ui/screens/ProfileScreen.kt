@@ -367,6 +367,12 @@ fun ProfileScreen(
             ) {
             val user = currentUser
             if (user != null) {
+                // Small fixed clearance so the avatar doesn't read as glued to the banner seam
+                // (device screenshot 2026-07-12). Deliberately NOT tied to bannerBottomPadding —
+                // this is perceived avatar-zone space, independent of the header's own collapse
+                // animation.
+                Spacer(Modifier.height(14.dp))
+
                 // Tappable avatar circle, with a background-colored ring so it reads over the banner.
                 Box(
                     modifier = Modifier
@@ -724,11 +730,18 @@ private fun RowScope.ProfileActionTile(
     }
 }
 
-// Not private: reused by YearInTravelScreen's stat grid (same package).
+// Not private: reused by YearInTravelScreen's stat grid (same package). valueColor/labelColor
+// default to today's colors so every existing call site (ProfileScreen's own stats card) is
+// visually unchanged; YearInTravelScreen passes gold/onSurface overrides for its recap card.
 @Composable
-internal fun StatItem(value: String, label: String) {
+internal fun StatItem(
+    value: String,
+    label: String,
+    valueColor: Color = Color.Unspecified,
+    labelColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = valueColor)
+        Text(label, style = MaterialTheme.typography.bodySmall, color = labelColor)
     }
 }

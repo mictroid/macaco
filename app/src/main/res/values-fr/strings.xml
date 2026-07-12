@@ -288,7 +288,7 @@
     <string name="year_recap_share_chooser">Partagez votre année de voyage</string>
     <string name="year_recap_no_entries">Aucune entrée pour %1$d pour le moment</string>
     <string name="photo_suggestion_title">Nouvelles photos de %1$s</string>
-    <string name="photo_suggestion_subtitle">%1$d photos, %2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s, %2$s</string>
     <string name="photo_suggestion_dismiss">Ignorer</string>
     <string name="photo_suggestion_create">Créer une entrée</string>
     <string name="photo_suggestion_permission_title">Laisser Macaco suggérer des entrées à partir de vos photos récentes ?</string>
@@ -466,4 +466,27 @@
     <string name="purchase_trial_note">Annulez pendant l\'essai et vous ne serez pas débité</string>
     <string name="settings_drive_connected_as">Connecté en tant que %s</string>
     <string name="settings_drive_disconnect">Déconnecter</string>
+    <string name="common_expand">Développer</string>
+    <string name="common_collapse">Réduire</string>
+    <string name="help_section_print_export">Impression et export</string>
+    <string name="help_section_year_recap">Année de voyage</string>
+    <string name="help_section_trip_sharing">Partage de voyage</string>
+    <string name="help_faq_search_q">Comment rechercher dans mes entrées ?</string>
+    <string name="help_faq_search_a">Appuyez sur l\'icône de recherche sur l\'écran du journal et commencez à taper — Macaco recherche au fil de la saisie dans le titre, le lieu, la description et les tags.</string>
+    <string name="help_faq_weather_q">D\'où vient la vignette météo ?</string>
+    <string name="help_faq_weather_a">Macaco recherche automatiquement la météo historique pour le lieu et la date d\'une entrée et l\'affiche sous forme de petite puce à côté de l\'humeur et du lieu. Elle est récupérée une fois en arrière-plan — rien à activer, et elle n\'apparaît que lorsque les données météo sont disponibles pour cette date.</string>
+    <string name="help_faq_print_q">Puis-je imprimer mon journal sous forme de livre ?</string>
+    <string name="help_faq_print_a">Oui — ouvrez les Paramètres et appuyez sur « Livre imprimé » (premium). Sélectionnez des entrées par voyage, lieu ou sélection personnalisée, et Macaco les met en page dans un PDF A4 prêt à imprimer avec une couverture personnalisée, une page d\'ouverture et une page de fin à la marque. Enregistrez le PDF ou partagez-le directement vers une imprimerie ou une imprimante domestique — Macaco ne gère pas l\'impression elle-même.</string>
+    <string name="help_faq_year_recap_q">Qu\'est-ce que l\'Année de voyage ?</string>
+    <string name="help_faq_year_recap_a">Ouvrez votre profil et appuyez sur « Année de voyage » pour un récapitulatif de l\'année — votre mois le plus actif, votre humeur la plus fréquente, votre tag le plus utilisé, et plus encore. Appuyez sur « Partager mon année » pour en faire une image à publier ou à envoyer.</string>
+    <string name="help_faq_trip_sharing_q">Puis-je partager un voyage avec quelqu\'un qui n\'a pas Macaco ?</string>
+    <string name="help_faq_trip_sharing_a">Oui — appuyez sur Partager sur l\'en-tête d\'un voyage pour créer un lien web en lecture seule. Toute personne disposant du lien peut voir ces entrées et photos sans installer l\'application ni se connecter. Définissez une expiration (7 jours, 30 jours ou jamais) et révoquez l\'accès à tout moment depuis le même menu.</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="one">%d photo</item>
+        <item quantity="other">%d photos</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="one">%d visite</item>
+        <item quantity="other">%d visites</item>
+    </plurals>
 </resources>

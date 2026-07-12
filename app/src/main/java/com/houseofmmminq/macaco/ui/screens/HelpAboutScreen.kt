@@ -26,11 +26,23 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.Print
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +54,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,13 +75,14 @@ import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.ui.theme.macacoContentGutter
 import com.houseofmmminq.macaco.util.AppActions
 
-/** A named FAQ section: a teal section label and its Q&A pairs (question id to answer id). */
-private data class FaqSection(val titleRes: Int, val items: List<Pair<Int, Int>>)
+/** A named FAQ section: a themed icon, a teal section label, and its Q&A pairs (question id to answer id). */
+private data class FaqSection(val titleRes: Int, val icon: ImageVector, val items: List<Pair<Int, Int>>)
 
 /** FAQ grouped into named sections. String ids kept in sync with strings.xml. */
 private val FAQ_SECTIONS = listOf(
     FaqSection(
         R.string.help_section_getting_started,
+        Icons.Filled.Explore,
         listOf(
             R.string.help_faq_create_entry_q to R.string.help_faq_create_entry_a,
             R.string.help_faq_trips_q to R.string.help_faq_trips_a,
@@ -77,10 +92,15 @@ private val FAQ_SECTIONS = listOf(
             R.string.help_faq_adventures_map_q to R.string.help_faq_adventures_map_a,
             R.string.help_faq_map_pins_q to R.string.help_faq_map_pins_a,
             R.string.help_faq_on_this_day_q to R.string.help_faq_on_this_day_a,
+            // NEW: entry search
+            R.string.help_faq_search_q to R.string.help_faq_search_a,
+            // NEW: weather stamp
+            R.string.help_faq_weather_q to R.string.help_faq_weather_a,
         )
     ),
     FaqSection(
         R.string.help_section_media,
+        Icons.Filled.Photo,
         listOf(
             R.string.help_faq_q_photos to R.string.help_faq_a_photos,
             R.string.help_faq_video_add_q to R.string.help_faq_video_add_a,
@@ -93,6 +113,7 @@ private val FAQ_SECTIONS = listOf(
     ),
     FaqSection(
         R.string.help_section_sync,
+        Icons.Filled.Sync,
         listOf(
             R.string.help_faq_q_sync to R.string.help_faq_a_sync,
             R.string.help_faq_transfer_device_q to R.string.help_faq_transfer_device_a,
@@ -100,18 +121,21 @@ private val FAQ_SECTIONS = listOf(
     ),
     FaqSection(
         R.string.help_section_privacy,
+        Icons.Outlined.Shield,
         listOf(
             R.string.help_faq_q_lock to R.string.help_faq_a_lock,
         )
     ),
     FaqSection(
         R.string.help_section_account,
+        Icons.Filled.AccountCircle,
         listOf(
             R.string.help_faq_delete_account_q to R.string.help_faq_delete_account_a,
         )
     ),
     FaqSection(
         R.string.help_section_premium,
+        Icons.Filled.WorkspacePremium,
         listOf(
             R.string.help_faq_free_trial_q to R.string.help_faq_free_trial_a,
             R.string.help_faq_reel_q to R.string.help_faq_reel_a,
@@ -119,6 +143,30 @@ private val FAQ_SECTIONS = listOf(
             R.string.help_faq_premium_broken_q to R.string.help_faq_premium_broken_a,
             // Question renamed; the existing billing/cancel answer copy is reused unchanged.
             R.string.help_faq_cancel_plan_q to R.string.help_faq_a_billing,
+        )
+    ),
+    // NEW: Print Book export
+    FaqSection(
+        R.string.help_section_print_export,
+        Icons.Filled.Print,
+        listOf(
+            R.string.help_faq_print_q to R.string.help_faq_print_a,
+        )
+    ),
+    // NEW: Year in Travel recap
+    FaqSection(
+        R.string.help_section_year_recap,
+        Icons.Filled.CalendarMonth,
+        listOf(
+            R.string.help_faq_year_recap_q to R.string.help_faq_year_recap_a,
+        )
+    ),
+    // NEW: shared trip links
+    FaqSection(
+        R.string.help_section_trip_sharing,
+        Icons.Filled.Share,
+        listOf(
+            R.string.help_faq_trip_sharing_q to R.string.help_faq_trip_sharing_a,
         )
     ),
 )
@@ -140,6 +188,16 @@ fun HelpAboutScreen(onBack: () -> Unit) {
         derivedStateOf { scrollState.value > 24 }
     }
     val isLandscape = LocalConfiguration.current.screenHeightDp < 480
+
+    // Collapsible FAQ sections: which section keys (FaqSection.titleRes) are currently collapsed.
+    // Session-scoped only (remember, not rememberSaveable/DataStore) — matches the journal list's
+    // trip/month collapse convention: a browsing convenience, not a persisted setting. Every fresh
+    // screen open starts fully expanded.
+    var collapsedSections by remember { mutableStateOf(setOf<Int>()) }
+    fun toggleSection(key: Int) {
+        collapsedSections =
+            if (key in collapsedSections) collapsedSections - key else collapsedSections + key
+    }
 
     Scaffold(
         topBar = {
@@ -212,14 +270,20 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                                 fontWeight = FontWeight.Light,
                                 letterSpacing = 1.sp
                             )
-                            Spacer(Modifier.size(4.dp))
-                            Text(
-                                stringResource(R.string.settings_version_value, versionLabel),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
                         }
                     }
+                }
+                // Pinned outside the `when` so it stays visible in every header state —
+                // collapsed, landscape, and portrait-at-rest alike.
+                if (versionLabel.isNotEmpty()) {
+                    Text(
+                        text = stringResource(R.string.settings_version_value, versionLabel),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White.copy(alpha = 0.65f),
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = 8.dp, end = 12.dp)
+                    )
                 }
             }
         }
@@ -251,16 +315,24 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                 )
             }
 
-            // ── FAQ, grouped into named sections ──
+            // ── FAQ, grouped into named, collapsible sections ──
             FAQ_SECTIONS.forEach { section ->
-                SectionHeader(stringResource(section.titleRes))
-                section.items.forEach { (q, a) ->
-                    FaqCard(question = stringResource(q), answer = stringResource(a))
+                val isCollapsed = section.titleRes in collapsedSections
+                SectionHeader(
+                    text = stringResource(section.titleRes),
+                    icon = section.icon,
+                    collapsed = isCollapsed,
+                    onToggleCollapse = { toggleSection(section.titleRes) }
+                )
+                if (!isCollapsed) {
+                    section.items.forEach { (q, a) ->
+                        FaqCard(question = stringResource(q), answer = stringResource(a))
+                    }
                 }
             }
 
             // ── Get in touch ──
-            SectionHeader(stringResource(R.string.help_get_in_touch))
+            SectionHeader(stringResource(R.string.help_get_in_touch), icon = Icons.Filled.MailOutline)
             HelpActionRow(
                 icon = Icons.Filled.Email,
                 title = stringResource(R.string.help_contact),
@@ -292,14 +364,45 @@ fun HelpAboutScreen(onBack: () -> Unit) {
 }
 
 @Composable
-private fun SectionHeader(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
-        fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(top = 4.dp, start = 4.dp)
-    )
+private fun SectionHeader(
+    text: String,
+    icon: ImageVector? = null,
+    collapsed: Boolean = false,
+    onToggleCollapse: (() -> Unit)? = null
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(if (onToggleCollapse != null) Modifier.clickable(onClick = onToggleCollapse) else Modifier)
+            .padding(top = 4.dp, bottom = 2.dp, start = 4.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (icon != null) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(Modifier.width(6.dp))
+        }
+        Text(
+            text,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.weight(1f)
+        )
+        if (onToggleCollapse != null) {
+            Icon(
+                imageVector = if (collapsed) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess,
+                contentDescription = if (collapsed)
+                    stringResource(R.string.common_expand) else stringResource(R.string.common_collapse),
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
 }
 
 @Composable

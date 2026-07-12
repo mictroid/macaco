@@ -215,7 +215,8 @@ class AdventureReelEncoder(private val context: Context) {
 
         // ── Main render loop ──────────────────────────────────────────────────────────────────
         val logoBitmap = loadLogoBitmap(sizePx = 48)
-        val pillLogoBitmap = loadLogoBitmap(sizePx = 28)
+        // 34 — up from 28. Feedback: the pill glyph read too small next to the location text.
+        val pillLogoBitmap = loadLogoBitmap(sizePx = 34)
         val outroLogoBitmap = loadLogoBitmap(sizePx = 140)
         val qrBitmap = loadQrBitmap(targetSizePx = 360)
         try {
@@ -433,11 +434,19 @@ class AdventureReelEncoder(private val context: Context) {
                 24f, 24f,
                 pillPaint
             )
-            // Small opaque glyph inside the pill — guaranteed contrast against pillPaint's dark
-            // background regardless of the photo behind it. Left-inset, vertically centred in the
-            // 72px-tall pill: (72 - 28) / 2 = 22.
+            // textPaint is CENTER-aligned at x=360 (the pill's horizontal midpoint), so the
+            // text's actual left edge shifts with its length. Anchor the glyph relative to that
+            // measured left edge (instead of the old fixed far-left x=48) so icon+text always
+            // read as one adjacent group, centred together in the pill regardless of text length.
+            // Clamped to 40f so a very long location string can't push the icon past the pill's
+            // rounded left edge.
+            val textWidth = textPaint.measureText(overlayText)
+            val iconSize = 34f
+            val iconGap = 8f
+            val iconX = (360f - textWidth / 2f - iconGap - iconSize).coerceAtLeast(40f)
+            val iconY = 1152f + (72f - iconSize) / 2f   // vertically centred in the 72px-tall pill
             pillLogoBitmap?.let { glyph ->
-                canvas.drawBitmap(glyph, 48f, 1174f, pillLogoPaint)
+                canvas.drawBitmap(glyph, iconX, iconY, pillLogoPaint)
             }
             // Vertically centre text within the pill (pill midpoint y = 1188; baseline ≈ 1196).
             canvas.drawText(overlayText, 360f, 1196f, textPaint)

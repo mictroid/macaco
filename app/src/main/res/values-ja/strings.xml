@@ -285,7 +285,7 @@
     <string name="year_recap_share_chooser">旅の1年をシェアしよう</string>
     <string name="year_recap_no_entries">%1$d年のエントリーはまだありません</string>
     <string name="photo_suggestion_title">%1$sからの新しい写真</string>
-    <string name="photo_suggestion_subtitle">写真%1$d枚、%2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s、%2$s</string>
     <string name="photo_suggestion_dismiss">閉じる</string>
     <string name="photo_suggestion_create">記録を作成</string>
     <string name="photo_suggestion_permission_title">最近の写真から記録を提案しますか？</string>
@@ -462,4 +462,25 @@
     <string name="purchase_trial_note">無料期間中にキャンセルすれば料金はかかりません</string>
     <string name="settings_drive_connected_as">%s として接続中</string>
     <string name="settings_drive_disconnect">接続を解除</string>
+    <string name="common_expand">展開</string>
+    <string name="common_collapse">折りたたむ</string>
+    <string name="help_section_print_export">印刷とエクスポート</string>
+    <string name="help_section_year_recap">旅の一年</string>
+    <string name="help_section_trip_sharing">旅行の共有</string>
+    <string name="help_faq_search_q">エントリーを検索するには？</string>
+    <string name="help_faq_search_a">日記画面の検索アイコンをタップして入力を始めると、Macaco がタイトル・場所・説明・タグを入力しながら照合します。</string>
+    <string name="help_faq_weather_q">天気スタンプはどこから来るのですか？</string>
+    <string name="help_faq_weather_a">Macaco はエントリーの場所と日付の過去の天気を自動的に調べ、気分と場所の横に小さなチップとして表示します。バックグラウンドで一度だけ取得され、オンにするものは何もなく、その日付の天気データが利用可能になったときにのみ表示されます。</string>
+    <string name="help_faq_print_q">日記を本として印刷できますか？</string>
+    <string name="help_faq_print_a">はい — 設定を開いて「本を印刷」（プレミアム）をタップします。旅行・場所・カスタム選択でエントリーを選ぶと、Macaco がカスタム表紙、開始ページ、ブランドの最終ページ付きの印刷対応 A4 PDF にレイアウトします。PDF を保存するか、印刷店や自宅のプリンターに直接共有できます — Macaco 自体は印刷の手配は行いません。</string>
+    <string name="help_faq_year_recap_q">「旅の一年」とは何ですか？</string>
+    <string name="help_faq_year_recap_a">プロフィールを開いて「旅の一年」をタップすると、その年の記録のまとめ — 最も忙しかった月、最も多い気分、最もよく使ったタグなど — が表示されます。「私の一年を共有」をタップすると、投稿や送信ができる画像になります。</string>
+    <string name="help_faq_trip_sharing_q">Macaco を持っていない人と旅行を共有できますか？</string>
+    <string name="help_faq_trip_sharing_a">はい — 旅行のヘッダーで共有をタップすると、閲覧専用のウェブリンクを作成できます。リンクを持つ人は、アプリをインストールしたりサインインしたりせずに、それらのエントリーと写真を見られます。有効期限（7日、30日、または無期限）を設定し、同じメニューからいつでもアクセスを取り消せます。</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="other">写真%d枚</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="other">%d回の訪問</item>
+    </plurals>
 </resources>

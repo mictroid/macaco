@@ -1,19 +1,26 @@
 package com.houseofmmminq.macaco.ui.screens
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -21,18 +28,23 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.houseofmmminq.macaco.R
+import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
 import com.houseofmmminq.macaco.data.model.entryYears
 import com.houseofmmminq.macaco.data.model.toYearRecap
 import com.houseofmmminq.macaco.data.sync.YearRecapRenderer
@@ -55,26 +67,58 @@ fun YearInTravelScreen(
     val recap = remember(entries, selectedYear) { entries.toYearRecap(selectedYear) }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.year_recap_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.common_back)
-                        )
-                    }
-                }
-            )
-        }
+        // Branded header runs edge-to-edge under the status bar, same pattern as SettingsScreen —
+        // opt out of the default top inset and re-apply it inside the band via statusBarsPadding().
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
+        Column(Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(macacoBrandBackground())
+                    .statusBarsPadding()
+            ) {
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier.align(Alignment.CenterStart).padding(4.dp)
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.common_back),
+                        tint = Color.White
+                    )
+                }
+                MacacoBrandBlock(
+                    isLandscape = false,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(top = 2.dp, bottom = 10.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.year_recap_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White.copy(alpha = 0.85f)
+                    )
+                }
+            }
         Column(
             Modifier
                 .padding(padding)
                 .fillMaxSize()
                 .padding(24.dp)
         ) {
+            // Big gold year numeral — mirrors the export PNG's anchor. SplashGold (muted for
+            // light backgrounds), not SplashGoldBright (reserved for the dark-teal screens).
+            Text(
+                selectedYear.toString(),
+                style = MaterialTheme.typography.displayMedium,
+                fontWeight = FontWeight.Bold,
+                color = SplashGold,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(8.dp))
             // Year selector — a handful of years, so a plain chip row keeps every year one tap away.
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(years) { y ->
@@ -94,27 +138,33 @@ fun YearInTravelScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
-                // Stat grid mirroring ProfileScreen's card (reuses its StatItem composable).
-                Row(
+                // Stat grid in an elevated card (matches ProfileScreen's stats card), values in
+                // gold to echo the exported PNG's stat treatment.
+                Card(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
-                    StatItem(value = recap.entryCount.toString(), label = stringResource(R.string.profile_memories))
-                    StatItem(value = recap.tripCount.toString(), label = stringResource(R.string.profile_trips))
-                }
-                Spacer(Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    StatItem(value = recap.locationCount.toString(), label = stringResource(R.string.profile_locations))
-                    StatItem(value = recap.mediaCount.toString(), label = stringResource(R.string.profile_media))
+                    Column(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                            StatItem(value = recap.entryCount.toString(), label = stringResource(R.string.profile_memories), valueColor = SplashGold)
+                            StatItem(value = recap.tripCount.toString(), label = stringResource(R.string.profile_trips), valueColor = SplashGold)
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                            StatItem(value = recap.locationCount.toString(), label = stringResource(R.string.profile_locations), valueColor = SplashGold)
+                            StatItem(value = recap.mediaCount.toString(), label = stringResource(R.string.profile_media), valueColor = SplashGold)
+                        }
+                    }
                 }
                 Spacer(Modifier.height(24.dp))
                 recap.topMood?.let {
                     Text(
                         stringResource(R.string.year_recap_top_mood, it),
                         style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = SplashGold,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
@@ -122,6 +172,8 @@ fun YearInTravelScreen(
                     Text(
                         stringResource(R.string.year_recap_top_tag, it),
                         style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = SplashGold,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
@@ -129,12 +181,24 @@ fun YearInTravelScreen(
                     Text(
                         stringResource(R.string.year_recap_busiest_month, it),
                         style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = SplashGold,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }
             }
 
             Spacer(Modifier.weight(1f))
+            MacacoBrandBlock(isLandscape = false, collapsed = true)
+            Text(
+                "macaco",
+                color = SplashGold,
+                fontWeight = FontWeight.Light,
+                letterSpacing = 3.sp,
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                textAlign = TextAlign.Center
+            )
             Button(
                 onClick = {
                     val uri = YearRecapRenderer(context).render(recap) ?: return@Button
@@ -156,6 +220,7 @@ fun YearInTravelScreen(
             ) {
                 Text(stringResource(R.string.year_recap_share))
             }
+        }
         }
     }
 }

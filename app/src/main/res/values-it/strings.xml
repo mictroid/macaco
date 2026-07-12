@@ -288,7 +288,7 @@
     <string name="year_recap_share_chooser">Condividi il tuo anno di viaggio</string>
     <string name="year_recap_no_entries">Ancora nessuna voce per il %1$d</string>
     <string name="photo_suggestion_title">Nuove foto da %1$s</string>
-    <string name="photo_suggestion_subtitle">%1$d foto, %2$s</string>
+    <string name="photo_suggestion_subtitle">%1$s, %2$s</string>
     <string name="photo_suggestion_dismiss">Ignora</string>
     <string name="photo_suggestion_create">Crea ricordo</string>
     <string name="photo_suggestion_permission_title">Consentire a Macaco di suggerire ricordi dalle tue foto recenti?</string>
@@ -466,4 +466,27 @@
     <string name="purchase_trial_note">Disdici durante la prova e non ti verrà addebitato nulla</string>
     <string name="settings_drive_connected_as">Connesso come %s</string>
     <string name="settings_drive_disconnect">Disconnetti</string>
+    <string name="common_expand">Espandi</string>
+    <string name="common_collapse">Comprimi</string>
+    <string name="help_section_print_export">Stampa ed esportazione</string>
+    <string name="help_section_year_recap">Anno di viaggi</string>
+    <string name="help_section_trip_sharing">Condivisione viaggi</string>
+    <string name="help_faq_search_q">Come cerco tra le mie voci?</string>
+    <string name="help_faq_search_a">Tocca l\'icona di ricerca nella schermata del diario e inizia a digitare — Macaco cerca mentre scrivi in titolo, luogo, descrizione e tag.</string>
+    <string name="help_faq_weather_q">Da dove viene il timbro meteo?</string>
+    <string name="help_faq_weather_a">Macaco cerca automaticamente il meteo storico per il luogo e la data di una voce e lo mostra come una piccola etichetta accanto a umore e luogo. Viene recuperato una volta in background — non c\'è nulla da attivare, e appare solo quando i dati meteo sono disponibili per quella data.</string>
+    <string name="help_faq_print_q">Posso stampare il mio diario come un libro?</string>
+    <string name="help_faq_print_a">Sì — apri le Impostazioni e tocca «Libro stampato» (premium). Scegli le voci per viaggio, luogo o selezione personalizzata, e Macaco le impagina in un PDF A4 pronto per la stampa con copertina personalizzata, pagina di apertura e pagina di chiusura con il marchio. Salva il PDF o condividilo direttamente a una tipografia o stampante domestica — Macaco non gestisce la stampa in sé.</string>
+    <string name="help_faq_year_recap_q">Cos\'è Anno di viaggi?</string>
+    <string name="help_faq_year_recap_a">Apri il tuo profilo e tocca «Anno di viaggi» per un riepilogo dell\'anno — il mese più intenso, l\'umore più comune, il tag più usato e altro. Tocca «Condividi il mio anno» per trasformarlo in un\'immagine da pubblicare o inviare.</string>
+    <string name="help_faq_trip_sharing_q">Posso condividere un viaggio con chi non ha Macaco?</string>
+    <string name="help_faq_trip_sharing_a">Sì — tocca Condividi sull\'intestazione di un viaggio per creare un link web di sola lettura. Chiunque abbia il link può vedere quelle voci e foto senza installare l\'app né accedere. Imposta una scadenza (7 giorni, 30 giorni o mai) e revoca l\'accesso in qualsiasi momento dallo stesso menu.</string>
+    <plurals name="photo_suggestion_photo_count">
+        <item quantity="one">%d foto</item>
+        <item quantity="other">%d foto</item>
+    </plurals>
+    <plurals name="photo_suggestion_visit_count">
+        <item quantity="one">%d visita</item>
+        <item quantity="other">%d visite</item>
+    </plurals>
 </resources>
