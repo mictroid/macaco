@@ -2,6 +2,26 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-12 — vc69 (1.6, closed testing) — 4-brief batch (Help/Year fixes, trip-share retired, Drive premium-gated)
+
+- **vc69 dispatched — WIF run `29192148641`** (impl `fef7cb4`, bump+notes `5b84267`; origin == HEAD
+  verified before dispatch; dispatched 14:10:17 +0200). Four Cowork briefs, all verified vs live
+  source, `assembleDebug` SUCCESSFUL, shipped per user instruction without a separate on-device pass.
+  Detail in `docs/worklog-2026-07-12.md`:
+  - **help-about-and-year-in-travel-fixes** — FAQ sections collapsed by default; version label moved
+    from the top-right corner to centered under "macaco"; Year in Travel gains `verticalScroll` +
+    `navigationBarsPadding` so Share clears the nav bar (A53) and landscape scrolls.
+  - **retire-trip-share-link** — removed the blocked `/shared_trips` link-share feature entirely
+    (Share icon, dialog, `TripShareManager`, FAQ section); Reel-only sharing remains.
+  - **premium-gating-corrections** — Google Drive photo backup gated behind Premium (`DriveBackupCard`
+    premium param + paywall routing); corrected FAQ copy on which features are actually premium.
+  - **year-in-travel-teal-gold** — year numeral + Trips/Locations/Media stats recolored to
+    `colorScheme.primary` (teal); mood/tag/month lines converted to centered `YearRecapHighlightChip`
+    pills.
+  - A fifth brief (`fix-truncated-uncommitted-files`) was investigated and correctly skipped as a
+    phantom — no truncation existed in the working tree.
+  - **Dispatched, not yet confirmed** — check `gh run list`.
+
 ## 2026-07-12 — vc68 (1.6, closed testing) — 6-brief polish batch
 
 - **vc68 dispatched — WIF run `29184135246`** (impl `3428710`, bump+notes `a646fbc`; origin == HEAD
