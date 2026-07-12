@@ -1,6 +1,5 @@
 What's new:
-• Year in Travel refreshed: teal-and-gold stats and new highlight chips for your top mood, tag, and busiest month
-• Help & About: FAQ sections now start collapsed, with the version tidied under the logo
-• Fixed the "Share my year" button hiding behind the system bar
-• Trip sharing now goes straight to Adventure Reel — one simple way to share a trip
-• Google Drive photo backup is now part of Premium
+• Fixed the Adventure Reel button sometimes going missing after reopening the app
+• Google Drive photo backup now correctly stops syncing if your Premium subscription lapses
+• Year in Travel: swapped stat number/label colors and added a teal border for a cleaner look
+• Removed a duplicate "macaco" logo on the Year in Travel screen
