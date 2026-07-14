@@ -1,5 +1,4 @@
 What's new:
-• Fixed the Adventure Reel button sometimes going missing after reopening the app
-• Google Drive photo backup now correctly stops syncing if your Premium subscription lapses
-• Year in Travel: swapped stat number/label colors and added a teal border for a cleaner look
-• Removed a duplicate "macaco" logo on the Year in Travel screen
+• Smaller, faster app package (code shrinking enabled for this build)
+• Paywall free-trial offers now always match what's live in the Play Store, on both Monthly and Annual plans
+• Under-the-hood reliability fixes
