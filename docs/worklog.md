@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-14 — vc70 (1.6) — R8/ProGuard enabled + paywall dynamic trial (implemented, not shipped)
+
+Two Cowork briefs implemented and archived to `docs/DONE/`, both verified vs live source first
+(`enable-r8`'s RevenueCat-adjacent claims and `paywall-dynamic-trial`'s RevenueCat 8.10.0 accessor names
+cross-checked against the SDK sources jar). `assembleDebug` BUILD SUCCESSFUL. Also folded in an
+unrelated uncommitted change Cowork made directly to `app/build.gradle.kts` (Play track `alpha`→`beta`,
+Closed→Open testing) that it couldn't commit itself. Full detail in `docs/worklog-2026-07-14.md`:
+- **enable-r8** — `isMinifyEnabled`/`isShrinkResources` on for release; keep rules for Google Drive API
+  client, kotlinx.serialization (`data.model.**`), Crashlytics line numbers. No RevenueCat keep rule
+  added preemptively (per the brief). **Needs a signed-release on-device QA pass before shipping to any
+  track** — R8 failures are runtime-only.
+- **paywall-dynamic-trial** — Annual + Monthly paywall cards and the CTA now read free-trial length live
+  from RevenueCat's pricing-phase data instead of hardcoding "7 days" on Annual only. New/renamed string
+  keys ×11 locales.
+- Not shipped this session — implementation only.
+
 ## 2026-07-12 — vc70 (1.6, closed testing) — vc69 review-fixes batch shipped
 
 - **vc70 dispatched — WIF run `29200464388`** (impl `5bb5d7b`, bump+notes `f4e4edd`; origin == HEAD

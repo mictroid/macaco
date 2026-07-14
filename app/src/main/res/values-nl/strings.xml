@@ -451,10 +451,12 @@
     <string name="help_feedback_issue_subject">Macaco – Probleemmelding</string>
     <string name="purchase_best_value">Beste deal</string>
     <string name="purchase_cancel_anytime">Altijd opzegbaar</string>
-    <string name="purchase_cta_annual">Probeer 7 dagen gratis</string>
+    <string name="purchase_cta_annual_no_trial">Start jaarlijks — %s</string>
     <string name="purchase_cta_lifetime">Koop Lifetime — %s</string>
     <string name="purchase_cta_monthly">Start maandelijks — %s</string>
-    <string name="purchase_free_trial">7 dagen gratis, daarna %s / jaar</string>
+    <string name="purchase_cta_trial">Probeer %1$d dagen gratis</string>
+    <string name="purchase_free_trial_annual">%1$d dagen gratis, daarna %2$s / jaar</string>
+    <string name="purchase_free_trial_monthly">%1$d dagen gratis, daarna %2$s / maand</string>
     <string name="purchase_most_popular">Populairste keuze</string>
     <string name="purchase_once">eenmalig</string>
     <string name="purchase_own_forever">Eén keer betalen, voor altijd van jou</string>

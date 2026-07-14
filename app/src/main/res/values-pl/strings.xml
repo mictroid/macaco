@@ -459,10 +459,12 @@
     <string name="help_feedback_issue_subject">Macaco – Zgłoszenie problemu</string>
     <string name="purchase_best_value">Najlepsza oferta</string>
     <string name="purchase_cancel_anytime">Anuluj w każdej chwili</string>
-    <string name="purchase_cta_annual">Wypróbuj 7 dni za darmo</string>
+    <string name="purchase_cta_annual_no_trial">Zacznij roczny — %s</string>
     <string name="purchase_cta_lifetime">Kup dożywotni — %s</string>
     <string name="purchase_cta_monthly">Zacznij miesięczny — %s</string>
-    <string name="purchase_free_trial">7 dni za darmo, potem %s / rok</string>
+    <string name="purchase_cta_trial">Wypróbuj za darmo przez %1$d dni</string>
+    <string name="purchase_free_trial_annual">%1$d dni za darmo, potem %2$s / rok</string>
+    <string name="purchase_free_trial_monthly">%1$d dni za darmo, potem %2$s / miesiąc</string>
     <string name="purchase_most_popular">Najpopularniejszy</string>
     <string name="purchase_once">jednorazowo</string>
     <string name="purchase_own_forever">Zapłać raz, korzystaj na zawsze</string>

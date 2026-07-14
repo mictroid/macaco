@@ -447,10 +447,12 @@
     <string name="help_feedback_issue_subject">Macaco – 问题反馈</string>
     <string name="purchase_best_value">超值之选</string>
     <string name="purchase_cancel_anytime">随时取消</string>
-    <string name="purchase_cta_annual">免费试用7天</string>
+    <string name="purchase_cta_annual_no_trial">开通年度版 — %s</string>
     <string name="purchase_cta_lifetime">购买终身版 — %s</string>
     <string name="purchase_cta_monthly">开通月度版 — %s</string>
-    <string name="purchase_free_trial">免费7天，之后 %s / 年</string>
+    <string name="purchase_cta_trial">免费试用%1$d天</string>
+    <string name="purchase_free_trial_annual">免费%1$d天，之后 %2$s / 年</string>
+    <string name="purchase_free_trial_monthly">免费%1$d天，之后 %2$s / 月</string>
     <string name="purchase_most_popular">最受欢迎</string>
     <string name="purchase_once">一次性付款</string>
     <string name="purchase_own_forever">一次付费，永久拥有</string>

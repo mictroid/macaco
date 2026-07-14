@@ -421,12 +421,14 @@
     <string name="purchase_per_year">/ year</string>
     <string name="purchase_once">one-time</string>
     <string name="purchase_save_50">Save 50% vs monthly</string>
-    <string name="purchase_free_trial">7 days free, then %s / year</string>
+    <string name="purchase_free_trial_annual">%1$d days free, then %2$s / year</string>
+    <string name="purchase_free_trial_monthly">%1$d days free, then %2$s / month</string>
     <string name="purchase_trial_note">Cancel anytime during trial and you won\'t be charged</string>
     <string name="purchase_cancel_anytime">Cancel anytime</string>
     <string name="purchase_own_forever">Pay once, own forever</string>
     <string name="purchase_cta_monthly">Start Monthly — %s</string>
-    <string name="purchase_cta_annual">Try Free for 7 Days</string>
+    <string name="purchase_cta_trial">Try Free for %1$d Days</string>
+    <string name="purchase_cta_annual_no_trial">Start Annual — %s</string>
     <string name="purchase_cta_lifetime">Get Lifetime — %s</string>
 
     <!-- Subscription Info -->

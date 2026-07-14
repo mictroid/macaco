@@ -424,10 +424,12 @@
     <string name="help_feedback_issue_subject">Macaco – Felrapport</string>
     <string name="purchase_best_value">Bästa erbjudandet</string>
     <string name="purchase_cancel_anytime">Avsluta när du vill</string>
-    <string name="purchase_cta_annual">Prova gratis i 7 dagar</string>
+    <string name="purchase_cta_annual_no_trial">Starta årsvis — %s</string>
     <string name="purchase_cta_lifetime">Köp Livstid — %s</string>
     <string name="purchase_cta_monthly">Starta månadsvis — %s</string>
-    <string name="purchase_free_trial">7 dagar gratis, sedan %s / år</string>
+    <string name="purchase_cta_trial">Prova gratis i %1$d dagar</string>
+    <string name="purchase_free_trial_annual">%1$d dagar gratis, sedan %2$s / år</string>
+    <string name="purchase_free_trial_monthly">%1$d dagar gratis, sedan %2$s / månad</string>
     <string name="purchase_most_popular">Mest populär</string>
     <string name="purchase_once">engångsbetalning</string>
     <string name="purchase_own_forever">Betala en gång, ditt för alltid</string>

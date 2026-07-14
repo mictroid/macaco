@@ -447,10 +447,12 @@
     <string name="help_feedback_issue_subject">Macaco – 不具合報告</string>
     <string name="purchase_best_value">一番お得</string>
     <string name="purchase_cancel_anytime">いつでもキャンセル可能</string>
-    <string name="purchase_cta_annual">7日間無料で試す</string>
+    <string name="purchase_cta_annual_no_trial">年額プランを開始 — %s</string>
     <string name="purchase_cta_lifetime">買い切りを購入 — %s</string>
     <string name="purchase_cta_monthly">月額プランを開始 — %s</string>
-    <string name="purchase_free_trial">7日間無料、その後 %s / 年</string>
+    <string name="purchase_cta_trial">%1$d日間無料で試す</string>
+    <string name="purchase_free_trial_annual">%1$d日間無料、その後 %2$s / 年</string>
+    <string name="purchase_free_trial_monthly">%1$d日間無料、その後 %2$s / 月</string>
     <string name="purchase_most_popular">一番人気</string>
     <string name="purchase_once">一回払い</string>
     <string name="purchase_own_forever">一度の支払いでずっと使える</string>

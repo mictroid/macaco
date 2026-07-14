@@ -60,8 +60,24 @@ import androidx.compose.material.icons.filled.PhotoLibrary
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.revenuecat.purchases.Package
+import com.revenuecat.purchases.models.Period
 
 private enum class PlanSelection { Monthly, Annual, Lifetime }
+
+/**
+ * Days in this package's free-trial phase, read from RevenueCat's actual pricing-phase data
+ * (not assumed per-plan) — so the paywall can never say "free trial" for a plan that doesn't
+ * have one in Play Console, or omit it for one that does.
+ */
+private fun Package.trialDays(): Int? {
+    val freeOption = product.subscriptionOptions?.freeTrial ?: return null
+    val period = freeOption.freePhase?.billingPeriod ?: return null
+    return when (period.unit) {
+        Period.Unit.DAY  -> period.value
+        Period.Unit.WEEK -> period.value * 7
+        else             -> null // months/years as a "trial" phase would be unusual; ignore
+    }
+}
 
 @Composable
 fun PurchaseScreen(
@@ -84,6 +100,12 @@ fun PurchaseScreen(
     val annualPrice  = offerings?.current?.annual?.product?.price?.formatted  ?: "$17.99"
     val lifetimePrice = offerings?.current?.lifetime?.product?.price?.formatted ?: "$39.99"
 
+    // Trial length read live from RevenueCat — null if that package has no trial phase configured
+    // in Play Console. Do not assume; this is what makes Monthly and Annual behave identically
+    // once Play Console has a trial on both, and stops silently showing/hiding trial copy by hand.
+    val annualTrialDays  = offerings?.current?.annual?.trialDays()
+    val monthlyTrialDays = offerings?.current?.monthly?.trialDays()
+
     val selectedPkg: Package? = when (selectedPlan) {
         PlanSelection.Annual   -> offerings?.current?.annual
         PlanSelection.Monthly  -> offerings?.current?.monthly
@@ -91,8 +113,10 @@ fun PurchaseScreen(
     }
 
     val ctaLabel = when (selectedPlan) {
-        PlanSelection.Monthly  -> stringResource(R.string.purchase_cta_monthly, monthlyPrice)
-        PlanSelection.Annual   -> stringResource(R.string.purchase_cta_annual)
+        PlanSelection.Monthly  -> monthlyTrialDays?.let { stringResource(R.string.purchase_cta_trial, it) }
+            ?: stringResource(R.string.purchase_cta_monthly, monthlyPrice)
+        PlanSelection.Annual   -> annualTrialDays?.let { stringResource(R.string.purchase_cta_trial, it) }
+            ?: stringResource(R.string.purchase_cta_annual_no_trial, annualPrice)
         PlanSelection.Lifetime -> stringResource(R.string.purchase_cta_lifetime, lifetimePrice)
     }
 
@@ -191,10 +215,11 @@ fun PurchaseScreen(
             // Annual — highlighted as Best Value
             PlanCard(
                 title = stringResource(R.string.purchase_plan_annual),
-                subtitle = stringResource(R.string.purchase_free_trial, annualPrice),
+                subtitle = annualTrialDays?.let { stringResource(R.string.purchase_free_trial_annual, it, annualPrice) }
+                    ?: "$annualPrice ${stringResource(R.string.purchase_per_year)}",
                 detail = stringResource(R.string.purchase_save_50),
                 badge = stringResource(R.string.purchase_best_value),
-                note = stringResource(R.string.purchase_trial_note),
+                note = annualTrialDays?.let { stringResource(R.string.purchase_trial_note) },
                 selected = selectedPlan == PlanSelection.Annual,
                 isRecommended = true,
                 onClick = { selectedPlan = PlanSelection.Annual }
@@ -205,10 +230,11 @@ fun PurchaseScreen(
             // Monthly
             PlanCard(
                 title = stringResource(R.string.purchase_plan_monthly),
-                subtitle = "$monthlyPrice ${stringResource(R.string.purchase_per_month)}",
+                subtitle = monthlyTrialDays?.let { stringResource(R.string.purchase_free_trial_monthly, it, monthlyPrice) }
+                    ?: "$monthlyPrice ${stringResource(R.string.purchase_per_month)}",
                 detail = stringResource(R.string.purchase_cancel_anytime),
                 badge = null,
-                note = null,
+                note = monthlyTrialDays?.let { stringResource(R.string.purchase_trial_note) },
                 selected = selectedPlan == PlanSelection.Monthly,
                 onClick = { selectedPlan = PlanSelection.Monthly }
             )

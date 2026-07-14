@@ -19,3 +19,25 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Google API Client (Drive) — reflection-based JSON model, must not be renamed/stripped.
+-keep class com.google.api.client.** { *; }
+-keep class com.google.api.services.drive.** { *; }
+-keepclassmembers class * extends com.google.api.client.json.GenericJson {
+  <fields>;
+}
+-dontwarn com.google.api.client.**
+
+# kotlinx.serialization — defensive backstop on top of the library's bundled consumer rules.
+-keepattributes *Annotation*, InnerClasses, EnclosingMethod, Signature
+-keep,includedescriptorclasses class com.houseofmmminq.macaco.data.model.**$$serializer { *; }
+-keepclassmembers class com.houseofmmminq.macaco.data.model.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.houseofmmminq.macaco.data.model.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Keep line numbers for readable (and Crashlytics-deobfuscatable) release stack traces.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile

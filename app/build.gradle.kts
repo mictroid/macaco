@@ -63,7 +63,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
@@ -104,9 +105,9 @@ play {
     } else if (ciCredentialsPath != null) {
         serviceAccountCredentials.set(file(ciCredentialsPath))
     }
-    // Closed testing's default track is still called "alpha" in the Play Developer API/GPP,
-    // even though Play Console itself just calls it "Closed testing" in the UI.
-    track.set("alpha")
+    // Open testing's track name is "beta" in the Play Developer API/GPP, even though Play
+    // Console itself just calls it "Open testing" in the UI. (Closed testing is "alpha".)
+    track.set("beta")
     defaultToAppBundles.set(true)
 }
 
