@@ -41,3 +41,12 @@
 # Keep line numbers for readable (and Crashlytics-deobfuscatable) release stack traces.
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
+
+# WorkManager (used by ReminderScheduler for periodic reminders) persists scheduled work via an
+# internal Room database. Room instantiates its generated *_Impl class via reflection
+# (Class.getDeclaredConstructor()) — R8 was stripping WorkDatabase_Impl's no-arg constructor,
+# crashing at process start with "NoSuchMethodException: WorkDatabase_Impl.<init>" before
+# MainActivity ever rendered. Found via the on-device signed-release QA pass this brief requires.
+-keep class * extends androidx.room.RoomDatabase
+-keep class androidx.work.impl.** { *; }
+-dontwarn androidx.work.**
