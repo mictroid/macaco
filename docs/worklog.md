@@ -2,6 +2,15 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-14 — vc71 (1.6) — CONFIRMED ✅ — WIF run `29325050510` (supersedes the entry below)
+
+vc71 / 1.6 — SHIPPED ✅ 2026-07-14 (run `29325050510`, commit `b429e3d`): R8/ProGuard code shrinking
+enabled (+ WorkManager/Room keep-rule fix), paywall reads live RevenueCat trial length, first release
+to Play's Open testing track. Took 4 dispatch attempts due to two infra bugs (WIF OIDC token staleness
+once R8 slowed the build, and a first-use Play track country-targeting gate) — see
+`docs/worklog-2026-07-14.md` for detail. The entry below was written when the first attempt (run
+`29312081942`) still looked unconfirmed; it has since failed and been superseded by the run above.
+
 ## 2026-07-14 — vc71 (1.6) — SHIPPED — R8/ProGuard enabled, paywall dynamic trial, Play track alpha→beta — WIF run `29312081942`
 
 Supersedes the earlier same-day "vc70 implemented, not shipped" entry: the batch shipped as **vc71**
