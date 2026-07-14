@@ -2,21 +2,30 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-07-14 — vc70 (1.6) — R8/ProGuard enabled + paywall dynamic trial (implemented, not shipped)
+## 2026-07-14 — vc71 (1.6) — SHIPPED — R8/ProGuard enabled, paywall dynamic trial, Play track alpha→beta — WIF run `29312081942`
 
+Supersedes the earlier same-day "vc70 implemented, not shipped" entry: the batch shipped as **vc71**
+(not vc70) after an on-device QA pass on the signed release build caught and fixed a real R8 gap.
 Two Cowork briefs implemented and archived to `docs/DONE/`, both verified vs live source first
 (`enable-r8`'s RevenueCat-adjacent claims and `paywall-dynamic-trial`'s RevenueCat 8.10.0 accessor names
-cross-checked against the SDK sources jar). `assembleDebug` BUILD SUCCESSFUL. Also folded in an
-unrelated uncommitted change Cowork made directly to `app/build.gradle.kts` (Play track `alpha`→`beta`,
-Closed→Open testing) that it couldn't commit itself. Full detail in `docs/worklog-2026-07-14.md`:
+cross-checked against the SDK sources jar). Also folded in an unrelated uncommitted change Cowork made
+directly to `app/build.gradle.kts` (Play track `alpha`→`beta`, Closed→Open testing) that it couldn't
+commit itself. Full detail in `docs/worklog-2026-07-14.md`:
 - **enable-r8** — `isMinifyEnabled`/`isShrinkResources` on for release; keep rules for Google Drive API
   client, kotlinx.serialization (`data.model.**`), Crashlytics line numbers. No RevenueCat keep rule
-  added preemptively (per the brief). **Needs a signed-release on-device QA pass before shipping to any
-  track** — R8 failures are runtime-only.
+  added preemptively (per the brief).
 - **paywall-dynamic-trial** — Annual + Monthly paywall cards and the CTA now read free-trial length live
   from RevenueCat's pricing-phase data instead of hardcoding "7 days" on Annual only. New/renamed string
   keys ×11 locales.
-- Not shipped this session — implementation only.
+- **On-device signed-release QA** (`assembleRelease`, S8+) caught a launch crash R8 introduced —
+  `NoSuchMethodException: WorkDatabase_Impl.<init>` (WorkManager/Room reflection stripped). Fixed with
+  added keep rules (`androidx.room.RoomDatabase` subclasses, `androidx.work.impl.**`), not in the
+  original brief. Rest of the 6-point QA checklist (Drive sync, local backup, RevenueCat purchase/
+  restore, maps, Crashlytics deobfuscation) completed by the user independently.
+- Dispatched **08:40:43 +0200** to the **Open testing (`beta`)** track — the first release published
+  there instead of Closed testing (`alpha`). Bump+notes commit `b429e3d` (vc70→71, versionName 1.6
+  unchanged); WorkManager/Room fix commit `e0c2f62`; original 2-brief batch commit `f24a7a3`. origin ==
+  HEAD verified before dispatch. **Dispatched, not yet confirmed** — check `gh run list`.
 
 ## 2026-07-12 — vc70 (1.6, closed testing) — vc69 review-fixes batch shipped
 
