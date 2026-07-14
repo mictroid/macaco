@@ -34,6 +34,11 @@ jobs:
       - name: Write local.properties
         run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > local.properties
 
+      - name: Build signed release bundle
+        run: |
+          chmod +x gradlew
+          ./gradlew bundleRelease --stacktrace
+
       # No play-service-account.json is checked out (it's git-ignored and never committed), so we
       # build a Workload Identity Federation credential config ourselves rather than using
       # google-github-actions/auth's default (URL-sourced) config — that had the JVM fetch the
@@ -44,6 +49,12 @@ jobs:
       # HTTPS call entirely — Java then only talks to sts.googleapis.com / iamcredentials.
       # googleapis.com, both of which it already trusts fine. Trust is scoped to this exact repo;
       # see docs/release-setup.md.
+      #
+      # This step must run AFTER the build (bundleRelease above), not before: the GitHub OIDC token
+      # is short-lived, and once R8/minification made the build take ~6-7 minutes, a token fetched
+      # before the build was already stale by the time the upload step tried to use it
+      # ("invalid_grant: ID Token issued at ... is stale to sign-in", vc71 runs 29312081942 /
+      # 29312725271). Fetching it right before the (now-fast, cached) publish step keeps it fresh.
       - name: Fetch GitHub OIDC token and build WIF credential config
         run: |
           curl -sLS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
@@ -63,7 +74,5 @@ jobs:
           EOF
           echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/wif-creds.json" >> "$GITHUB_ENV"
 
-      - name: Build and publish to Play internal testing
-        run: |
-          chmod +x gradlew
-          ./gradlew publishReleaseBundle --stacktrace
+      - name: Publish to Play internal testing
+        run: ./gradlew publishReleaseBundle --stacktrace
