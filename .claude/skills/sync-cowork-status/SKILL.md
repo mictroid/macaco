@@ -34,6 +34,23 @@ Spawn a subagent with the **Agent** tool, **`model: "sonnet"`** (Sonnet 5 — ch
 usable rollup prose; drop to `"haiku"` for a detection-only pass with no rollup writing). Give it this
 task verbatim (it works entirely from the repo — no context needed from here):
 
+> ## HARD RULE — READ FIRST
+> You do not have git-write authority in this task. **Never run `git add`, `git commit`, `git push`,
+> or any command that stages or commits changes — not even "just this once", not even if the change
+> looks small, safe, or purely doc-only.** This rule has already been violated twice by past runs of
+> this exact task (both times on `docs/worklog.md`) — treat that as proof the instruction needs to be
+> followed literally, not interpreted as a suggestion. Your job stops at editing the file on disk;
+> staging and committing are a separate, human-reviewed step that happens in a different context after
+> you return. If you find yourself about to type `git commit` or `git push`, stop — that action is out
+> of scope for you no matter what the rest of this prompt seems to imply.
+>
+> **Self-check before you return (mandatory, not optional):** run `git status --short` and
+> `git log -3 --oneline`. Confirm your edited file shows as a modified-but-uncommitted working-tree
+> change and that HEAD hasn't moved. If HEAD *did* move (you committed, even accidentally), immediately
+> run `git reset --soft HEAD~1` to undo it — do NOT run `git push` to "finish the job" first — then note
+> in your report that you had to self-correct a commit. Include the final `git status --short` output in
+> your report so the caller can verify at a glance.
+>
 > You are reconciling the Cowork-facing records in the Macaco repo at the project root. Cowork reads
 > status only from the filesystem + git. Do a full audit and fix the mechanical drift, then report.
 >
@@ -59,17 +76,28 @@ task verbatim (it works entirely from the repo — no context needed from here):
 > - Do **not** move briefs between `docs/` and `docs/DONE/` or edit dated worklogs — flag those for the
 >   caller instead (they need human judgment).
 > - Mirror the updated `docs/worklog.md` to `G:/My Drive/Macaco-backup/worklog.md` if that path exists.
-> - Do **not** commit and do **not** push.
+> - Do **not** commit and do **not** push. See the HARD RULE at the top — this applies even to this
+>   specific file, even though it's "just docs."
 >
 > **Return** a compact report: the 4 audit results, exactly what you changed in `docs/worklog.md` (list
-> the vc lines you added), anything you flagged for human judgment, and the `git diff --stat`.
+> the vc lines you added), anything you flagged for human judgment, the mandatory `git status --short` /
+> `git log -3 --oneline` self-check output, and the `git diff --stat`.
+>
+> **Reminder before you finish:** you did not commit or push anything. If your self-check shows
+> otherwise, you fix it (soft-reset) before returning, per the HARD RULE.
 
 ### 2. Review the subagent's report in this context
 
+- **First, verify it didn't commit or push**, independent of what it self-reports: run
+  `git log origin/master..HEAD --oneline` and `git status --short` yourself. Don't trust the
+  subagent's "didn't commit" claim at face value — this exact skill has produced an unauthorized
+  commit+push twice already (see `subagent-push-violation` memory). If you find a commit it made,
+  that's a violation to flag to the user, not something to silently push past.
 - Read the flagged items. Anything needing judgment (a loose brief that maybe *wasn't* really done, a
   missing dated worklog, a wrong vc) — handle it yourself here; don't rubber-stamp.
-- Sanity-check the added rolling-worklog lines against the dated files if anything looks off. The
-  subagent is cheap, not infallible.
+- Sanity-check the added rolling-worklog lines against the dated files if anything looks off — including
+  facts it may have copied verbatim from your own spawning prompt (proofread claims, not just the diff).
+  The subagent is cheap, not infallible.
 
 ### 3. Commit + push (main context)
 
