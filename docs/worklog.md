@@ -9,7 +9,7 @@ vc72 / 1.6 — SHIPPED ✅ 2026-07-16 (run `29496517285`, commit `1328d03`): fir
 `DebugAppCheckProviderFactory`, a class only on the `debugImplementation` classpath, breaking
 release compilation. Fixed by looking the provider up reflectively instead of importing it
 directly (commit `1328d03`, pushed to master). Re-dispatched release.yml as run `29496517285`,
-which completed successfully in 10m4s — vc72 shipped to Play closed testing. See
+which completed successfully in 10m4s — vc72 shipped to Play Open testing (`track=beta`). See
 `docs/worklog-2026-07-16.md` for the original 6-item batch detail (email verification, subscription
 renewal info/false-premium fix/weather unit by location, Firestore rules + App Check, Drive photo
 download parallelization).
