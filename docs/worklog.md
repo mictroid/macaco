@@ -2,6 +2,17 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-16 — Drive photo download parallelization (perf fix), joins today's batch
+
+User reported the Journal list taking ~a minute to show photos after a fresh sign-in. Root cause:
+`DrivePhotoSync.downloadMissing()` downloaded Drive-cached photos/videos **one at a time** in a
+plain `forEach` loop — dozens of sequential network round-trips on a journal with many entries.
+Fixed by running the downloads concurrently (bounded to 6 at a time via a `Semaphore`, using
+`coroutineScope`/`async`/`awaitAll`), and switched the shared results map to
+`ConcurrentHashMap` since multiple coroutines now write to it at once. `assembleDebug` BUILD
+SUCCESSFUL. Not verified on-device per user instruction (skip R8/S8 test for this one — small,
+low-risk concurrency change). Joins today's batch for the next Play dispatch.
+
 ## 2026-07-16 — security hardening: Firestore rules in repo + Firebase App Check implemented, not yet shipped
 
 Two briefs from the `docs/security-review-2026-07-16.md` findings (M1/M2/M3):
