@@ -225,6 +225,15 @@
     <string name="subscription_thank_you">感谢您支持 Macaco！🙏\n您的购买让这款应用保持独立运营，永无广告。</string>
     <string name="subscription_manage">管理订阅</string>
     <string name="subscription_plan_recurring">自动续订订阅</string>
+    <string name="subscription_renews_on">续订日期：%1$s</string>
+    <string name="subscription_renews_on_with_price">续订日期：%1$s — %2$s</string>
+    <string name="renewal_channel_name">订阅续订</string>
+    <string name="renewal_channel_desc">在您的 Macaco 年度订阅续订前发送的一次性提醒。</string>
+    <string name="renewal_notification_title">您的年度套餐即将续订</string>
+    <string name="renewal_notification_body">您的 Macaco 高级版订阅将在 7 天后续订。点按以查看您的套餐。</string>
+    <string name="subscription_not_premium_title">无有效订阅</string>
+    <string name="subscription_not_premium_body">升级到 Macaco 高级版以解锁无限条目、云同步等功能。</string>
+    <string name="subscription_upgrade_cta">升级到高级版</string>
 
     <string name="app_lock_locked">您的日记已锁定</string>
     <string name="app_lock_unlock">解锁</string>

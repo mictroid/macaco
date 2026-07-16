@@ -103,6 +103,7 @@ fun ProfileScreen(
     onSignOut: () -> Unit,
     onLogin: () -> Unit,
     onSubscription: () -> Unit,
+    onNavigateToPaywall: () -> Unit,
     onSettings: () -> Unit,
     onHelp: () -> Unit,
     onYearInTravel: () -> Unit,
@@ -111,6 +112,10 @@ fun ProfileScreen(
     val currentUser by viewModel.currentUser.collectAsState()
     val entries by viewModel.entries.collectAsState()
     val profilePhotoUri by viewModel.profilePhotoUri.collectAsState()
+    // Gates the "Subscription" tile below — same isPurchased check SettingsScreen already uses
+    // for the Print Book row. A free account is routed to the paywall instead of a screen that
+    // has nothing real to show it.
+    val isPurchased by viewModel.isPurchased.collectAsState()
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
     var deleteInProgress by remember { mutableStateOf(false) }
@@ -591,7 +596,11 @@ fun ProfileScreen(
                             ProfileActionTile(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.drawer_help), onClick = onHelp)
                             ProfileActionTile(Icons.Filled.Share, stringResource(R.string.drawer_share_app), onClick = { AppActions.shareApp(context, entries.size) })
                             ProfileActionTile(Icons.Filled.StarRate, stringResource(R.string.drawer_rate_us), onClick = { AppActions.requestReview(context) })
-                            ProfileActionTile(Icons.Outlined.WorkspacePremium, stringResource(R.string.common_subscription), onClick = onSubscription)
+                            ProfileActionTile(
+                                Icons.Outlined.WorkspacePremium,
+                                stringResource(R.string.common_subscription),
+                                onClick = { if (isPurchased == true) onSubscription() else onNavigateToPaywall() }
+                            )
                             ProfileActionTile(
                                 Icons.AutoMirrored.Filled.Logout,
                                 stringResource(R.string.common_sign_out),
@@ -624,7 +633,11 @@ fun ProfileScreen(
                             horizontalArrangement = Arrangement.spacedBy(gridSpacing),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            ProfileActionTile(Icons.Outlined.WorkspacePremium, stringResource(R.string.common_subscription), onClick = onSubscription)
+                            ProfileActionTile(
+                                Icons.Outlined.WorkspacePremium,
+                                stringResource(R.string.common_subscription),
+                                onClick = { if (isPurchased == true) onSubscription() else onNavigateToPaywall() }
+                            )
                             ProfileActionTile(
                                 Icons.AutoMirrored.Filled.Logout,
                                 stringResource(R.string.common_sign_out),

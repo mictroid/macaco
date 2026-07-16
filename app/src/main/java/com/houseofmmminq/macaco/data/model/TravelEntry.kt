@@ -35,6 +35,10 @@ data class TravelEntry(
     // future-dated entries (Open-Meteo's archive API is historical only).
     val weatherCode: Int? = null,
     val weatherTempMaxC: Double? = null,
+    // Decided once at fetch time from the entry's own location's country (WeatherLookup.fetch),
+    // not the device locale. Null on entries fetched before this field existed or with no weather
+    // — EntryDetailScreen falls back to metric (false) for those, since most locales are metric.
+    val weatherIsFahrenheit: Boolean? = null,
 )
 
 /**

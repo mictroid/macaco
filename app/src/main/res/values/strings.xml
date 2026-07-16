@@ -448,6 +448,15 @@
     <string name="subscription_thank_you">Thank you for supporting Macaco! 🙏\nYour purchase keeps the app independent and ad-free.</string>
     <string name="subscription_manage">Manage subscription</string>
     <string name="subscription_plan_recurring">Auto-renewing subscription</string>
+    <string name="subscription_renews_on">Renews on %1$s</string>
+    <string name="subscription_renews_on_with_price">Renews on %1$s — %2$s</string>
+    <string name="renewal_channel_name">Subscription renewal</string>
+    <string name="renewal_channel_desc">A one-time reminder before your annual Macaco subscription renews.</string>
+    <string name="renewal_notification_title">Your annual plan renews soon</string>
+    <string name="renewal_notification_body">Your Macaco Premium subscription renews in 7 days. Tap to review your plan.</string>
+    <string name="subscription_not_premium_title">No active subscription</string>
+    <string name="subscription_not_premium_body">Upgrade to Macaco Premium to unlock unlimited entries, cloud sync, and more.</string>
+    <string name="subscription_upgrade_cta">Upgrade to Premium</string>
 
     <!-- App Lock -->
     <string name="app_lock_locked">Your journal is locked</string>

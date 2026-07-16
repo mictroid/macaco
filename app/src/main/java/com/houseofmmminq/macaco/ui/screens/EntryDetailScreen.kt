@@ -606,7 +606,9 @@ fun EntryDetailScreen(
                                     }
                                     entry.weatherCode?.let { code ->
                                         val (icon, label) = WeatherLookup.describe(context, code)
-                                        val tempLabel = entry.weatherTempMaxC?.let { WeatherLookup.formatTemp(context, it) }
+                                        val tempLabel = entry.weatherTempMaxC?.let {
+                                            WeatherLookup.formatTemp(context, it, entry.weatherIsFahrenheit ?: false)
+                                        }
                                         AssistChip(
                                             onClick = {},
                                             label = { Text(if (tempLabel != null) "$icon $tempLabel" else "$icon $label") },
@@ -908,7 +910,9 @@ fun EntryDetailScreen(
                         }
                         entry.weatherCode?.let { code ->
                             val (icon, label) = WeatherLookup.describe(context, code)
-                            val tempLabel = entry.weatherTempMaxC?.let { WeatherLookup.formatTemp(context, it) }
+                            val tempLabel = entry.weatherTempMaxC?.let {
+                                            WeatherLookup.formatTemp(context, it, entry.weatherIsFahrenheit ?: false)
+                                        }
                             AssistChip(
                                 onClick = {},
                                 label = { Text(if (tempLabel != null) "$icon $tempLabel" else "$icon $label") },

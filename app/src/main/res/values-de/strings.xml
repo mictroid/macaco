@@ -238,6 +238,15 @@
     <string name="subscription_thank_you">Danke, dass du Macaco unterstützt! 🙏\nDein Kauf hält die App unabhängig und werbefrei.</string>
     <string name="subscription_manage">Abo verwalten</string>
     <string name="subscription_plan_recurring">Automatisch verlängertes Abo</string>
+    <string name="subscription_renews_on">Verlängert sich am %1$s</string>
+    <string name="subscription_renews_on_with_price">Verlängert sich am %1$s — %2$s</string>
+    <string name="renewal_channel_name">Abo-Verlängerung</string>
+    <string name="renewal_channel_desc">Eine einmalige Erinnerung, bevor sich dein jährliches Macaco-Abo verlängert.</string>
+    <string name="renewal_notification_title">Dein Jahresplan verlängert sich bald</string>
+    <string name="renewal_notification_body">Dein Macaco Premium-Abo verlängert sich in 7 Tagen. Tippe, um deinen Plan zu prüfen.</string>
+    <string name="subscription_not_premium_title">Kein aktives Abo</string>
+    <string name="subscription_not_premium_body">Upgrade auf Macaco Premium für unbegrenzte Einträge, Cloud-Sync und mehr.</string>
+    <string name="subscription_upgrade_cta">Auf Premium upgraden</string>
 
     <!-- App Lock -->
     <string name="app_lock_locked">Dein Tagebuch ist gesperrt</string>

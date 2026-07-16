@@ -225,6 +225,15 @@
     <string name="subscription_thank_you">Macaco をご支援いただきありがとうございます！ 🙏\nあなたの購入がアプリの独立性と広告フリーを支えています。</string>
     <string name="subscription_manage">サブスクリプションを管理</string>
     <string name="subscription_plan_recurring">自動更新サブスクリプション</string>
+    <string name="subscription_renews_on">次回更新日: %1$s</string>
+    <string name="subscription_renews_on_with_price">次回更新日: %1$s — %2$s</string>
+    <string name="renewal_channel_name">サブスクリプションの更新</string>
+    <string name="renewal_channel_desc">年間Macacoサブスクリプションが更新される前に一度だけ届くお知らせです。</string>
+    <string name="renewal_notification_title">年間プランがまもなく更新されます</string>
+    <string name="renewal_notification_body">Macacoプレミアムのサブスクリプションは7日後に更新されます。タップしてプランを確認してください。</string>
+    <string name="subscription_not_premium_title">有効なサブスクリプションがありません</string>
+    <string name="subscription_not_premium_body">Macacoプレミアムにアップグレードして、無制限のエントリー、クラウド同期などを利用しましょう。</string>
+    <string name="subscription_upgrade_cta">プレミアムにアップグレード</string>
 
     <string name="app_lock_locked">日記はロックされています</string>
     <string name="app_lock_unlock">ロック解除</string>

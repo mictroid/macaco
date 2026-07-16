@@ -228,6 +228,15 @@
     <string name="subscription_thank_you">Bedankt voor je steun aan Macaco! 🙏\nJouw aankoop houdt de app onafhankelijk en advertentievrij.</string>
     <string name="subscription_manage">Abonnement beheren</string>
     <string name="subscription_plan_recurring">Automatisch verlengend abonnement</string>
+    <string name="subscription_renews_on">Verlengt op %1$s</string>
+    <string name="subscription_renews_on_with_price">Verlengt op %1$s — %2$s</string>
+    <string name="renewal_channel_name">Abonnementsverlenging</string>
+    <string name="renewal_channel_desc">Een eenmalige herinnering voordat je jaarlijkse Macaco-abonnement wordt verlengd.</string>
+    <string name="renewal_notification_title">Je jaarabonnement wordt binnenkort verlengd</string>
+    <string name="renewal_notification_body">Je Macaco Premium-abonnement wordt over 7 dagen verlengd. Tik om je abonnement te bekijken.</string>
+    <string name="subscription_not_premium_title">Geen actief abonnement</string>
+    <string name="subscription_not_premium_body">Upgrade naar Macaco Premium voor onbeperkte items, cloudsynchronisatie en meer.</string>
+    <string name="subscription_upgrade_cta">Upgraden naar Premium</string>
 
     <string name="app_lock_locked">Je dagboek is vergrendeld</string>
     <string name="app_lock_unlock">Ontgrendelen</string>

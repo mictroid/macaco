@@ -228,6 +228,15 @@
     <string name="subscription_thank_you">Obrigado por apoiar o Macaco! 🙏\nSua compra mantém o app independente e sem anúncios.</string>
     <string name="subscription_manage">Gerenciar assinatura</string>
     <string name="subscription_plan_recurring">Assinatura com renovação automática</string>
+    <string name="subscription_renews_on">Renova em %1$s</string>
+    <string name="subscription_renews_on_with_price">Renova em %1$s — %2$s</string>
+    <string name="renewal_channel_name">Renovação da assinatura</string>
+    <string name="renewal_channel_desc">Um lembrete único antes da renovação da sua assinatura anual do Macaco.</string>
+    <string name="renewal_notification_title">Seu plano anual renova em breve</string>
+    <string name="renewal_notification_body">Sua assinatura Macaco Premium renova em 7 dias. Toque para revisar seu plano.</string>
+    <string name="subscription_not_premium_title">Nenhuma assinatura ativa</string>
+    <string name="subscription_not_premium_body">Atualize para o Macaco Premium para desbloquear entradas ilimitadas, sincronização na nuvem e mais.</string>
+    <string name="subscription_upgrade_cta">Atualizar para Premium</string>
 
     <string name="app_lock_locked">Seu diário está bloqueado</string>
     <string name="app_lock_unlock">Desbloquear</string>

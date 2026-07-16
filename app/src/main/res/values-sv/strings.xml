@@ -201,6 +201,15 @@
     <string name="subscription_thank_you">Tack för att du stödjer Macaco! 🙏\nDitt köp håller appen oberoende och reklamfri.</string>
     <string name="subscription_manage">Hantera prenumeration</string>
     <string name="subscription_plan_recurring">Förnyas automatiskt</string>
+    <string name="subscription_renews_on">Förnyas den %1$s</string>
+    <string name="subscription_renews_on_with_price">Förnyas den %1$s — %2$s</string>
+    <string name="renewal_channel_name">Prenumerationsförnyelse</string>
+    <string name="renewal_channel_desc">En engångspåminnelse innan din årliga Macaco-prenumeration förnyas.</string>
+    <string name="renewal_notification_title">Din årsplan förnyas snart</string>
+    <string name="renewal_notification_body">Din Macaco Premium-prenumeration förnyas om 7 dagar. Tryck för att granska din plan.</string>
+    <string name="subscription_not_premium_title">Ingen aktiv prenumeration</string>
+    <string name="subscription_not_premium_body">Uppgradera till Macaco Premium för att låsa upp obegränsade poster, molnsynkronisering och mer.</string>
+    <string name="subscription_upgrade_cta">Uppgradera till Premium</string>
 
     <string name="app_lock_locked">Din dagbok är låst</string>
     <string name="app_lock_unlock">Lås upp</string>

@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,7 +51,12 @@ import com.houseofmmminq.macaco.util.AppActions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
+fun SubscriptionInfoScreen(
+    viewModel: JournalViewModel,
+    onBack: () -> Unit,
+    onUpgrade: () -> Unit
+) {
+    val isPurchased by viewModel.isPurchased.collectAsState()
     val currentPlanId by viewModel.currentPlanId.collectAsState()
     val context = LocalContext.current
     // "Manage subscription" shows only for an actual Play subscription (monthly/annual). Lifetime
@@ -60,6 +66,7 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
     // Which cadence the user is on: match the active entitlement's base-plan id against the
     // offering's monthly/annual packages (exact match — the product id alone can't tell them apart).
     val currentBasePlanId by viewModel.currentBasePlanId.collectAsState()
+    val currentExpirationDate by viewModel.currentExpirationDate.collectAsState()
     val offerings by viewModel.offerings.collectAsState()
     val annualBasePlanId = offerings?.current?.annual?.product?.googleProduct?.basePlanId
     val monthlyBasePlanId = offerings?.current?.monthly?.product?.googleProduct?.basePlanId
@@ -88,6 +95,46 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(24.dp))
+
+            if (isPurchased != true) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(28.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier.size(76.dp)
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        stringResource(R.string.subscription_not_premium_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(R.string.subscription_not_premium_body),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Spacer(Modifier.height(20.dp))
+                Button(
+                    onClick = onUpgrade,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.subscription_upgrade_cta))
+                }
+                Spacer(Modifier.height(32.dp))
+                return@Scaffold
+            }
 
             // Premium status band on the Macaco splash identity: teal radial behind the monkey
             // icon and gold "macaco" wordmark, with the premium/active/lifetime status beneath.
@@ -149,6 +196,30 @@ fun SubscriptionInfoScreen(viewModel: JournalViewModel, onBack: () -> Unit) {
                     color = Color.White.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center
                 )
+
+                // Renewal date + price — subscriptions only, matches the resolved cadence's
+                // package for price (annual vs monthly have different prices).
+                val expirationMillis = currentExpirationDate
+                if (manageableSubscription && expirationMillis != null) {
+                    val matchedPackage = when {
+                        annualBasePlanId != null && currentBasePlanId == annualBasePlanId -> offerings?.current?.annual
+                        monthlyBasePlanId != null && currentBasePlanId == monthlyBasePlanId -> offerings?.current?.monthly
+                        else -> null
+                    }
+                    val priceFormatted = matchedPackage?.product?.price?.formatted
+                    val renewalText = if (priceFormatted != null) {
+                        stringResource(R.string.subscription_renews_on_with_price, formatDate(expirationMillis), priceFormatted)
+                    } else {
+                        stringResource(R.string.subscription_renews_on, formatDate(expirationMillis))
+                    }
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        renewalText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
             Spacer(Modifier.height(28.dp))

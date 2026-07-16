@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.houseofmmminq.macaco.data.PreferencesManager
 import com.houseofmmminq.macaco.data.auth.AuthRepository
+import com.houseofmmminq.macaco.util.RenewalReminderScheduler
 import com.revenuecat.purchases.EntitlementInfo
 import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Package
@@ -36,7 +37,7 @@ import kotlin.coroutines.resume
  * unlock flag so the unlock flow stays testable without a RevenueCat account.
  */
 class BillingManager(
-    appContext: Context,
+    private val appContext: Context,
     private val preferencesManager: PreferencesManager,
     authRepository: AuthRepository
 ) {
@@ -71,6 +72,12 @@ class BillingManager(
     // user is on; null when not on a subscription.
     private val _currentBasePlanId = MutableStateFlow<String?>(null)
     val currentBasePlanId: StateFlow<String?> = _currentBasePlanId.asStateFlow()
+
+    // Epoch millis of the active entitlement's next renewal/expiry. Null when not on an active
+    // subscription (lifetime purchases have no expiry either). Drives the "Renews on ..." line
+    // on SubscriptionInfoScreen and the annual pre-renewal notification schedule.
+    private val _currentExpirationDate = MutableStateFlow<Long?>(null)
+    val currentExpirationDate: StateFlow<Long?> = _currentExpirationDate.asStateFlow()
 
     init {
         if (configured) {
@@ -142,14 +149,30 @@ class BillingManager(
         if (active && entitlement != null) {
             _currentPlanId.value = entitlement.productIdentifier
             _currentBasePlanId.value = entitlement.productPlanIdentifier
+            _currentExpirationDate.value = entitlement.expirationDate?.time
             // A Play subscription has an expiry (next renewal); a one-time lifetime purchase has
             // none, and promo/other-store grants can't be managed in Play. This is the reliable
             // way to gate "Manage subscription" — the product id can't tell monthly/annual apart.
             _manageableSubscription.value =
                 entitlement.store == Store.PLAY_STORE && entitlement.expirationDate != null
+
+            // Only annual subscribers get a pre-renewal notification (monthly would be roughly
+            // once a month — too noisy). Base plan id is the literal Play Console base plan id
+            // ("annual" / "monthly"), see RevenueCatConfig.ANNUAL_BASE_PLAN_ID.
+            val expiryMillis = entitlement.expirationDate?.time
+            if (_manageableSubscription.value &&
+                entitlement.productPlanIdentifier == RevenueCatConfig.ANNUAL_BASE_PLAN_ID &&
+                expiryMillis != null
+            ) {
+                RenewalReminderScheduler.schedule(appContext, expiryMillis)
+            } else {
+                RenewalReminderScheduler.cancel(appContext)
+            }
         } else {
             _manageableSubscription.value = false
             _currentBasePlanId.value = null
+            _currentExpirationDate.value = null
+            RenewalReminderScheduler.cancel(appContext)
         }
     }
 

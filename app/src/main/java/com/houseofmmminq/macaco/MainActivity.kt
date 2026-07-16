@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
     // Compose tree (NavGraph) once the journal is on screen, then consumed.
     private var openNewEntry by mutableStateOf(false)
 
+    // Set when launched/re-launched from the annual-renewal reminder notification's deep link.
+    private var openSubscription by mutableStateOf(false)
+
     // Play flexible in-app update. The download runs in the background; once it finishes we flip
     // updateReady so the Compose tree can offer a "Restart" snackbar to apply it.
     private val appUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (intent?.action == ACTION_NEW_ENTRY) openNewEntry = true
+        if (intent?.action == ACTION_OPEN_SUBSCRIPTION) openSubscription = true
         val app = application as TravelJournalApp
         val factory = JournalViewModel.Factory(app.applicationContext, app.cloudEntrySync, app.preferencesManager, app.authRepository, app.billingManager, app.drivePhotoSync)
         setContent {
@@ -165,7 +169,9 @@ class MainActivity : AppCompatActivity() {
                     NavGraph(
                         viewModel = vm,
                         openNewEntry = openNewEntry,
-                        onOpenNewEntryConsumed = { openNewEntry = false }
+                        onOpenNewEntryConsumed = { openNewEntry = false },
+                        openSubscription = openSubscription,
+                        onOpenSubscriptionConsumed = { openSubscription = false }
                     )
                     SnackbarHost(
                         hostState = snackbarHostState,
@@ -183,6 +189,7 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         if (intent.action == ACTION_NEW_ENTRY) openNewEntry = true
+        if (intent.action == ACTION_OPEN_SUBSCRIPTION) openSubscription = true
     }
 
     override fun onResume() {
@@ -228,5 +235,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val ACTION_NEW_ENTRY = "com.houseofmmminq.macaco.ACTION_NEW_ENTRY"
+        const val ACTION_OPEN_SUBSCRIPTION = "com.houseofmmminq.macaco.ACTION_OPEN_SUBSCRIPTION"
     }
 }

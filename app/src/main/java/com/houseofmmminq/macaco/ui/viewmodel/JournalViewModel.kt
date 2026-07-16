@@ -135,6 +135,7 @@ class JournalViewModel(
     val currentPlanId = billingManager.currentPlanId
     val manageableSubscription = billingManager.manageableSubscription
     val currentBasePlanId = billingManager.currentBasePlanId
+    val currentExpirationDate = billingManager.currentExpirationDate
 
     /** State of an Adventure Reel render (premium): a shareable slideshow video from a trip's photos. */
     sealed class ReelState {
@@ -539,7 +540,11 @@ class JournalViewModel(
                     // user re-saved the entry again before this fetch returned).
                     if (latest.weatherCode == null) {
                         cloudEntrySync.save(
-                            latest.copy(weatherCode = result.weatherCode, weatherTempMaxC = result.tempMaxC)
+                            latest.copy(
+                                weatherCode = result.weatherCode,
+                                weatherTempMaxC = result.tempMaxC,
+                                weatherIsFahrenheit = result.isFahrenheit
+                            )
                         )
                     }
                 }

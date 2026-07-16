@@ -28,6 +28,11 @@ object RevenueCatConfig {
     // Must match the entitlement identifier configured in the RevenueCat dashboard.
     const val ENTITLEMENT_ID = "premium"
 
+    // Literal Play Console base plan id for the annual cadence under the macaco_premium
+    // subscription (see Play Console > Macaco Premium > Base plans and offers > "annual").
+    // Used to gate the pre-renewal notification to annual subscribers only.
+    const val ANNUAL_BASE_PLAN_ID = "annual"
+
     val isConfigured: Boolean
         get() = GOOGLE_API_KEY.startsWith("goog_") && !GOOGLE_API_KEY.contains("YOUR")
 }

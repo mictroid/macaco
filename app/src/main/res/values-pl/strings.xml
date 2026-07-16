@@ -234,6 +234,15 @@
     <string name="subscription_thank_you">Dziękujemy za wsparcie Macaco! 🙏\nTwój zakup pozwala utrzymać aplikację niezależną i wolną od reklam.</string>
     <string name="subscription_manage">Zarządzaj subskrypcją</string>
     <string name="subscription_plan_recurring">Subskrypcja odnawiana automatycznie</string>
+    <string name="subscription_renews_on">Odnawia się %1$s</string>
+    <string name="subscription_renews_on_with_price">Odnawia się %1$s — %2$s</string>
+    <string name="renewal_channel_name">Odnowienie subskrypcji</string>
+    <string name="renewal_channel_desc">Jednorazowe przypomnienie przed odnowieniem rocznej subskrypcji Macaco.</string>
+    <string name="renewal_notification_title">Twój roczny plan wkrótce się odnowi</string>
+    <string name="renewal_notification_body">Twoja subskrypcja Macaco Premium odnowi się za 7 dni. Dotknij, aby sprawdzić swój plan.</string>
+    <string name="subscription_not_premium_title">Brak aktywnej subskrypcji</string>
+    <string name="subscription_not_premium_body">Przejdź na Macaco Premium, aby odblokować nieograniczoną liczbę wpisów, synchronizację w chmurze i więcej.</string>
+    <string name="subscription_upgrade_cta">Przejdź na Premium</string>
 
     <string name="app_lock_locked">Twój dziennik jest zablokowany</string>
     <string name="app_lock_unlock">Odblokuj</string>

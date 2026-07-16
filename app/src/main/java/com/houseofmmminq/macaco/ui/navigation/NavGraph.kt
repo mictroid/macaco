@@ -77,7 +77,9 @@ private const val FREE_ENTRY_LIMIT = 3
 fun NavGraph(
     viewModel: JournalViewModel,
     openNewEntry: Boolean = false,
-    onOpenNewEntryConsumed: () -> Unit = {}
+    onOpenNewEntryConsumed: () -> Unit = {},
+    openSubscription: Boolean = false,
+    onOpenSubscriptionConsumed: () -> Unit = {}
 ) {
     // All state collected unconditionally so Compose hooks are always called in the same order.
     val onboardingComplete by viewModel.onboardingComplete.collectAsState()
@@ -175,6 +177,14 @@ fun NavGraph(
                 if (openNewEntry) {
                     goToNewEntry()
                     onOpenNewEntryConsumed()
+                }
+            }
+
+            // Deep link from the annual-renewal reminder notification: jump to Subscription Info.
+            LaunchedEffect(openSubscription) {
+                if (openSubscription) {
+                    navController.navigate(Screen.Subscription.route)
+                    onOpenSubscriptionConsumed()
                 }
             }
             val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -325,6 +335,7 @@ fun NavGraph(
                             navController.navigate(Screen.Login.route)
                         },
                         onSubscription = { navController.navigate(Screen.Subscription.route) },
+                        onNavigateToPaywall = { navController.navigate(Screen.Paywall.route) },
                         onSettings = { navController.navigate(Screen.Settings.route) },
                         onHelp = { navController.navigate(Screen.HelpAbout.route) },
                         onYearInTravel = { navController.navigate(Screen.YearInTravel.route) },
@@ -358,7 +369,8 @@ fun NavGraph(
                 composable(Screen.Subscription.route) {
                     SubscriptionInfoScreen(
                         viewModel = viewModel,
-                        onBack = { navController.popBackStack() }
+                        onBack = { navController.popBackStack() },
+                        onUpgrade = { navController.navigate(Screen.Paywall.route) }
                     )
                 }
 
