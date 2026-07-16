@@ -2,6 +2,15 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-16 — vc72 (1.6) DISPATCHED — WIF run `29495899261`
+
+Dispatched 13:50:41 +0200, not yet confirmed (check `gh run list --workflow=release.yml --limit 1`).
+Bump+notes `dfef2b3`, `origin == HEAD` verified before dispatch. 6-item batch since vc71: email
+verification gate, subscription renewal info + false-premium fix + weather unit by location,
+Firestore rules in repo + Firebase App Check, Drive photo download parallelization (fixes a real
+~1-minute journal-list load reported live — Drive downloads were serial, now bounded-concurrent).
+See `docs/worklog-2026-07-16.md` for full per-item detail.
+
 ## 2026-07-16 — Drive photo download parallelization (perf fix), joins today's batch
 
 User reported the Journal list taking ~a minute to show photos after a fresh sign-in. Root cause:
