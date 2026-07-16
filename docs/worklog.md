@@ -2,6 +2,30 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-16 — 3 briefs implemented, not yet shipped
+
+Implemented and committed (commit `fb38f91`), not yet dispatched to Play — batching toward the
+usual 4-5 change release. All three briefs verified against live source first, then archived to
+`docs/DONE/`:
+
+- **Subscription renewal info**: `BillingManager.currentExpirationDate` StateFlow; "Renews on
+  `<date>` — `<price>`" line on `SubscriptionInfoScreen`; new `RenewalReminderScheduler`/`Worker`
+  (WorkManager one-time job) posting a notification 7 days before an **annual** subscriber's
+  renewal, deep-linking back via `ACTION_OPEN_SUBSCRIPTION`. Monthly subscribers get no
+  notification, by design.
+- **Subscription screen false-premium fix**: Profile's "Subscription" tile now gates on
+  `isPurchased` (previously a free account could open the screen and see a false "Premium —
+  Active — Lifetime" band). `SubscriptionInfoScreen` gained a real non-premium state with an
+  "Upgrade to Premium" CTA.
+- **Weather unit by location**: `WeatherLookup` now decides °F/°C from the entry location's
+  geocoded country (persisted as `TravelEntry.weatherIsFahrenheit`) at fetch time, not the
+  device's display-language locale — fixes Berlin entries showing °F on an English (US) phone.
+
+9 new string keys added across all 11 locales. Build verified clean (`assembleDebug`); hit and
+fixed two build breaks along the way: an unescaped apostrophe in `values-fr/strings.xml`
+(`renewal_channel_name`) and a Kotlin smart-cast error on the delegated `currentExpirationDate`
+property in `SubscriptionInfoScreen.kt` (fixed by binding it to a local `val` first).
+
 ## 2026-07-14 — vc71 (1.6) — CONFIRMED ✅ — WIF run `29325050510` (supersedes the entry below)
 
 vc71 / 1.6 — SHIPPED ✅ 2026-07-14 (run `29325050510`, commit `b429e3d`): R8/ProGuard code shrinking
