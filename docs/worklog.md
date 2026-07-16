@@ -2,6 +2,18 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-16 — email verification gate implemented, not yet shipped
+
+Firebase email-verification gate for email/password signup (`code-brief-email-verification.md`):
+new `UserProfile.emailVerified`, `AuthRepository.sendEmailVerification()` /
+`reloadAndCheckEmailVerified()`, new `VerifyEmailScreen`, `NavGraph` gates on it between
+"not logged in" and "full journal" (Google accounts always pass through). Verified against live
+source first; fixed two real bugs in the brief's own code sample (`it.getString(...)` on a
+`Boolean`, and a fully-qualified reference to the `Icons.Filled.Email` extension property that
+doesn't compile) — see `docs/worklog-2026-07-16.md` for detail. 7 new string keys ×11 locales.
+`assembleDebug` BUILD SUCCESSFUL after the fixes. Joins the same-day 3-brief batch below toward the
+usual 4-5 change release before Play dispatch.
+
 ## 2026-07-16 — 3 briefs implemented, not yet shipped
 
 Implemented and committed (commit `fb38f91`), not yet dispatched to Play — batching toward the

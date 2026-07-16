@@ -6,7 +6,8 @@ data class UserProfile(
     val email: String,
     val photoUrl: String? = null,
     val provider: AuthProvider = AuthProvider.Guest,
-    val createdAt: Long? = null
+    val createdAt: Long? = null,
+    val emailVerified: Boolean = true
 )
 
 enum class AuthProvider { Google, Email, Guest }

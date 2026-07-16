@@ -239,6 +239,13 @@
     <string name="settings_backup_export_full">Full kvalitet</string>
     <string name="settings_backup_import_done">%1$d inlägg återställda från fil</string>
     <string name="settings_backup_failed">Säkerhetskopieringen misslyckades. Försök igen.</string>
+    <string name="verify_email_title">Verifiera din e-post</string>
+    <string name="verify_email_subtitle">Vi skickade en verifieringslänk till %1$s. Klicka på den och kom sedan tillbaka hit.</string>
+    <string name="verify_email_continue">Jag har verifierat — Fortsätt</string>
+    <string name="verify_email_still_unverified">Inte verifierad än — kolla din inkorg (och skräppost)</string>
+    <string name="verify_email_resend">Skicka e-post igen</string>
+    <string name="verify_email_resend_cooldown">Skicka e-post igen (%1$d s)</string>
+    <string name="verify_email_sign_out">Logga ut</string>
     <string name="widget_signed_out_title">Logga in på Macaco</string>
     <string name="widget_signed_out_subtitle">Tryck för att öppna appen</string>
     <string name="widget_empty_title">Starta din reseblogg</string>

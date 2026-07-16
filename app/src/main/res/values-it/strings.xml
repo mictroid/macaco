@@ -266,6 +266,13 @@
     <string name="settings_backup_export_full">Qualità piena</string>
     <string name="settings_backup_import_done">%1$d voci ripristinate dal file</string>
     <string name="settings_backup_failed">Backup non riuscito. Riprova.</string>
+    <string name="verify_email_title">Verifica la tua email</string>
+    <string name="verify_email_subtitle">Abbiamo inviato un link di verifica a %1$s. Fai clic su di esso e poi torna qui.</string>
+    <string name="verify_email_continue">Ho verificato — Continua</string>
+    <string name="verify_email_still_unverified">Non ancora verificata — controlla la posta in arrivo (e lo spam)</string>
+    <string name="verify_email_resend">Invia di nuovo l\'email</string>
+    <string name="verify_email_resend_cooldown">Invia di nuovo l\'email (%1$d s)</string>
+    <string name="verify_email_sign_out">Esci</string>
     <string name="widget_signed_out_title">Accedi a Macaco</string>
     <string name="widget_signed_out_subtitle">Tocca per aprire l\'app</string>
     <string name="widget_empty_title">Inizia il tuo diario di viaggio</string>

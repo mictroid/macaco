@@ -78,6 +78,7 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
             val user = result.user!!
             val name = displayName.ifBlank { email.substringBefore("@").replaceFirstChar { it.uppercase() } }
             user.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build()).await()
+            user.sendEmailVerification().await()
             user.reload().await()
             user.toUserProfile()
         }.mapFailure { e ->
@@ -97,6 +98,23 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
         }.mapFailure { e ->
             Exception(e.localizedMessage ?: "Could not send reset email")
         }
+
+    // ── Email Verification ───────────────────────────────────────────────────
+
+    override suspend fun sendEmailVerification(): Result<Unit> = runCatching {
+        val user = auth.currentUser ?: error("Not signed in")
+        user.sendEmailVerification().await()
+        Unit
+    }.mapFailure { e -> Exception(e.localizedMessage ?: "Could not send verification email") }
+
+    override suspend fun reloadAndCheckEmailVerified(): Result<Boolean> = runCatching {
+        val user = auth.currentUser ?: error("Not signed in")
+        user.reload().await()
+        // reload() doesn't fire the auth listener — push the refreshed profile manually so
+        // NavGraph's currentUser.emailVerified updates immediately.
+        _currentUser.value = user.toUserProfile()
+        user.isEmailVerified
+    }.mapFailure { e -> Exception(e.localizedMessage ?: "Could not check verification status") }
 
     // ── Sign Out ──────────────────────────────────────────────────────────────
 
@@ -180,7 +198,9 @@ class FirebaseAuthRepository(appContext: Context) : AuthRepository {
             email = email ?: "",
             photoUrl = photoUrl?.toString(),
             provider = provider,
-            createdAt = metadata?.creationTimestamp
+            createdAt = metadata?.creationTimestamp,
+            // Google accounts are pre-verified by Google; only email/password enforces the gate.
+            emailVerified = provider == AuthProvider.Google || isEmailVerified
         )
     }
 }

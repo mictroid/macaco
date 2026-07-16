@@ -595,6 +595,14 @@ class JournalViewModel(
         viewModelScope.launch { onResult(authRepository.sendPasswordResetEmail(email)) }
     }
 
+    fun sendEmailVerification(onResult: (Result<Unit>) -> Unit) {
+        viewModelScope.launch { onResult(authRepository.sendEmailVerification()) }
+    }
+
+    fun reloadAndCheckEmailVerified(onResult: (Result<Boolean>) -> Unit) {
+        viewModelScope.launch { onResult(authRepository.reloadAndCheckEmailVerified()) }
+    }
+
     fun setProfilePhoto(uri: String) {
         viewModelScope.launch { preferencesManager.setProfilePhotoUri(uri) }
     }

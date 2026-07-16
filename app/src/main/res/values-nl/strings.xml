@@ -266,6 +266,13 @@
     <string name="settings_backup_export_full">Volledige kwaliteit</string>
     <string name="settings_backup_import_done">%1$d items uit bestand hersteld</string>
     <string name="settings_backup_failed">Back-up mislukt. Probeer het opnieuw.</string>
+    <string name="verify_email_title">Verifieer je e-mailadres</string>
+    <string name="verify_email_subtitle">We hebben een verificatielink gestuurd naar %1$s. Klik erop en kom dan hier terug.</string>
+    <string name="verify_email_continue">Ik heb geverifieerd — Doorgaan</string>
+    <string name="verify_email_still_unverified">Nog niet geverifieerd — controleer je inbox (en spam)</string>
+    <string name="verify_email_resend">E-mail opnieuw versturen</string>
+    <string name="verify_email_resend_cooldown">E-mail opnieuw versturen (%1$d s)</string>
+    <string name="verify_email_sign_out">Uitloggen</string>
     <string name="widget_signed_out_title">Log in bij Macaco</string>
     <string name="widget_signed_out_subtitle">Tik om de app te openen</string>
     <string name="widget_empty_title">Begin je reisdagboek</string>

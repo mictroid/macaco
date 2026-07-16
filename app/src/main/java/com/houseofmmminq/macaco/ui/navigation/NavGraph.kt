@@ -65,6 +65,7 @@ import com.houseofmmminq.macaco.ui.screens.SettingsScreen
 import com.houseofmmminq.macaco.ui.screens.SearchScreen
 import com.houseofmmminq.macaco.ui.screens.SplashScreen
 import com.houseofmmminq.macaco.ui.screens.SubscriptionInfoScreen
+import com.houseofmmminq.macaco.ui.screens.VerifyEmailScreen
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 
 // Re-lock after this many ms in the background.
@@ -152,6 +153,15 @@ fun NavGraph(
             LoginScreen(
                 viewModel = viewModel,
                 onBack = {} // no dismissal — login is required
+            )
+        }
+
+        // Signed in but hasn't clicked the Firebase verification link yet. Google accounts are
+        // always emailVerified = true, so this never blocks a Google sign-in.
+        currentUser?.emailVerified == false -> {
+            VerifyEmailScreen(
+                viewModel = viewModel,
+                onSignOut = {} // currentUser becomes null → this branch exits automatically
             )
         }
 

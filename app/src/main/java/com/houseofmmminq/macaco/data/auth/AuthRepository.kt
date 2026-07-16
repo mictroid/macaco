@@ -26,4 +26,10 @@ interface AuthRepository {
      * confirmation language.
      */
     suspend fun sendPasswordResetEmail(email: String): Result<Unit>
+
+    /** Resends the verification email to the signed-in (unverified) user. */
+    suspend fun sendEmailVerification(): Result<Unit>
+
+    /** Reloads the current user from Firebase and returns the fresh isEmailVerified state. */
+    suspend fun reloadAndCheckEmailVerified(): Result<Boolean>
 }

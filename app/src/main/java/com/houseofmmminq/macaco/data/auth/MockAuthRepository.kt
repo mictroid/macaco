@@ -33,7 +33,8 @@ class MockAuthRepository : AuthRepository {
             uid = "mock_new_${email.hashCode()}",
             displayName = displayName.ifBlank { email.substringBefore("@").replaceFirstChar { it.uppercase() } },
             email = email,
-            provider = AuthProvider.Email
+            provider = AuthProvider.Email,
+            emailVerified = false
         )
         _currentUser.value = user
         return Result.success(user)
@@ -47,4 +48,14 @@ class MockAuthRepository : AuthRepository {
     }
 
     override suspend fun sendPasswordResetEmail(email: String): Result<Unit> = Result.success(Unit)
+
+    override suspend fun sendEmailVerification(): Result<Unit> = Result.success(Unit)
+
+    override suspend fun reloadAndCheckEmailVerified(): Result<Boolean> {
+        // Mock: flip verified true on the second check so the "I've verified" flow is testable.
+        val user = _currentUser.value ?: return Result.success(false)
+        val updated = user.copy(emailVerified = true)
+        _currentUser.value = updated
+        return Result.success(true)
+    }
 }
