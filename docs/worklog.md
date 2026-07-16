@@ -2,6 +2,18 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-16 — vc72 (1.6) — SHIPPED ✅ — WIF run `29496517285` (fixed re-dispatch)
+
+vc72 / 1.6 — SHIPPED ✅ 2026-07-16 (run `29496517285`, commit `1328d03`): first dispatch (run
+`29495899261`) failed at "Build signed release bundle" — `TravelJournalApp.kt` referenced
+`DebugAppCheckProviderFactory`, a class only on the `debugImplementation` classpath, breaking
+release compilation. Fixed by looking the provider up reflectively instead of importing it
+directly (commit `1328d03`, pushed to master). Re-dispatched release.yml as run `29496517285`,
+which completed successfully in 10m4s — vc72 shipped to Play closed testing. See
+`docs/worklog-2026-07-16.md` for the original 6-item batch detail (email verification, subscription
+renewal info/false-premium fix/weather unit by location, Firestore rules + App Check, Drive photo
+download parallelization).
+
 ## 2026-07-16 — vc72 (1.6) DISPATCHED — WIF run `29495899261`
 
 Dispatched 13:50:41 +0200, not yet confirmed (check `gh run list --workflow=release.yml --limit 1`).
