@@ -17,16 +17,27 @@ import com.google.api.services.drive.model.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File as JavaFile
+
+// Drive photo/video downloads used to run one at a time in a plain forEach loop, so a fresh
+// install with many un-cached entries took ~a minute to populate the journal list. Bounding
+// concurrency (rather than unbounded async) avoids hammering the Drive API with dozens of
+// simultaneous requests on large journals.
+private const val DRIVE_DOWNLOAD_CONCURRENCY = 6
 
 sealed class DrivePhotoSyncState {
     object Idle : DrivePhotoSyncState()
@@ -259,22 +270,30 @@ class DrivePhotoSync(private val context: Context) {
         if (needed.isEmpty() && neededVideos.isEmpty()) return@withContext
 
         val drive = runCatching { getDriveService() }.getOrNull() ?: return@withContext
-        val newEntries = mutableMapOf<String, String>()
+        // ConcurrentHashMap: the download loops below write to this from multiple coroutines
+        // (bounded by downloadSemaphore) at once.
+        val newEntries = java.util.concurrent.ConcurrentHashMap<String, String>()
+
+        val downloadSemaphore = Semaphore(DRIVE_DOWNLOAD_CONCURRENCY)
 
         if (needed.isNotEmpty()) {
             val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
-            needed.forEach { fileId ->
-                val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
-                if (!cacheFile.exists()) {
-                    runCatching {
-                        val out = ByteArrayOutputStream()
-                        drive.files().get(fileId).executeMediaAndDownloadTo(out)
-                        cacheFile.writeBytes(out.toByteArray())
-                    }.onFailure { return@forEach }
-                }
-                if (cacheFile.exists()) {
-                    newEntries[fileId] = Uri.fromFile(cacheFile).toString()
-                }
+            coroutineScope {
+                needed.map { fileId ->
+                    async {
+                        downloadSemaphore.withPermit {
+                            val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
+                            if (!cacheFile.exists()) {
+                                runCatching {
+                                    val out = ByteArrayOutputStream()
+                                    drive.files().get(fileId).executeMediaAndDownloadTo(out)
+                                    cacheFile.writeBytes(out.toByteArray())
+                                }
+                            }
+                            if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
+                        }
+                    }
+                }.awaitAll()
             }
         }
 
@@ -282,18 +301,22 @@ class DrivePhotoSync(private val context: Context) {
         // and videos never collide), cached under cacheDir/drive_videos/.
         if (neededVideos.isNotEmpty()) {
             val videoCacheDir = JavaFile(context.cacheDir, ImageStorage.DRIVE_VIDEOS).apply { mkdirs() }
-            neededVideos.forEach { fileId ->
-                val cacheFile = JavaFile(videoCacheDir, "$fileId.mp4")
-                if (!cacheFile.exists()) {
-                    runCatching {
-                        cacheFile.outputStream().use { out ->
-                            drive.files().get(fileId).executeMediaAndDownloadTo(out)
+            coroutineScope {
+                neededVideos.map { fileId ->
+                    async {
+                        downloadSemaphore.withPermit {
+                            val cacheFile = JavaFile(videoCacheDir, "$fileId.mp4")
+                            if (!cacheFile.exists()) {
+                                runCatching {
+                                    cacheFile.outputStream().use { out ->
+                                        drive.files().get(fileId).executeMediaAndDownloadTo(out)
+                                    }
+                                }.onFailure { cacheFile.delete() }
+                            }
+                            if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
                         }
-                    }.onFailure { cacheFile.delete(); return@forEach }
-                }
-                if (cacheFile.exists()) {
-                    newEntries[fileId] = Uri.fromFile(cacheFile).toString()
-                }
+                    }
+                }.awaitAll()
             }
         }
 

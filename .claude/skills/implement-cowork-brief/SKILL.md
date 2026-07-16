@@ -132,6 +132,14 @@ briefs ledger, and the `current-state` memory — note each brief, file(s), and 
 the `sync-cowork-status` skill so the cheap-subagent reconciler confirms the archived brief + worklog +
 push all agree and the rolling `docs/worklog.md` isn't left behind.
 
+### 7. End-of-batch checkpoint
+Once every currently-pending brief is implemented, archived, and committed (i.e. no more loose
+`docs/code-brief-*.md` remain and you're about to go idle waiting for the next one) — **always**
+run the `context-checkpoint` skill to save the session to memory, then tell the user to `/clear`.
+Do this even if not asked; it's the natural end-of-batch boundary and the session transcript only
+grows from here while waiting. Don't checkpoint after every single brief if several arrive
+back-to-back — wait until the loose-brief queue is actually empty.
+
 ## Shipping
 Implementing a brief does **not** publish it. If the user wants it released, use the `ship-to-play`
 skill to bump the versionCode, refresh release notes, push, and dispatch the WIF workflow. Multiple
