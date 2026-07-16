@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-16 — security hardening: Firestore rules in repo + Firebase App Check implemented, not yet shipped
+
+Two briefs from the `docs/security-review-2026-07-16.md` findings (M1/M2/M3):
+`code-brief-security-firestore-rules-in-repo.md` adds `firestore.rules`/`firebase.json` capturing
+the live per-user isolation rule and dropping the orphaned `/shared_trips` public-read block (no app
+code changes; deploying to the live project is an explicit owner step, not run here).
+`code-brief-security-app-check.md` adds Firebase App Check (Play Integrity in release, debug
+provider in debug) as code-side hardening against the extractable-API-key findings — installed in
+`TravelJournalApp.onCreate()`. Two real gaps caught by verifying against live source first (not
+brief errors from a stale repo): `TravelJournalApp` had no `onCreate()` override at all, and
+`buildConfig` wasn't enabled in `buildFeatures` (so `BuildConfig.DEBUG` wouldn't have compiled) —
+both fixed. On-device S8 verify pass: signed in, journal list loaded from Firestore, edited and
+saved an entry (a real Firestore write) — no crash, no permission errors, App Check's debug provider
+issued its token cleanly. See `docs/worklog-2026-07-16.md` for full detail. Registering the App
+Check debug token + console app registration, and deploying the rules, are owner steps still open.
+
 ## 2026-07-16 — email verification gate implemented, not yet shipped
 
 Firebase email-verification gate for email/password signup (`code-brief-email-verification.md`):

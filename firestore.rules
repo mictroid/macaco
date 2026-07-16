@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Each user can only read/write their own subtree. This is the entire data-access boundary.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    // NOTE: the /shared_trips block was removed. The view-only trip-share feature was retired
+    // (docs/DONE/code-brief-retire-trip-share-link.md); nothing writes or reads this collection,
+    // and its old rule allowed unauthenticated public reads. See security-review-2026-07-16.md (M3).
+  }
+}

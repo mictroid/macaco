@@ -86,6 +86,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -137,6 +138,8 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.appcheck.playintegrity)
+    debugImplementation(libs.firebase.appcheck.debug)   // debug builds use the debug provider
     implementation(libs.play.services.auth)
     implementation(libs.revenuecat.purchases)
     implementation(libs.androidx.biometric)
