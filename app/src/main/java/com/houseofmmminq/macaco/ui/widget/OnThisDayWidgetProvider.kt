@@ -16,6 +16,7 @@ import com.houseofmmminq.macaco.MainActivity
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.data.model.widgetHighlight
+import com.houseofmmminq.macaco.data.storage.toTravelEntry
 import com.houseofmmminq.macaco.util.ImageStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,23 +58,7 @@ class OnThisDayWidgetProvider : AppWidgetProvider() {
         val snapshot = FirebaseFirestore.getInstance()
             .collection("users").document(uid).collection("entries")
             .get().await()
-        // Same decode shape as CloudEntrySync.startListening — kept in sync manually since a
-        // widget-process query can't share that private mapper (see the brief's Scope note).
-        val entries = snapshot.documents.mapNotNull { doc ->
-            runCatching {
-                TravelEntry(
-                    id = doc.getString("id") ?: doc.id,
-                    title = doc.getString("title") ?: return@runCatching null,
-                    location = doc.getString("location") ?: "",
-                    dateMillis = doc.getLong("dateMillis") ?: 0L,
-                    description = doc.getString("description") ?: "",
-                    mood = doc.getString("mood") ?: "",
-                    photoUris = (doc.get("photoUris") as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
-                    tags = (doc.get("tags") as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
-                    createdAt = doc.getLong("createdAt") ?: 0L
-                )
-            }.getOrNull()
-        }
+        val entries = snapshot.documents.mapNotNull { it.toTravelEntry() }
         entries.widgetHighlight()
     }.getOrNull()
 

@@ -63,35 +63,7 @@ class CloudEntrySync(
                     return@addSnapshotListener
                 }
                 if (snapshot == null) return@addSnapshotListener
-                _entries.value = snapshot.documents.mapNotNull { doc ->
-                    runCatching {
-                        TravelEntry(
-                            id = doc.getString("id") ?: doc.id,
-                            title = doc.getString("title") ?: return@runCatching null,
-                            location = doc.getString("location") ?: "",
-                            dateMillis = doc.getLong("dateMillis") ?: 0L,
-                            description = doc.getString("description") ?: "",
-                            mood = doc.getString("mood") ?: "",
-                            // Photos stored as local URIs — visible on the device they were added from
-                            photoUris = (doc.get("photoUris") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList(),
-                            tags = (doc.get("tags") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList(),
-                            createdAt = doc.getLong("createdAt") ?: 0L,
-                            driveFileIds = (doc.get("driveFileIds") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList(),
-                            tripName = doc.getString("tripName"),
-                            videoUris = (doc.get("videoUris") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList(),
-                            videoFileIds = (doc.get("videoFileIds") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList(),
-                            mediaOrder = (doc.get("mediaOrder") as? List<*>)
-                                ?.filterIsInstance<String>() ?: emptyList(),
-                            weatherCode = doc.getLong("weatherCode")?.toInt(),
-                            weatherTempMaxC = doc.getDouble("weatherTempMaxC")
-                        )
-                    }.getOrNull()
-                }
+                _entries.value = snapshot.documents.mapNotNull { it.toTravelEntry() }
             }
     }
 
@@ -103,7 +75,7 @@ class CloudEntrySync(
         val uid = authRepository.currentUser.value?.uid ?: return
         firestore.collection("users").document(uid)
             .collection("entries").document(entry.id)
-            .set(entry.toMap())
+            .set(entry.toFirestoreMap())
             .addOnFailureListener { _errors.trySend("Couldn't save your entry. Please try again.") }
     }
 
@@ -114,23 +86,4 @@ class CloudEntrySync(
             .delete()
             .addOnFailureListener { _errors.trySend("Couldn't delete the entry. Please try again.") }
     }
-
-    private fun TravelEntry.toMap(): Map<String, Any?> = mapOf(
-        "id" to id,
-        "title" to title,
-        "location" to location,
-        "dateMillis" to dateMillis,
-        "description" to description,
-        "mood" to mood,
-        "photoUris" to photoUris,
-        "tags" to tags,
-        "createdAt" to createdAt,
-        "driveFileIds" to driveFileIds,
-        "tripName" to tripName,
-        "videoUris" to videoUris,
-        "videoFileIds" to videoFileIds,
-        "mediaOrder" to mediaOrder,
-        "weatherCode" to weatherCode,
-        "weatherTempMaxC" to weatherTempMaxC
-    )
 }
