@@ -2,6 +2,21 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-17 — vc73 (1.6) — 3-brief batch committed `134467e`, NOT yet shipped
+
+Recovered a prior vc73 session cut off by Anthropic API 529 ("overload") errors — the Drive-sync
+brief's code was already correctly in the tree; verified it, then finished the other two. Batch
+commit `134467e` (versionCode 73, 5 commits ahead of `origin/master` `29316d5`, unpushed):
+**Drive-sync status accuracy** (`syncAll` awaits `downloadMissing` before reporting `Synced`;
+download failures counted → one aggregate snackbar), **Help & About FAQ + localization** (4 new FAQ
+pairs on `HelpAboutScreen.kt`; 8 keys ×11 locales + renewal sentence appended to
+`help_faq_a_billing`), **repo housekeeping** (dropped unused `firebase-storage`; fixed stale
+CLAUDE.md NavGraph diagram; gitignored local QA assets + root working files). Both `assembleDebug`
+and `assembleRelease` pass. Housekeeping Change 1 (launcher icons) was stale/phantom — no such
+modification in the tree, no action taken. Before dispatch: restore the weather bullet in release
+notes (mapper brief `7f8847d` makes it real again) + S8 on-device verify. Full detail in
+`docs/worklog-2026-07-17.md`.
+
 ## 2026-07-16 — vc72 (1.6) — SHIPPED ✅ — WIF run `29496517285` (fixed re-dispatch)
 
 vc72 / 1.6 — SHIPPED ✅ 2026-07-16 (run `29496517285`, commit `1328d03`): first dispatch (run
