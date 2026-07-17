@@ -2,10 +2,13 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-07-17 — vc73 (1.6) — DISPATCHED to Play Open testing — WIF run `29596794584`
+## 2026-07-17 — vc73 (1.6) — SHIPPED ✅ to Play Open testing — WIF run `29598341075`
 
-Dispatched 18:36:01 +0200 (run `29596794584`, https://github.com/mictroid/macaco/actions/runs/29596794584,
-not watched — confirm later with `gh run list`). `origin == HEAD` == `24d0c88` before dispatch.
+SUCCESS (9m31s), dispatched 18:59:59 +0200 (run `29598341075`), `origin == HEAD` == `3202ace`.
+**First dispatch (run `29596794584`) failed at `commitEdit`** — release notes 522 chars > Play's 500
+max (benign, not build/R8; `commitEdit` rollback left vc73 unconsumed); trimmed `default.txt` to 450
+codepoints (`3202ace`) and re-dispatched same vc73. Drive-sync caveat closed on-device (green "all
+photos backed up" on the S8).
 vc73 = R8 `ComponentRegistrar` crash-fix that killed vc72 + the halted vc72 batch + the 3-brief
 batch below (Drive-sync honesty, Help & About FAQ ×11 locales, housekeeping) + AGP 9.3.0/Gradle
 9.5.0 toolchain bump + shared Firestore mapper restoring the weather-unit feature. Pre-dispatch:
