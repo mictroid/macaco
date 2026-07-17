@@ -50,3 +50,14 @@
 -keep class * extends androidx.room.RoomDatabase
 -keep class androidx.work.impl.** { *; }
 -dontwarn androidx.work.**
+
+# Firebase ComponentRegistrars are instantiated reflectively by ComponentDiscovery from
+# AndroidManifest meta-data, so nothing calls their no-arg constructors directly. The classes are
+# @Keep-annotated and survive, but R8 strips the unused <init>() — discovery then logs
+# "Invalid component registrar / Could not instantiate ..." at WARN and the component never
+# registers. FirebaseAppCheck.getInstance() returned null and killed the process in
+# Application.onCreate; CrashlyticsRegistrar was also a casualty, so release crashes could not
+# report themselves. Same shape as the WorkDatabase_Impl case above.
+-keep class * implements com.google.firebase.components.ComponentRegistrar {
+    <init>();
+}
