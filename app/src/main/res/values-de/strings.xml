@@ -378,7 +378,7 @@
     <string name="help_faq_q_lock">Kann ich die App sperren?</string>
     <string name="help_faq_a_lock">Ja – aktiviere die App-Sperre über das Menü oder die Einstellungen, um Macaco mit Fingerabdruck, Gesicht oder Bildschirmsperre zu schützen.</string>
     <string name="help_faq_q_billing">Wie kündige ich oder erhalte eine Rückerstattung?</string>
-    <string name="help_faq_a_billing">Abos und Käufe werden über Google Play abgerechnet. Öffne „Abo“, um deinen Plan zu verwalten, oder gehe zu Play Store → Zahlungen &amp; Abos, um zu kündigen. Für Rückerstattungen nutze innerhalb von 48 Stunden den Bestellverlauf im Play Store oder kontaktiere uns.</string>
+    <string name="help_faq_a_billing">Abos und Käufe werden über Google Play abgerechnet. Öffne „Abo“, um deinen Plan zu verwalten, oder gehe zu Play Store → Zahlungen &amp; Abos, um zu kündigen. Für Rückerstattungen nutze innerhalb von 48 Stunden den Bestellverlauf im Play Store oder kontaktiere uns. Verlängerungsdatum und Preis siehst du im Abo-Bildschirm; bei Jahresabos erinnern wir dich etwa eine Woche vor der Verlängerung.</string>
     <string name="help_request_feature">Funktion vorschlagen</string>
     <string name="help_report_issue">Problem melden</string>
     <string name="help_section_getting_started">Erste Schritte</string>
@@ -415,6 +415,14 @@
     <string name="help_section_account">Konto</string>
     <string name="help_faq_delete_account_q">Wie lösche ich mein Konto?</string>
     <string name="help_faq_delete_account_a">Öffne dein Profil und tippe unten auf Konto löschen. Dadurch werden alle deine Einträge dauerhaft aus der Cloud gelöscht und dein Konto entfernt — das kann nicht rückgängig gemacht werden. Deine Fotos bleiben in der Galerie deines Geräts. Wenn du dich nur abmelden möchtest, nutze stattdessen Abmelden.</string>
+    <string name="help_faq_widget_q">Gibt es ein Startbildschirm-Widget?</string>
+    <string name="help_faq_widget_a">Ja — halte deinen Startbildschirm gedrückt, wähle Widgets und füge Macacos \"An diesem Tag\"-Widget hinzu. Es zeigt eine Erinnerung von diesem Datum aus einem früheren Jahr oder deinen neuesten Eintrag. Hinweis: Das Widget bleibt auch bei aktivierter App-Sperre sichtbar — entferne es, wenn dein Tagebuch nicht auf dem Startbildschirm erscheinen soll.</string>
+    <string name="help_faq_delete_drive_q">Wird ein gelöschter Eintrag auch aus Google Drive entfernt?</string>
+    <string name="help_faq_delete_drive_a">Beim Löschen verschwindet der Eintrag aus deinem Tagebuch, aber bereits gesicherte Fotos und Videos bleiben im \"Macaco\"-Ordner deines Google Drive, und Fotos bleiben in deiner Galerie. Der Ordner gehört dir — du kannst ihn jederzeit in Drive aufräumen.</string>
+    <string name="help_faq_suggestions_q">Was ist das Hinweisbanner \"Neue Fotos aus …\"?</string>
+    <string name="help_faq_suggestions_a">Wenn Macaco in deiner Galerie aktuelle Fotos mit Standort findet, die noch zu keinem Eintrag gehören, schlägt es einen neuen Eintrag vor — mit Titel, Ort, Datum und Fotos bereits ausgefüllt. Tippe auf das Banner, um ihn zu übernehmen, oder verwirf ihn — für diese Fotos erscheint er nicht erneut. Dafür ist Fotozugriff nötig; bis zum Speichern bleibt alles auf deinem Gerät.</string>
+    <string name="help_faq_verify_email_q">Warum muss ich meine E-Mail bestätigen?</string>
+    <string name="help_faq_verify_email_a">Bei der Registrierung mit E-Mail und Passwort senden wir dir einen Bestätigungslink, um sicherzugehen, dass die Adresse dir gehört, bevor sich dein Tagebuch öffnet. Prüfe den Spam-Ordner oder tippe auf dem Bestätigungsbildschirm auf „Erneut senden". Google-Konten sind bereits bestätigt.</string>
     <string name="help_faq_on_this_day_q">Was ist \"An diesem Tag\"?</string>
     <string name="help_faq_on_this_day_a">Wenn du Einträge vom selben Datum aus einem früheren Jahr hast, zeigt Macaco oben in deinem Journal ein \"An diesem Tag\"-Banner. Tippe darauf, um diese Erinnerungen erneut anzusehen. Das Banner erscheint jedes Jahr nur am passenden Kalendertag.</string>
     <string name="help_faq_drive_connect_q">Wie verbinde ich Google Drive für das Foto-Backup?</string>

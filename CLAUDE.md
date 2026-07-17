@@ -59,20 +59,24 @@ MainActivity
         └── theme / profile-photo state
 
 NavGraph (Compose Navigation) — gate order, outermost first:
-  SplashScreen (cold-start branded splash)
-  → AppLockScreen     ← if app lock enabled, on, and signed-in+purchased
-  → blank box         ← while isPurchased == null (DataStore loading)
+  blank box           ← while onboardingComplete == null (DataStore loading)
+  → OnboardingScreen  ← first install (onboardingComplete == false)
+  → SplashScreen      ← cold-start branded splash (once per process)
+  → AppLockScreen     ← if app lock enabled, locked, and signed in (30s background re-lock,
+                        cold-start lock in JournalViewModel.init)
+  → blank box         ← while isPurchased == null (entitlement loading)
   → LoginScreen       ← currentUser == null (login required)
-  → PurchaseScreen    ← isPurchased == false
-  → NavHost (full journal):
-      ├── JournalListScreen
+  → VerifyEmailScreen ← email/password account with unverified email (Google always passes)
+  → NavHost (full journal, freemium — premium is enforced per-feature and at entry creation
+             beyond FREE_ENTRY_LIMIT = 3, NOT as an app-wide wall):
+      bottom tabs: JournalListScreen · MapScreen (Adventures) · ProfileScreen
       ├── NewEditEntryScreen (shared create + edit via Screen.NewEntry / Screen.EditEntry)
-      ├── EntryDetailScreen  (receives cachedDrivePhotos for Drive-restored images)
-      ├── LoginScreen
-      ├── ProfileScreen
-      ├── SettingsScreen     (Drive sync, backup/restore, reminders, app lock live here)
-      ├── SubscriptionInfoScreen
-      └── HelpAboutScreen
+      ├── EntryDetailScreen  (swipe pager over the tag-filtered set; Drive-cached photos)
+      ├── SearchScreen
+      ├── SettingsScreen     (Drive sync, backup/restore, reminders, app lock, Print Book)
+      ├── PrintExportScreen · YearInTravelScreen
+      ├── PurchaseScreen     (Screen.Paywall — freemium/per-feature upsell)
+      ├── SubscriptionInfoScreen · HelpAboutScreen · LoginScreen
 ```
 
 **Dependency injection:** manual constructor injection via `TravelJournalApp` as a service locator.

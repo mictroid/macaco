@@ -340,7 +340,7 @@
     <string name="help_faq_q_lock">Kan jag låsa appen?</string>
     <string name="help_faq_a_lock">Ja – aktivera Applås från menyn eller Inställningar för att kräva ditt fingeravtryck, ansikte eller skärmlås för att öppna Macaco.</string>
     <string name="help_faq_q_billing">Hur avslutar jag eller får återbetalning?</string>
-    <string name="help_faq_a_billing">Prenumerationer och köp faktureras av Google Play. Öppna Prenumeration för att hantera ditt abonnemang, eller gå till Play Butik → Betalningar &amp; prenumerationer för att avsluta. För återbetalning, använd orderhistoriken i Play Butik inom 48 timmar, eller kontakta oss.</string>
+    <string name="help_faq_a_billing">Prenumerationer och köp faktureras av Google Play. Öppna Prenumeration för att hantera ditt abonnemang, eller gå till Play Butik → Betalningar &amp; prenumerationer för att avsluta. För återbetalning, använd orderhistoriken i Play Butik inom 48 timmar, eller kontakta oss. Förnyelsedatum och pris visas på Prenumerationsskärmen, och årsprenumeranter får en påminnelse ungefär en vecka innan.</string>
     <string name="help_request_feature">Föreslå en funktion</string>
     <string name="help_report_issue">Rapportera ett problem</string>
     <string name="help_section_getting_started">Kom igång</string>
@@ -377,6 +377,14 @@
     <string name="help_section_account">Konto</string>
     <string name="help_faq_delete_account_q">Hur tar jag bort mitt konto?</string>
     <string name="help_faq_delete_account_a">Öppna din profil och tryck på Ta bort konto längst ned. Detta tar permanent bort alla dina inlägg från molnet och tar bort ditt konto — det kan inte ångras. Dina foton blir kvar i enhetens galleri. Om du bara vill logga ut, använd Logga ut i stället.</string>
+    <string name="help_faq_widget_q">Finns det en widget för hemskärmen?</string>
+    <string name="help_faq_widget_a">Ja — håll in hemskärmen, välj Widgetar och lägg till Macacos \"Denna dag\"-widget. Den visar ett minne från detta datum ett tidigare år, eller din senaste anteckning. Obs: widgeten syns även när applåset är på — ta bort den om du hellre håller dagboken borta från hemskärmen.</string>
+    <string name="help_faq_delete_drive_q">Om jag raderar en anteckning, försvinner den från Google Drive?</string>
+    <string name="help_faq_delete_drive_a">När du raderar försvinner anteckningen ur dagboken, men redan säkerhetskopierade foton och videor ligger kvar i mappen \"Macaco\" på din Google Drive, och foton ligger kvar i galleriet. Mappen är din — du kan städa den i Drive när du vill.</string>
+    <string name="help_faq_suggestions_q">Vad är bannern \"Nya foton från…\"?</string>
+    <string name="help_faq_suggestions_a">När Macaco hittar nya platsmärkta foton i galleriet som inte finns i någon anteckning föreslår appen att du skapar en — med titel, plats, datum och foton redan ifyllda. Tryck på bannern för att acceptera, eller avvisa den så visas den inte igen för de fotona. Kräver fotoåtkomst; allt stannar på din enhet tills du sparar.</string>
+    <string name="help_faq_verify_email_q">Varför måste jag verifiera min e-post?</string>
+    <string name="help_faq_verify_email_a">Om du registrerar dig med e-post och lösenord skickar vi en verifieringslänk för att bekräfta att adressen är din innan dagboken öppnas. Kolla skräpposten om den inte kommer, eller tryck på Skicka igen på verifieringsskärmen. Google-konton är redan verifierade.</string>
     <string name="help_faq_on_this_day_q">Vad är \"På denna dag\"?</string>
     <string name="help_faq_on_this_day_a">När du har inlägg från samma datum ett tidigare år visar Macaco en \"På denna dag\"-banner högst upp i din journal. Tryck på den för att återuppleva de minnena. Bannern visas bara på det matchande kalenderdatumet varje år.</string>
     <string name="help_faq_drive_connect_q">Hur ansluter jag Google Drive för fotosäkerhetskopiering?</string>

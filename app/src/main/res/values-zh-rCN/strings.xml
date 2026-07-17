@@ -363,7 +363,7 @@
     <string name="help_faq_q_lock">可以锁定应用吗？</string>
     <string name="help_faq_a_lock">可以 — 在菜单或“设置”中开启应用锁，打开 Macaco 时即需指纹、面容或屏幕锁验证。</string>
     <string name="help_faq_q_billing">如何取消或申请退款？</string>
-    <string name="help_faq_a_billing">订阅和购买由 Google Play 计费。打开“订阅”可管理您的方案，或前往 Play 商店 → 付款和订阅进行取消。如需退款，请在 48 小时内通过 Play 商店的订单记录办理，或联系我们。</string>
+    <string name="help_faq_a_billing">订阅和购买由 Google Play 计费。打开“订阅”可管理您的方案，或前往 Play 商店 → 付款和订阅进行取消。如需退款，请在 48 小时内通过 Play 商店的订单记录办理，或联系我们。续订日期和价格显示在订阅页面，年度订阅用户会在续订前约一周收到提醒。</string>
     <string name="help_request_feature">建议功能</string>
     <string name="help_report_issue">报告问题</string>
     <string name="help_section_getting_started">入门</string>
@@ -400,6 +400,14 @@
     <string name="help_section_account">账号</string>
     <string name="help_faq_delete_account_q">如何删除我的账号？</string>
     <string name="help_faq_delete_account_a">打开你的个人资料，点按底部的“删除账号”。这会从云端永久删除你的所有日志条目并移除你的账号——此操作无法撤销。你的照片会保留在设备相册中。如果你只是想退出登录，请改用“退出登录”。</string>
+    <string name="help_faq_widget_q">有主屏幕小组件吗？</string>
+    <string name="help_faq_widget_a">有 — 长按主屏幕，选择"小组件"，添加 Macaco 的"那年今日"小组件。它会显示往年同一天的回忆，或你最新的日记。注意：即使开启了应用锁，小组件仍然可见；如果不想在主屏幕上展示日记，请移除小组件。</string>
+    <string name="help_faq_delete_drive_q">删除日记后，Google Drive 里的内容也会被删除吗？</string>
+    <string name="help_faq_delete_drive_a">删除日记只会将其从日记本中移除，已备份的照片和视频仍保留在你 Google Drive 的"Macaco"文件夹中，照片也仍在设备相册里。那个文件夹属于你，可以随时在 Drive 中整理。</string>
+    <string name="help_faq_suggestions_q">"来自某地的新照片"横幅是什么？</string>
+    <string name="help_faq_suggestions_a">当 Macaco 在相册中发现尚未加入任何日记、带位置信息的近期照片时，会建议你创建一篇日记——标题、地点、日期和照片都已自动填好。点按横幅即可创建，关闭后这批照片不会再次提示。此功能需要照片访问权限，保存之前所有内容都只保留在你的设备上。</string>
+    <string name="help_faq_verify_email_q">为什么需要验证邮箱？</string>
+    <string name="help_faq_verify_email_a">使用邮箱和密码注册时，我们会发送验证链接，确认邮箱属于你之后才能进入日记。如果没收到，请检查垃圾邮件，或在验证页面点按"重新发送"。使用 Google 登录的账号无需验证。</string>
     <string name="help_faq_on_this_day_q">什么是“历史上的今天”？</string>
     <string name="help_faq_on_this_day_a">当你有往年同一日期的条目时，Macaco 会在日志顶部显示“历史上的今天”横幅。点按它即可重温那些回忆。该横幅每年只在对应的日历日期出现。</string>
     <string name="help_faq_drive_connect_q">如何连接 Google Drive 以备份照片？</string>

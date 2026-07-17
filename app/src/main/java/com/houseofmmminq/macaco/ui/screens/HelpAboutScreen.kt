@@ -91,10 +91,13 @@ private val FAQ_SECTIONS = listOf(
             R.string.help_faq_adventures_map_q to R.string.help_faq_adventures_map_a,
             R.string.help_faq_map_pins_q to R.string.help_faq_map_pins_a,
             R.string.help_faq_on_this_day_q to R.string.help_faq_on_this_day_a,
+            R.string.help_faq_widget_q to R.string.help_faq_widget_a,
             // NEW: entry search
             R.string.help_faq_search_q to R.string.help_faq_search_a,
             // NEW: weather stamp
             R.string.help_faq_weather_q to R.string.help_faq_weather_a,
+            // NEW: camera-roll suggested entries
+            R.string.help_faq_suggestions_q to R.string.help_faq_suggestions_a,
         )
     ),
     FaqSection(
@@ -105,6 +108,7 @@ private val FAQ_SECTIONS = listOf(
             R.string.help_faq_video_add_q to R.string.help_faq_video_add_a,
             R.string.help_faq_video_length_q to R.string.help_faq_video_length_a,
             R.string.help_faq_drive_connect_q to R.string.help_faq_drive_connect_a,
+            R.string.help_faq_delete_drive_q to R.string.help_faq_delete_drive_a,
             R.string.help_faq_reorder_photos_q to R.string.help_faq_reorder_photos_a,
             R.string.help_faq_cover_q to R.string.help_faq_cover_a,
             R.string.help_faq_q_backup to R.string.help_faq_a_backup,
@@ -129,6 +133,8 @@ private val FAQ_SECTIONS = listOf(
         R.string.help_section_account,
         Icons.Filled.AccountCircle,
         listOf(
+            // NEW: email verification gate (vc72)
+            R.string.help_faq_verify_email_q to R.string.help_faq_verify_email_a,
             R.string.help_faq_delete_account_q to R.string.help_faq_delete_account_a,
         )
     ),

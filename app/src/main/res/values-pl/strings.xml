@@ -375,7 +375,7 @@
     <string name="help_faq_q_lock">Czy mogę zablokować aplikację?</string>
     <string name="help_faq_a_lock">Tak – włącz Blokadę aplikacji z menu lub Ustawień, aby otwarcie Macaco wymagało odcisku palca, twarzy lub blokady ekranu.</string>
     <string name="help_faq_q_billing">Jak anulować lub uzyskać zwrot?</string>
-    <string name="help_faq_a_billing">Subskrypcje i zakupy rozlicza Google Play. Otwórz Subskrypcję, aby zarządzać planem, lub przejdź do Sklepu Play → Płatności i subskrypcje, aby anulować. Po zwrot zgłoś się w ciągu 48 godzin przez historię zamówień w Sklepie Play lub skontaktuj się z nami.</string>
+    <string name="help_faq_a_billing">Subskrypcje i zakupy rozlicza Google Play. Otwórz Subskrypcję, aby zarządzać planem, lub przejdź do Sklepu Play → Płatności i subskrypcje, aby anulować. Po zwrot zgłoś się w ciągu 48 godzin przez historię zamówień w Sklepie Play lub skontaktuj się z nami. Data i cena odnowienia są widoczne na ekranie Subskrypcja, a subskrybenci roczni dostają przypomnienie około tydzień wcześniej.</string>
     <string name="help_request_feature">Zaproponuj funkcję</string>
     <string name="help_report_issue">Zgłoś problem</string>
     <string name="help_section_getting_started">Pierwsze kroki</string>
@@ -412,6 +412,14 @@
     <string name="help_section_account">Konto</string>
     <string name="help_faq_delete_account_q">Jak usunąć moje konto?</string>
     <string name="help_faq_delete_account_a">Otwórz profil i dotknij Usuń konto na dole. Spowoduje to trwałe usunięcie wszystkich wpisów z chmury oraz usunięcie konta — nie można tego cofnąć. Twoje zdjęcia pozostaną w galerii urządzenia. Jeśli chcesz się tylko wylogować, użyj zamiast tego Wyloguj.</string>
+    <string name="help_faq_widget_q">Czy jest widżet na ekran główny?</string>
+    <string name="help_faq_widget_a">Tak — przytrzymaj ekran główny, wybierz Widżety i dodaj widżet Macaco \"Tego dnia\". Pokazuje wspomnienie z tej daty z poprzedniego roku lub najnowszy wpis. Uwaga: widżet pozostaje widoczny nawet przy włączonej blokadzie aplikacji — usuń go, jeśli wolisz nie pokazywać dziennika na ekranie głównym.</string>
+    <string name="help_faq_delete_drive_q">Czy usunięcie wpisu usuwa go też z Google Drive?</string>
+    <string name="help_faq_delete_drive_a">Usunięcie wpisu usuwa go z dziennika, ale zapisane wcześniej zdjęcia i filmy pozostają w folderze \"Macaco\" na Twoim Google Drive, a zdjęcia pozostają w galerii urządzenia. Ten folder należy do Ciebie — możesz go uporządkować w Drive w każdej chwili.</string>
+    <string name="help_faq_suggestions_q">Czym jest baner \"Nowe zdjęcia z…\"?</string>
+    <string name="help_faq_suggestions_a">Gdy Macaco znajdzie w galerii niedawne zdjęcia z lokalizacją, których nie ma jeszcze w żadnym wpisie, zaproponuje utworzenie wpisu — z gotowym tytułem, miejscem, datą i zdjęciami. Stuknij baner, aby zaakceptować, albo go odrzuć — dla tych zdjęć już nie wróci. Wymaga dostępu do zdjęć; do momentu zapisania wszystko zostaje na urządzeniu.</string>
+    <string name="help_faq_verify_email_q">Dlaczego muszę zweryfikować adres e-mail?</string>
+    <string name="help_faq_verify_email_a">Przy rejestracji e-mailem i hasłem wysyłamy link weryfikacyjny, aby potwierdzić, że adres należy do Ciebie, zanim otworzy się dziennik. Sprawdź spam, jeśli nie dotarł, albo stuknij Wyślij ponownie na ekranie weryfikacji. Konta Google są już zweryfikowane.</string>
     <string name="help_faq_on_this_day_q">Czym jest \"Tego dnia\"?</string>
     <string name="help_faq_on_this_day_a">Gdy masz wpisy z tej samej daty w poprzednim roku, Macaco wyświetla baner \"Tego dnia\" na górze dziennika. Dotknij go, aby wrócić do tych wspomnień. Baner pojawia się tylko w odpowiadającym dniu kalendarzowym każdego roku.</string>
     <string name="help_faq_drive_connect_q">Jak połączyć Google Drive do kopii zapasowej zdjęć?</string>

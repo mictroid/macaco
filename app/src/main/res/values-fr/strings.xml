@@ -367,7 +367,7 @@
     <string name="help_faq_q_lock">Puis-je verrouiller l\'appli ?</string>
     <string name="help_faq_a_lock">Oui – activez le verrouillage de l\'appli depuis le menu ou les réglages pour exiger votre empreinte, votre visage ou le verrouillage de l\'écran à l\'ouverture de Macaco.</string>
     <string name="help_faq_q_billing">Comment annuler ou obtenir un remboursement ?</string>
-    <string name="help_faq_a_billing">Les abonnements et achats sont facturés par Google Play. Ouvrez Abonnement pour gérer votre formule, ou allez dans Play Store → Paiements &amp; abonnements pour annuler. Pour un remboursement, utilisez l\'historique des commandes du Play Store dans les 48 heures, ou contactez-nous.</string>
+    <string name="help_faq_a_billing">Les abonnements et achats sont facturés par Google Play. Ouvrez Abonnement pour gérer votre formule, ou allez dans Play Store → Paiements &amp; abonnements pour annuler. Pour un remboursement, utilisez l\'historique des commandes du Play Store dans les 48 heures, ou contactez-nous. La date et le prix de renouvellement figurent sur l\'écran Abonnement, et les abonnés annuels reçoivent un rappel environ une semaine avant.</string>
     <string name="help_request_feature">Proposer une fonctionnalité</string>
     <string name="help_report_issue">Signaler un problème</string>
     <string name="help_section_getting_started">Premiers pas</string>
@@ -404,6 +404,14 @@
     <string name="help_section_account">Compte</string>
     <string name="help_faq_delete_account_q">Comment supprimer mon compte ?</string>
     <string name="help_faq_delete_account_a">Ouvrez votre profil et touchez Supprimer le compte en bas. Cela supprime définitivement toutes vos entrées du cloud et supprime votre compte — c\'est irréversible. Vos photos restent dans la galerie de votre appareil. Si vous souhaitez seulement vous déconnecter, utilisez plutôt Se déconnecter.</string>
+    <string name="help_faq_widget_q">Existe-t-il un widget d\'écran d\'accueil ?</string>
+    <string name="help_faq_widget_a">Oui : appuyez longuement sur l\'écran d\'accueil, choisissez Widgets et ajoutez le widget \"Ce jour-là\" de Macaco. Il affiche un souvenir de cette date d\'une année précédente, ou votre dernière entrée. Remarque : le widget reste visible même lorsque le verrouillage de l\'app est activé — retirez-le si vous préférez garder votre journal hors de l\'écran d\'accueil.</string>
+    <string name="help_faq_delete_drive_q">Si je supprime une entrée, est-elle retirée de Google Drive ?</string>
+    <string name="help_faq_delete_drive_a">La suppression retire l\'entrée de votre journal, mais les photos et vidéos déjà sauvegardées restent dans le dossier \"Macaco\" de votre Google Drive, et les photos restent dans la galerie de l\'appareil. Ce dossier vous appartient : vous pouvez le ranger dans Drive à tout moment.</string>
+    <string name="help_faq_suggestions_q">Qu\'est-ce que la bannière \"Nouvelles photos de…\" ?</string>
+    <string name="help_faq_suggestions_a">Quand Macaco repère dans votre galerie des photos récentes géolocalisées qui ne figurent dans aucune entrée, il vous propose d\'en créer une — titre, lieu, date et photos déjà préremplis. Touchez la bannière pour accepter, ou ignorez-la et elle ne reviendra pas pour ces photos. L\'accès aux photos est requis, et tout reste sur votre appareil jusqu\'à l\'enregistrement.</string>
+    <string name="help_faq_verify_email_q">Pourquoi dois-je vérifier mon e-mail ?</string>
+    <string name="help_faq_verify_email_a">Si vous vous inscrivez avec e-mail et mot de passe, nous envoyons un lien de vérification pour confirmer que l\'adresse est bien la vôtre avant d\'ouvrir votre journal. Vérifiez les spams s\'il n\'arrive pas, ou touchez Renvoyer sur l\'écran de vérification. Les comptes Google sont déjà vérifiés.</string>
     <string name="help_faq_on_this_day_q">Qu\'est-ce que \"Ce jour-là\" ?</string>
     <string name="help_faq_on_this_day_a">Lorsque vous avez des entrées de la même date une année précédente, Macaco affiche une bannière \"Ce jour-là\" en haut de votre journal. Touchez-la pour revivre ces souvenirs. La bannière n\'apparaît qu\'à la date correspondante du calendrier chaque année.</string>
     <string name="help_faq_drive_connect_q">Comment connecter Google Drive pour la sauvegarde des photos ?</string>

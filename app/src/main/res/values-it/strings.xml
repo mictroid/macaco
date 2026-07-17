@@ -367,7 +367,7 @@
     <string name="help_faq_q_lock">Posso bloccare l\'app?</string>
     <string name="help_faq_a_lock">Sì: attiva il Blocco app dal menu o dalle Impostazioni per richiedere impronta, volto o blocco schermo all\'apertura di Macaco.</string>
     <string name="help_faq_q_billing">Come annullo o ottengo un rimborso?</string>
-    <string name="help_faq_a_billing">Abbonamenti e acquisti sono addebitati da Google Play. Apri Abbonamento per gestire il piano, oppure vai su Play Store → Pagamenti e abbonamenti per annullare. Per i rimborsi, usa la cronologia ordini del Play Store entro 48 ore, o contattaci.</string>
+    <string name="help_faq_a_billing">Abbonamenti e acquisti sono addebitati da Google Play. Apri Abbonamento per gestire il piano, oppure vai su Play Store → Pagamenti e abbonamenti per annullare. Per i rimborsi, usa la cronologia ordini del Play Store entro 48 ore, o contattaci. Data e prezzo di rinnovo sono nella schermata Abbonamento; chi ha l\'abbonamento annuale riceve un promemoria circa una settimana prima.</string>
     <string name="help_request_feature">Proponi una funzione</string>
     <string name="help_report_issue">Segnala un problema</string>
     <string name="help_section_getting_started">Per iniziare</string>
@@ -404,6 +404,14 @@
     <string name="help_section_account">Account</string>
     <string name="help_faq_delete_account_q">Come elimino il mio account?</string>
     <string name="help_faq_delete_account_a">Apri il tuo profilo e tocca Elimina account in fondo. Questa azione elimina definitivamente tutte le tue voci dal cloud e rimuove il tuo account — non può essere annullata. Le tue foto restano nella galleria del dispositivo. Se vuoi solo disconnetterti, usa invece Esci.</string>
+    <string name="help_faq_widget_q">Esiste un widget per la schermata Home?</string>
+    <string name="help_faq_widget_a">Sì: tieni premuta la schermata Home, scegli Widget e aggiungi il widget \"Accadde oggi\" di Macaco. Mostra un ricordo di questa data di un anno precedente, o la tua voce più recente. Nota: il widget resta visibile anche con il blocco app attivo — rimuovilo se preferisci tenere il diario fuori dalla schermata Home.</string>
+    <string name="help_faq_delete_drive_q">Se elimino una voce, viene rimossa da Google Drive?</string>
+    <string name="help_faq_delete_drive_a">Eliminando una voce questa scompare dal diario, ma le foto e i video già salvati restano nella cartella \"Macaco\" del tuo Google Drive, e le foto restano nella galleria del dispositivo. Quella cartella è tua: puoi riordinarla in Drive quando vuoi.</string>
+    <string name="help_faq_suggestions_q">Cos\'è il banner \"Nuove foto da…\"?</string>
+    <string name="help_faq_suggestions_a">Quando Macaco trova nella galleria foto recenti geolocalizzate non ancora in nessuna voce, propone di crearne una — con titolo, luogo, data e foto già compilati. Tocca il banner per accettare, oppure ignoralo e non riapparirà per quelle foto. Serve l\'accesso alle foto e tutto resta sul dispositivo finché non salvi.</string>
+    <string name="help_faq_verify_email_q">Perché devo verificare la mia email?</string>
+    <string name="help_faq_verify_email_a">Se ti registri con email e password, ti inviamo un link di verifica per confermare che l\'indirizzo è tuo prima di aprire il diario. Controlla lo spam se non arriva, o tocca Reinvia nella schermata di verifica. Gli account Google sono già verificati.</string>
     <string name="help_faq_on_this_day_q">Che cos\'è \"Accadde oggi\"?</string>
     <string name="help_faq_on_this_day_a">Quando hai voci della stessa data di un anno precedente, Macaco mostra un banner \"Accadde oggi\" in cima al tuo diario. Toccalo per rivivere quei ricordi. Il banner appare solo nella data corrispondente del calendario ogni anno.</string>
     <string name="help_faq_drive_connect_q">Come collego Google Drive per il backup delle foto?</string>

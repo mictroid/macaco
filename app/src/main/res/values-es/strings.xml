@@ -367,7 +367,7 @@
     <string name="help_faq_q_lock">¿Puedo bloquear la app?</string>
     <string name="help_faq_a_lock">Sí: activa el Bloqueo de la app desde el menú o los Ajustes para pedir tu huella, rostro o bloqueo de pantalla al abrir Macaco.</string>
     <string name="help_faq_q_billing">¿Cómo cancelo o pido un reembolso?</string>
-    <string name="help_faq_a_billing">Las suscripciones y compras las cobra Google Play. Abre Suscripción para gestionar tu plan, o ve a Play Store → Pagos y suscripciones para cancelar. Para reembolsos, usa el historial de pedidos de Play Store dentro de las 48 horas, o contáctanos.</string>
+    <string name="help_faq_a_billing">Las suscripciones y compras las cobra Google Play. Abre Suscripción para gestionar tu plan, o ve a Play Store → Pagos y suscripciones para cancelar. Para reembolsos, usa el historial de pedidos de Play Store dentro de las 48 horas, o contáctanos. La fecha y el precio de renovación aparecen en la pantalla de Suscripción, y los suscriptores anuales reciben un recordatorio una semana antes.</string>
     <string name="help_request_feature">Sugerir una función</string>
     <string name="help_report_issue">Informar de un problema</string>
     <string name="help_section_getting_started">Primeros pasos</string>
@@ -404,6 +404,14 @@
     <string name="help_section_account">Cuenta</string>
     <string name="help_faq_delete_account_q">¿Cómo elimino mi cuenta?</string>
     <string name="help_faq_delete_account_a">Abre tu perfil y toca Eliminar cuenta abajo. Esto elimina permanentemente todas tus entradas de la nube y borra tu cuenta — no se puede deshacer. Tus fotos permanecen en la galería de tu dispositivo. Si solo quieres cerrar sesión, usa Cerrar sesión en su lugar.</string>
+    <string name="help_faq_widget_q">¿Hay un widget para la pantalla de inicio?</string>
+    <string name="help_faq_widget_a">Sí: mantén pulsada la pantalla de inicio, elige Widgets y añade el widget \"Tal día como hoy\" de Macaco. Muestra un recuerdo de esta fecha de un año anterior o tu entrada más reciente. Nota: el widget sigue visible aunque el bloqueo de la app esté activado; quítalo si prefieres mantener tu diario fuera de la pantalla de inicio.</string>
+    <string name="help_faq_delete_drive_q">Si elimino una entrada, ¿se elimina de Google Drive?</string>
+    <string name="help_faq_delete_drive_a">Al eliminar una entrada desaparece de tu diario, pero las fotos y los vídeos ya respaldados permanecen en la carpeta \"Macaco\" de tu Google Drive, y las fotos permanecen en la galería del dispositivo. Esa carpeta es tuya: puedes ordenarla en Drive cuando quieras.</string>
+    <string name="help_faq_suggestions_q">¿Qué es el aviso \"Nuevas fotos de…\"?</string>
+    <string name="help_faq_suggestions_a">Cuando Macaco detecta en tu galería fotos recientes con ubicación que aún no están en ninguna entrada, te sugiere crear una — con el título, el lugar, la fecha y las fotos ya rellenados. Toca el aviso para aceptarlo o descártalo y no volverá a aparecer para esas fotos. Necesita acceso a tus fotos, y nada sale de tu dispositivo hasta que guardes.</string>
+    <string name="help_faq_verify_email_q">¿Por qué tengo que verificar mi correo?</string>
+    <string name="help_faq_verify_email_a">Si te registras con correo y contraseña, te enviamos un enlace de verificación para confirmar que la dirección es tuya antes de abrir tu diario. Revisa el spam si no llega, o toca Reenviar en la pantalla de verificación. Las cuentas de Google ya están verificadas.</string>
     <string name="help_faq_on_this_day_q">¿Qué es \"Tal día como hoy\"?</string>
     <string name="help_faq_on_this_day_a">Cuando tienes entradas de la misma fecha de un año anterior, Macaco muestra un banner \"Tal día como hoy\" en la parte superior de tu diario. Tócalo para revivir esos recuerdos. El banner solo aparece en la fecha correspondiente del calendario cada año.</string>
     <string name="help_faq_drive_connect_q">¿Cómo conecto Google Drive para la copia de seguridad de fotos?</string>

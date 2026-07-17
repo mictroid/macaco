@@ -367,7 +367,7 @@
     <string name="help_faq_q_lock">Kan ik de app vergrendelen?</string>
     <string name="help_faq_a_lock">Ja – schakel App-vergrendeling in via het menu of Instellingen om je vingerafdruk, gezicht of schermvergrendeling te vereisen bij het openen van Macaco.</string>
     <string name="help_faq_q_billing">Hoe zeg ik op of vraag ik terugbetaling aan?</string>
-    <string name="help_faq_a_billing">Abonnementen en aankopen worden door Google Play afgehandeld. Open Abonnement om je plan te beheren, of ga naar Play Store → Betalingen &amp; abonnementen om op te zeggen. Voor terugbetaling gebruik je binnen 48 uur de bestelgeschiedenis in de Play Store, of neem contact met ons op.</string>
+    <string name="help_faq_a_billing">Abonnementen en aankopen worden door Google Play afgehandeld. Open Abonnement om je plan te beheren, of ga naar Play Store → Betalingen &amp; abonnementen om op te zeggen. Voor terugbetaling gebruik je binnen 48 uur de bestelgeschiedenis in de Play Store, of neem contact met ons op. De verlengingsdatum en prijs staan op het Abonnement-scherm, en jaarabonnees krijgen ongeveer een week vooraf een herinnering.</string>
     <string name="help_request_feature">Functie voorstellen</string>
     <string name="help_report_issue">Probleem melden</string>
     <string name="help_section_getting_started">Aan de slag</string>
@@ -404,6 +404,14 @@
     <string name="help_section_account">Account</string>
     <string name="help_faq_delete_account_q">Hoe verwijder ik mijn account?</string>
     <string name="help_faq_delete_account_a">Open je profiel en tik onderaan op Account verwijderen. Hiermee worden al je items permanent uit de cloud verwijderd en wordt je account verwijderd — dit kan niet ongedaan worden gemaakt. Je foto\'s blijven in de galerij van je apparaat. Als je je alleen wilt afmelden, gebruik dan Afmelden.</string>
+    <string name="help_faq_widget_q">Is er een widget voor het startscherm?</string>
+    <string name="help_faq_widget_a">Ja — houd je startscherm ingedrukt, kies Widgets en voeg Macaco\'s \"Op deze dag\"-widget toe. Die toont een herinnering van deze datum uit een eerder jaar, of je nieuwste notitie. Let op: de widget blijft zichtbaar ook als app-vergrendeling aanstaat — verwijder hem als je je dagboek liever niet op het startscherm hebt.</string>
+    <string name="help_faq_delete_drive_q">Als ik een notitie verwijder, verdwijnt die dan uit Google Drive?</string>
+    <string name="help_faq_delete_drive_a">Bij verwijderen verdwijnt de notitie uit je dagboek, maar al geback-upte foto\'s en video\'s blijven in de map \"Macaco\" van je Google Drive staan, en foto\'s blijven in je galerij. Die map is van jou — je kunt hem in Drive altijd opruimen.</string>
+    <string name="help_faq_suggestions_q">Wat is de banner \"Nieuwe foto\'s uit…\"?</string>
+    <string name="help_faq_suggestions_a">Als Macaco in je galerij recente foto\'s met locatie vindt die nog in geen enkele notitie staan, stelt het voor er een te maken — met titel, plaats, datum en foto\'s al ingevuld. Tik op de banner om te accepteren, of wijs hem af en hij komt voor die foto\'s niet terug. Hiervoor is fototoegang nodig; tot je opslaat blijft alles op je toestel.</string>
+    <string name="help_faq_verify_email_q">Waarom moet ik mijn e-mailadres verifiëren?</string>
+    <string name="help_faq_verify_email_a">Als je je registreert met e-mail en wachtwoord sturen we een verificatielink om te bevestigen dat het adres van jou is voordat je dagboek opent. Controleer je spam als hij niet aankomt, of tik op Opnieuw versturen op het verificatiescherm. Google-accounts zijn al geverifieerd.</string>
     <string name="help_faq_on_this_day_q">Wat is \"Op deze dag\"?</string>
     <string name="help_faq_on_this_day_a">Wanneer je items hebt van dezelfde datum in een eerder jaar, toont Macaco bovenaan je journaal een \"Op deze dag\"-banner. Tik erop om die herinneringen opnieuw te bekijken. De banner verschijnt elk jaar alleen op de overeenkomende kalenderdatum.</string>
     <string name="help_faq_drive_connect_q">Hoe verbind ik Google Drive voor fotoback-up?</string>

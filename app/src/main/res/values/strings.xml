@@ -47,7 +47,7 @@
     <string name="help_faq_q_lock">Can I lock the app?</string>
     <string name="help_faq_a_lock">Yes — turn on App Lock from the menu or Settings to require your fingerprint, face, or screen lock to open Macaco.</string>
     <string name="help_faq_q_billing">How do I cancel or get a refund?</string>
-    <string name="help_faq_a_billing">Subscriptions and purchases are billed by Google Play. Open Subscription to manage your plan, or go to Play Store → Payments &amp; subscriptions to cancel. For refunds, use Play Store → order history within 48 hours, or contact us.</string>
+    <string name="help_faq_a_billing">Subscriptions and purchases are billed by Google Play. Open Subscription to manage your plan, or go to Play Store → Payments &amp; subscriptions to cancel. For refunds, use Play Store → order history within 48 hours, or contact us. Your renewal date and price are shown on the Subscription screen, and annual subscribers get a reminder about a week before renewal.</string>
     <!-- Help &amp; About: feedback CTAs + sectioned FAQ -->
     <string name="help_request_feature">Request a feature</string>
     <string name="help_report_issue">Report an issue</string>
@@ -87,6 +87,14 @@
     <string name="help_section_account">Account</string>
     <string name="help_faq_delete_account_q">How do I delete my account?</string>
     <string name="help_faq_delete_account_a">Open your profile and tap Delete Account at the bottom. This permanently deletes all your journal entries from the cloud and removes your account — it cannot be undone. Your photos stay in your device gallery. If you just want to sign out, use Sign Out instead.</string>
+    <string name="help_faq_widget_q">Is there a home-screen widget?</string>
+    <string name="help_faq_widget_a">Yes — long-press your home screen, choose Widgets, and add Macaco\'s \"On This Day\" widget. It shows a memory from this date in a previous year, or your latest entry. Note: the widget stays visible even when App Lock is on, so remove it if you\'d rather keep your journal off the home screen.</string>
+    <string name="help_faq_delete_drive_q">If I delete an entry, is it removed from Google Drive?</string>
+    <string name="help_faq_delete_drive_a">Deleting an entry removes it from your journal, but photos and videos already backed up stay in the \"Macaco\" folder of your Google Drive, and photos stay in your device gallery. That folder is yours — you can tidy it up in Drive anytime.</string>
+    <string name="help_faq_suggestions_q">What is the \"New photos from…\" suggestion banner?</string>
+    <string name="help_faq_suggestions_a">When Macaco notices recent, geotagged photos in your gallery that aren\'t in any entry yet, it suggests starting one — with the title, place, date, and photos pre-filled. Tap the banner to accept, or dismiss it and it won\'t return for those photos. It needs photo access to work, and nothing leaves your device until you save.</string>
+    <string name="help_faq_verify_email_q">Why do I need to verify my email?</string>
+    <string name="help_faq_verify_email_a">If you sign up with email and password, we send a verification link to confirm the address is yours before your journal opens. Check spam if it hasn\'t arrived, or tap Resend on the verification screen. Google Sign-In accounts are already verified.</string>
     <string name="help_faq_on_this_day_q">What is \"On This Day\"?</string>
     <string name="help_faq_on_this_day_a">When you have entries from the same date in a previous year, Macaco shows an \"On This Day\" banner at the top of your journal. Tap it to revisit those memories. The banner only appears on the matching calendar date each year.</string>
     <string name="help_faq_drive_connect_q">How do I connect Google Drive for photo backup?</string>

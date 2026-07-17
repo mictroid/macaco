@@ -273,6 +273,8 @@ class DrivePhotoSync(private val context: Context) {
         // ConcurrentHashMap: the download loops below write to this from multiple coroutines
         // (bounded by downloadSemaphore) at once.
         val newEntries = java.util.concurrent.ConcurrentHashMap<String, String>()
+        // AtomicInteger: incremented from the same concurrent download coroutines as newEntries.
+        val downloadFailures = java.util.concurrent.atomic.AtomicInteger(0)
 
         val downloadSemaphore = Semaphore(DRIVE_DOWNLOAD_CONCURRENCY)
 
@@ -288,6 +290,9 @@ class DrivePhotoSync(private val context: Context) {
                                     val out = ByteArrayOutputStream()
                                     drive.files().get(fileId).executeMediaAndDownloadTo(out)
                                     cacheFile.writeBytes(out.toByteArray())
+                                }.onFailure { e ->
+                                    Log.e("DrivePhotoSync", "Download failed for $fileId", e)
+                                    downloadFailures.incrementAndGet()
                                 }
                             }
                             if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
@@ -311,7 +316,11 @@ class DrivePhotoSync(private val context: Context) {
                                     cacheFile.outputStream().use { out ->
                                         drive.files().get(fileId).executeMediaAndDownloadTo(out)
                                     }
-                                }.onFailure { cacheFile.delete() }
+                                }.onFailure { e ->
+                                    cacheFile.delete()
+                                    Log.e("DrivePhotoSync", "Download failed for $fileId", e)
+                                    downloadFailures.incrementAndGet()
+                                }
                             }
                             if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
                         }
@@ -322,6 +331,13 @@ class DrivePhotoSync(private val context: Context) {
 
         if (newEntries.isNotEmpty()) {
             _cachedPhotoUris.value = _cachedPhotoUris.value + newEntries
+        }
+
+        val failures = downloadFailures.get()
+        if (failures > 0) {
+            _errors.trySend(
+                "$failures ${if (failures == 1) "item" else "items"} couldn't be downloaded from Google Drive. Pull to refresh to retry."
+            )
         }
     }
 
@@ -345,8 +361,10 @@ class DrivePhotoSync(private val context: Context) {
 
             val pending = entries.filter { it.pendingPhotos() || it.pendingVideos() }
             if (pending.isEmpty()) {
+                // Await the download pass before reporting Synced — otherwise "Synced" appears while
+                // photos are still trickling in.
+                downloadMissing(entries)
                 _syncState.value = DrivePhotoSyncState.Synced
-                downloadMissingPhotos(entries)
                 return@launch
             }
 
@@ -390,6 +408,8 @@ class DrivePhotoSync(private val context: Context) {
                 _syncState.value = DrivePhotoSyncState.Syncing(uploaded, totalPhotos)
             }
 
+            // Download before reporting the final state, so Synced means the media is actually here.
+            if (failed == 0) downloadMissing(entries)
             _syncState.value = when {
                 failed == 0 -> DrivePhotoSyncState.Synced
                 uploaded == 0 -> DrivePhotoSyncState.Error(
@@ -397,7 +417,6 @@ class DrivePhotoSync(private val context: Context) {
                 )
                 else -> DrivePhotoSyncState.Error("$failed ${if (failed == 1) "photo" else "photos"} couldn't be backed up")
             }
-            if (failed == 0) downloadMissingPhotos(entries)
         }
     }
 
