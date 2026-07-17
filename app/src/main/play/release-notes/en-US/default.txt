@@ -1,8 +1,8 @@
 What's new:
 • Fixed a crash that could stop the app from opening
-• Email/password sign-ups now confirm your email before you enter the journal
-• Subscription screen shows your renewal date and price, with a reminder before annual renewals
-• Fixed a bug where a free account could see an incorrect "Premium" badge
-• Weather units (°C/°F) now match the entry's location instead of your phone's language setting
-• Faster photo loading after signing in on a new device
-• Backend security hardening (Firestore rules, App Check)
+• Email sign-ups now confirm your email before you start journaling
+• Subscription screen shows your renewal date, price, and a pre-renewal reminder
+• Fixed a free account sometimes showing an incorrect "Premium" badge
+• Weather units (°C/°F) now match each entry's location, not your phone's language
+• Faster photo loading on a new device
+• Backend security hardening
