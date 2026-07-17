@@ -2,6 +2,18 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-17 — vc73 (1.6) — DISPATCHED to Play Open testing — WIF run `29596794584`
+
+Dispatched 18:36:01 +0200 (run `29596794584`, https://github.com/mictroid/macaco/actions/runs/29596794584,
+not watched — confirm later with `gh run list`). `origin == HEAD` == `24d0c88` before dispatch.
+vc73 = R8 `ComponentRegistrar` crash-fix that killed vc72 + the halted vc72 batch + the 3-brief
+batch below (Drive-sync honesty, Help & About FAQ ×11 locales, housekeeping) + AGP 9.3.0/Gradle
+9.5.0 toolchain bump + shared Firestore mapper restoring the weather-unit feature. Pre-dispatch:
+weather bullet restored in release notes (`24d0c88`), on-device S8 verify including the mandatory
+R8 release-APK launch test (clean launch past `TravelJournalApp.onCreate`, Crashlytics inits, no
+registrar-instantiation failures — confirms the vc72 launch crash is fixed). Full detail in
+`docs/worklog-2026-07-17.md`.
+
 ## 2026-07-17 — vc73 (1.6) — 3-brief batch committed `134467e`, NOT yet shipped
 
 Recovered a prior vc73 session cut off by Anthropic API 529 ("overload") errors — the Drive-sync
