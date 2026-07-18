@@ -37,6 +37,17 @@ vc27's notes (see the `play-release-notes-stale` memory). Always edit it on ever
 - Keep it user-facing (no internal/brief jargon), ~5 bullet lines, lead with `What's new:`.
 - Summarize the whole batch since the last shipped version, not just the last commit.
 
+⚠️ **HARD 500-char limit — check it BEFORE dispatch, not after (bit vc73, 2026-07-17).** Play rejects
+over-length notes at the **`commitEdit` publish step, after the full ~9-min build/upload** — a wasted
+run. The limit counts **codepoints, not bytes**, and `•`/`°`/`'`/`—` are multi-byte in UTF-8, so
+`wc -c` over-reports. Always measure codepoints and leave margin (aim ≤460):
+```bash
+printf '%s' "$(cat app/src/main/play/release-notes/en-US/default.txt)" | wc -m   # must be < 500
+```
+If a run *does* fail this way: a failed `commitEdit` **rolls back the edit transaction, so the
+versionCode is NOT consumed** — just trim the notes, commit/push, and re-dispatch with the **same**
+versionCode (do NOT bump again). See the `play-release-notes-stale` memory.
+
 ### 3. Commit the bump + notes
 ```
 Bump vc<N> + refresh release notes for the batch
