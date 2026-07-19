@@ -1,8 +1,6 @@
 What's new:
-• Fixed a crash that could stop the app from opening
-• Email sign-ups now confirm your email before you start journaling
-• Subscription screen shows your renewal date, price, and a pre-renewal reminder
-• Fixed a free account sometimes showing an incorrect "Premium" badge
-• Weather units (°C/°F) now match each entry's location, not your phone's language
-• Faster photo loading on a new device
-• Backend security hardening
+• New home-screen widgets: On This Day, Recent Entries, Travel Stats, and Quick Add
+• Redesigned On This Day widget with a photo highlight
+• Fixed widget photos sometimes showing blank
+• Faster, more reliable photo backup to Google Drive with no duplicate uploads
+• Various stability improvements
