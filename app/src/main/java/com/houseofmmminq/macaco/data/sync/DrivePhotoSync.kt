@@ -170,10 +170,18 @@ class DrivePhotoSync(private val context: Context) {
         folderId: String,
         uriString: String,
         entryId: String,
-        index: Int
+        index: Int,
+        claimedIds: List<String>
     ): String? {
         val fileName = "macaco_${entryId}_$index.jpg"
-        findExistingFile(drive, folderId, fileName)?.let { return it }
+        // Only reuse a name-matched file if it isn't already this entry's Drive id for a DIFFERENT
+        // photo. Position shifts after a delete/reorder (withRemoved/withSwapped/withCover) can make
+        // a stale index collide with a still-live file's name — reusing it would silently reassign
+        // that photo's Drive file to this one instead of uploading a new file. See
+        // docs/DONE/code-brief-drive-dedupe-position-collision.md.
+        findExistingFile(drive, folderId, fileName)
+            ?.takeIf { it !in claimedIds }
+            ?.let { return it }
         val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
         val content = InputStreamContent("image/jpeg", stream)
         val meta = File().apply {
@@ -212,7 +220,7 @@ class DrivePhotoSync(private val context: Context) {
             while (result.size < entry.photoUris.size) result.add("")
             entry.photoUris.forEachIndexed { i, uriString ->
                 if (result[i].isEmpty()) {
-                    uploadPhoto(drive, folderId, uriString, entry.id, i)?.let { result[i] = it }
+                    uploadPhoto(drive, folderId, uriString, entry.id, i, result)?.let { result[i] = it }
                 }
             }
             result.toList()
@@ -239,10 +247,13 @@ class DrivePhotoSync(private val context: Context) {
         folderId: String,
         uriString: String,
         entryId: String,
-        index: Int
+        index: Int,
+        claimedIds: List<String>
     ): String? {
         val fileName = "macaco_${entryId}_$index.mp4"
-        findExistingFile(drive, folderId, fileName)?.let { return it }
+        findExistingFile(drive, folderId, fileName)
+            ?.takeIf { it !in claimedIds }
+            ?.let { return it }
         val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
         val content = InputStreamContent("video/mp4", stream)
         val meta = File().apply {
@@ -266,7 +277,7 @@ class DrivePhotoSync(private val context: Context) {
             while (result.size < entry.videoUris.size) result.add("")
             entry.videoUris.forEachIndexed { i, uriString ->
                 if (result[i].isEmpty()) {
-                    uploadVideo(drive, folderId, uriString, entry.id, i)?.let { result[i] = it }
+                    uploadVideo(drive, folderId, uriString, entry.id, i, result)?.let { result[i] = it }
                 }
             }
             result.toList()
