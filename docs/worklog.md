@@ -2,6 +2,13 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-19 — vc74 (1.6) — DISPATCHED — WIF run `29682067148`, commit `2213046`
+
+Pushed + dispatched 11:42:57 +0200, `origin == HEAD` == `2213046` (from local commit `eb1fe93`
+below). Not yet confirmed shipped. Batch: home-screen widgets (On This Day redesign, Recent
+Entries, Stats, Quick Add), widget blank-photo root-cause fix, ANR fix, Drive upload
+dedupe/idempotency. Full detail in `docs/worklog-2026-07-19.md`.
+
 ## 2026-07-19 — widgets + Drive-dedupe batch committed `eb1fe93`, NOT pushed, NOT shipped (→ vc74)
 
 vc73 confirmed live + stable on Play; this batch will ship as **vc74** when the user says go (push
