@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://getmacaco.com/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getmacaco.com/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://getmacaco.com/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://getmacaco.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://getmacaco.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://getmacaco.com/it/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://getmacaco.com/ja/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://getmacaco.com/nl/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://getmacaco.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://getmacaco.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://getmacaco.com/sv/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://getmacaco.com/zh/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getmacaco.com/"/>
+  </url>
+
+  <url>
+    <loc>https://getmacaco.com/de/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/es/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/fr/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/it/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/ja/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/nl/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/pl/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/pt/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/sv/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/zh/</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://getmacaco.com/privacy-policy.html</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://getmacaco.com/terms-of-service.html</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
