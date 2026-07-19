@@ -2,10 +2,10 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-07-19 — vc74 (1.6) — DISPATCHED — WIF run `29682067148`, commit `2213046`
+## 2026-07-19 — vc74 (1.6) — SHIPPED ✅ CONFIRMED SUCCESS — WIF run `29682067148`, commit `2213046`
 
 Pushed + dispatched 11:42:57 +0200, `origin == HEAD` == `2213046` (from local commit `eb1fe93`
-below). Not yet confirmed shipped. Batch: home-screen widgets (On This Day redesign, Recent
+below). Run confirmed SUCCESS in 10m28s — published to Open testing (`beta`). Batch: home-screen widgets (On This Day redesign, Recent
 Entries, Stats, Quick Add), widget blank-photo root-cause fix, ANR fix, Drive upload
 dedupe/idempotency. Full detail in `docs/worklog-2026-07-19.md`.
 
