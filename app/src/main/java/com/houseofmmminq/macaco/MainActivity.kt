@@ -50,6 +50,9 @@ class MainActivity : AppCompatActivity() {
     // Set when launched/re-launched from the annual-renewal reminder notification's deep link.
     private var openSubscription by mutableStateOf(false)
 
+    // Set (to an entry id) when launched/re-launched from a Recent Entries widget row tap.
+    private var openEntryId by mutableStateOf<String?>(null)
+
     // Play flexible in-app update. The download runs in the background; once it finishes we flip
     // updateReady so the Compose tree can offer a "Restart" snackbar to apply it.
     private val appUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
@@ -83,6 +86,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         if (intent?.action == ACTION_NEW_ENTRY) openNewEntry = true
         if (intent?.action == ACTION_OPEN_SUBSCRIPTION) openSubscription = true
+        if (intent?.action == ACTION_OPEN_ENTRY) openEntryId = intent.getStringExtra(EXTRA_ENTRY_ID)
         val app = application as TravelJournalApp
         val factory = JournalViewModel.Factory(app.applicationContext, app.cloudEntrySync, app.preferencesManager, app.authRepository, app.billingManager, app.drivePhotoSync)
         setContent {
@@ -171,7 +175,9 @@ class MainActivity : AppCompatActivity() {
                         openNewEntry = openNewEntry,
                         onOpenNewEntryConsumed = { openNewEntry = false },
                         openSubscription = openSubscription,
-                        onOpenSubscriptionConsumed = { openSubscription = false }
+                        onOpenSubscriptionConsumed = { openSubscription = false },
+                        openEntryId = openEntryId,
+                        onOpenEntryConsumed = { openEntryId = null }
                     )
                     SnackbarHost(
                         hostState = snackbarHostState,
@@ -190,6 +196,7 @@ class MainActivity : AppCompatActivity() {
         setIntent(intent)
         if (intent.action == ACTION_NEW_ENTRY) openNewEntry = true
         if (intent.action == ACTION_OPEN_SUBSCRIPTION) openSubscription = true
+        if (intent.action == ACTION_OPEN_ENTRY) openEntryId = intent.getStringExtra(EXTRA_ENTRY_ID)
     }
 
     override fun onResume() {
@@ -236,5 +243,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val ACTION_NEW_ENTRY = "com.houseofmmminq.macaco.ACTION_NEW_ENTRY"
         const val ACTION_OPEN_SUBSCRIPTION = "com.houseofmmminq.macaco.ACTION_OPEN_SUBSCRIPTION"
+        const val ACTION_OPEN_ENTRY = "com.houseofmmminq.macaco.ACTION_OPEN_ENTRY"
+        const val EXTRA_ENTRY_ID = "com.houseofmmminq.macaco.EXTRA_ENTRY_ID"
     }
 }

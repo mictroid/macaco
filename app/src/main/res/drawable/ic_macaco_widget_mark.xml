@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Macaco corner watermark for the Adventures Map Mini widget. Unlike ic_macaco_small
+  (head + sunglasses only), this keeps the ears and the muzzle + nostrils so the
+  silhouette reads clearly as the monkey at a small corner size. Simplified vs
+  ic_launcher_foreground (no eyebrows or temple arms) with heavier strokes so it stays
+  legible small. Same 1024×1024 viewport / 0.9 group as the other marks so proportions match.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+
+    <group
+        android:pivotX="512"
+        android:pivotY="512"
+        android:scaleX="0.9"
+        android:scaleY="0.9">
+
+        <!-- Ears -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="30"
+            android:pathData="M186,487 a94,94 0 1,0 188,0 a94,94 0 1,0 -188,0" />
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="30"
+            android:pathData="M650,487 a94,94 0 1,0 188,0 a94,94 0 1,0 -188,0" />
+
+        <!-- Inner ear bowls -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="18"
+            android:pathData="M232,487 a48,51 0 1,0 96,0 a48,51 0 1,0 -96,0" />
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="18"
+            android:pathData="M696,487 a48,51 0 1,0 96,0 a48,51 0 1,0 -96,0" />
+
+        <!-- Head outline (drawn over the ear bases) -->
+        <path
+            android:fillColor="#0A4A58"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="35"
+            android:pathData="M270,504 a242,242 0 1,0 484,0 a242,242 0 1,0 -484,0" />
+
+        <!-- Muzzle (behind glasses) -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="26"
+            android:pathData="M420,613 a92,63 0 1,0 184,0 a92,63 0 1,0 -184,0" />
+
+        <!-- Left sunglass lens -->
+        <path
+            android:fillColor="#040E14"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="28"
+            android:pathData="M335,484 a83,83 0 1,0 166,0 a83,83 0 1,0 -166,0" />
+
+        <!-- Right sunglass lens -->
+        <path
+            android:fillColor="#040E14"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="28"
+            android:pathData="M523,484 a83,83 0 1,0 166,0 a83,83 0 1,0 -166,0" />
+
+        <!-- Nose bridge — connects lenses so they read as sunglasses, not two dots -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#E8B020"
+            android:strokeWidth="20"
+            android:strokeLineCap="round"
+            android:pathData="M501,484 L524,484" />
+
+        <!-- Nostrils -->
+        <path
+            android:fillColor="#E8B020"
+            android:pathData="M473,627 a15,15 0 1,0 30,0 a15,15 0 1,0 -30,0" />
+        <path
+            android:fillColor="#E8B020"
+            android:pathData="M521,627 a15,15 0 1,0 30,0 a15,15 0 1,0 -30,0" />
+
+    </group>
+</vector>

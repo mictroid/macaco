@@ -3,10 +3,10 @@ package com.houseofmmminq.macaco.ui.screens
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.widget.Toast
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings as AndroidSettings
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -15,6 +15,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.ui.draw.rotate
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +58,8 @@ import androidx.compose.material.icons.filled.Print
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.Widgets
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -64,6 +69,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -108,6 +114,11 @@ import com.houseofmmminq.macaco.ui.screens.isBiometricAvailable
 import com.houseofmmminq.macaco.ui.screens.showBiometricPrompt
 import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.ui.theme.MapTheme
+import com.houseofmmminq.macaco.ui.widget.OnThisDayWidgetProvider
+import com.houseofmmminq.macaco.ui.widget.QuickAddWidgetProvider
+import com.houseofmmminq.macaco.ui.widget.RecentEntriesWidgetProvider
+import com.houseofmmminq.macaco.ui.widget.TravelStatsWidgetProvider
+import com.houseofmmminq.macaco.util.WidgetPins
 import com.houseofmmminq.macaco.ui.theme.isLightTheme
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.util.ImageStorage
@@ -641,7 +652,33 @@ fun SettingsScreen(
                 onSelect = { viewModel.setMapTheme(it) }
             )
 
+            // ── Home-screen widgets ───────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
+
+            val widgetUnsupported = stringResource(R.string.settings_widget_unsupported)
+            val pinWidget: (Class<*>) -> Unit = { provider ->
+                // requestPinAppWidget returns false on API < 26 or launchers without pin support;
+                // the launcher shows its own "add widget?" confirmation when it does succeed.
+                if (!WidgetPins.requestPin(context, provider)) {
+                    Toast.makeText(context, widgetUnsupported, Toast.LENGTH_LONG).show()
+                }
+            }
+            // Collapsed by default — the four pin rows took a lot of vertical space in a screen
+            // that's already long, so they're tucked behind an expandable header.
+            ExpandableWidgetsCard(
+                title = stringResource(R.string.settings_widgets),
+                subtitle = stringResource(R.string.settings_widget_add_value),
+                items = listOf(
+                    stringResource(R.string.settings_widget_recent) to RecentEntriesWidgetProvider::class.java,
+                    stringResource(R.string.settings_widget_on_this_day) to OnThisDayWidgetProvider::class.java,
+                    stringResource(R.string.settings_widget_stats) to TravelStatsWidgetProvider::class.java,
+                    stringResource(R.string.settings_widget_quick_add) to QuickAddWidgetProvider::class.java,
+                ),
+                onPin = pinWidget
+            )
+
             // ── Language ──────────────────────────────────────────────────────
+            Spacer(Modifier.height(4.dp))
             SettingsSectionHeader(stringResource(R.string.settings_language))
 
             val displayedLanguage = SUPPORTED_LANGUAGES.find { it.code == selectedLanguageCode }
@@ -1353,6 +1390,70 @@ private fun SettingsClickRow(
                 Spacer(Modifier.width(16.dp))
                 Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
                 Text(value, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }
+}
+
+/**
+ * Collapsible "Home-screen widgets" card. A single tappable header (Widgets icon + title +
+ * rotating chevron) that expands to reveal one pin row per widget. Collapsed by default so the
+ * four rows don't dominate the (already long) Settings screen. Each item is (label → provider
+ * class); tapping a revealed row calls [onPin] to request pinning that widget.
+ */
+@Composable
+private fun ExpandableWidgetsCard(
+    title: String,
+    subtitle: String,
+    items: List<Pair<String, Class<*>>>,
+    onPin: (Class<*>) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val chevronRotation by animateFloatAsState(if (expanded) 180f else 0f, label = "chevron")
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.Filled.Widgets, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                Spacer(Modifier.width(16.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Icon(
+                    Icons.Filled.ExpandMore,
+                    null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.rotate(chevronRotation)
+                )
+            }
+            AnimatedVisibility(visible = expanded) {
+                Column {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    items.forEach { (label, provider) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onPin(provider) }
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Filled.Add, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                            Spacer(Modifier.width(16.dp))
+                            Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
             }
         }
     }

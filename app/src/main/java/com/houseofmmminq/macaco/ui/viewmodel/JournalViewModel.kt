@@ -23,6 +23,8 @@ import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.data.sync.JournalBackup
 import com.houseofmmminq.macaco.data.sync.PrintBookExporter
 import com.houseofmmminq.macaco.ui.widget.OnThisDayWidgetProvider
+import com.houseofmmminq.macaco.ui.widget.RecentEntriesWidgetProvider
+import com.houseofmmminq.macaco.ui.widget.TravelStatsWidgetProvider
 import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.ui.theme.MapTheme
 import com.houseofmmminq.macaco.util.ImageStorage
@@ -478,6 +480,10 @@ class JournalViewModel(
             cloudEntrySync.entries.collect { entryList ->
                 if (isPurchased.value == true) {
                     drivePhotoSync.downloadMissingPhotos(entryList)
+                    // Photos just cached from Drive — refresh the photo-showing widgets so they
+                    // display them (on a device that didn't add the photo locally).
+                    OnThisDayWidgetProvider.requestUpdate(appContext)
+                    RecentEntriesWidgetProvider.requestUpdate(appContext)
                 }
             }
         }
@@ -492,6 +498,8 @@ class JournalViewModel(
             }
             cloudEntrySync.save(entry)
             OnThisDayWidgetProvider.requestUpdate(appContext)
+            TravelStatsWidgetProvider.requestUpdate(appContext)
+            RecentEntriesWidgetProvider.requestUpdate(appContext)
             // Upload new photos AND videos to Drive in ONE background pass with ONE merged save.
             // Two separate launches used to race: each saved latest.copy(<its>FileIds), and the
             // later writer could read a `latest` predating the earlier save, reverting its IDs to
@@ -560,6 +568,8 @@ class JournalViewModel(
             }
             cloudEntrySync.delete(id)
             OnThisDayWidgetProvider.requestUpdate(appContext)
+            TravelStatsWidgetProvider.requestUpdate(appContext)
+            RecentEntriesWidgetProvider.requestUpdate(appContext)
         }
     }
 

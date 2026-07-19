@@ -68,10 +68,13 @@
             android:name=".util.SnoozeReceiver"
             android:exported="false" />
 
-        <!-- "On This Day" home-screen widget. -->
+        <!-- "On This Day" home-screen widget. exported="true" is required so the launcher
+             (a separate app) can bind and deliver APPWIDGET_UPDATE — without it the widget
+             fails to add with "Couldn't add widget". -->
         <receiver
             android:name=".ui.widget.OnThisDayWidgetProvider"
-            android:exported="false">
+            android:label="@string/widget_label_on_this_day"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -79,6 +82,51 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/on_this_day_widget_info" />
         </receiver>
+
+        <!-- Quick Add home-screen widget (1×1 shortcut to New Entry). -->
+        <receiver
+            android:name=".ui.widget.QuickAddWidgetProvider"
+            android:label="@string/widget_label_quick_add"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_add_widget_info" />
+        </receiver>
+
+        <!-- Travel Stats home-screen widget (2×1 entry + place counts). -->
+        <receiver
+            android:name=".ui.widget.TravelStatsWidgetProvider"
+            android:label="@string/widget_label_stats"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/travel_stats_widget_info" />
+        </receiver>
+
+        <!-- Recent Entries home-screen widget (4×2 scrollable list of the latest entries). -->
+        <receiver
+            android:name=".ui.widget.RecentEntriesWidgetProvider"
+            android:label="@string/widget_label_recent"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recent_entries_widget_info" />
+        </receiver>
+
+        <!-- Collection-adapter service backing the Recent Entries widget's list rows. -->
+        <service
+            android:name=".ui.widget.RecentEntriesWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

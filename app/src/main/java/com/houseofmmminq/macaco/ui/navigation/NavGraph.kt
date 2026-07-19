@@ -80,7 +80,9 @@ fun NavGraph(
     openNewEntry: Boolean = false,
     onOpenNewEntryConsumed: () -> Unit = {},
     openSubscription: Boolean = false,
-    onOpenSubscriptionConsumed: () -> Unit = {}
+    onOpenSubscriptionConsumed: () -> Unit = {},
+    openEntryId: String? = null,
+    onOpenEntryConsumed: () -> Unit = {}
 ) {
     // All state collected unconditionally so Compose hooks are always called in the same order.
     val onboardingComplete by viewModel.onboardingComplete.collectAsState()
@@ -195,6 +197,14 @@ fun NavGraph(
                 if (openSubscription) {
                     navController.navigate(Screen.Subscription.route)
                     onOpenSubscriptionConsumed()
+                }
+            }
+
+            // Deep link from a Recent Entries widget row tap: open that entry's detail.
+            LaunchedEffect(openEntryId) {
+                openEntryId?.let { id ->
+                    navController.navigate(Screen.EntryDetail.createRoute(id))
+                    onOpenEntryConsumed()
                 }
             }
             val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route

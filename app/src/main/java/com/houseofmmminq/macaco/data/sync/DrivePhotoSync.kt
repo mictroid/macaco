@@ -27,7 +27,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -63,6 +65,11 @@ class DrivePhotoSync(private val context: Context) {
     val cachedPhotoUris: StateFlow<Map<String, String>> = _cachedPhotoUris.asStateFlow()
 
     private var driveFolderId: String? = null
+    // Serializes folder lookup/creation AND the upload loops below. Two concurrent upload passes
+    // (e.g. auto-upload-on-save racing the manual "Sync Now" button) used to both see
+    // driveFolderId == null / driveFileIds[i] == "" and both create a folder / upload the same
+    // photo — this lock makes the whole find-or-create-and-upload sequence atomic.
+    private val driveUploadMutex = Mutex()
 
     private companion object {
         const val FOLDER_NAME = "Macaco"
@@ -112,10 +119,14 @@ class DrivePhotoSync(private val context: Context) {
     private fun getOrCreateDriveFolder(drive: Drive): String {
         driveFolderId?.let { return it }
 
+        // Fields include createdTime so that if duplicate folders exist (e.g. from the upload race
+        // fixed alongside this), we can deterministically pick the oldest one instead of whichever
+        // the API happens to list first — keeps future uploads converging on one folder.
         fun findFolder(name: String) = drive.files().list()
             .setQ("name='$name' and mimeType='application/vnd.google-apps.folder' and trashed=false")
             .setSpaces("drive")
-            .setFields("files(id)")
+            .setFields("files(id, createdTime)")
+            .setOrderBy("createdTime")
             .execute()
 
         // Prefer the current "Macaco" folder. If it doesn't exist yet but a legacy "Wanderlog"
@@ -123,7 +134,17 @@ class DrivePhotoSync(private val context: Context) {
         // move with the brand instead of being stranded in an old folder.
         val current = findFolder(FOLDER_NAME)
         val id = when {
-            current.files.isNotEmpty() -> current.files[0].id
+            current.files.isNotEmpty() -> {
+                if (current.files.size > 1) {
+                    Log.w(
+                        "DrivePhotoSync",
+                        "Found ${current.files.size} '$FOLDER_NAME' folders — using the oldest " +
+                            "(${current.files[0].id}). Extra duplicates are left in place; the user " +
+                            "can merge/delete them manually in Drive."
+                    )
+                }
+                current.files[0].id // list is ordered by createdTime ascending — oldest first
+            }
             else -> {
                 val legacy = findFolder(LEGACY_FOLDER_NAME)
                 if (legacy.files.isNotEmpty()) {
@@ -144,15 +165,36 @@ class DrivePhotoSync(private val context: Context) {
 
     // Returns the new Drive file ID, or null if the stream is unavailable. Lets other exceptions
     // propagate so callers can count real failures vs missing-stream cases.
-    private fun uploadPhoto(drive: Drive, folderId: String, uriString: String): String? {
+    private fun uploadPhoto(
+        drive: Drive,
+        folderId: String,
+        uriString: String,
+        entryId: String,
+        index: Int
+    ): String? {
+        val fileName = "macaco_${entryId}_$index.jpg"
+        findExistingFile(drive, folderId, fileName)?.let { return it }
         val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
         val content = InputStreamContent("image/jpeg", stream)
         val meta = File().apply {
-            name = "macaco_${System.currentTimeMillis()}.jpg"
+            name = fileName
             parents = listOf(folderId)
         }
         return drive.files().create(meta, content).setFields("id").execute().id
     }
+
+    /** Looks up a file by exact name within [folderId]. Returns its id if found, else null. Used to
+     *  make uploads idempotent — a retry (from any device/process) reuses the existing file instead
+     *  of creating a duplicate. */
+    private fun findExistingFile(drive: Drive, folderId: String, fileName: String): String? =
+        drive.files().list()
+            .setQ("name='$fileName' and '$folderId' in parents and trashed=false")
+            .setSpaces("drive")
+            .setFields("files(id)")
+            .execute()
+            .files
+            .firstOrNull()
+            ?.id
 
     /**
      * Uploads any photos in [entry] that don't yet have a Drive file ID.
@@ -163,16 +205,18 @@ class DrivePhotoSync(private val context: Context) {
         // Drive auth/network (GoogleAccountCredential.getToken) hard-crashes if run on the main
         // thread, so the whole upload must stay on IO regardless of the calling dispatcher.
         if (!isDriveConnected()) return@withContext entry.driveFileIds
-        val drive = getDriveService()
-        val folderId = getOrCreateDriveFolder(drive)
-        val result = entry.driveFileIds.toMutableList()
-        while (result.size < entry.photoUris.size) result.add("")
-        entry.photoUris.forEachIndexed { i, uriString ->
-            if (result[i].isEmpty()) {
-                uploadPhoto(drive, folderId, uriString)?.let { result[i] = it }
+        driveUploadMutex.withLock {
+            val drive = getDriveService()
+            val folderId = getOrCreateDriveFolder(drive)
+            val result = entry.driveFileIds.toMutableList()
+            while (result.size < entry.photoUris.size) result.add("")
+            entry.photoUris.forEachIndexed { i, uriString ->
+                if (result[i].isEmpty()) {
+                    uploadPhoto(drive, folderId, uriString, entry.id, i)?.let { result[i] = it }
+                }
             }
+            result.toList()
         }
-        result.toList()
     }
 
     /**
@@ -190,11 +234,19 @@ class DrivePhotoSync(private val context: Context) {
 
     // Returns the new Drive file ID, or null if the stream is unavailable. Mirrors [uploadPhoto]
     // but with the video MIME type / extension.
-    private fun uploadVideo(drive: Drive, folderId: String, uriString: String): String? {
+    private fun uploadVideo(
+        drive: Drive,
+        folderId: String,
+        uriString: String,
+        entryId: String,
+        index: Int
+    ): String? {
+        val fileName = "macaco_${entryId}_$index.mp4"
+        findExistingFile(drive, folderId, fileName)?.let { return it }
         val stream = context.contentResolver.openInputStream(Uri.parse(uriString)) ?: return null
         val content = InputStreamContent("video/mp4", stream)
         val meta = File().apply {
-            name = "macaco_${System.currentTimeMillis()}.mp4"
+            name = fileName
             parents = listOf(folderId)
         }
         return drive.files().create(meta, content).setFields("id").execute().id
@@ -207,16 +259,18 @@ class DrivePhotoSync(private val context: Context) {
      */
     suspend fun uploadEntryVideos(entry: TravelEntry): List<String> = withContext(Dispatchers.IO) {
         if (!isDriveConnected()) return@withContext entry.videoFileIds
-        val drive = getDriveService()
-        val folderId = getOrCreateDriveFolder(drive)
-        val result = entry.videoFileIds.toMutableList()
-        while (result.size < entry.videoUris.size) result.add("")
-        entry.videoUris.forEachIndexed { i, uriString ->
-            if (result[i].isEmpty()) {
-                uploadVideo(drive, folderId, uriString)?.let { result[i] = it }
+        driveUploadMutex.withLock {
+            val drive = getDriveService()
+            val folderId = getOrCreateDriveFolder(drive)
+            val result = entry.videoFileIds.toMutableList()
+            while (result.size < entry.videoUris.size) result.add("")
+            entry.videoUris.forEachIndexed { i, uriString ->
+                if (result[i].isEmpty()) {
+                    uploadVideo(drive, folderId, uriString, entry.id, i)?.let { result[i] = it }
+                }
             }
+            result.toList()
         }
-        result.toList()
     }
 
     /** Auto-upload variant for the save path — reports failures via [errors] instead of throwing. */

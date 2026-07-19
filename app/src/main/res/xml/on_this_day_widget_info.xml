@@ -6,4 +6,5 @@
     android:initialLayout="@layout/widget_on_this_day"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:previewImage="@drawable/widget_background" />
+    android:previewLayout="@layout/widget_on_this_day_preview"
+    android:previewImage="@drawable/widget_preview_on_this_day" />

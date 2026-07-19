@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- On This Day card. Brand-teal base (matches the other widgets). When the highlighted entry has
-     a photo, the photo + a dark scrim are shown behind the text; otherwise both are hidden and the
-     plain teal card shows through (no oversized launcher icon). An always-visible header names the
-     widget so it's identifiable on the home screen. RemoteViews only inflates whitelisted views —
-     scrim is a FrameLayout, never a bare <View>. -->
+<!-- Picker preview for OnThisDayWidgetProvider: mirrors widget_on_this_day but with a baked
+     sample memory so the picker shows representative content (previewLayout, API 31+). No real
+     photo in the preview — the brand teal card + scrim + sample caption stand in for one. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_background">
 
-    <ImageView
-        android:id="@+id/widget_photo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:contentDescription="@null" />
-
+    <!-- Scrim — FrameLayout, not <View> (RemoteViews can't inflate a bare View). -->
     <FrameLayout
-        android:id="@+id/widget_scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#99000000" />
+        android:background="#4D000000" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -53,9 +43,9 @@
         android:padding="12dp">
 
         <TextView
-            android:id="@+id/widget_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Cherry blossoms"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -63,19 +53,19 @@
             android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/widget_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Kyoto, Japan"
             android:textColor="#CCFFFFFF"
             android:textSize="12sp"
             android:maxLines="1"
             android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/widget_context"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:text="12 April 2022"
             android:textColor="#F0C840"
             android:textSize="11sp"
             android:maxLines="1"
