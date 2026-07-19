@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_background">
 
+    <ImageView
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_macaco_widget_mark"
+        android:alpha="0.85"
+        android:contentDescription="@null" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

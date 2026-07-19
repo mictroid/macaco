@@ -417,7 +417,7 @@
     <string name="help_faq_delete_account_q">如何删除我的账号？</string>
     <string name="help_faq_delete_account_a">打开你的个人资料，点按底部的“删除账号”。这会从云端永久删除你的所有日志条目并移除你的账号——此操作无法撤销。你的照片会保留在设备相册中。如果你只是想退出登录，请改用“退出登录”。</string>
     <string name="help_faq_widget_q">有主屏幕小组件吗？</string>
-    <string name="help_faq_widget_a">有 — 长按主屏幕，选择"小组件"，添加 Macaco 的一个小组件："那年今日"（往年同一天的回忆，或你最新的日记）、"快速添加"（直达新建日记的快捷方式）、"旅行统计"（你的日记和地点数量）或"冒险地图"（你已标记的地点数量）。注意："那年今日""旅行统计"和"冒险地图"在开启应用锁后仍然可见；如果不想在主屏幕上展示日记，请移除它们。"快速添加"不显示任何日记数据，因此不受影响。</string>
+    <string name="help_faq_widget_a">有 — 长按主屏幕，选择"小组件"，添加 Macaco 的一个小组件："那年今日"（往年同一天的回忆，或你最新的日记）、"最近记录"（可滚动查看你最新日记的列表）、"旅行统计"（你的日记和地点数量）或"快速添加"（直达新建日记的快捷方式）。注意："那年今日""最近记录"和"旅行统计"在开启应用锁后仍然可见；如果不想在主屏幕上展示日记，请移除它们。"快速添加"不显示任何日记数据，因此不受影响。</string>
     <string name="help_faq_delete_drive_q">删除日记后，Google Drive 里的内容也会被删除吗？</string>
     <string name="help_faq_delete_drive_a">删除日记只会将其从日记本中移除，已备份的照片和视频仍保留在你 Google Drive 的"Macaco"文件夹中，照片也仍在设备相册里。那个文件夹属于你，可以随时在 Drive 中整理。</string>
     <string name="help_faq_suggestions_q">"来自某地的新照片"横幅是什么？</string>

@@ -76,6 +76,25 @@ private class RecentEntriesFactory(private val context: Context) : RemoteViewsSe
             R.id.recent_item_subtitle,
             if (entry.location.isBlank()) date else "${entry.location} · $date"
         )
+        val metaParts = buildList {
+            if (entry.mood.isNotBlank()) add(entry.mood)
+            entry.weatherCode?.let { code ->
+                val (icon, _) = com.houseofmmminq.macaco.util.WeatherLookup.describe(context, code)
+                val temp = entry.weatherTempMaxC?.let {
+                    com.houseofmmminq.macaco.util.WeatherLookup.formatTemp(
+                        context, it, entry.weatherIsFahrenheit ?: false
+                    )
+                }
+                add(if (temp != null) "$icon $temp" else icon)
+            }
+            entry.tags.firstOrNull()?.let { add("#$it") }
+        }
+        if (metaParts.isEmpty()) {
+            views.setViewVisibility(R.id.recent_item_meta, android.view.View.GONE)
+        } else {
+            views.setTextViewText(R.id.recent_item_meta, metaParts.joinToString(" · "))
+            views.setViewVisibility(R.id.recent_item_meta, android.view.View.VISIBLE)
+        }
         val source = WidgetPhotos.readableSource(
             context, entry.photoUris.firstOrNull(), entry.driveFileIds.firstOrNull()
         )
