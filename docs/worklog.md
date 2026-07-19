@@ -2,6 +2,28 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-19 — widgets + Drive-dedupe batch committed `eb1fe93`, NOT pushed, NOT shipped (→ vc74)
+
+vc73 confirmed live + stable on Play; this batch will ship as **vc74** when the user says go (push
+is held because it deploys the updated legal pages via GitHub Pages). Closed out 4 home-screen
+widgets (On This Day redesign, Recent Entries collection widget with deep-link, Travel Stats, Quick
+Add) plus a new collapsible `ExpandableWidgetsCard` in Settings replacing the old 4-row pin section.
+Found and fixed the **real root cause** of the long-standing blank-widget-photo bug: both widget
+decoders misread `BitmapFactory.decodeStream`'s expected-null return during the
+`inJustDecodeBounds` bounds pass as a failure (`?: return null` on the decode result instead of the
+stream) — verified on-device (S8) after the fix, real thumbnails render in both widgets. That fix
+surfaced an ANR (`fetchHighlight` blocking on the whole library); fixed by scoping the blocking
+Drive-photo download to just the chosen highlight entry. Also shipped **Drive upload dedupe**
+(`DrivePhotoSync`): a `Mutex` serializing folder-find-or-create + upload, deterministic
+`macaco_<entryId>_<i>` filenames with existing-file lookup for cross-device idempotency, and
+oldest-folder convergence when duplicate "Macaco" Drive folders already exist (no auto-delete of
+extras — flagged as manual owner cleanup). Docs: 3 FAQ strings ×11 locales updated to say "photos
+and videos"; privacy-policy/terms-of-service HTML updated for video backup across all embedded
+language blocks. Six briefs archived to `docs/DONE/`: `additional-widgets`, `widget-exported-fix`,
+`widget-faq-update`, `help-about-trial-copy-fix`, `widget-photo-loading-fix`,
+`drive-dedupe-and-doc-updates`. `assembleDebug` green, verified on S8. Full detail in
+`docs/worklog-2026-07-19.md`.
+
 ## 2026-07-17 — vc73 (1.6) — SHIPPED ✅ to Play Open testing — WIF run `29598341075`
 
 SUCCESS (9m31s), dispatched 18:59:59 +0200 (run `29598341075`), `origin == HEAD` == `3202ace`.
