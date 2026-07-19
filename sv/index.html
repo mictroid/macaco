@@ -178,6 +178,14 @@
   .lang-switch a{text-decoration:none;}
   .lang-switch a:hover{color:var(--primary);}
   .lang-switch strong{color:var(--primary);}
+  .cookie-banner{position:fixed;left:16px;right:16px;bottom:16px;max-width:640px;margin:0 auto;background:#fff;border:1px solid var(--outline);border-radius:16px;padding:16px 20px;box-shadow:0 12px 32px rgba(14,90,107,0.18);display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:100;flex-wrap:wrap;}
+  .cookie-banner p{margin:0;font-size:13.5px;color:var(--ink-soft);flex:1;min-width:200px;}
+  .cookie-banner p a{color:var(--primary);text-decoration:underline;}
+  .cookie-actions{display:flex;gap:10px;flex:none;}
+  .cookie-actions button{border:none;cursor:pointer;border-radius:999px;padding:8px 16px;font-weight:700;font-size:13px;}
+  .cookie-actions .accept{background:var(--gold);color:var(--gold-dark);}
+  .cookie-actions .decline{background:var(--bg);color:var(--ink-soft);border:1px solid var(--outline);}
+  @media (max-width:520px){.cookie-banner{flex-direction:column;align-items:stretch;text-align:center;}}
 
   @media (max-width: 880px){
     .hero .wrap{grid-template-columns:1fr;}
@@ -369,9 +377,65 @@
       <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Hämta</a>
     </div>
     <div class="lang-switch"><a href="/">EN</a> · <a href="/de/">DE</a> · <a href="/es/">ES</a> · <a href="/fr/">FR</a> · <a href="/it/">IT</a> · <a href="/ja/">JA</a> · <a href="/nl/">NL</a> · <a href="/pl/">PL</a> · <a href="/pt/">PT</a> · <strong>SV</strong> · <a href="/zh/">ZH</a></div>
-    <div class="foot-brand">© 2026 House of MMMinq · Macaco</div>
+    <div class="foot-brand">© 2026 House of MMMinq · Macaco · <a href="#" id="cookie-manage" style="text-decoration:underline;">Cookie-inställningar</a></div>
   </div>
 </footer>
+
+<div id="cookie-banner" class="cookie-banner" hidden>
+  <p>Vi använder Google Analytics och, för framtida annonskampanjer, Google Ads-cookies, för att förstå webbplatstrafiken och mäta annonsprestanda. Inget lagras förrän du accepterar. <a href="../privacy-policy.html" target="_blank" rel="noopener">Integritetspolicy</a></p>
+  <div class="cookie-actions">
+    <button class="decline" id="cookie-decline">Avvisa</button>
+    <button class="accept" id="cookie-accept">Acceptera</button>
+  </div>
+</div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RVM8JVVGJZ"></script>
+<script>
+(function(){
+  var GA_ID = 'G-RVM8JVVGJZ';
+  var KEY = 'macaco_consent_v2';
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+
+  var stored = localStorage.getItem(KEY);
+  var initialState = stored === 'granted' ? 'granted' : 'denied';
+
+  gtag('consent', 'default', {
+    ad_storage: initialState,
+    ad_user_data: initialState,
+    ad_personalization: initialState,
+    analytics_storage: initialState
+  });
+  gtag('js', new Date());
+  gtag('config', GA_ID, { anonymize_ip: true });
+
+  var banner = document.getElementById('cookie-banner');
+  if (stored === null && banner) banner.hidden = false;
+
+  function setConsent(granted){
+    var state = granted ? 'granted' : 'denied';
+    gtag('consent', 'update', {
+      ad_storage: state,
+      ad_user_data: state,
+      ad_personalization: state,
+      analytics_storage: state
+    });
+    localStorage.setItem(KEY, granted ? 'granted' : 'declined');
+    if (banner) banner.hidden = true;
+  }
+
+  var acceptBtn = document.getElementById('cookie-accept');
+  var declineBtn = document.getElementById('cookie-decline');
+  var manageLink = document.getElementById('cookie-manage');
+  if (acceptBtn) acceptBtn.addEventListener('click', function(){ setConsent(true); });
+  if (declineBtn) declineBtn.addEventListener('click', function(){ setConsent(false); });
+  if (manageLink) manageLink.addEventListener('click', function(e){
+    e.preventDefault();
+    if (banner) banner.hidden = false;
+  });
+})();
+</script>
 
 </body>
 </html>
