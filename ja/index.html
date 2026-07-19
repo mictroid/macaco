@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macaco — Private Travel Journal | Photos, Video, Cloud Sync</title>
-<meta name="description" content="Macaco is a private travel journal with photo & video journaling, an adventures map and cloud sync. No ads, no feed, your data never sold.">
-<link rel="icon" type="image/png" href="assets/icon.png">
-<link rel="alternate" hreflang="en" href="https://getmacaco.com/">
-<link rel="alternate" hreflang="de" href="https://getmacaco.com/de/">
-<link rel="alternate" hreflang="es" href="https://getmacaco.com/es/">
-<link rel="alternate" hreflang="fr" href="https://getmacaco.com/fr/">
-<link rel="alternate" hreflang="it" href="https://getmacaco.com/it/">
-<link rel="alternate" hreflang="ja" href="https://getmacaco.com/ja/">
-<link rel="alternate" hreflang="nl" href="https://getmacaco.com/nl/">
-<link rel="alternate" hreflang="pl" href="https://getmacaco.com/pl/">
-<link rel="alternate" hreflang="pt-PT" href="https://getmacaco.com/pt/">
-<link rel="alternate" hreflang="sv" href="https://getmacaco.com/sv/">
-<link rel="alternate" hreflang="zh-CN" href="https://getmacaco.com/zh/">
-<link rel="alternate" hreflang="x-default" href="https://getmacaco.com/">
+<title>Macaco — プライベートな旅行日記 | 写真・動画・クラウド同期</title>
+<meta name="description" content="プライベートな旅行日記：写真・動画・地図・クラウド同期・アプリロック。">
+<link rel="icon" type="image/png" href="../assets/icon.png">
+  <link rel="alternate" hreflang="en" href="https://getmacaco.com/">
+  <link rel="alternate" hreflang="de" href="https://getmacaco.com/de/">
+  <link rel="alternate" hreflang="es" href="https://getmacaco.com/es/">
+  <link rel="alternate" hreflang="fr" href="https://getmacaco.com/fr/">
+  <link rel="alternate" hreflang="it" href="https://getmacaco.com/it/">
+  <link rel="alternate" hreflang="ja" href="https://getmacaco.com/ja/">
+  <link rel="alternate" hreflang="nl" href="https://getmacaco.com/nl/">
+  <link rel="alternate" hreflang="pl" href="https://getmacaco.com/pl/">
+  <link rel="alternate" hreflang="pt-PT" href="https://getmacaco.com/pt/">
+  <link rel="alternate" hreflang="sv" href="https://getmacaco.com/sv/">
+  <link rel="alternate" hreflang="zh-CN" href="https://getmacaco.com/zh/">
+  <link rel="alternate" hreflang="x-default" href="https://getmacaco.com/">
 <style>
   :root{
     --primary:#0E5A6B;
@@ -43,7 +43,6 @@
   img{max-width:100%;display:block;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
 
-  /* Nav */
   header{
     position:sticky;top:0;z-index:50;
     background:rgba(244,250,251,0.9);
@@ -73,7 +72,6 @@
     background:var(--gold);opacity:0.55;z-index:-1;border-radius:3px;
   }
 
-  /* Hero */
   .hero{padding:76px 0 40px;}
   .hero .wrap{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
   .eyebrow{
@@ -85,7 +83,6 @@
   .hero h1{font-size:46px;line-height:1.1;margin:0 0 18px;font-weight:800;letter-spacing:-0.5px;}
   .hero p.lead{font-size:19px;color:var(--ink-soft);margin:0 0 28px;max-width:480px;}
   .cta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .store-badge{height:54px;}
   .hero-visual{position:relative;display:flex;justify-content:center;}
   .shot{
     width:260px;border-radius:28px;
@@ -93,19 +90,12 @@
     overflow:hidden;
   }
   .shot img{display:block;width:100%;}
-  .phone{
-    width:260px;border-radius:36px;border:10px solid #101418;
-    box-shadow:0 30px 60px rgba(14,90,107,0.28);
-    overflow:hidden;background:#101418;
-  }
-  .phone img{display:block;width:100%;}
   .blob{
     position:absolute;width:420px;height:420px;border-radius:50%;
     background:radial-gradient(circle at 30% 30%, var(--primary-container), transparent 70%);
     z-index:-1;top:-60px;right:-40px;
   }
 
-  /* Sections */
   section{padding:64px 0;}
   .section-head{text-align:center;max-width:640px;margin:0 auto 48px;}
   .section-head h2{font-size:32px;margin:0 0 12px;font-weight:800;letter-spacing:-0.3px;}
@@ -119,7 +109,6 @@
   .feature-row.reverse .feature-text{order:2;}
   .feature-row.reverse .feature-media{order:1;}
   .feature-media{display:flex;justify-content:center;}
-  .feature-media .phone{width:230px;border-width:8px;box-shadow:0 20px 40px rgba(14,90,107,0.18);}
   .feature-media .shot{width:230px;box-shadow:0 20px 40px rgba(14,90,107,0.18);}
   .badge-new{
     display:inline-block;background:var(--gold);color:var(--gold-dark);
@@ -128,9 +117,7 @@
   }
   .feature-text h3{font-size:26px;margin:0 0 12px;font-weight:800;}
   .feature-text p{color:var(--ink-soft);font-size:16px;margin:0;}
-  .feature-icon{font-size:34px;margin-bottom:10px;display:block;}
 
-  /* Strip of small features */
   .mini-grid{
     display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
   }
@@ -147,7 +134,6 @@
   .mini-card h4{margin:0 0 8px;font-size:17px;font-weight:800;}
   .mini-card p{margin:0;font-size:14.5px;color:var(--ink-soft);}
 
-  /* Privacy band */
   .privacy-band{
     background:linear-gradient(135deg,var(--primary) 0%, var(--primary-light) 100%);
     color:#fff;border-radius:28px;padding:56px 48px;
@@ -159,18 +145,9 @@
   .check-list li{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px;}
   .check-list li::before{content:"✓";flex:none;width:22px;height:22px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
   .privacy-media{display:flex;justify-content:center;}
-  .privacy-media .phone{width:200px;border-color:rgba(255,255,255,0.2);}
   .privacy-visual{position:relative;width:200px;height:200px;}
   .privacy-visual img{width:100%;height:100%;border-radius:44px;box-shadow:0 20px 50px rgba(0,0,0,0.35);}
-  .lock-badge{
-    position:absolute;bottom:-10px;right:-10px;
-    width:64px;height:64px;border-radius:50%;
-    background:var(--gold);color:var(--gold-dark);
-    display:flex;align-items:center;justify-content:center;
-    font-size:28px;border:4px solid var(--primary);
-  }
 
-  /* Premium */
   .premium-card{
     background:#fff;border:1px solid var(--outline);border-top:4px solid var(--gold);
     border-radius:28px;
@@ -223,14 +200,14 @@
 
 <header>
   <nav class="wrap">
-    <a class="brand" href="#top"><img src="assets/icon.png" alt="Macaco"> Macaco</a>
+    <a class="brand" href="#top"><img src="../assets/icon.png" alt="Macaco"> Macaco</a>
     <div class="links">
-      <a href="#watch">Watch</a>
-      <a href="#features">Features</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#premium">Premium</a>
+      <a href="#watch">動画を見る</a>
+      <a href="#features">機能</a>
+      <a href="#privacy">プライバシー</a>
+      <a href="#premium">プレミアム</a>
     </div>
-    <a class="btn small" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Get it on Google Play</a>
+    <a class="btn small" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Google Playで入手</a>
   </nav>
 </header>
 
@@ -239,18 +216,16 @@
   <section class="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <span class="eyebrow">🐒 Private travel journal</span>
-        <h1>Roam freely.<br><span class="gold-underline">Forget nothing.</span></h1>
-        <p class="lead">Macaco is a private travel journal and trip diary — photos, video, an adventures map and cloud sync. No ads, no feed, and your data is never sold.</p>
+        <span class="eyebrow">🐒 プライベートな旅行日記</span>
+        <h1>自由に旅しよう。<br><span class="gold-underline">何も忘れない。</span></h1>
+        <p class="lead">Macaco は写真・動画・冒険マップ・クラウド同期を備えたプライベートな旅行日記です。広告なし、フィードなし、データが売られることはありません。</p>
         <div class="cta-row">
-          <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">
-            <img class="store-badge" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play">
-          </a>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Google Playで入手</a>
         </div>
       </div>
       <div class="hero-visual">
         <div class="blob"></div>
-        <div class="shot"><img src="assets/macaco-feature-journal.jpg" alt="Macaco journal screen — every trip organised by region, trip and date"></div>
+        <div class="shot"><img src="../assets/macaco-feature-journal.jpg" alt="Macaco"></div>
       </div>
     </div>
   </section>
@@ -258,11 +233,11 @@
   <section id="watch">
     <div class="wrap">
       <div class="section-head">
-        <h2>See Macaco in action</h2>
-        <p>One minute beats a thousand screenshots.</p>
+        <h2>Macaco の使い方を動画でチェック</h2>
+        <p>1分の動画はスクリーンショット千枚に勝る。</p>
       </div>
       <div class="video-embed">
-        <iframe src="https://www.youtube-nocookie.com/embed/BpXb2-OvjV8" title="Macaco — Travel Journal App Demo" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+        <iframe src="https://www.youtube-nocookie.com/embed/BpXb2-OvjV8" title="Macaco" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
     </div>
   </section>
@@ -270,71 +245,71 @@
   <section id="features">
     <div class="wrap">
       <div class="section-head">
-        <h2>Everything a trip deserves</h2>
-        <p>Not just a list of dates and places — a real record of what a trip actually felt like.</p>
+        <h2>旅にふさわしいすべてを</h2>
+        <p>日付と場所のリストではなく、旅の本当の記憶を残す場所。</p>
       </div>
 
       <div class="feature-row">
         <div class="feature-text">
-          <span class="badge-new">NEW</span>
-          <h3>🎬 Bring your memories to life with video</h3>
-          <p>Some moments need more than a photo. Add up to 3 video clips of 15 seconds to every entry — the street musician, the waves, the toast at dinner. Trim them right in the app, and they back up to your Google Drive just like your photos.</p>
+          <span class="badge-new">新機能</span>
+          <h3>🎬 動画で思い出をもっと鮮やかに</h3>
+          <p>写真だけでは足りない瞬間があります。各エントリに15秒の動画クリップを最大3本追加できます。ストリートミュージシャン、打ち寄せる波、夕食の乾杯。アプリ内でそのままトリミングでき、写真と同じように Google ドライブにバックアップされます。</p>
         </div>
         <div class="feature-media">
-          <div class="shot"><img src="assets/macaco-feature-new-entry.jpg" alt="Logging a new Macaco entry with photo, video, mood, location and tags"></div>
+          <div class="shot"><img src="../assets/macaco-feature-new-entry.jpg" alt="Macaco"></div>
         </div>
       </div>
 
       <div class="feature-row reverse">
         <div class="feature-text">
-          <h3>🎞️ The Adventure Reel</h3>
-          <p>Turn any trip into a shareable mini-movie. One tap builds a beautiful vertical slideshow from your trip photos — smooth pan-and-zoom, elegant transitions, location and date overlays — ready for WhatsApp, Instagram or the family group chat.</p>
+          <h3>🎞️ アドベンチャーリール</h3>
+          <p>どんな旅も、シェアできるミニムービーに。ワンタップで旅の写真から美しい縦型スライドショーを作成 — なめらかなパン＆ズーム、上品なトランジション、場所と日付のオーバーレイ付き。WhatsApp や Instagram、家族のグループチャットにそのままどうぞ。</p>
         </div>
         <div class="feature-media">
-          <div class="shot"><img src="assets/macaco-feature-reel.jpg" alt="Macaco Adventure Reel — auto-generated highlight video"></div>
+          <div class="shot"><img src="../assets/macaco-feature-reel.jpg" alt="Macaco"></div>
         </div>
       </div>
 
       <div class="feature-row">
         <div class="feature-text">
-          <h3>✍️ Capture every trip</h3>
-          <p>Write entries the way you remember them: the food, the chaos, the quiet sunset nobody else saw. Add photos, tag your mood, pin the location. Too tired to type? Tap the mic and dictate — speech-to-text turns your voice into your journal.</p>
+          <h3>✍️ すべての旅を記録</h3>
+          <p>感じたままに日記を書きましょう。あの料理、あの騒がしさ、誰も見ていなかった静かな夕日。写真を追加し、気分をタグ付けし、場所をピンで記録。疲れて文字を打つ気になれない日は、マイクをタップして話すだけ。音声入力があなたの声をそのまま日記にします。</p>
         </div>
         <div class="feature-media">
-          <div class="shot"><img src="assets/macaco-feature-entry-patagonia.jpg" alt="A Macaco journal entry from a trip to Patagonia"></div>
+          <div class="shot"><img src="../assets/macaco-feature-entry-patagonia.jpg" alt="Macaco"></div>
         </div>
       </div>
 
       <div class="feature-row reverse">
         <div class="feature-text">
-          <h3>🗺️ The Adventures Map</h3>
-          <p>Every place you've ever logged, on one beautiful map. Tap a pin and travel straight back to that moment. Barcelona. Bangkok. That tiny café nobody else knew about.</p>
+          <h3>🗺️ 冒険マップ</h3>
+          <p>記録したすべての場所が、美しい一枚のマップに。ピンをタップすれば、その瞬間へひとっ飛び。バルセロナ。バンコク。誰も知らなかった小さなカフェ。</p>
         </div>
         <div class="feature-media">
-          <div class="shot"><img src="assets/macaco-feature-adventures.jpg" alt="Macaco adventures map — every trip automatically pinned"></div>
+          <div class="shot"><img src="../assets/macaco-feature-adventures.jpg" alt="Macaco"></div>
         </div>
       </div>
 
       <div class="mini-grid">
         <div class="mini-card">
           <span class="ico">☁️</span>
-          <h4>Cloud sync + Drive backup</h4>
-          <p>Sign in on any device and your journal is waiting. Photos and videos back up to your own Google Drive.</p>
+          <h4>☁️ クラウド同期 + Driveバックアップ</h4>
+          <p>どのデバイスでサインインしても日記はそこに。写真と動画はあなたの Google ドライブに保存されます。</p>
         </div>
         <div class="mini-card">
           <span class="ico">📅</span>
-          <h4>On This Day</h4>
-          <p>Rediscover what you were doing one, two or five years ago. Small time machine, big smiles.</p>
+          <h4>📅 あの日の思い出</h4>
+          <p>1年前、2年前、5年前の今日を振り返る。小さなタイムマシン、大きな笑顔。</p>
         </div>
         <div class="mini-card">
           <span class="ico">🔔</span>
-          <h4>Reminders that make sense</h4>
-          <p>Instead of a generic ping, Macaco nudges you with your own journey: "Still thinking about Bangkok?"</p>
+          <h4>🔔 意味のあるリマインダー</h4>
+          <p>ありきたりな通知の代わりに、あなた自身の旅から語りかけます。「まだバンコクのことを考えていますか？」</p>
         </div>
         <div class="mini-card">
           <span class="ico">💾</span>
-          <h4>Your data, portable</h4>
-          <p>Export your complete journal — entries and photos — as a single backup file, anytime. No lock-in, ever.</p>
+          <h4>💾 データはいつでも持ち出せる</h4>
+          <p>日記全体をいつでも1つのバックアップファイルとしてエクスポート。囲い込みは一切ありません。</p>
         </div>
       </div>
     </div>
@@ -344,19 +319,19 @@
     <div class="wrap">
       <div class="privacy-band">
         <div>
-          <span class="eyebrow" style="background:rgba(255,255,255,0.18);color:#fff;">🔒 Private by design</span>
-          <h2>A diary should be yours alone.</h2>
-          <p>Turn on App Lock to keep curious eyes out. This isn't a social feed — it's your journal.</p>
+          <span class="eyebrow" style="background:rgba(255,255,255,0.18);color:#fff;">🔒 プライバシー第一の設計</span>
+          <h2>日記はあなただけのものであるべき。</h2>
+          <p>アプリロックをオンにして、のぞき見を防止。これはSNSのフィードではなく、あなたの日記です。</p>
           <ul class="check-list">
-            <li>No ads, ever</li>
-            <li>No feed, no algorithm</li>
-            <li>No ad tracking</li>
-            <li>Your data is never sold or shared</li>
-            <li>App Lock keeps your journal private on-device</li>
+            <li>広告は一切なし</li>
+            <li>フィードもアルゴリズムもなし</li>
+            <li>広告トラッキングなし</li>
+            <li>データが売られたり共有されたりすることはない</li>
+            <li>アプリロックが端末上の日記を守る</li>
           </ul>
         </div>
         <div class="privacy-media">
-          <div class="phone"><img src="assets/settings_privacy.jpg" alt="Macaco privacy settings — App Lock, App Permissions and Google Drive Backup controls"></div>
+          <div class="shot"><img src="../assets/settings_privacy.jpg" alt="Macaco"></div>
         </div>
       </div>
     </div>
@@ -365,20 +340,20 @@
   <section id="premium">
     <div class="wrap">
       <div class="premium-card">
-        <span class="eyebrow">⭐ Premium</span>
-        <h2>Start free. Upgrade when you're ready.</h2>
-        <p class="sub">Try Premium with a 7-day free trial on the Annual plan — no charge if you cancel.</p>
+        <span class="eyebrow">⭐ プレミアム</span>
+        <h2>無料で始めて、準備ができたらアップグレード。</h2>
+        <p class="sub">年間プランの7日間無料トライアルでプレミアムを試そう — キャンセルすれば料金はかかりません。</p>
         <div class="premium-grid">
-          <div>🌍 Unlimited journal entries</div>
-          <div>📸 Photos on every memory</div>
-          <div>🎬 Up to 3 videos (15s) per entry</div>
-          <div>🎞️ Adventure Reels</div>
-          <div>☁️ Cloud sync + Drive backup</div>
-          <div>🗺️ Adventures map</div>
-          <div>🔒 App Lock</div>
-          <div>🚫 Zero ads — not now, not ever</div>
+          <div>🌍 無制限の日記エントリ</div>
+          <div>📸 すべての思い出に写真を</div>
+          <div>🎬 エントリごとに最大3本の動画（15秒）</div>
+          <div>🎞️ アドベンチャーリール</div>
+          <div>☁️ クラウド同期 + Google ドライブへの写真・動画バックアップ</div>
+          <div>🗺️ 冒険マップ</div>
+          <div>🔒 アプリロック</div>
+          <div>🚫 広告ゼロ — 今も、これからも</div>
         </div>
-        <a class="btn" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Get Macaco free</a>
+        <a class="btn" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Macacoを無料で始める</a>
       </div>
     </div>
   </section>
@@ -387,13 +362,13 @@
 
 <footer>
   <div class="wrap">
-    <a class="brand" href="#top" style="font-size:17px;"><img src="assets/icon.png" alt="Macaco" style="width:26px;height:26px;"> Macaco</a>
+    <a class="brand" href="#top" style="font-size:17px;"><img src="../assets/icon.png" alt="Macaco" style="width:26px;height:26px;"> Macaco</a>
     <div class="foot-links">
-      <a href="/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>
-      <a href="/terms-of-service.html" target="_blank" rel="noopener">Terms of Service</a>
-      <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Download</a>
+      <a href="../privacy-policy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
+      <a href="../terms-of-service.html" target="_blank" rel="noopener">利用規約</a>
+      <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">ダウンロード</a>
     </div>
-    <div class="lang-switch"><strong>EN</strong> · <a href="/de/">DE</a> · <a href="/es/">ES</a> · <a href="/fr/">FR</a> · <a href="/it/">IT</a> · <a href="/ja/">JA</a> · <a href="/nl/">NL</a> · <a href="/pl/">PL</a> · <a href="/pt/">PT</a> · <a href="/sv/">SV</a> · <a href="/zh/">ZH</a></div>
+    <div class="lang-switch"><a href="/">EN</a> · <a href="/de/">DE</a> · <a href="/es/">ES</a> · <a href="/fr/">FR</a> · <a href="/it/">IT</a> · <strong>JA</strong> · <a href="/nl/">NL</a> · <a href="/pl/">PL</a> · <a href="/pt/">PT</a> · <a href="/sv/">SV</a> · <a href="/zh/">ZH</a></div>
     <div class="foot-brand">© 2026 House of MMMinq · Macaco</div>
   </div>
 </footer>
