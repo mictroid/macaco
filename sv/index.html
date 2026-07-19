@@ -187,6 +187,18 @@
   .cookie-actions .decline{background:var(--bg);color:var(--ink-soft);border:1px solid var(--outline);}
   @media (max-width:520px){.cookie-banner{flex-direction:column;align-items:stretch;text-align:center;}}
 
+  @media (prefers-color-scheme: dark){
+    :root{
+      --primary:#4FC3D9;--primary-light:#7DD4E6;--primary-container:#123C46;
+      --gold:#F2C744;--gold-dark:#7A5A00;--bg:#0F1417;--ink:#EDEDED;
+      --ink-soft:#A9B4B7;--outline:#2A3438;
+    }
+    header{background:rgba(15,20,23,0.85);}
+    .mini-card{background:#171D1F;}
+    .premium-card{background:#171D1F;box-shadow:0 20px 50px rgba(0,0,0,0.4);}
+    .cookie-banner{background:#171D1F;box-shadow:0 12px 32px rgba(0,0,0,0.4);}
+  }
+
   @media (max-width: 880px){
     .hero .wrap{grid-template-columns:1fr;}
     .hero{padding:44px 0 20px;text-align:center;}

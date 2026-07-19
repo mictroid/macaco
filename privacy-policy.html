@@ -6,92 +6,122 @@
   <title>Macaco — Privacy Policy</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; max-width: 720px; margin: 0 auto; padding-bottom: 80px; }
-    .hero { background: #0E5A6B; padding: 40px 32px 36px; border-radius: 0 0 24px 24px; }
-    .eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
-    .wordmark { font-size: 28px; font-weight: 300; letter-spacing: 8px; color: #fff; margin-bottom: 8px; }
-    .hero-title { font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.85); margin-bottom: 20px; }
+    :root{
+      --primary:#0E5A6B; --primary-light:#1B96B3; --primary-container:#A6E9F2;
+      --gold:#F2C744; --gold-dark:#7A5A00; --bg:#F4FAFB; --ink:#171D1F;
+      --ink-soft:#3F484B; --outline:#D7E4E7; --radius:20px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding-bottom: 80px; }
+    a { color: var(--primary); }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    header { position: sticky; top: 0; z-index: 50; background: rgba(244,250,251,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--outline); }
+    nav.wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; text-decoration: none; color: var(--ink); }
+    .brand img { width: 30px; height: 30px; border-radius: 8px; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-right a { font-size: 14px; font-weight: 600; color: var(--ink-soft); text-decoration: none; }
+    .nav-right a:hover { color: var(--primary); }
+    .lang-select { font-size: 13px; border: 1px solid var(--outline); background: #fff; color: var(--primary); cursor: pointer; font-family: inherit; padding: 6px 10px; border-radius: 999px; }
+
+    .hero { max-width: 720px; margin: 24px auto 0; padding: 0 24px; }
+    .hero-band { background: linear-gradient(135deg,var(--primary) 0%, var(--primary-light) 100%); border-radius: var(--radius); padding: 32px 32px 28px; color: #fff; }
+    .eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 10px; }
+    .hero-title { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 16px; }
     .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    .badge { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: rgba(255,255,255,0.75); }
-    .lang-bar { background: #f5f5f5; border-bottom: 1px solid #eaeaea; padding: 10px 32px; display: flex; align-items: center; gap: 8px; }
-    .lang-bar select { font-size: 13px; border: none; background: transparent; color: #0E5A6B; cursor: pointer; font-family: inherit; }
-    .lang-lbl { font-size: 12px; color: #aaa; }
-    .body-wrap { padding: 24px 32px 0; }
-    .intro { font-size: 15px; line-height: 1.75; color: #555; margin-bottom: 20px; }
-    .summary { border-left: 3px solid #0E5A6B; background: #f0f8fa; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 24px; }
-    .sum-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #0E5A6B; margin-bottom: 6px; }
-    .sum-text { font-size: 14px; line-height: 1.65; color: #1a5a6b; }
-    .sc { border: 1px solid #e8e8e8; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
-    .sh { display: flex; align-items: center; gap: 10px; padding: 11px 16px; background: #fafafa; border-bottom: 1px solid #e8e8e8; }
-    .sn { width: 24px; height: 24px; background: #0E5A6B; color: #fff; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
-    .st { font-size: 14px; font-weight: 600; color: #1a1a1a; }
-    .sb { padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #555; }
+    .badge { background: var(--gold); color: var(--gold-dark); border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 700; }
+    .badge.outline { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+
+    .body-wrap { max-width: 720px; margin: 0 auto; padding: 24px 24px 0; }
+    .intro { font-size: 15px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 20px; }
+    .summary { border-left: 3px solid var(--primary); background: var(--primary-container); border-radius: 0 12px 12px 0; padding: 14px 18px; margin-bottom: 24px; }
+    .sum-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
+    .sum-text { font-size: 14px; line-height: 1.65; color: var(--ink); }
+    .sc { border: 1px solid var(--outline); border-radius: var(--radius); overflow: hidden; margin-bottom: 10px; background: #fff; }
+    .sh { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg); border-bottom: 1px solid var(--outline); }
+    .sn { width: 24px; height: 24px; background: var(--primary); color: #fff; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .st { font-size: 14px; font-weight: 800; color: var(--ink); }
+    .sb { padding: 14px 16px; font-size: 14px; line-height: 1.7; color: var(--ink-soft); }
     .sb p { margin-bottom: 10px; }
     .sb p:last-child { margin-bottom: 0; }
     .sb ul { margin: 6px 0 10px 18px; }
     .sb ul:last-child { margin-bottom: 0; }
     .sb li { margin-bottom: 5px; }
     .sb table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px; }
-    .sb th { text-align: left; padding: 7px 10px; background: #f0f8fa; border: 1px solid #d0e8ef; font-weight: 600; color: #0E5A6B; }
-    .sb td { padding: 7px 10px; border: 1px solid #e8e8e8; vertical-align: top; }
-    a { color: #0E5A6B; }
-    footer { margin: 32px 32px 0; padding-top: 20px; border-top: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #bbb; flex-wrap: wrap; gap: 8px; }
-    footer a { color: #0E5A6B; text-decoration: none; }
+    .sb th { text-align: left; padding: 7px 10px; background: var(--primary-container); border: 1px solid var(--outline); font-weight: 700; color: var(--primary); }
+    .sb td { padding: 7px 10px; border: 1px solid var(--outline); vertical-align: top; }
+
+    footer.site-footer { border-top: 1px solid var(--outline); padding: 32px 0; margin-top: 32px; }
+    footer.site-footer .wrap { display: flex; flex-direction: column; gap: 10px; }
+    .foot-links { display: flex; gap: 20px; font-size: 14px; color: var(--ink-soft); flex-wrap: wrap; }
+    .foot-links a { text-decoration: none; }
+    .foot-links a:hover { color: var(--primary); }
+    .foot-brand { font-size: 13px; color: var(--ink-soft); }
+    .foot-brand a { text-decoration: underline; }
+
+    .cookie-banner { position: fixed; left: 16px; right: 16px; bottom: 16px; max-width: 640px; margin: 0 auto; background: #fff; border: 1px solid var(--outline); border-radius: 16px; padding: 16px 20px; box-shadow: 0 12px 32px rgba(14,90,107,0.18); display: flex; align-items: center; justify-content: space-between; gap: 16px; z-index: 100; flex-wrap: wrap; }
+    .cookie-banner p { margin: 0; font-size: 13.5px; color: var(--ink-soft); flex: 1; min-width: 200px; }
+    .cookie-actions { display: flex; gap: 10px; flex: none; }
+    .cookie-actions button { border: none; cursor: pointer; border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 13px; }
+    .cookie-actions .accept { background: var(--gold); color: var(--gold-dark); }
+    .cookie-actions .decline { background: var(--bg); color: var(--ink-soft); border: 1px solid var(--outline); }
+
     .lc { display: none; }
     .lc.active { display: block; }
-    @media (prefers-color-scheme: dark) {
-      body { background: #111; color: #ddd; }
-      .lang-bar { background: #1a1a1a; border-bottom-color: #2a2a2a; }
-      .lang-bar select { color: #5cc8df; }
-      .intro { color: #999; }
-      .summary { background: #08252c; border-left-color: #5cc8df; }
-      .sum-label { color: #5cc8df; }
-      .sum-text { color: #7dd4e6; }
-      .sc { border-color: #2a2a2a; }
-      .sh { background: #191919; border-bottom-color: #2a2a2a; }
-      .st { color: #ddd; }
-      .sb { color: #999; }
-      .sb th { background: #0a2830; border-color: #1a4555; color: #5cc8df; }
-      .sb td { border-color: #2a2a2a; }
-      footer { border-top-color: #2a2a2a; color: #555; }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --primary:#4FC3D9;--primary-light:#7DD4E6;--primary-container:#123C46;
+        --gold:#F2C744;--gold-dark:#7A5A00;--bg:#0F1417;--ink:#EDEDED;
+        --ink-soft:#A9B4B7;--outline:#2A3438;
+      }
+      header{background:rgba(15,20,23,0.85);}
+      .lang-select{background:#171D1F;}
+      .sc{background:#171D1F;}
+      .cookie-banner{background:#171D1F;box-shadow:0 12px 32px rgba(0,0,0,0.4);}
     }
     @media (max-width: 480px) {
-      .hero { padding: 32px 20px 28px; border-radius: 0 0 18px 18px; }
+      .hero-band { padding: 24px 20px 22px; }
       .body-wrap { padding: 20px 16px 0; }
-      footer { margin: 24px 16px 0; }
-      .lang-bar { padding: 10px 16px; }
+      nav.wrap { padding: 12px 16px; }
+      .cookie-banner { flex-direction: column; align-items: stretch; text-align: center; }
     }
   </style>
 </head>
 <body>
 
+<header>
+  <nav class="wrap">
+    <a class="brand" href="/"><img src="assets/icon.png" alt="Macaco"> Macaco</a>
+    <div class="nav-right">
+      <a href="/" id="homeLink"></a>
+      <a href="/terms-of-service.html" id="tosLinkNav"></a>
+      <select class="lang-select" id="langSelect" onchange="setLang(this.value)">
+        <option value="en">English</option>
+        <option value="de">Deutsch</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+        <option value="it">Italiano</option>
+        <option value="nl">Nederlands</option>
+        <option value="pt">Português</option>
+        <option value="pl">Polski</option>
+        <option value="sv">Svenska</option>
+        <option value="ja">日本語</option>
+        <option value="zh">中文（简体）</option>
+      </select>
+    </div>
+  </nav>
+</header>
+
 <div class="hero">
-  <div class="eyebrow">Legal</div>
-  <div class="wordmark">macaco</div>
-  <div class="hero-title" id="hero-title">Privacy Policy</div>
-  <div class="badges">
-    <span class="badge" id="hero-date">Updated 19 July 2026</span>
-    <span class="badge">v1.0</span>
+  <div class="hero-band">
+    <div class="eyebrow">Legal</div>
+    <div class="hero-title" id="hero-title"></div>
+    <div class="badges">
+      <span class="badge outline" id="hero-date"></span>
+      <span class="badge">v1.1</span>
+    </div>
   </div>
 </div>
-
-<div class="lang-bar">
-  <span class="lang-lbl">&#127760;</span>
-  <select id="langSelect" onchange="setLang(this.value)">
-    <option value="en">English</option>
-    <option value="de">Deutsch</option>
-    <option value="fr">Français</option>
-    <option value="es">Español</option>
-    <option value="it">Italiano</option>
-    <option value="nl">Nederlands</option>
-    <option value="pt">Português</option>
-    <option value="pl">Polski</option>
-    <option value="sv">Svenska</option>
-    <option value="ja">日本語</option>
-    <option value="zh">中文（简体）</option>
-  </select>
-</div>
-
 <!-- ENGLISH -->
 <div class="lc" data-lang="en">
 <div class="body-wrap">
@@ -598,25 +628,72 @@
 </div>
 </div>
 
-<footer>
-  <span>&copy; 2026 House of Mmminq</span>
-  <a id="tosLink" href="https://mictroid.github.io/macaco/terms-of-service.html">Terms of Service</a>
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="/" style="font-size:16px;"><img src="assets/icon.png" alt="Macaco" style="width:24px;height:24px;"> Macaco</a>
+    <div class="foot-links">
+      <a href="/privacy-policy.html">Privacy Policy</a>
+      <a href="/terms-of-service.html">Terms of Service</a>
+      <a href="#" id="cookie-manage-link"></a>
+    </div>
+    <div class="foot-brand">&copy; 2026 House of MMMinq &middot; Macaco</div>
+  </div>
 </footer>
+
+<div id="cookie-banner" class="cookie-banner" hidden>
+  <p id="cookie-text"></p>
+  <div class="cookie-actions">
+    <button class="decline" id="cookie-decline"></button>
+    <button class="accept" id="cookie-accept"></button>
+  </div>
+</div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RVM8JVVGJZ"></script>
+<script>
+(function(){
+  var GA_ID = 'G-RVM8JVVGJZ';
+  var KEY = 'macaco_consent_v2';
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+  var stored = localStorage.getItem(KEY);
+  var initialState = stored === 'granted' ? 'granted' : 'denied';
+  gtag('consent', 'default', {
+    ad_storage: initialState, ad_user_data: initialState,
+    ad_personalization: initialState, analytics_storage: initialState
+  });
+  gtag('js', new Date());
+  gtag('config', GA_ID, { anonymize_ip: true });
+  var banner = document.getElementById('cookie-banner');
+  if (stored === null && banner) banner.hidden = false;
+  function setConsent(granted){
+    var state = granted ? 'granted' : 'denied';
+    gtag('consent', 'update', {
+      ad_storage: state, ad_user_data: state,
+      ad_personalization: state, analytics_storage: state
+    });
+    localStorage.setItem(KEY, granted ? 'granted' : 'declined');
+    if (banner) banner.hidden = true;
+  }
+  document.getElementById('cookie-accept').addEventListener('click', function(){ setConsent(true); });
+  document.getElementById('cookie-decline').addEventListener('click', function(){ setConsent(false); });
+})();
+</script>
 
 <script>
 var S=['en','de','fr','es','it','nl','pt','pl','sv','ja','zh'];
 var M={
-  en:{t:'Privacy Policy',d:'Updated 19 July 2026'},
-  de:{t:'Datenschutzerklärung',d:'Aktualisiert: 19. Juli 2026'},
-  fr:{t:'Politique de confidentialité',d:'Mis à jour le 19 juillet 2026'},
-  es:{t:'Política de privacidad',d:'Actualizado el 19 de julio de 2026'},
-  it:{t:'Informativa sulla privacy',d:'Aggiornato il 19 luglio 2026'},
-  nl:{t:'Privacybeleid',d:'Bijgewerkt op 19 juli 2026'},
-  pt:{t:'Política de privacidade',d:'Atualizado em 19 de julho de 2026'},
-  pl:{t:'Polityka prywatności',d:'Zaktualizowano 19 lipca 2026'},
-  sv:{t:'Integritetspolicy',d:'Uppdaterad 19 juli 2026'},
-  ja:{t:'プライバシーポリシー',d:'最終更新：2026年7月19日'},
-  zh:{t:'隐私政策',d:'最后更新：2026年7月19日'}
+
+  en:{t:'Privacy Policy',d:'Updated 19 July 2026',ct:'We use Google Analytics, and — for future ad campaigns — Google Ads cookies, to understand site traffic and measure ad performance. Nothing is stored until you accept.',ca:'Accept',cd:'Decline',home:'Home',cm:'Cookie settings',tos:'Terms',pp:'Privacy'},
+  de:{t:'Datenschutzerklärung',d:'Aktualisiert: 19. Juli 2026',ct:'Wir verwenden Google Analytics und – für künftige Werbekampagnen – Google-Ads-Cookies, um den Website-Traffic zu verstehen und die Anzeigenleistung zu messen. Bis zur Zustimmung wird nichts gespeichert.',ca:'Akzeptieren',cd:'Ablehnen',home:'Startseite',cm:'Cookie-Einstellungen',tos:'AGB',pp:'Datenschutz'},
+  fr:{t:'Politique de confidentialité',d:'Mis à jour le 19 juillet 2026',ct:'Nous utilisons Google Analytics et, pour de futures campagnes publicitaires, des cookies Google Ads, afin de comprendre le trafic du site et mesurer les performances publicitaires. Rien n\'est stocké avant votre accord.',ca:'Accepter',cd:'Refuser',home:'Accueil',cm:'Paramètres des cookies',tos:'CGU',pp:'Confidentialité'},
+  es:{t:'Política de privacidad',d:'Actualizado el 19 de julio de 2026',ct:'Usamos Google Analytics y, para futuras campañas publicitarias, cookies de Google Ads, para entender el tráfico del sitio y medir el rendimiento de los anuncios. No se guarda nada hasta que aceptas.',ca:'Aceptar',cd:'Rechazar',home:'Inicio',cm:'Configuración de cookies',tos:'Términos',pp:'Privacidad'},
+  it:{t:'Informativa sulla privacy',d:'Aggiornato il 19 luglio 2026',ct:'Utilizziamo Google Analytics e, per future campagne pubblicitarie, i cookie di Google Ads, per capire il traffico del sito e misurare le prestazioni degli annunci. Nulla viene memorizzato finché non accetti.',ca:'Accetta',cd:'Rifiuta',home:'Home',cm:'Impostazioni cookie',tos:'Termini',pp:'Privacy'},
+  nl:{t:'Privacybeleid',d:'Bijgewerkt op 19 juli 2026',ct:'We gebruiken Google Analytics en, voor toekomstige advertentiecampagnes, Google Ads-cookies om het websiteverkeer te begrijpen en advertentieprestaties te meten. Er wordt niets opgeslagen totdat u accepteert.',ca:'Accepteren',cd:'Weigeren',home:'Home',cm:'Cookie-instellingen',tos:'Voorwaarden',pp:'Privacy'},
+  pt:{t:'Política de privacidade',d:'Atualizado em 19 de julho de 2026',ct:'Utilizamos o Google Analytics e, para futuras campanhas publicitárias, cookies do Google Ads, para compreender o tráfego do site e medir o desempenho dos anúncios. Nada é armazenado até aceitar.',ca:'Aceitar',cd:'Recusar',home:'Início',cm:'Definições de cookies',tos:'Termos',pp:'Privacidade'},
+  pl:{t:'Polityka prywatności',d:'Zaktualizowano 19 lipca 2026',ct:'Używamy Google Analytics oraz, w przyszłych kampaniach reklamowych, plików cookie Google Ads, aby zrozumieć ruch na stronie i mierzyć skuteczność reklam. Nic nie jest zapisywane, dopóki nie wyrazisz zgody.',ca:'Akceptuję',cd:'Odrzuć',home:'Strona główna',cm:'Ustawienia plików cookie',tos:'Warunki',pp:'Prywatność'},
+  sv:{t:'Integritetspolicy',d:'Uppdaterad 19 juli 2026',ct:'Vi använder Google Analytics och, för framtida annonskampanjer, Google Ads-cookies, för att förstå webbplatstrafiken och mäta annonsprestanda. Inget lagras förrän du accepterar.',ca:'Acceptera',cd:'Avvisa',home:'Hem',cm:'Cookie-inställningar',tos:'Villkor',pp:'Integritet'},
+  ja:{t:'プライバシーポリシー',d:'最終更新：2026年7月19日',ct:'サイトのトラフィックを把握し、今後の広告キャンペーンの効果を測定するために、Google アナリティクスと Google 広告のクッキーを使用しています。同意するまで何も保存されません。',ca:'同意する',cd:'拒否する',home:'ホーム',cm:'Cookie設定',tos:'利用規約',pp:'プライバシー'},
+  zh:{t:'隐私政策',d:'最后更新：2026年7月19日',ct:'我们使用 Google Analytics，并将在未来的广告投放中使用 Google Ads Cookie，以了解网站流量并衡量广告效果。在您同意之前，不会存储任何数据。',ca:'接受',cd:'拒绝',home:'首页',cm:'Cookie 设置',tos:'条款',pp:'隐私'}
 };
 function setLang(l){
   if(S.indexOf(l)===-1)l='en';
@@ -625,9 +702,19 @@ function setLang(l){
   var m=M[l]||M.en;
   document.getElementById('hero-title').textContent=m.t;
   document.getElementById('hero-date').textContent=m.d;
-  document.getElementById('tosLink').href='https://mictroid.github.io/macaco/terms-of-service.html'+(l!=='en'?'?lang='+l:'');
+  document.getElementById('homeLink').textContent=m.home;
+  document.getElementById('tosLinkNav').href='/terms-of-service.html'+(l!=='en'?'?lang='+l:'');
+  document.getElementById('tosLinkNav').textContent = m.tos;
+  document.getElementById('cookie-text').textContent=m.ct;
+  document.getElementById('cookie-accept').textContent=m.ca;
+  document.getElementById('cookie-decline').textContent=m.cd;
+  document.getElementById('cookie-manage-link').textContent=m.cm;
   try{history.replaceState(null,'','?lang='+l);}catch(e){}
 }
+document.getElementById('cookie-manage-link').addEventListener('click', function(e){
+  e.preventDefault();
+  document.getElementById('cookie-banner').hidden = false;
+});
 (function(){
   var p=new URLSearchParams(window.location.search).get('lang');
   var b=(navigator.language||'').split('-')[0];
