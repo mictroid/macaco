@@ -475,16 +475,19 @@ class JournalViewModel(
                 if (user != null) LegacyEntryMigration.run(appContext, cloudEntrySync)
             }
         }
-        // When the entry list changes, download any Drive photos missing on this device.
+        // When the entry list changes, download any Drive photos missing on this device. Deliberately
+        // NOT gated on isPurchased: this only restores photos a (possibly now-lapsed) account already
+        // uploaded to Drive while premium — it grants no new capability, and silently showing broken
+        // images for photos the user already owns is worse than letting them keep seeing what they paid
+        // to back up. New uploads and new Drive connections remain premium-gated (saveEntry,
+        // syncPhotosToGoogleDrive, SettingsScreen's DriveBackupCard).
         viewModelScope.launch {
             cloudEntrySync.entries.collect { entryList ->
-                if (isPurchased.value == true) {
-                    drivePhotoSync.downloadMissingPhotos(entryList)
-                    // Photos just cached from Drive — refresh the photo-showing widgets so they
-                    // display them (on a device that didn't add the photo locally).
-                    OnThisDayWidgetProvider.requestUpdate(appContext)
-                    RecentEntriesWidgetProvider.requestUpdate(appContext)
-                }
+                drivePhotoSync.downloadMissingPhotos(entryList)
+                // Photos just cached from Drive — refresh the photo-showing widgets so they
+                // display them (on a device that didn't add the photo locally).
+                OnThisDayWidgetProvider.requestUpdate(appContext)
+                RecentEntriesWidgetProvider.requestUpdate(appContext)
             }
         }
     }
