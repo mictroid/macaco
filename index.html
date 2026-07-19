@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macaco — Private Travel Journal | Photos, Video, Cloud Sync</title>
+<meta name="description" content="Macaco is a private travel journal with photo & video journaling, an adventures map and cloud sync. No ads, no feed, your data never sold.">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<style>
+  :root{
+    --primary:#0E5A6B;
+    --primary-light:#1B96B3;
+    --primary-container:#A6E9F2;
+    --gold:#F2C744;
+    --gold-dark:#7A5A00;
+    --bg:#F4FAFB;
+    --ink:#171D1F;
+    --ink-soft:#3F484B;
+    --outline:#D7E4E7;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.5;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+
+  /* Nav */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(244,250,251,0.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--outline);
+  }
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand img{width:34px;height:34px;border-radius:9px;}
+  nav .links{display:flex;gap:28px;font-size:15px;font-weight:600;}
+  nav .links a{text-decoration:none;color:var(--ink-soft);}
+  nav .links a:hover{color:var(--primary);}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--gold);color:var(--gold-dark);
+    padding:12px 22px;border-radius:999px;
+    font-weight:700;font-size:15px;text-decoration:none;
+    box-shadow:0 6px 18px rgba(122,90,0,0.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+    border:none;cursor:pointer;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(122,90,0,0.32);}
+  .btn.small{padding:9px 18px;font-size:14px;}
+  .gold-underline{position:relative;color:var(--ink);}
+  .gold-underline::after{
+    content:"";position:absolute;left:2px;right:2px;bottom:2px;height:10px;
+    background:var(--gold);opacity:0.55;z-index:-1;border-radius:3px;
+  }
+
+  /* Hero */
+  .hero{padding:76px 0 40px;}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--primary-container);color:var(--primary);
+    padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;
+    margin-bottom:18px;
+  }
+  .hero h1{font-size:46px;line-height:1.1;margin:0 0 18px;font-weight:800;letter-spacing:-0.5px;}
+  .hero p.lead{font-size:19px;color:var(--ink-soft);margin:0 0 28px;max-width:480px;}
+  .cta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .store-badge{height:54px;}
+  .hero-visual{position:relative;display:flex;justify-content:center;}
+  .shot{
+    width:260px;border-radius:28px;
+    box-shadow:0 30px 60px rgba(14,90,107,0.28);
+    overflow:hidden;
+  }
+  .shot img{display:block;width:100%;}
+  .phone{
+    width:260px;border-radius:36px;border:10px solid #101418;
+    box-shadow:0 30px 60px rgba(14,90,107,0.28);
+    overflow:hidden;background:#101418;
+  }
+  .phone img{display:block;width:100%;}
+  .blob{
+    position:absolute;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, var(--primary-container), transparent 70%);
+    z-index:-1;top:-60px;right:-40px;
+  }
+
+  /* Sections */
+  section{padding:64px 0;}
+  .section-head{text-align:center;max-width:640px;margin:0 auto 48px;}
+  .section-head h2{font-size:32px;margin:0 0 12px;font-weight:800;letter-spacing:-0.3px;}
+  .section-head p{color:var(--ink-soft);font-size:17px;margin:0;}
+
+  .feature-row{
+    display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;
+    padding:56px 0;border-top:1px solid var(--outline);
+  }
+  .feature-row:first-of-type{border-top:none;}
+  .feature-row.reverse .feature-text{order:2;}
+  .feature-row.reverse .feature-media{order:1;}
+  .feature-media{display:flex;justify-content:center;}
+  .feature-media .phone{width:230px;border-width:8px;box-shadow:0 20px 40px rgba(14,90,107,0.18);}
+  .feature-media .shot{width:230px;box-shadow:0 20px 40px rgba(14,90,107,0.18);}
+  .badge-new{
+    display:inline-block;background:var(--gold);color:var(--gold-dark);
+    font-size:12px;font-weight:800;padding:4px 10px;border-radius:6px;
+    letter-spacing:0.5px;margin-bottom:12px;
+  }
+  .feature-text h3{font-size:26px;margin:0 0 12px;font-weight:800;}
+  .feature-text p{color:var(--ink-soft);font-size:16px;margin:0;}
+  .feature-icon{font-size:34px;margin-bottom:10px;display:block;}
+
+  /* Strip of small features */
+  .mini-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  }
+  .mini-card{
+    background:#fff;border:1px solid var(--outline);border-radius:var(--radius);
+    padding:26px 22px;
+  }
+  .mini-card .ico{
+    font-size:22px;margin-bottom:14px;
+    width:44px;height:44px;border-radius:12px;
+    background:var(--secondaryContainer,#FFE08A);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .mini-card h4{margin:0 0 8px;font-size:17px;font-weight:800;}
+  .mini-card p{margin:0;font-size:14.5px;color:var(--ink-soft);}
+
+  /* Privacy band */
+  .privacy-band{
+    background:linear-gradient(135deg,var(--primary) 0%, var(--primary-light) 100%);
+    color:#fff;border-radius:28px;padding:56px 48px;
+    display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:center;
+  }
+  .privacy-band h2{font-size:30px;margin:0 0 14px;font-weight:800;}
+  .privacy-band p{opacity:0.92;font-size:16px;margin:0 0 20px;}
+  .check-list{list-style:none;margin:0;padding:0;display:grid;gap:12px;}
+  .check-list li{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px;}
+  .check-list li::before{content:"✓";flex:none;width:22px;height:22px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .privacy-media{display:flex;justify-content:center;}
+  .privacy-media .phone{width:200px;border-color:rgba(255,255,255,0.2);}
+  .privacy-visual{position:relative;width:200px;height:200px;}
+  .privacy-visual img{width:100%;height:100%;border-radius:44px;box-shadow:0 20px 50px rgba(0,0,0,0.35);}
+  .lock-badge{
+    position:absolute;bottom:-10px;right:-10px;
+    width:64px;height:64px;border-radius:50%;
+    background:var(--gold);color:var(--gold-dark);
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;border:4px solid var(--primary);
+  }
+
+  /* Premium */
+  .premium-card{
+    background:#fff;border:1px solid var(--outline);border-top:4px solid var(--gold);
+    border-radius:28px;
+    padding:48px;text-align:center;max-width:760px;margin:0 auto;
+    box-shadow:0 20px 50px rgba(14,90,107,0.08);
+  }
+  .premium-card .eyebrow{background:var(--gold);color:var(--gold-dark);}
+  .premium-card h2{font-size:30px;margin:6px 0 10px;font-weight:800;}
+  .premium-card p.sub{color:var(--ink-soft);font-size:16px;margin:0 0 32px;}
+  .premium-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:14px;text-align:left;
+    margin:0 0 34px;
+  }
+  .premium-grid div{
+    display:flex;gap:10px;align-items:center;font-size:15px;font-weight:600;
+    background:var(--bg);border-radius:12px;padding:12px 14px;
+  }
+
+  footer{border-top:1px solid var(--outline);padding:40px 0;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .foot-links{display:flex;gap:24px;font-size:14px;color:var(--ink-soft);flex-wrap:wrap;}
+  .foot-links a{text-decoration:none;}
+  .foot-links a:hover{color:var(--primary);}
+  .foot-brand{font-size:13px;color:var(--ink-soft);}
+
+  @media (max-width: 880px){
+    .hero .wrap{grid-template-columns:1fr;}
+    .hero{padding:44px 0 20px;text-align:center;}
+    .hero p.lead{margin:0 auto 28px;}
+    .cta-row{justify-content:center;}
+    .hero-visual{order:-1;margin-bottom:20px;}
+    .feature-row{grid-template-columns:1fr;text-align:center;}
+    .feature-row.reverse .feature-text{order:1;}
+    .feature-row.reverse .feature-media{order:2;}
+    .mini-grid{grid-template-columns:repeat(2,1fr);}
+    .privacy-band{grid-template-columns:1fr;text-align:center;padding:40px 28px;}
+    .check-list li{justify-content:center;}
+    .premium-grid{grid-template-columns:1fr;}
+    nav .links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a class="brand" href="#top"><img src="assets/icon.png" alt="Macaco"> Macaco</a>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#premium">Premium</a>
+    </div>
+    <a class="btn small" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Get it on Google Play</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow">🐒 Private travel journal</span>
+        <h1>Roam freely.<br><span class="gold-underline">Forget nothing.</span></h1>
+        <p class="lead">Macaco is a private travel journal and trip diary — photos, video, an adventures map and cloud sync. No ads, no feed, and your data is never sold.</p>
+        <div class="cta-row">
+          <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">
+            <img class="store-badge" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play">
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="blob"></div>
+        <div class="shot"><img src="assets/macaco-feature-journal.jpg" alt="Macaco journal screen — every trip organised by region, trip and date"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Everything a trip deserves</h2>
+        <p>Not just a list of dates and places — a real record of what a trip actually felt like.</p>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-text">
+          <span class="badge-new">NEW</span>
+          <h3>🎬 Bring your memories to life with video</h3>
+          <p>Some moments need more than a photo. Add up to 3 video clips of 15 seconds to every entry — the street musician, the waves, the toast at dinner. Trim them right in the app, and they back up to your Google Drive just like your photos.</p>
+        </div>
+        <div class="feature-media">
+          <div class="shot"><img src="assets/macaco-feature-new-entry.jpg" alt="Logging a new Macaco entry with photo, video, mood, location and tags"></div>
+        </div>
+      </div>
+
+      <div class="feature-row reverse">
+        <div class="feature-text">
+          <h3>🎞️ The Adventure Reel</h3>
+          <p>Turn any trip into a shareable mini-movie. One tap builds a beautiful vertical slideshow from your trip photos — smooth pan-and-zoom, elegant transitions, location and date overlays — ready for WhatsApp, Instagram or the family group chat.</p>
+        </div>
+        <div class="feature-media">
+          <div class="shot"><img src="assets/macaco-feature-reel.jpg" alt="Macaco Adventure Reel — auto-generated highlight video"></div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-text">
+          <h3>✍️ Capture every trip</h3>
+          <p>Write entries the way you remember them: the food, the chaos, the quiet sunset nobody else saw. Add photos, tag your mood, pin the location. Too tired to type? Tap the mic and dictate — speech-to-text turns your voice into your journal.</p>
+        </div>
+        <div class="feature-media">
+          <div class="shot"><img src="assets/macaco-feature-entry-patagonia.jpg" alt="A Macaco journal entry from a trip to Patagonia"></div>
+        </div>
+      </div>
+
+      <div class="feature-row reverse">
+        <div class="feature-text">
+          <h3>🗺️ The Adventures Map</h3>
+          <p>Every place you've ever logged, on one beautiful map. Tap a pin and travel straight back to that moment. Barcelona. Bangkok. That tiny café nobody else knew about.</p>
+        </div>
+        <div class="feature-media">
+          <div class="shot"><img src="assets/macaco-feature-adventures.jpg" alt="Macaco adventures map — every trip automatically pinned"></div>
+        </div>
+      </div>
+
+      <div class="mini-grid">
+        <div class="mini-card">
+          <span class="ico">☁️</span>
+          <h4>Cloud sync + Drive backup</h4>
+          <p>Sign in on any device and your journal is waiting. Photos and videos back up to your own Google Drive.</p>
+        </div>
+        <div class="mini-card">
+          <span class="ico">📅</span>
+          <h4>On This Day</h4>
+          <p>Rediscover what you were doing one, two or five years ago. Small time machine, big smiles.</p>
+        </div>
+        <div class="mini-card">
+          <span class="ico">🔔</span>
+          <h4>Reminders that make sense</h4>
+          <p>Instead of a generic ping, Macaco nudges you with your own journey: "Still thinking about Bangkok?"</p>
+        </div>
+        <div class="mini-card">
+          <span class="ico">💾</span>
+          <h4>Your data, portable</h4>
+          <p>Export your complete journal — entries and photos — as a single backup file, anytime. No lock-in, ever.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy">
+    <div class="wrap">
+      <div class="privacy-band">
+        <div>
+          <span class="eyebrow" style="background:rgba(255,255,255,0.18);color:#fff;">🔒 Private by design</span>
+          <h2>A diary should be yours alone.</h2>
+          <p>Turn on App Lock to keep curious eyes out. This isn't a social feed — it's your journal.</p>
+          <ul class="check-list">
+            <li>No ads, ever</li>
+            <li>No feed, no algorithm</li>
+            <li>No ad tracking</li>
+            <li>Your data is never sold or shared</li>
+            <li>App Lock keeps your journal private on-device</li>
+          </ul>
+        </div>
+        <div class="privacy-media">
+          <div class="phone"><img src="assets/settings_privacy.jpg" alt="Macaco privacy settings — App Lock, App Permissions and Google Drive Backup controls"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="premium">
+    <div class="wrap">
+      <div class="premium-card">
+        <span class="eyebrow">⭐ Premium</span>
+        <h2>Start free. Upgrade when you're ready.</h2>
+        <p class="sub">Try Premium with a 7-day free trial on the Annual plan — no charge if you cancel.</p>
+        <div class="premium-grid">
+          <div>🌍 Unlimited journal entries</div>
+          <div>📸 Photos on every memory</div>
+          <div>🎬 Up to 3 videos (15s) per entry</div>
+          <div>🎞️ Adventure Reels</div>
+          <div>☁️ Cloud sync + Drive backup</div>
+          <div>🗺️ Adventures map</div>
+          <div>🔒 App Lock</div>
+          <div>🚫 Zero ads — not now, not ever</div>
+        </div>
+        <a class="btn" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Get Macaco free</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top" style="font-size:17px;"><img src="assets/icon.png" alt="Macaco" style="width:26px;height:26px;"> Macaco</a>
+    <div class="foot-links">
+      <a href="/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>
+      <a href="/terms-of-service.html" target="_blank" rel="noopener">Terms of Service</a>
+      <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Download</a>
+    </div>
+    <div class="foot-brand">© 2026 House of MMMinq · Macaco</div>
+  </div>
+</footer>
+
+</body>
+</html>
