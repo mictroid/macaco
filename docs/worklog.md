@@ -2,6 +2,22 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-20 — two follow-up bugfix briefs implemented on branches, PRs open (not yet on master)
+
+Automated scheduled-task run implemented both briefs left in `docs/` after vc74 shipped, each on
+its own branch with its own PR (not merged/shipped yet — pending review):
+
+- `feature/drive-dedupe-position-collision` → [PR #1](https://github.com/mictroid/macaco/pull/1):
+  fixes the vc74 Drive-dedupe fix reassigning a still-present photo/video's Drive file to a new one
+  after a delete-then-add/reorder shifts array positions. `DrivePhotoSync.kt` only.
+- `feature/photo-fallback-premium-lapse` → [PR #2](https://github.com/mictroid/macaco/pull/2):
+  stops gating the passive Drive photo *download* (restore) behind `isPurchased`, so photos already
+  backed up while premium don't go broken once premium/trial lapses. Upload/connect paths stay
+  premium-gated. `JournalViewModel.kt` only.
+
+Both briefs moved to `docs/DONE/`. `./gradlew compileDebugKotlin` passes on both branches
+independently. Neither has been verified on-device yet — do that before merging/shipping.
+
 ## 2026-07-19 — vc74 (1.6) — SHIPPED ✅ CONFIRMED SUCCESS — WIF run `29682067148`, commit `2213046`
 
 Pushed + dispatched 11:42:57 +0200, `origin == HEAD` == `2213046` (from local commit `eb1fe93`
