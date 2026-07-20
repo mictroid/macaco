@@ -70,6 +70,16 @@
   nav .links{display:flex;gap:28px;font-size:15px;font-weight:600;}
   nav .links a{text-decoration:none;color:var(--ink-soft);}
   nav .links a:hover{color:var(--primary);}
+  .lang-dropdown{position:relative;}
+  .lang-dropdown summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--ink-soft);padding:8px 12px;border:1px solid var(--outline);border-radius:999px;}
+  .lang-dropdown summary::-webkit-details-marker{display:none;}
+  .lang-dropdown summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-top:-4px;}
+  .lang-dropdown summary:hover{color:var(--primary);border-color:var(--primary-light);}
+  .lang-dropdown[open] summary{color:var(--primary);border-color:var(--primary-light);}
+  .lang-dropdown .menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--outline);border-radius:14px;box-shadow:0 12px 32px rgba(23,29,31,0.16);padding:8px;min-width:180px;display:grid;grid-template-columns:1fr 1fr;gap:2px;z-index:60;}
+  .lang-dropdown .menu a{display:block;padding:8px 10px;border-radius:8px;font-size:13.5px;color:var(--ink-soft);text-decoration:none;font-weight:600;white-space:nowrap;}
+  .lang-dropdown .menu a:hover{background:var(--bg);color:var(--primary);}
+  .lang-dropdown .menu a.current{color:var(--primary);background:var(--primary-container);}
   .btn{
     display:inline-flex;align-items:center;gap:8px;
     background:var(--gold);color:var(--gold-dark);
@@ -225,17 +235,6 @@
   .cookie-actions .decline{background:var(--bg);color:var(--ink-soft);border:1px solid var(--outline);}
   @media (max-width:520px){.cookie-banner{flex-direction:column;align-items:stretch;text-align:center;}}
 
-  @media (prefers-color-scheme: dark){
-    :root{
-      --primary:#4FC3D9;--primary-light:#7DD4E6;--primary-container:#123C46;
-      --gold:#F2C744;--gold-dark:#7A5A00;--bg:#0F1417;--ink:#EDEDED;
-      --ink-soft:#A9B4B7;--outline:#2A3438;
-    }
-    header{background:rgba(15,20,23,0.85);}
-    .mini-card{background:#171D1F;}
-    .premium-card{background:#171D1F;box-shadow:0 20px 50px rgba(0,0,0,0.4);}
-    .cookie-banner{background:#171D1F;box-shadow:0 12px 32px rgba(0,0,0,0.4);}
-  }
 
   @media (max-width: 880px){
     .hero .wrap{grid-template-columns:1fr;}
@@ -251,6 +250,7 @@
     .check-list li{justify-content:center;}
     .premium-grid{grid-template-columns:1fr;}
     nav .links{display:none;}
+    .lang-dropdown .menu{grid-template-columns:1fr;right:auto;left:0;}
   }
 </style>
 <script type="application/ld+json">
@@ -295,9 +295,53 @@
       <a href="#privacy">Privacy</a>
       <a href="#premium">Premium</a>
     </div>
+    <details class="lang-dropdown" id="lang-dropdown">
+      <summary>EN</summary>
+      <div class="menu">
+        <a href="/" class="current">English</a>
+        <a href="/de/">Deutsch</a>
+        <a href="/es/">Español</a>
+        <a href="/fr/">Français</a>
+        <a href="/it/">Italiano</a>
+        <a href="/ja/">日本語</a>
+        <a href="/nl/">Nederlands</a>
+        <a href="/pl/">Polski</a>
+        <a href="/pt/">Português</a>
+        <a href="/sv/">Svenska</a>
+        <a href="/zh/">中文</a>
+      </div>
+    </details>
     <a class="btn small" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Get it on Google Play</a>
   </nav>
 </header>
+<script>
+  document.addEventListener('click', function(e){
+    var d = document.getElementById('lang-dropdown');
+    if (d && d.open && !d.contains(e.target)) d.open = false;
+    var link = e.target.closest && e.target.closest('.lang-dropdown .menu a');
+    if (link) {
+      try { localStorage.setItem('macacoLangChoice', link.getAttribute('href')); } catch (err) {}
+    }
+  });
+</script>
+<script>
+  (function(){
+    try {
+      if (localStorage.getItem('macacoLangRedirected')) return;
+      localStorage.setItem('macacoLangRedirected', '1');
+      if (localStorage.getItem('macacoLangChoice')) return;
+      var supported = ['de','es','fr','it','ja','nl','pl','pt','sv','zh'];
+      var langs = navigator.languages || [navigator.language || navigator.userLanguage || ''];
+      for (var i = 0; i < langs.length; i++) {
+        var primary = (langs[i] || '').split('-')[0].toLowerCase();
+        if (supported.indexOf(primary) !== -1) {
+          window.location.href = '/' + primary + '/';
+          return;
+        }
+      }
+    } catch (err) {}
+  })();
+</script>
 
 <main id="top">
 
@@ -419,6 +463,7 @@
             <li>Your data is never sold or shared</li>
             <li>App Lock keeps your journal private on-device</li>
           </ul>
+          <p style="margin-top:16px;"><a href="/guide/best-private-travel-journal-apps/" style="color:#fff;text-decoration:underline;font-weight:600;">See how Macaco compares to Polarsteps, FindPenguins &amp; Day One on privacy →</a></p>
         </div>
         <div class="privacy-media">
           <div class="phone"><img src="assets/settings_privacy.jpg" alt="Macaco privacy settings — App Lock, App Permissions and Google Drive Backup controls"></div>
@@ -454,11 +499,11 @@
   <div class="wrap">
     <a class="brand" href="#top" style="font-size:17px;"><img src="assets/icon.png" alt="Macaco" style="width:26px;height:26px;"> Macaco</a>
     <div class="foot-links">
+      <a href="/guide/best-private-travel-journal-apps/">Privacy Comparison Guide</a>
       <a href="/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>
       <a href="/terms-of-service.html" target="_blank" rel="noopener">Terms of Service</a>
       <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Download</a>
     </div>
-    <div class="lang-switch"><strong>EN</strong> · <a href="/de/">DE</a> · <a href="/es/">ES</a> · <a href="/fr/">FR</a> · <a href="/it/">IT</a> · <a href="/ja/">JA</a> · <a href="/nl/">NL</a> · <a href="/pl/">PL</a> · <a href="/pt/">PT</a> · <a href="/sv/">SV</a> · <a href="/zh/">ZH</a></div>
     <div class="foot-brand">© 2026 House of MMMinq · Macaco · <a href="#" id="cookie-manage" style="text-decoration:underline;">Cookie settings</a></div>
   </div>
 </footer>

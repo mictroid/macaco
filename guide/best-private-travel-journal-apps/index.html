@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Travel Journal App Protects Your Privacy? | Macaco</title>
+<meta name="description" content="An honest privacy comparison of Macaco, Polarsteps, FindPenguins, and Day One — ads, social feeds, encryption, and where your data actually goes.">
+<link rel="icon" type="image/png" href="../../assets/icon.png">
+<link rel="canonical" href="https://getmacaco.com/guide/best-private-travel-journal-apps/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Macaco">
+<meta property="og:url" content="https://getmacaco.com/guide/best-private-travel-journal-apps/">
+<meta property="og:title" content="Which Travel Journal App Protects Your Privacy? | Macaco">
+<meta property="og:description" content="An honest privacy comparison of Macaco, Polarsteps, FindPenguins, and Day One — ads, social feeds, encryption, and where your data actually goes.">
+<meta property="og:image" content="https://getmacaco.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Which Travel Journal App Protects Your Privacy? | Macaco">
+<meta name="twitter:description" content="An honest privacy comparison of Macaco, Polarsteps, FindPenguins, and Day One — ads, social feeds, encryption, and where your data actually goes.">
+<meta name="twitter:image" content="https://getmacaco.com/assets/og-image.png">
+<style>
+  :root{
+    --primary:#0E5A6B;
+    --primary-light:#1B96B3;
+    --primary-container:#A6E9F2;
+    --gold:#F2C744;
+    --gold-dark:#7A5A00;
+    --bg:#F4FAFB;
+    --ink:#171D1F;
+    --ink-soft:#3F484B;
+    --outline:#D7E4E7;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.6;
+  }
+  a{color:var(--primary);}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px;}
+
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(244,250,251,0.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--outline);
+  }
+  nav.wrap{max-width:1120px;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;color:var(--ink);}
+  .brand img{width:34px;height:34px;border-radius:9px;}
+  nav .links{display:flex;gap:28px;font-size:15px;font-weight:600;}
+  nav .links a{text-decoration:none;color:var(--ink-soft);}
+  nav .links a:hover{color:var(--primary);}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--gold);color:var(--gold-dark);
+    padding:12px 22px;border-radius:999px;
+    font-weight:700;font-size:15px;text-decoration:none;
+    box-shadow:0 6px 18px rgba(122,90,0,0.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+    border:none;cursor:pointer;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(122,90,0,0.32);}
+  .btn.small{padding:9px 18px;font-size:14px;}
+
+  article{padding:56px 0 24px;}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--primary-container);color:var(--primary);
+    padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;
+    margin-bottom:18px;
+  }
+  h1{font-size:38px;line-height:1.15;margin:0 0 16px;font-weight:800;letter-spacing:-0.5px;}
+  .dek{font-size:19px;color:var(--ink-soft);margin:0 0 8px;}
+  .byline{font-size:14px;color:var(--ink-soft);margin:0 0 40px;}
+  h2{font-size:27px;margin:48px 0 16px;font-weight:800;letter-spacing:-0.3px;}
+  h3{font-size:20px;margin:32px 0 10px;font-weight:800;}
+  p{font-size:16.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .lede{font-size:18px;color:var(--ink);}
+  ul.plain{margin:0 0 16px;padding-left:22px;color:var(--ink-soft);font-size:16.5px;}
+  ul.plain li{margin-bottom:6px;}
+
+  /* Comparison table */
+  .table-wrap{overflow-x:auto;margin:24px 0 40px;border-radius:var(--radius);border:1px solid var(--outline);}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;}
+  th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--outline);white-space:nowrap;}
+  thead th{background:var(--primary);color:#fff;font-weight:700;}
+  thead th:first-child{border-top-left-radius:var(--radius);}
+  thead th:last-child{border-top-right-radius:var(--radius);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody th{font-weight:700;color:var(--ink);background:var(--bg);}
+  td.yes{color:#1B7A3D;font-weight:700;}
+  td.no{color:#B00020;font-weight:700;}
+  td.partial{color:var(--gold-dark);font-weight:700;}
+  .macaco-col{background:var(--primary-container);}
+  thead th.macaco-col{background:var(--primary-light);}
+
+  .app-card{
+    background:#fff;border:1px solid var(--outline);border-radius:var(--radius);
+    padding:28px 30px;margin:0 0 20px;
+  }
+  .app-card h3{margin-top:0;}
+  .verdict{
+    background:linear-gradient(135deg,var(--primary) 0%, var(--primary-light) 100%);
+    color:#fff;border-radius:28px;padding:40px 36px;margin:40px 0;
+  }
+  .verdict h2{color:#fff;margin-top:0;}
+  .verdict p{color:rgba(255,255,255,0.92);}
+
+  .faq-item{border-top:1px solid var(--outline);padding:20px 0;}
+  .faq-item:first-child{border-top:none;}
+  .faq-item h3{margin:0 0 8px;font-size:17px;}
+  .faq-item p{margin:0;}
+
+  .cta-band{
+    background:#fff;border:1px solid var(--outline);border-top:4px solid var(--gold);
+    border-radius:28px;padding:40px;text-align:center;margin:48px 0 20px;
+  }
+  .cta-band h2{margin-top:0;}
+  .store-badge{height:54px;margin:8px auto 0;}
+
+  footer{border-top:1px solid var(--outline);padding:40px 0;}
+  footer .wrap{max-width:1120px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .foot-links{display:flex;gap:24px;font-size:14px;color:var(--ink-soft);flex-wrap:wrap;}
+  .foot-links a{text-decoration:none;}
+  .foot-links a:hover{color:var(--primary);}
+  .foot-brand{font-size:13px;color:var(--ink-soft);}
+
+
+  @media (max-width:600px){
+    nav .links{display:none;}
+    h1{font-size:30px;}
+    .verdict,.app-card,.cta-band{padding:26px 22px;}
+  }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Which Travel Journal App Protects Your Privacy?",
+  "description": "An honest privacy comparison of Macaco, Polarsteps, FindPenguins, and Day One — ads, social feeds, encryption, and where your data actually goes.",
+  "image": "https://getmacaco.com/assets/og-image.png",
+  "datePublished": "2026-07-20",
+  "dateModified": "2026-07-20",
+  "author": {
+    "@type": "Organization",
+    "name": "Macaco",
+    "url": "https://getmacaco.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Macaco",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://getmacaco.com/assets/icon.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://getmacaco.com/guide/best-private-travel-journal-apps/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is Polarsteps private?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Polarsteps doesn't use ad-tracking cookies, is GDPR-compliant, and its privacy policy states it has never sold personal data. By default a new trip is visible only to your followers, not the public — but the app is still built around sharing: automatic route tracking, a followers/following system, and public trip visibility are all first-class features you opt into (or out of) trip by trip. It's private in the sense of not selling data or using ad trackers, but not private in the sense of staying off a feed by design."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Macaco have end-to-end encryption?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Macaco has App Lock, which requires biometric or PIN authentication to open the app on your device, and it never sells or shares your data. But entries are not end-to-end encrypted in transit or storage the way Day One's are. If E2EE is your top priority, Day One currently offers a stronger technical guarantee there."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Day One available on Android?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Day One's own Play Store listing advertises the same core feature set on Android as iOS — unlimited photos and video, voice recording, end-to-end encryption — gated behind the same Silver/Gold plans. Day One has a long-running reputation for shipping new features on iOS first, and Android's sync still runs through Day One's own proprietary cloud rather than your Google Drive; Android does support a secondary text-only backup to Drive, but that doesn't include photos."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which travel journal app doesn't have a social feed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Macaco and Day One are both built as private journals with no feed and no following system. Polarsteps and FindPenguins are both designed around sharing trips publicly or with followers by default."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a class="brand" href="/"><img src="../../assets/icon.png" alt="Macaco" width="34" height="34"> Macaco</a>
+    <div class="links">
+      <a href="/#features">Features</a>
+      <a href="/#privacy">Privacy</a>
+      <a href="/#premium">Premium</a>
+    </div>
+    <a class="btn small" href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Get it on Google Play</a>
+  </nav>
+</header>
+
+<main>
+  <article class="wrap">
+    <span class="kicker">🔒 Privacy comparison</span>
+    <h1>Which travel journal app actually protects your privacy?</h1>
+    <p class="dek">"Private" gets used loosely in app store listings. Here's what four popular travel journal apps — Macaco, Polarsteps, FindPenguins, and Day One — actually do with your trips, your photos, and your data, based on their own privacy policies and public documentation.</p>
+    <p class="byline">Macaco team · Updated July 2026</p>
+
+    <p class="lede">We built Macaco, so read this with that in mind — but we've tried to be accurate rather than flattering, including about where Macaco falls short. If something here is wrong or out of date, we'd genuinely like to know.</p>
+
+    <h2>The quick comparison</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th class="macaco-col">Macaco</th>
+            <th>Polarsteps</th>
+            <th>FindPenguins</th>
+            <th>Day One</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>No ads</th>
+            <td class="yes macaco-col">Yes</td>
+            <td class="yes">Yes</td>
+            <td class="yes">Yes</td>
+            <td class="yes">Yes</td>
+          </tr>
+          <tr>
+            <th>Public/social feed by default</th>
+            <td class="no macaco-col">No</td>
+            <td class="partial">Trips shareable, tracking built for it</td>
+            <td class="partial">Built as a following/social feed</td>
+            <td class="no">No</td>
+          </tr>
+          <tr>
+            <th>End-to-end encryption</th>
+            <td class="no macaco-col">No</td>
+            <td class="no">No</td>
+            <td class="no">No</td>
+            <td class="yes">Yes, all tiers</td>
+          </tr>
+          <tr>
+            <th>Data sold to third parties</th>
+            <td class="yes macaco-col">Never</td>
+            <td class="yes">No — stated in policy</td>
+            <td class="yes">No — stated in policy</td>
+            <td class="yes">No — per Play Data Safety</td>
+          </tr>
+          <tr>
+            <th>Backs up to your own Google Drive</th>
+            <td class="yes macaco-col">Yes</td>
+            <td class="no">No</td>
+            <td class="no">No</td>
+            <td class="no">No (text-only Drive backup exists; photos don't sync there)</td>
+          </tr>
+          <tr>
+            <th>Platform</th>
+            <td class="macaco-col">Android</td>
+            <td>Android, iOS, Web</td>
+            <td>Android, iOS</td>
+            <td>iOS, Android, Mac, Windows, Web</td>
+          </tr>
+          <tr>
+            <th>Starting price</th>
+            <td class="macaco-col">Free, premium optional</td>
+            <td>Free</td>
+            <td>Free, premium ~$4.99/mo</td>
+            <td>Free (limited), Silver $49.99/yr</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13.5px;">"No" on data sales is sourced directly from each app's own privacy policy (Polarsteps, FindPenguins) or its Google Play Data Safety label (Day One) as of July 2026. Policies change — check the current version before relying on this table for a decision.</p>
+
+    <h2>App by app</h2>
+
+    <div class="app-card">
+      <h3>Macaco — private by design, Android-native</h3>
+      <p>Macaco has no ads, no social feed, and no following system — it's a journal, not a place to broadcast trips. Entries sync to your account, and photos and videos back up to a Macaco folder inside <strong>your own</strong> Google Drive, not a third-party server you don't control. App Lock adds biometric or PIN protection so the app itself stays closed to anyone else holding your phone.</p>
+      <p>Where Macaco doesn't lead: it isn't end-to-end encrypted, and it's Android-only right now. If encryption or iOS support is the deciding factor for you, that's worth knowing upfront rather than finding out later.</p>
+    </div>
+
+    <div class="app-card">
+      <h3>Polarsteps — free and GDPR-compliant, but built to be shared</h3>
+      <p>Polarsteps doesn't use ad-tracking cookies, is GDPR-compliant, only tracks your route with consent, and its privacy policy states it has never sold personal data. But the core product is automatic route tracking designed to be followed by friends and family, with recommendations generated from your location data. If you want a private, offline-feeling diary rather than a shareable travel map, that's a different product goal than what Polarsteps is built for.</p>
+    </div>
+
+    <div class="app-card">
+      <h3>FindPenguins — a social network for travelers first</h3>
+      <p>FindPenguins is explicit about what it is: a following feed built around "footprints" — public or friends-visible posts with photos and text. It integrates with several third-party services (payment processors, printing, maps) to run its social and print-book features. If you're looking for the most private option in this list, FindPenguins' entire design points the opposite direction — toward sharing, not away from it.</p>
+    </div>
+
+    <div class="app-card">
+      <h3>Day One — the strongest encryption here, with an iOS-first history</h3>
+      <p>Credit where it's due: Day One has genuine end-to-end encryption (AES-GCM-256), on by default since 2019 and reviewed by an independent security firm (nVisium) — a stronger technical privacy guarantee than anything else in this comparison, including Macaco. Its Play Store listing shows Android now covers the same core features as iOS (unlimited photos and video, voice recording), gated behind the same paid tiers, though the app has a long-running reputation among users for iOS getting new features first. Where it doesn't match Macaco: photos aren't backed up to your own Google Drive — sync runs through Day One's own proprietary cloud, with only a text-only export to Drive as a secondary option. Multi-device sync and unlimited photos require Silver at $49.99/year.</p>
+    </div>
+
+    <div class="verdict">
+      <h2>So which one should you use?</h2>
+      <p><strong>Want the strongest encryption and don't mind paying for it or living with the Android trade-offs:</strong> Day One.</p>
+      <p><strong>Want to track and share a trip publicly with friends and family as you go:</strong> Polarsteps or FindPenguins — that's what they're built for, and they do it well.</p>
+      <p><strong>Want an Android-native journal with no feed, no ads, your own Google Drive as the backup, and travel-specific features like an auto-generated highlight reel and an adventures map — and are comfortable that "private" here means no ads/no feed/no data sale rather than end-to-end encryption:</strong> that's Macaco.</p>
+    </div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item">
+      <h3>Is Polarsteps private?</h3>
+      <p>Polarsteps doesn't use ad-tracking cookies, is GDPR-compliant, and its privacy policy states it has never sold personal data. By default a new trip is visible only to your followers, not the public — but the app is still built around sharing: automatic route tracking, a followers/following system, and public trip visibility are all first-class features you opt into (or out of) trip by trip. It's private in the sense of not selling data or using ad trackers, but not private in the sense of staying off a feed by design.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Does Macaco have end-to-end encryption?</h3>
+      <p>No. Macaco has App Lock, which requires biometric or PIN authentication to open the app on your device, and it never sells or shares your data. But entries are not end-to-end encrypted in transit or storage the way Day One's are. If E2EE is your top priority, Day One currently offers a stronger technical guarantee there.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Is Day One available on Android?</h3>
+      <p>Yes. Day One's own Play Store listing advertises the same core feature set on Android as iOS — unlimited photos and video, voice recording, end-to-end encryption — gated behind the same Silver/Gold plans. Day One has a long-running reputation for shipping new features on iOS first, and Android's sync still runs through Day One's own proprietary cloud rather than your Google Drive; Android does support a secondary text-only backup to Drive, but that doesn't include photos.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Which travel journal app doesn't have a social feed?</h3>
+      <p>Macaco and Day One are both built as private journals with no feed and no following system. Polarsteps and FindPenguins are both designed around sharing trips publicly or with followers by default.</p>
+    </div>
+
+    <div class="cta-band">
+      <h2>Try Macaco free</h2>
+      <p>No ads, no feed, no credit card required to start.</p>
+      <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">
+        <img class="store-badge" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" width="646" height="250">
+      </a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="/" style="font-size:17px;"><img src="../../assets/icon.png" alt="Macaco" width="26" height="26" style="width:26px;height:26px;"> Macaco</a>
+    <div class="foot-links">
+      <a href="/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>
+      <a href="/terms-of-service.html" target="_blank" rel="noopener">Terms of Service</a>
+      <a href="https://play.google.com/store/apps/details?id=com.houseofmmminq.macaco" target="_blank" rel="noopener">Download</a>
+    </div>
+    <div class="foot-brand">© 2026 House of MMMinq · Macaco</div>
+  </div>
+</footer>
+
+</body>
+</html>
