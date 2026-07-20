@@ -2,6 +2,23 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-20 — widget meta-merge + Verify Email branding — commit `7ab4c40` on master (not pushed)
+
+Implements `docs/DONE/code-brief-recent-entries-widget-meta-merge.md` and
+`docs/DONE/code-brief-verify-email-branding.md`. Cosmetic/UI-only, versionCode unchanged at 75
+(1.7), not shipped.
+
+- Recent Entries widget: mood/weather/tag now merge onto the location · date subtitle line;
+  removed the separate meta row (`widget_recent_entry_item.xml`, `RecentEntriesWidgetService.kt`).
+- Verify Email screen: swapped the generic email icon for the full `ic_launcher_foreground` brand
+  mark (96dp) + "macaco" wordmark, echoing `SplashScreen.kt`; warmed up title/subtitle copy across
+  all 11 locales.
+- Brief was revised mid-implementation (brand mark drawable/size changed); re-verified against live
+  repo before applying. Locale strings needed fresh inserts, not updates — the brief's claim that
+  the two keys already existed in all 10 locales was wrong. Full detail + deviations in
+  `docs/worklog-2026-07-20.md`.
+- Verified on-device on the A53 (sideloaded debug build). Both briefs moved to `docs/DONE/`.
+
 ## 2026-07-20 — two follow-up bugfix briefs implemented on branches, PRs open (not yet on master)
 
 Automated scheduled-task run implemented both briefs left in `docs/` after vc74 shipped, each on
