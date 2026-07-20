@@ -1,6 +1,7 @@
 What's new:
 • New home-screen widgets: On This Day, Recent Entries, Travel Stats, and Quick Add
-• Redesigned On This Day widget with a photo highlight
-• Fixed widget photos sometimes showing blank
 • Faster, more reliable photo backup to Google Drive with no duplicate uploads
+• Fixed a rare case where a still-present photo could get mismatched with the wrong Drive backup
+• Previously backed-up photos now restore correctly even if your subscription lapses
+• Fixed photos not displaying while editing an entry
 • Various stability improvements
