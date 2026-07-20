@@ -72,10 +72,6 @@ private class RecentEntriesFactory(private val context: Context) : RemoteViewsSe
         val views = RemoteViews(context.packageName, R.layout.widget_recent_entry_item)
         views.setTextViewText(R.id.recent_item_title, entry.title)
         val date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(entry.dateMillis))
-        views.setTextViewText(
-            R.id.recent_item_subtitle,
-            if (entry.location.isBlank()) date else "${entry.location} · $date"
-        )
         val metaParts = buildList {
             if (entry.mood.isNotBlank()) add(entry.mood)
             entry.weatherCode?.let { code ->
@@ -89,12 +85,12 @@ private class RecentEntriesFactory(private val context: Context) : RemoteViewsSe
             }
             entry.tags.firstOrNull()?.let { add("#$it") }
         }
-        if (metaParts.isEmpty()) {
-            views.setViewVisibility(R.id.recent_item_meta, android.view.View.GONE)
-        } else {
-            views.setTextViewText(R.id.recent_item_meta, metaParts.joinToString(" · "))
-            views.setViewVisibility(R.id.recent_item_meta, android.view.View.VISIBLE)
+        val subtitleParts = buildList {
+            if (entry.location.isNotBlank()) add(entry.location)
+            add(date)
+            addAll(metaParts)
         }
+        views.setTextViewText(R.id.recent_item_subtitle, subtitleParts.joinToString(" · "))
         val source = WidgetPhotos.readableSource(
             context, entry.photoUris.firstOrNull(), entry.driveFileIds.firstOrNull()
         )

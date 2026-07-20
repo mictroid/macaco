@@ -261,8 +261,8 @@
     <string name="settings_backup_export_full">Full quality</string>
     <string name="settings_backup_import_done">Restored %1$d entries from file</string>
     <string name="settings_backup_failed">Backup failed. Please try again.</string>
-    <string name="verify_email_title">Verify your email</string>
-    <string name="verify_email_subtitle">We sent a verification link to %1$s. Click it, then come back here.</string>
+    <string name="verify_email_title">Almost there</string>
+    <string name="verify_email_subtitle">We sent a link to %1$s — tap it to unlock your journal.</string>
     <string name="verify_email_continue">I\'ve verified — Continue</string>
     <string name="verify_email_still_unverified">Not verified yet — check your inbox (and spam folder)</string>
     <string name="verify_email_resend">Resend email</string>

@@ -283,8 +283,8 @@
     <string name="settings_backup_export_full">Pełna jakość</string>
     <string name="settings_backup_import_done">Przywrócono %1$d wpisów z pliku</string>
     <string name="settings_backup_failed">Tworzenie kopii nie powiodło się. Spróbuj ponownie.</string>
-    <string name="verify_email_title">Zweryfikuj swój adres e-mail</string>
-    <string name="verify_email_subtitle">Wysłaliśmy link weryfikacyjny na adres %1$s. Kliknij go, a następnie wróć tutaj.</string>
+    <string name="verify_email_title">Już prawie</string>
+    <string name="verify_email_subtitle">Wysłaliśmy link na %1$s — stuknij go, aby odblokować swój dziennik.</string>
     <string name="verify_email_continue">Zweryfikowałem — Kontynuuj</string>
     <string name="verify_email_still_unverified">Jeszcze niezweryfikowane — sprawdź swoją skrzynkę odbiorczą (i folder spam)</string>
     <string name="verify_email_resend">Wyślij e-mail ponownie</string>

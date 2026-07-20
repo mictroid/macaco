@@ -277,8 +277,8 @@
     <string name="settings_backup_export_full">Qualité complète</string>
     <string name="settings_backup_import_done">%1$d entrées restaurées depuis le fichier</string>
     <string name="settings_backup_failed">Échec de la sauvegarde. Veuillez réessayer.</string>
-    <string name="verify_email_title">Vérifiez votre e-mail</string>
-    <string name="verify_email_subtitle">Nous avons envoyé un lien de vérification à %1$s. Cliquez dessus, puis revenez ici.</string>
+    <string name="verify_email_title">Presque prêt</string>
+    <string name="verify_email_subtitle">Nous avons envoyé un lien à %1$s — touchez-le pour déverrouiller votre journal.</string>
     <string name="verify_email_continue">J\'ai vérifié — Continuer</string>
     <string name="verify_email_still_unverified">Pas encore vérifié — vérifiez votre boîte de réception (et vos spams)</string>
     <string name="verify_email_resend">Renvoyer l\'e-mail</string>

@@ -288,8 +288,8 @@
     <string name="settings_backup_export_full">Volle Qualität</string>
     <string name="settings_backup_import_done">%1$d Einträge aus Datei wiederhergestellt</string>
     <string name="settings_backup_failed">Sicherung fehlgeschlagen. Bitte versuche es erneut.</string>
-    <string name="verify_email_title">Bestätige deine E-Mail-Adresse</string>
-    <string name="verify_email_subtitle">Wir haben einen Bestätigungslink an %1$s gesendet. Klicke darauf und komm dann hierher zurück.</string>
+    <string name="verify_email_title">Fast geschafft</string>
+    <string name="verify_email_subtitle">Wir haben einen Link an %1$s gesendet — tippe darauf, um dein Tagebuch freizuschalten.</string>
     <string name="verify_email_continue">Ich habe bestätigt — Weiter</string>
     <string name="verify_email_still_unverified">Noch nicht bestätigt — prüfe dein Postfach (und den Spam-Ordner)</string>
     <string name="verify_email_resend">E-Mail erneut senden</string>

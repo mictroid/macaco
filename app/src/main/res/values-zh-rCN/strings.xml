@@ -274,8 +274,8 @@
     <string name="settings_backup_export_full">完整质量</string>
     <string name="settings_backup_import_done">已从文件恢复 %1$d 条记录</string>
     <string name="settings_backup_failed">备份失败，请重试。</string>
-    <string name="verify_email_title">验证您的邮箱</string>
-    <string name="verify_email_subtitle">我们已向 %1$s 发送了一个验证链接。点击链接后回到这里。</string>
+    <string name="verify_email_title">就快好了</string>
+    <string name="verify_email_subtitle">我们已向 %1$s 发送了链接 — 点按即可解锁你的日记。</string>
     <string name="verify_email_continue">我已验证 — 继续</string>
     <string name="verify_email_still_unverified">尚未验证 — 请查看收件箱（以及垃圾邮件文件夹）</string>
     <string name="verify_email_resend">重新发送邮件</string>

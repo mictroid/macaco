@@ -274,8 +274,8 @@
     <string name="settings_backup_export_full">フル品質</string>
     <string name="settings_backup_import_done">%1$d 件の記録をファイルから復元しました</string>
     <string name="settings_backup_failed">バックアップに失敗しました。もう一度お試しください。</string>
-    <string name="verify_email_title">メールアドレスの確認</string>
-    <string name="verify_email_subtitle">%1$s に確認リンクを送信しました。リンクをクリックしてから、ここに戻ってきてください。</string>
+    <string name="verify_email_title">もうすぐです</string>
+    <string name="verify_email_subtitle">%1$s にリンクを送信しました — タップして日記のロックを解除してください。</string>
     <string name="verify_email_continue">確認しました — 続ける</string>
     <string name="verify_email_still_unverified">まだ確認されていません — 受信トレイ（迷惑メールフォルダも）を確認してください</string>
     <string name="verify_email_resend">メールを再送信</string>

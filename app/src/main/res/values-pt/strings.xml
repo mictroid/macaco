@@ -277,8 +277,8 @@
     <string name="settings_backup_export_full">Qualidade total</string>
     <string name="settings_backup_import_done">%1$d entradas restauradas do arquivo</string>
     <string name="settings_backup_failed">Falha no backup. Tente novamente.</string>
-    <string name="verify_email_title">Verifique seu e-mail</string>
-    <string name="verify_email_subtitle">Enviamos um link de verificação para %1$s. Clique nele e depois volte aqui.</string>
+    <string name="verify_email_title">Quase lá</string>
+    <string name="verify_email_subtitle">Enviámos um link para %1$s — toca nele para desbloquear o teu diário.</string>
     <string name="verify_email_continue">Já verifiquei — Continuar</string>
     <string name="verify_email_still_unverified">Ainda não verificado — confira sua caixa de entrada (e o spam)</string>
     <string name="verify_email_resend">Reenviar e-mail</string>

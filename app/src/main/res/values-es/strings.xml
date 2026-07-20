@@ -277,8 +277,8 @@
     <string name="settings_backup_export_full">Calidad completa</string>
     <string name="settings_backup_import_done">%1$d entradas restauradas desde el archivo</string>
     <string name="settings_backup_failed">Error en la copia. Inténtalo de nuevo.</string>
-    <string name="verify_email_title">Verifica tu correo</string>
-    <string name="verify_email_subtitle">Enviamos un enlace de verificación a %1$s. Haz clic en él y vuelve aquí.</string>
+    <string name="verify_email_title">Ya casi</string>
+    <string name="verify_email_subtitle">Te enviamos un enlace a %1$s — tócalo para desbloquear tu diario.</string>
     <string name="verify_email_continue">Ya lo verifiqué — Continuar</string>
     <string name="verify_email_still_unverified">Aún no verificado — revisa tu bandeja de entrada (y spam)</string>
     <string name="verify_email_resend">Reenviar correo</string>
