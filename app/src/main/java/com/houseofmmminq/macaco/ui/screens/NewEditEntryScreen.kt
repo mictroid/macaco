@@ -163,7 +163,11 @@ fun NewEditEntryScreen(
     // Pre-fill seed from an accepted camera-roll suggestion (create-mode only). onSeedConsumed
     // clears the one-shot seed once this screen has captured it into local state.
     seed: JournalViewModel.EntrySeed? = null,
-    onSeedConsumed: () -> Unit = {}
+    onSeedConsumed: () -> Unit = {},
+    // Drive-downloaded copies keyed by file id, for photos/videos whose local URI doesn't resolve
+    // on this device (cross-device entries, or a lapsed-premium restore). Same map EntryDetailScreen
+    // and JournalListScreen use.
+    cachedDrivePhotos: Map<String, String> = emptyMap()
 ) {
     val context = LocalContext.current
     // An existingEntry always wins in edit mode; the suggestion seed only applies to new entries.
@@ -685,6 +689,19 @@ fun NewEditEntryScreen(
 
                     itemsIndexed(displayMedia, key = { _, pair -> pair.first }) { index, (uri, type) ->
                         val isDragging = draggingUri == uri
+                        // Prefer the Drive-cached copy when this photo/video's local URI doesn't
+                        // resolve on this device — mirrors EntryDetailScreen.displayPhotoUri.
+                        val displayUri = remember(uri, type, photoUris, driveIds, videoUris, videoFileIds, cachedDrivePhotos) {
+                            if (type == "photo") {
+                                val idx = photoUris.indexOf(uri)
+                                driveIds.getOrNull(idx)?.takeIf { it.isNotEmpty() }
+                                    ?.let { cachedDrivePhotos[it] } ?: uri
+                            } else {
+                                val idx = videoUris.indexOf(uri)
+                                videoFileIds.getOrNull(idx)?.takeIf { it.isNotEmpty() }
+                                    ?.let { cachedDrivePhotos[it] } ?: uri
+                            }
+                        }
                         Box(
                             modifier = Modifier
                                 .zIndex(if (isDragging) 1f else 0f)
@@ -727,13 +744,13 @@ fun NewEditEntryScreen(
                             ) {
                                 if (type == "photo") {
                                     AsyncImage(
-                                        model = uri,
+                                        model = displayUri,
                                         contentDescription = null,
                                         modifier = Modifier.fillMaxSize(),
                                         contentScale = ContentScale.Crop
                                     )
                                 } else {
-                                    VideoThumbnailTile(uri = uri)
+                                    VideoThumbnailTile(uri = displayUri)
                                 }
                             }
                             Box(

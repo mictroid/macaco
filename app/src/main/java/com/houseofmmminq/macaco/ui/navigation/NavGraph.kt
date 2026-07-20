@@ -322,6 +322,7 @@ fun NavGraph(
                     val id = backStackEntry.arguments?.getString("entryId") ?: return@composable
                     val entries by viewModel.entries.collectAsState()
                     val entry = entries.find { it.id == id } ?: return@composable
+                    val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
                     NewEditEntryScreen(
                         existingEntry = entry,
                         onSave = { updated ->
@@ -334,7 +335,8 @@ fun NavGraph(
                         tripSuggestions = entries.tripNames(),
                         customMoods = viewModel.customMoods.collectAsState().value,
                         onAddCustomMood = { viewModel.addCustomMood(it) },
-                        onSuppressAutoLock = { viewModel.suppressAutoLockOnce() }
+                        onSuppressAutoLock = { viewModel.suppressAutoLockOnce() },
+                        cachedDrivePhotos = cachedDrivePhotos
                     )
                 }
 
