@@ -32,7 +32,7 @@ android {
         applicationId = "com.houseofmmminq.macaco"
         minSdk = 24
         targetSdk = 36
-        versionCode = 75
+        versionCode = 76
         versionName = "1.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -106,9 +106,10 @@ play {
     } else if (ciCredentialsPath != null) {
         serviceAccountCredentials.set(file(ciCredentialsPath))
     }
-    // Open testing's track name is "beta" in the Play Developer API/GPP, even though Play
-    // Console itself just calls it "Open testing" in the UI. (Closed testing is "alpha".)
-    track.set("beta")
+    // Publish straight to the Production track. GPP track names: "production" (live),
+    // "beta" (Open testing), "alpha" (Closed testing). The app graduated out of testing tracks
+    // as of vc75/1.7 (first Production release) — see the ship-to-production standing instruction.
+    track.set("production")
     defaultToAppBundles.set(true)
 }
 

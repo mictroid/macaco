@@ -1,7 +1,5 @@
 What's new:
-• New home-screen widgets: On This Day, Recent Entries, Travel Stats, and Quick Add
-• Faster, more reliable photo backup to Google Drive with no duplicate uploads
-• Fixed a rare case where a still-present photo could get mismatched with the wrong Drive backup
-• Previously backed-up photos now restore correctly even if your subscription lapses
-• Fixed photos not displaying while editing an entry
-• Various stability improvements
+• Polished the branded header so the Macaco logo stays perfectly centered on every screen and in landscape
+• Refreshed the email verification screen with the Macaco brand mark and warmer wording
+• Recent Entries widget now shows mood, weather, and your top tag on a single tidy line
+• Various visual polish and stability improvements
