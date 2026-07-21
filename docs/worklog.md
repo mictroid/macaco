@@ -2,6 +2,23 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-21 — vc76 (1.7) — DISPATCHED to Play Production — WIF run `29808166422`, commit `6ddecc2`
+
+Dispatched 08:47:56 +0200; `HEAD == origin/master == 6ddecc2` verified before dispatch. First
+automated Production release via the WIF workflow (GPP `track.set` flipped `beta` → `production`;
+vc75 itself reached Production via manual AAB upload). Batch (3, all cosmetic/UI-only):
+
+- Header brand-icon centering fix (`3f818bf`): the `macaco` header icon no longer shifts between
+  expanded/scroll-collapsed states or disagrees between screens — removed the inconsistent
+  `Horizontal` safe-drawing inset from the outer header `Box` on MapScreen, JournalListScreen,
+  HelpAboutScreen, and EntryDetailScreen so the icon always centers on the true screen width
+  (matching splash/Profile), moving nav-bar clearance onto the trailing landscape elements instead.
+- Recent Entries widget meta-merge + Verify Email screen branding (`7ab4c40`, detailed in the entry
+  below).
+
+Not verified on-device (cosmetic batch, S8 verify skipped per user). Release notes refreshed for
+the batch. Full detail in `docs/worklog-2026-07-21.md`.
+
 ## 2026-07-20 — widget meta-merge + Verify Email branding — commit `7ab4c40` on master (not pushed)
 
 Implements `docs/DONE/code-brief-recent-entries-widget-meta-merge.md` and
