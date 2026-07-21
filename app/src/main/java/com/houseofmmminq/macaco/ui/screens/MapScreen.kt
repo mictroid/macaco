@@ -430,17 +430,11 @@ fun MapScreen(
                 .fillMaxWidth()
                 .background(macacoBrandBackground())
                 .statusBarsPadding()
-                // Only the EXPANDED header's trailing wordmark/label content extends sideways far
-                // enough to need nav-bar clearance (see docs/DONE/code-brief-map-nav-bar.md). Once
-                // collapsed, the header is just a centred icon with nothing to clip — and the map
-                // below is edge-to-edge with no matching inset — so skip the inset there and centre
-                // on the TRUE screen width instead. Keeping the inset in both states was centring the
-                // collapsed icon on a narrower axis than the full-bleed map behind it, making it look
-                // shifted left of centre.
-                .then(
-                    if (hasMovedMap) Modifier
-                    else Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                )
+                // Icon always centers on the TRUE screen width in every state — matches the splash
+                // screen and Profile/Settings/YearInTravel, and stops the icon jumping sideways when
+                // the header collapses on pan/zoom. Nav-bar clearance for the expanded landscape
+                // trailing label is handled inside MacacoBrandBlock's landscapeTrailing content below,
+                // not here, so it never affects where the icon itself centers.
                 .animateContentSize()
         ) {
             MacacoBrandBlock(
@@ -453,29 +447,37 @@ fun MapScreen(
                         bottom = if (hasMovedMap) 8.dp else if (isLandscape) 4.dp else 10.dp
                     ),
                 landscapeTrailing = {
-                    Text(
-                        text = " · " + stringResource(R.string.map_adventures_title),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.85f)
-                    )
-                    if (locations.isNotEmpty()) {
-                        val mappedCount = locations.count { it in geocodedLocations }
+                    // Nav-bar clearance lives here (on the trailing label content) rather than on
+                    // the outer header Box, so long labels still clear the landscape on-screen nav
+                    // bar without shifting where the centered icon sits.
+                    Row(
+                        modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.End)),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = " · " + stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
-                            color = SplashGold.copy(alpha = 0.70f),
-                            fontSize = 12.sp,
-                            fontFamily = MacacoFontFamily
-                        )
-                    }
-                    // Globe-spanning hint — compact, dot-separated (reuses the localized
-                    // portrait hint string).
-                    if (globeSpanning) {
-                        Text(
-                            text = " · " + stringResource(R.string.map_globe_spanning_hint),
+                            text = " · " + stringResource(R.string.map_adventures_title),
                             style = MaterialTheme.typography.labelSmall,
-                            color = SplashGold.copy(alpha = 0.75f),
-                            letterSpacing = 0.5.sp
+                            color = Color.White.copy(alpha = 0.85f)
                         )
+                        if (locations.isNotEmpty()) {
+                            val mappedCount = locations.count { it in geocodedLocations }
+                            Text(
+                                text = " · " + stringResource(R.string.map_locations_mapped, mappedCount, locations.size),
+                                color = SplashGold.copy(alpha = 0.70f),
+                                fontSize = 12.sp,
+                                fontFamily = MacacoFontFamily
+                            )
+                        }
+                        // Globe-spanning hint — compact, dot-separated (reuses the localized
+                        // portrait hint string).
+                        if (globeSpanning) {
+                            Text(
+                                text = " · " + stringResource(R.string.map_globe_spanning_hint),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = SplashGold.copy(alpha = 0.75f),
+                                letterSpacing = 0.5.sp
+                            )
+                        }
                     }
                 },
                 portraitTrailing = {

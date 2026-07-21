@@ -289,7 +289,9 @@ fun JournalListScreen(
                         .fillMaxWidth()
                         .background(macacoBrandBackground())
                         .statusBarsPadding()
-                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                        // No horizontal inset here — the brand icon centers on the TRUE screen width
+                        // in every state (matches the splash and Profile). Nav-bar clearance moves to
+                        // the leading/trailing action clusters below instead.
                         .animateContentSize()
                 ) {
                   // Collapsed (any orientation): the header reduces to a slim bar with just
@@ -335,6 +337,7 @@ fun JournalListScreen(
                         Box(
                             modifier = Modifier
                                 .align(Alignment.TopStart)
+                                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Start))
                                 .size(40.dp)
                                 .padding(start = macacoContentGutter()),
                             contentAlignment = Alignment.Center
@@ -350,6 +353,7 @@ fun JournalListScreen(
                         Box(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
+                                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.End))
                                 .size(40.dp)
                                 // Matches the list/tag-row gutter below, instead of a fixed 4dp —
                                 // keeps the avatar aligned with content at every screen width.

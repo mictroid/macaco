@@ -207,7 +207,8 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                     .fillMaxWidth()
                     .background(macacoBrandBackground())
                     .statusBarsPadding()
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                    // Icon centers on the TRUE screen width — matches splash/Profile. Back button
+                    // gets its own leading inset below instead.
                     .animateContentSize()
             ) {
                 when {
@@ -223,7 +224,10 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             IconButton(
                                 onClick = onBack,
-                                modifier = Modifier.align(Alignment.TopStart).size(40.dp)
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Start))
+                                    .size(40.dp)
                             ) {
                                 Icon(
                                     Icons.AutoMirrored.Filled.ArrowBack,
@@ -262,6 +266,7 @@ fun HelpAboutScreen(onBack: () -> Unit) {
                             onClick = onBack,
                             modifier = Modifier
                                 .align(Alignment.TopStart)
+                                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Start))
                                 .padding(4.dp)
                         ) {
                             Icon(

@@ -291,7 +291,9 @@ fun EntryDetailScreen(
                     .fillMaxWidth()
                     .background(macacoBrandBackground())
                     .statusBarsPadding()
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                    // Icon centers on the TRUE screen width — matches splash/Profile. The leading
+                    // (back+counter) and trailing (action icons) clusters carry their own nav-bar
+                    // insets below instead.
             ) {
                 Box(
                     modifier = Modifier
@@ -300,7 +302,9 @@ fun EntryDetailScreen(
                 ) {
                     // Leading cluster: back button + page counter, pinned to the start.
                     Row(
-                        modifier = Modifier.align(Alignment.CenterStart),
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Start)),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
@@ -357,7 +361,9 @@ fun EntryDetailScreen(
                     }
                     // Trailing cluster: share/edit/delete, pinned to the end.
                     Row(
-                        modifier = Modifier.align(Alignment.CenterEnd),
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.End)),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = { shareEntry(context, currentEntry, cachedDrivePhotos) }, modifier = Modifier.size(40.dp)) {
