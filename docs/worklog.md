@@ -2,6 +2,16 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-22 — vc77 (1.7) — DISPATCHED to Play Production — WIF run `29936801318`, commit `dfa33d5`
+
+Dispatched 18:10:31 +0200; implementation committed `361fb14`, vc bump + release notes `dfa33d5`;
+`HEAD == origin/master == dfa33d5` verified before dispatch. Ships the two briefs below (Play
+Billing Library 8.0.0+ compliance + Drive download-pass race fix). Lifetime product confirmed
+non-consumable in the RevenueCat dashboard before dispatch (the billing brief's pre-ship gate).
+Not verified on-device (billing purchase/restore can't be tested on a sideloaded debug APK).
+Meets the Play Billing Library 8.0.0+ compliance deadline (2026-08-31). Full detail in
+`docs/worklog-2026-07-22.md`.
+
 ## 2026-07-22 — two Cowork briefs — not committed/shipped — vc76 unchanged
 
 Verified both against live source, implemented, moved to `docs/DONE/`. `compileDebugKotlin` clean.
