@@ -71,6 +71,17 @@ class DrivePhotoSync(private val context: Context) {
     // photo — this lock makes the whole find-or-create-and-upload sequence atomic.
     private val driveUploadMutex = Mutex()
 
+    // Serializes downloadMissing() passes. The Firestore entries listener can emit more than once
+    // while a large collection loads on a device with no local cache yet (initial/partial snapshot,
+    // then the full server snapshot) — without this lock, each emission spawns an independent
+    // download pass with its own "needed" list (computed from a stale cachedPhotoUris snapshot) and
+    // its own DRIVE_DOWNLOAD_CONCURRENCY-slot semaphore. Several passes racing at once can push
+    // aggregate concurrent Drive requests well past that limit, tripping Drive's rate limiting on
+    // large (200+ photo) libraries, while each pass reports its failure count separately — so the
+    // single error banner shown to the user undercounts the true failure total. A second overlapping
+    // call now waits for the lock and finds most of the work already reflected in cachedPhotoUris.
+    private val driveDownloadMutex = Mutex()
+
     private companion object {
         const val FOLDER_NAME = "Macaco"
         // Pre-rebrand folder name; migrated to FOLDER_NAME on first sync (see getOrCreateDriveFolder).
@@ -316,93 +327,95 @@ class DrivePhotoSync(private val context: Context) {
      *  (awaited). Downloads Drive photos that have an ID but no accessible local file into
      *  cacheDir/drive_photos/ and folds them into [_cachedPhotoUris]. */
     private suspend fun downloadMissing(entries: List<TravelEntry>) = withContext(Dispatchers.IO) {
-        val needed = entries.flatMap { entry ->
-            entry.driveFileIds.filterIndexed { i, id ->
-                id.isNotEmpty() &&
-                    !_cachedPhotoUris.value.containsKey(id) &&
-                    (entry.photoUris.getOrNull(i)?.let { !isUriAccessible(it) } ?: true)
-            }
-        }.distinct()
+        driveDownloadMutex.withLock {
+            val needed = entries.flatMap { entry ->
+                entry.driveFileIds.filterIndexed { i, id ->
+                    id.isNotEmpty() &&
+                        !_cachedPhotoUris.value.containsKey(id) &&
+                        (entry.photoUris.getOrNull(i)?.let { !isUriAccessible(it) } ?: true)
+                }
+            }.distinct()
 
-        val neededVideos = entries.flatMap { entry ->
-            entry.videoFileIds.filterIndexed { i, id ->
-                id.isNotEmpty() &&
-                    !_cachedPhotoUris.value.containsKey(id) &&
-                    (entry.videoUris.getOrNull(i)?.let { !isUriAccessible(it) } ?: true)
-            }
-        }.distinct()
+            val neededVideos = entries.flatMap { entry ->
+                entry.videoFileIds.filterIndexed { i, id ->
+                    id.isNotEmpty() &&
+                        !_cachedPhotoUris.value.containsKey(id) &&
+                        (entry.videoUris.getOrNull(i)?.let { !isUriAccessible(it) } ?: true)
+                }
+            }.distinct()
 
-        if (needed.isEmpty() && neededVideos.isEmpty()) return@withContext
+            if (needed.isEmpty() && neededVideos.isEmpty()) return@withLock
 
-        val drive = runCatching { getDriveService() }.getOrNull() ?: return@withContext
-        // ConcurrentHashMap: the download loops below write to this from multiple coroutines
-        // (bounded by downloadSemaphore) at once.
-        val newEntries = java.util.concurrent.ConcurrentHashMap<String, String>()
-        // AtomicInteger: incremented from the same concurrent download coroutines as newEntries.
-        val downloadFailures = java.util.concurrent.atomic.AtomicInteger(0)
+            val drive = runCatching { getDriveService() }.getOrNull() ?: return@withLock
+            // ConcurrentHashMap: the download loops below write to this from multiple coroutines
+            // (bounded by downloadSemaphore) at once.
+            val newEntries = java.util.concurrent.ConcurrentHashMap<String, String>()
+            // AtomicInteger: incremented from the same concurrent download coroutines as newEntries.
+            val downloadFailures = java.util.concurrent.atomic.AtomicInteger(0)
 
-        val downloadSemaphore = Semaphore(DRIVE_DOWNLOAD_CONCURRENCY)
+            val downloadSemaphore = Semaphore(DRIVE_DOWNLOAD_CONCURRENCY)
 
-        if (needed.isNotEmpty()) {
-            val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
-            coroutineScope {
-                needed.map { fileId ->
-                    async {
-                        downloadSemaphore.withPermit {
-                            val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
-                            if (!cacheFile.exists()) {
-                                runCatching {
-                                    val out = ByteArrayOutputStream()
-                                    drive.files().get(fileId).executeMediaAndDownloadTo(out)
-                                    cacheFile.writeBytes(out.toByteArray())
-                                }.onFailure { e ->
-                                    Log.e("DrivePhotoSync", "Download failed for $fileId", e)
-                                    downloadFailures.incrementAndGet()
-                                }
-                            }
-                            if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
-                        }
-                    }
-                }.awaitAll()
-            }
-        }
-
-        // Videos share the same driveFileId → cache-URI map (keys are distinct Drive IDs, so photos
-        // and videos never collide), cached under cacheDir/drive_videos/.
-        if (neededVideos.isNotEmpty()) {
-            val videoCacheDir = JavaFile(context.cacheDir, ImageStorage.DRIVE_VIDEOS).apply { mkdirs() }
-            coroutineScope {
-                neededVideos.map { fileId ->
-                    async {
-                        downloadSemaphore.withPermit {
-                            val cacheFile = JavaFile(videoCacheDir, "$fileId.mp4")
-                            if (!cacheFile.exists()) {
-                                runCatching {
-                                    cacheFile.outputStream().use { out ->
+            if (needed.isNotEmpty()) {
+                val cacheDir = JavaFile(context.cacheDir, "drive_photos").apply { mkdirs() }
+                coroutineScope {
+                    needed.map { fileId ->
+                        async {
+                            downloadSemaphore.withPermit {
+                                val cacheFile = JavaFile(cacheDir, "$fileId.jpg")
+                                if (!cacheFile.exists()) {
+                                    runCatching {
+                                        val out = ByteArrayOutputStream()
                                         drive.files().get(fileId).executeMediaAndDownloadTo(out)
+                                        cacheFile.writeBytes(out.toByteArray())
+                                    }.onFailure { e ->
+                                        Log.e("DrivePhotoSync", "Download failed for $fileId", e)
+                                        downloadFailures.incrementAndGet()
                                     }
-                                }.onFailure { e ->
-                                    cacheFile.delete()
-                                    Log.e("DrivePhotoSync", "Download failed for $fileId", e)
-                                    downloadFailures.incrementAndGet()
                                 }
+                                if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
                             }
-                            if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
                         }
-                    }
-                }.awaitAll()
+                    }.awaitAll()
+                }
             }
-        }
 
-        if (newEntries.isNotEmpty()) {
-            _cachedPhotoUris.value = _cachedPhotoUris.value + newEntries
-        }
+            // Videos share the same driveFileId → cache-URI map (keys are distinct Drive IDs, so photos
+            // and videos never collide), cached under cacheDir/drive_videos/.
+            if (neededVideos.isNotEmpty()) {
+                val videoCacheDir = JavaFile(context.cacheDir, ImageStorage.DRIVE_VIDEOS).apply { mkdirs() }
+                coroutineScope {
+                    neededVideos.map { fileId ->
+                        async {
+                            downloadSemaphore.withPermit {
+                                val cacheFile = JavaFile(videoCacheDir, "$fileId.mp4")
+                                if (!cacheFile.exists()) {
+                                    runCatching {
+                                        cacheFile.outputStream().use { out ->
+                                            drive.files().get(fileId).executeMediaAndDownloadTo(out)
+                                        }
+                                    }.onFailure { e ->
+                                        cacheFile.delete()
+                                        Log.e("DrivePhotoSync", "Download failed for $fileId", e)
+                                        downloadFailures.incrementAndGet()
+                                    }
+                                }
+                                if (cacheFile.exists()) newEntries[fileId] = Uri.fromFile(cacheFile).toString()
+                            }
+                        }
+                    }.awaitAll()
+                }
+            }
 
-        val failures = downloadFailures.get()
-        if (failures > 0) {
-            _errors.trySend(
-                "$failures ${if (failures == 1) "item" else "items"} couldn't be downloaded from Google Drive. Pull to refresh to retry."
-            )
+            if (newEntries.isNotEmpty()) {
+                _cachedPhotoUris.value = _cachedPhotoUris.value + newEntries
+            }
+
+            val failures = downloadFailures.get()
+            if (failures > 0) {
+                _errors.trySend(
+                    "$failures ${if (failures == 1) "item" else "items"} couldn't be downloaded from Google Drive. Pull to refresh to retry."
+                )
+            }
         }
     }
 

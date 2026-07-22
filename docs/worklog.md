@@ -2,6 +2,23 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-07-22 — two Cowork briefs — not committed/shipped — vc76 unchanged
+
+Verified both against live source, implemented, moved to `docs/DONE/`. `compileDebugKotlin` clean.
+
+- **Play Billing Library 8.0.0+ compliance** (`code-brief-billing-library-9-upgrade.md`): bumped
+  `revenueCat` 8.10.0 → 9.29.1 in `libs.versions.toml` (dependency bump only; RevenueCat bundles
+  Billing Library). No `.copy()`/destructuring on RevenueCat types → no code changes.
+  **Deadline: must ship before Aug 31, 2026.** Open dashboard action: confirm Lifetime product is
+  non-consumable before shipping.
+- **DrivePhotoSync download-pass race** (`code-brief-drive-download-race.md`): added
+  `driveDownloadMutex` and wrapped `downloadMissing()`'s body in `withLock { }` so overlapping
+  entries-flow emissions can't spawn racing download passes that trip Drive rate-limiting on large
+  first syncs. `DrivePhotoSync.kt` only.
+
+No deviations from either brief. Uncommitted; billing touched → verify on a Play-track build before
+dispatch. Full detail in `docs/worklog-2026-07-22.md`.
+
 ## 2026-07-21 — vc76 (1.7) — DISPATCHED to Play Production — WIF run `29808166422`, commit `6ddecc2`
 
 Dispatched 08:47:56 +0200; `HEAD == origin/master == 6ddecc2` verified before dispatch. First
