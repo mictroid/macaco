@@ -1,5 +1,5 @@
 What's new:
-• Polished the branded header so the Macaco logo stays perfectly centered on every screen and in landscape
-• Refreshed the email verification screen with the Macaco brand mark and warmer wording
-• Recent Entries widget now shows mood, weather, and your top tag on a single tidy line
-• Various visual polish and stability improvements
+• Google Drive photo backup is more reliable when restoring a large library on a new device
+• Fixed an issue where some photos could fail to load during a big first-time sync
+• Updated our billing components to meet the latest Google Play requirements
+• Various performance and stability improvements
