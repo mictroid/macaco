@@ -2,6 +2,16 @@
 
 Running log of notable work sessions. Newest first.
 
+## 2026-11-25 — conversion-release brief implemented (`ee9c6a2`) — not shipped, vc77 unchanged
+
+`code-brief-funnel-onboarding-dictation.md` → `docs/DONE/`. It adds Firebase funnel events (paywall
+`?source=` nav arg), honest and localized freemium onboarding, a one-time soft paywall after the
+first entry, Premium badges (Drive / file backup / Print Book) and cursor-aware sentence dictation.
+The build passes and DictationTextTest is 8/8. Deviations: no Reel badge (the button is hidden for free
+users), CJK-aware joining, 3 extra onboarding keys, and the 12-locale release notes (§F) deferred to ship
+time. `code-brief-restore-credentials-scoping.md` stays pending until Michael decides. Full detail in
+`docs/worklog-2026-11-25.md`.
+
 ## 2026-07-22 — vc77 (1.7) — DISPATCHED to Play Production — WIF run `29936801318`, commit `dfa33d5`
 
 Dispatched 18:10:31 +0200; implementation committed `361fb14`, vc bump + release notes `dfa33d5`;
