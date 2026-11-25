@@ -1,0 +1,6 @@
+Nowości:
+• Inteligentniejsze dyktowanie: wielkie litery i interpunkcja w dyktowanych wpisach
+• Dyktowany tekst trafia dokładnie tam, gdzie jest kursor
+• Tytuły, miejsca i podróże automatycznie zaczynają się wielką literą
+• Funkcje Premium są teraz wyraźnie oznaczone
+• Ekrany powitalne są teraz w Twoim języku

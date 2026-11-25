@@ -1,0 +1,6 @@
+Novidades:
+• Ditado mais inteligente: suas entradas faladas agora ganham letras maiúsculas e pontuação
+• O ditado insere o texto bem onde está o cursor
+• Títulos, lugares e viagens começam com letra maiúscula automaticamente
+• Os recursos Premium agora estão bem sinalizados
+• As telas de boas-vindas agora aparecem no seu idioma

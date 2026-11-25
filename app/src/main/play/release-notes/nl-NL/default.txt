@@ -1,0 +1,6 @@
+Nieuw:
+• Slimmer dicteren: ingesproken tekst krijgt nu hoofdletters en leestekens
+• Dicteren voegt tekst in precies waar je cursor staat
+• Titels, plaatsen en reizen beginnen automatisch met een hoofdletter
+• Premium-functies zijn nu duidelijk gemarkeerd
+• De welkomstschermen zijn nu in jouw taal

@@ -1,0 +1,6 @@
+Neuigkeiten:
+• Intelligenteres Diktieren: gesprochene Einträge erhalten jetzt Großschreibung und Satzzeichen
+• Diktierter Text wird genau an der Cursorposition eingefügt
+• Titel, Orte und Reisen beginnen automatisch mit einem Großbuchstaben
+• Premium-Funktionen sind jetzt klar gekennzeichnet
+• Die Willkommensseiten sind jetzt in deiner Sprache

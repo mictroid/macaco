@@ -1,0 +1,6 @@
+Novedades:
+• Dictado más inteligente: las entradas habladas ahora llevan mayúsculas y puntuación
+• El dictado inserta el texto justo donde está el cursor
+• Títulos, lugares y viajes empiezan con mayúscula automáticamente
+• Las funciones Premium ahora están claramente indicadas
+• Las pantallas de bienvenida ahora están en tu idioma

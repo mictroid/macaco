@@ -1,0 +1,6 @@
+Nouveautés :
+• Dictée plus intelligente : majuscules et ponctuation ajoutées à vos entrées dictées
+• La dictée insère le texte à l'emplacement du curseur
+• Titres, lieux et voyages commencent automatiquement par une majuscule
+• Les fonctions Premium sont désormais clairement signalées
+• Les écrans d'accueil sont maintenant dans votre langue

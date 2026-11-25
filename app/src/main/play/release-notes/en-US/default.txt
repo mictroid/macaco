@@ -1,5 +1,6 @@
 What's new:
-• Google Drive photo backup is more reliable when restoring a large library on a new device
-• Fixed an issue where some photos could fail to load during a big first-time sync
-• Updated our billing components to meet the latest Google Play requirements
-• Various performance and stability improvements
+• Smarter dictation: spoken entries now get proper capitals and punctuation
+• Dictation inserts text right where your cursor is
+• Titles, places and trips start with a capital letter automatically
+• Premium features are now clearly labelled
+• The welcome screens are now in your language

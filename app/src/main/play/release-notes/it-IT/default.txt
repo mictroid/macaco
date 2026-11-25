@@ -1,0 +1,6 @@
+Novità:
+• Dettatura più intelligente: maiuscole e punteggiatura nelle voci dettate
+• La dettatura inserisce il testo esattamente dove si trova il cursore
+• Titoli, luoghi e viaggi iniziano automaticamente con la maiuscola
+• Le funzioni Premium ora sono chiaramente indicate
+• Le schermate di benvenuto ora sono nella tua lingua

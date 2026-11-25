@@ -1,0 +1,6 @@
+Nyheter:
+• Smartare diktering: inlästa anteckningar får nu stor bokstav och skiljetecken
+• Dikteringen infogar text precis där markören står
+• Titlar, platser och resor börjar automatiskt med stor bokstav
+• Premiumfunktioner är nu tydligt märkta
+• Välkomstskärmarna visas nu på ditt språk
