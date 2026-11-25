@@ -2,7 +2,7 @@
 
 Running log of notable work sessions. Newest first.
 
-## 2026-11-25 — conversion-release brief implemented (`ee9c6a2`) — vc78 (1.8) dispatched to Production, run `45601568741`
+## 2026-11-25 — conversion-release brief implemented (`ee9c6a2`) — vc78 (1.8) SHIPPED to Production ✅ run `45601568741` (attempt 2)
 
 `code-brief-funnel-onboarding-dictation.md` → `docs/DONE/`. It adds Firebase funnel events (paywall
 `?source=` nav arg), honest and localized freemium onboarding, a one-time soft paywall after the
