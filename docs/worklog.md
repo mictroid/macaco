@@ -9,7 +9,7 @@ Running log of notable work sessions. Newest first.
 first entry, Premium badges (Drive / file backup / Print Book) and cursor-aware sentence dictation.
 The build passes and DictationTextTest is 8/8. Deviations: no Reel badge (the button is hidden for free
 users), CJK-aware joining, 3 extra onboarding keys, and the 12-locale release notes (§F) deferred to ship
-time. `code-brief-restore-credentials-scoping.md` stays pending until Michael decides. Full detail in
+time. `code-brief-restore-credentials-scoping.md` deferred to Q1 2027 (option 3, no code) and archived. Full detail in
 `docs/worklog-2026-11-25.md`.
 
 ## 2026-07-22 — vc77 (1.7) — DISPATCHED to Play Production — WIF run `29936801318`, commit `dfa33d5`
