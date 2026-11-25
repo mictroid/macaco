@@ -544,4 +544,18 @@
         <item quantity="many">%d wizyt</item>
         <item quantity="other">%d wizyty</item>
     </plurals>
+    <string name="onboarding_tagline">Podróżuj swobodnie. Niczego nie zapomnij.</string>
+    <string name="onboarding_sync_title">Twój dziennik,\nzawsze przy Tobie</string>
+    <string name="onboarding_sync_body">Każde wspomnienie synchronizuje się natychmiast z chmurą. Pisz w telefonie, wracaj do wspomnień wszędzie.</string>
+    <string name="onboarding_private_title">Prywatnie.\nTwoje. Na zawsze.</string>
+    <string name="onboarding_private_body">Bez reklam, bez społecznościowego kanału, a Twój dziennik nigdy nie jest sprzedawany. Zacznij za darmo i odblokuj Premium, gdy będziesz gotowy.</string>
+    <string name="onboarding_ready_title">Gotowy na podróż?</string>
+    <string name="onboarding_ready_body">Zaloguj się, aby zacząć zapisywać swoje przygody.</string>
+    <string name="onboarding_next">Dalej</string>
+    <string name="onboarding_get_started">Zaczynamy</string>
+    <string name="onboarding_skip">Pomiń</string>
+    <string name="paywall_first_entry_heading">Świetny początek! Zachowaj każdą podróż z Premium</string>
+    <string name="paywall_first_entry_sub">Wypróbuj za darmo przez %1$d dni. Tak czy inaczej możesz dalej pisać za darmo.</string>
+    <string name="paywall_first_entry_sub_no_trial">Tak czy inaczej możesz dalej pisać za darmo.</string>
+    <string name="premium_badge">Premium</string>
 </resources>

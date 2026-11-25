@@ -532,4 +532,18 @@
         <item quantity="one">%d visite</item>
         <item quantity="other">%d visites</item>
     </plurals>
+    <string name="onboarding_tagline">Voyagez libre. N\'oubliez rien.</string>
+    <string name="onboarding_sync_title">Votre journal,\ntoujours avec vous</string>
+    <string name="onboarding_sync_body">Chaque souvenir se synchronise instantanément dans le cloud. Écrivez sur votre téléphone, revivez-le partout.</string>
+    <string name="onboarding_private_title">Privé.\nÀ vous. Pour toujours.</string>
+    <string name="onboarding_private_body">Pas de pub, pas de fil social, et votre journal n\'est jamais vendu. Commencez gratuitement et passez à Premium quand vous voulez.</string>
+    <string name="onboarding_ready_title">Prêt à partir ?</string>
+    <string name="onboarding_ready_body">Connectez-vous pour commencer à capturer vos aventures.</string>
+    <string name="onboarding_next">Suivant</string>
+    <string name="onboarding_get_started">Commencer</string>
+    <string name="onboarding_skip">Passer</string>
+    <string name="paywall_first_entry_heading">Beau début ! Gardez chaque voyage avec Premium</string>
+    <string name="paywall_first_entry_sub">Essayez gratuitement pendant %1$d jours. Vous pouvez continuer à écrire gratuitement dans tous les cas.</string>
+    <string name="paywall_first_entry_sub_no_trial">Vous pouvez continuer à écrire gratuitement dans tous les cas.</string>
+    <string name="premium_badge">Premium</string>
 </resources>

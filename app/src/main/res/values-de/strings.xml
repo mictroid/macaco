@@ -541,4 +541,18 @@
         <item quantity="one">%d Besuch</item>
         <item quantity="other">%d Besuche</item>
     </plurals>
+    <string name="onboarding_tagline">Frei reisen. Nichts vergessen.</string>
+    <string name="onboarding_sync_title">Dein Tagebuch,\nimmer dabei</string>
+    <string name="onboarding_sync_body">Jede Erinnerung wird sofort in der Cloud gesichert. Schreib auf dem Handy, erlebe sie überall wieder.</string>
+    <string name="onboarding_private_title">Privat.\nDeins. Für immer.</string>
+    <string name="onboarding_private_body">Keine Werbung, kein Social-Feed, und dein Tagebuch wird nie verkauft. Starte kostenlos und schalte Premium frei, wann immer du bereit bist.</string>
+    <string name="onboarding_ready_title">Bereit für die Reise?</string>
+    <string name="onboarding_ready_body">Melde dich an, um deine Abenteuer festzuhalten.</string>
+    <string name="onboarding_next">Weiter</string>
+    <string name="onboarding_get_started">Los geht\'s</string>
+    <string name="onboarding_skip">Überspringen</string>
+    <string name="paywall_first_entry_heading">Toller Start! Behalte jede Reise mit Premium</string>
+    <string name="paywall_first_entry_sub">Teste es %1$d Tage kostenlos. Du kannst so oder so kostenlos weiterschreiben.</string>
+    <string name="paywall_first_entry_sub_no_trial">Du kannst so oder so kostenlos weiterschreiben.</string>
+    <string name="premium_badge">Premium</string>
 </resources>

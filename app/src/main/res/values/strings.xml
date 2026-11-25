@@ -543,4 +543,18 @@
         <item quantity="one">%d visit</item>
         <item quantity="other">%d visits</item>
     </plurals>
+    <string name="onboarding_tagline">Roam Freely. Forget Nothing.</string>
+    <string name="onboarding_sync_title">Your journal,\nalways with you</string>
+    <string name="onboarding_sync_body">Every memory syncs to the cloud instantly. Write on your phone, relive anywhere.</string>
+    <string name="onboarding_private_title">Private.\nYours. Forever.</string>
+    <string name="onboarding_private_body">No ads, no social feed, and your journal is never sold. Start free, and unlock Premium whenever you\'re ready.</string>
+    <string name="onboarding_ready_title">Ready to roam?</string>
+    <string name="onboarding_ready_body">Sign in to start capturing your adventures.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="paywall_first_entry_heading">Great start! Keep every trip with Premium</string>
+    <string name="paywall_first_entry_sub">Try it free for %1$d days. You can keep journaling for free either way.</string>
+    <string name="paywall_first_entry_sub_no_trial">You can keep journaling for free either way.</string>
+    <string name="premium_badge">Premium</string>
 </resources>

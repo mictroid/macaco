@@ -177,7 +177,7 @@ fun NavGraph(
             // user through — worst case one extra free entry, never a wrongly-blocked premium user.
             val goToNewEntry: () -> Unit = {
                 if (isPurchased == false && entryCount >= FREE_ENTRY_LIMIT) {
-                    navController.navigate(Screen.Paywall.route)
+                    navController.navigate(Screen.Paywall.createRoute("entry_limit"))
                 } else {
                     navController.navigate(Screen.NewEntry.route)
                 }
@@ -255,11 +255,19 @@ fun NavGraph(
                 composable(Screen.NewEntry.route) {
                     val entries by viewModel.entries.collectAsState()
                     val pendingSeed by viewModel.pendingEntrySeed.collectAsState()
+                    val softPaywallShown by viewModel.softPaywallShown.collectAsState()
                     NewEditEntryScreen(
                         existingEntry = null,
-                        onSave = { entry ->
-                            viewModel.saveEntry(entry)
+                        onSave = { entry, usedDictation ->
+                            val isFirstEntry = entries.isEmpty()
+                            viewModel.saveEntry(entry, usedDictation)
                             navController.popBackStack()
+                            // One-time soft paywall after a free user's very first entry. Only an
+                            // explicit false triggers it — null (loading) never does.
+                            if (isFirstEntry && isPurchased == false && softPaywallShown == false) {
+                                viewModel.markSoftPaywallShown()
+                                navController.navigate(Screen.Paywall.createRoute("first_entry"))
+                            }
                         },
                         onBack = { navController.popBackStack() },
                         locationSuggestions = entries.locations(),
@@ -325,8 +333,8 @@ fun NavGraph(
                     val cachedDrivePhotos by viewModel.cachedDrivePhotos.collectAsState()
                     NewEditEntryScreen(
                         existingEntry = entry,
-                        onSave = { updated ->
-                            viewModel.saveEntry(updated)
+                        onSave = { updated, usedDictation ->
+                            viewModel.saveEntry(updated, usedDictation)
                             navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() },
@@ -357,7 +365,7 @@ fun NavGraph(
                             navController.navigate(Screen.Login.route)
                         },
                         onSubscription = { navController.navigate(Screen.Subscription.route) },
-                        onNavigateToPaywall = { navController.navigate(Screen.Paywall.route) },
+                        onNavigateToPaywall = { source -> navController.navigate(Screen.Paywall.createRoute(source)) },
                         onSettings = { navController.navigate(Screen.Settings.route) },
                         onHelp = { navController.navigate(Screen.HelpAbout.route) },
                         onYearInTravel = { navController.navigate(Screen.YearInTravel.route) },
@@ -369,7 +377,7 @@ fun NavGraph(
                     SettingsScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
-                        onNavigateToPaywall = { navController.navigate(Screen.Paywall.route) },
+                        onNavigateToPaywall = { source -> navController.navigate(Screen.Paywall.createRoute(source)) },
                         onPrintBook = { navController.navigate(Screen.PrintExport.route) }
                     )
                 }
@@ -392,11 +400,18 @@ fun NavGraph(
                     SubscriptionInfoScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
-                        onUpgrade = { navController.navigate(Screen.Paywall.route) }
+                        onUpgrade = { navController.navigate(Screen.Paywall.createRoute("subscription_info")) }
                     )
                 }
 
-                composable(Screen.Paywall.route) {
+                composable(
+                    route = Screen.Paywall.route,
+                    arguments = listOf(navArgument("source") {
+                        type = NavType.StringType
+                        defaultValue = "unknown"
+                    })
+                ) { backStackEntry ->
+                    val source = backStackEntry.arguments?.getString("source") ?: "unknown"
                     // After a successful purchase the entitlement flips; pop back into the journal.
                     LaunchedEffect(isPurchased) {
                         if (isPurchased == true) navController.popBackStack()
@@ -404,7 +419,8 @@ fun NavGraph(
                     PurchaseScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
-                        showFreeLimitNote = true
+                        showFreeLimitNote = source == "entry_limit",
+                        source = source
                     )
                 }
 

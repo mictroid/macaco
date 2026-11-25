@@ -108,6 +108,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.components.MacacoBrandBlock
+import com.houseofmmminq.macaco.ui.components.PremiumBadge
 import com.houseofmmminq.macaco.data.auth.FirebaseConfig
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSyncState
 import com.houseofmmminq.macaco.ui.screens.isBiometricAvailable
@@ -150,7 +151,7 @@ private val SUPPORTED_LANGUAGES = listOf(
 fun SettingsScreen(
     viewModel: JournalViewModel,
     onBack: () -> Unit,
-    onNavigateToPaywall: () -> Unit,
+    onNavigateToPaywall: (source: String) -> Unit,
     onPrintBook: () -> Unit
 ) {
     val isDarkMode by viewModel.isDarkMode.collectAsState()
@@ -787,7 +788,7 @@ fun SettingsScreen(
                     if (isPurchased == true) {
                         driveSignInLauncher.launch(driveSignInClient.signInIntent)
                     } else {
-                        onNavigateToPaywall()
+                        onNavigateToPaywall("drive_backup")
                     }
                 },
                 onSyncNow = { viewModel.syncPhotosToGoogleDrive() },
@@ -808,13 +809,13 @@ fun SettingsScreen(
                 importProgress = importProgress,
                 onExport = {
                     if (isPurchased == true) showExportDialog = true
-                    else onNavigateToPaywall()
+                    else onNavigateToPaywall("file_backup")
                 },
                 onImport = {
                     if (isPurchased == true) {
                         pickerPending = true
                         backupImportLauncher.launch(arrayOf("application/zip", "application/octet-stream"))
-                    } else onNavigateToPaywall()
+                    } else onNavigateToPaywall("file_backup")
                 }
             )
 
@@ -856,8 +857,9 @@ fun SettingsScreen(
                 title = stringResource(R.string.print_book_title),
                 value = if (isPurchased == true) stringResource(R.string.print_book_subtitle)
                 else stringResource(R.string.print_premium_required),
-                onClick = { if (isPurchased == true) onPrintBook() else onNavigateToPaywall() },
-                stackedValue = true
+                onClick = { if (isPurchased == true) onPrintBook() else onNavigateToPaywall("print_book") },
+                stackedValue = true,
+                premiumBadge = isPurchased == false
             )
 
             // ── Subscription ──────────────────────────────────────────────────
@@ -1017,11 +1019,18 @@ private fun BackupFileCard(
                 )
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        stringResource(R.string.settings_backup_file_title),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            stringResource(R.string.settings_backup_file_title),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        if (!premium) PremiumBadge()
+                    }
                     Text(
                         if (premium) stringResource(R.string.settings_backup_file_subtitle)
                         else stringResource(R.string.settings_backup_premium_required),
@@ -1113,12 +1122,19 @@ private fun DriveBackupCard(
                 )
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        if (connected) stringResource(R.string.settings_drive_connected)
-                        else stringResource(R.string.settings_drive_not_connected),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            if (connected) stringResource(R.string.settings_drive_connected)
+                            else stringResource(R.string.settings_drive_not_connected),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        if (!premium) PremiumBadge()
+                    }
                     Text(
                         // A connection can outlive the subscription that created it (the Google
                         // OAuth grant persists independently of app purchase state), so the
@@ -1351,7 +1367,9 @@ private fun SettingsClickRow(
     // Inline layout gives the value Text no width/line limit, so a long value squeezes the weighted
     // title down until it wraps mid-word. Stacked layout puts the value on its own full-width line
     // below the title instead — same idea as how BackupFileCard already renders longer descriptions.
-    stackedValue: Boolean = false
+    stackedValue: Boolean = false,
+    // Shows the "Premium" pill after the title (stacked layout) — for locked features, free users only.
+    premiumBadge: Boolean = false
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -1369,7 +1387,16 @@ private fun SettingsClickRow(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
                     Spacer(Modifier.width(16.dp))
-                    Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                    Text(
+                        title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    if (premiumBadge) {
+                        Spacer(Modifier.width(8.dp))
+                        PremiumBadge()
+                    }
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(

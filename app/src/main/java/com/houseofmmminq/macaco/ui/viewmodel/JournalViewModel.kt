@@ -27,6 +27,7 @@ import com.houseofmmminq.macaco.ui.widget.RecentEntriesWidgetProvider
 import com.houseofmmminq.macaco.ui.widget.TravelStatsWidgetProvider
 import com.houseofmmminq.macaco.ui.theme.AppTheme
 import com.houseofmmminq.macaco.ui.theme.MapTheme
+import com.houseofmmminq.macaco.util.Analytics
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.PhotoRollScanner
 import com.houseofmmminq.macaco.util.ReminderScheduler
@@ -410,7 +411,17 @@ class JournalViewModel(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun completeOnboarding() {
+        Analytics.log("onboarding_complete")
         viewModelScope.launch { preferencesManager.setOnboardingComplete() }
+    }
+
+    // null = DataStore loading. The one-time soft paywall after the first saved entry only fires
+    // on an explicit false, never while loading.
+    val softPaywallShown: StateFlow<Boolean?> = preferencesManager.softPaywallShown
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun markSoftPaywallShown() {
+        viewModelScope.launch { preferencesManager.setSoftPaywallShown() }
     }
 
     // location string → (lat, lon); populated lazily when MapScreen is open.
@@ -455,6 +466,10 @@ class JournalViewModel(
         viewModelScope.launch {
             if (preferencesManager.appLockEnabled.first()) _isAppLocked.value = true
         }
+        // Mirror the entitlement into an Analytics user property so funnel events split by tier.
+        viewModelScope.launch {
+            billingManager.isPremium.collect { if (it != null) Analytics.setPremium(it) }
+        }
         // Once a user is signed in, import any leftover entries from the legacy on-device store
         // into their cloud account (one-time; the migration renames the file when done).
         viewModelScope.launch {
@@ -492,7 +507,18 @@ class JournalViewModel(
         }
     }
 
-    fun saveEntry(entry: TravelEntry) {
+    fun saveEntry(entry: TravelEntry, usedDictation: Boolean = false) {
+        // Funnel event for NEW entries only (an edit keeps an id already in the list).
+        if (entries.value.none { it.id == entry.id }) {
+            Analytics.log(
+                "entry_created",
+                "entry_number" to entries.value.size + 1,
+                "has_photos" to entry.photoUris.isNotEmpty(),
+                "has_video" to entry.videoUris.isNotEmpty(),
+                "used_dictation" to usedDictation,
+                "is_premium" to (isPurchased.value == true)
+            )
+        }
         viewModelScope.launch {
             // On edit, free the files for any photos/videos the user dropped from the entry.
             entries.value.find { it.id == entry.id }?.let { old ->

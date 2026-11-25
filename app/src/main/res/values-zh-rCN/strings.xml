@@ -526,4 +526,18 @@
     <plurals name="photo_suggestion_visit_count">
         <item quantity="other">%d次访问</item>
     </plurals>
+    <string name="onboarding_tagline">自由漫游，不忘一切。</string>
+    <string name="onboarding_sync_title">你的日记，\n时刻相伴</string>
+    <string name="onboarding_sync_body">每段回忆都会立即同步到云端。在手机上书写，随时随地重温。</string>
+    <string name="onboarding_private_title">私密。\n属于你。永远。</string>
+    <string name="onboarding_private_body">没有广告，没有社交动态，你的日记绝不会被出售。免费开始，准备好后再解锁 Premium。</string>
+    <string name="onboarding_ready_title">准备好出发了吗？</string>
+    <string name="onboarding_ready_body">登录后即可开始记录你的冒险。</string>
+    <string name="onboarding_next">下一步</string>
+    <string name="onboarding_get_started">开始使用</string>
+    <string name="onboarding_skip">跳过</string>
+    <string name="paywall_first_entry_heading">开局不错！用 Premium 留住每一次旅行</string>
+    <string name="paywall_first_entry_sub">免费试用 %1$d 天。无论如何，你都可以继续免费写日记。</string>
+    <string name="paywall_first_entry_sub_no_trial">无论如何，你都可以继续免费写日记。</string>
+    <string name="premium_badge">Premium</string>
 </resources>

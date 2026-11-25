@@ -532,4 +532,18 @@
         <item quantity="one">%d visita</item>
         <item quantity="other">%d visite</item>
     </plurals>
+    <string name="onboarding_tagline">Viaggia libero. Non dimenticare nulla.</string>
+    <string name="onboarding_sync_title">Il tuo diario,\nsempre con te</string>
+    <string name="onboarding_sync_body">Ogni ricordo si sincronizza subito nel cloud. Scrivi sul telefono, rivivilo ovunque.</string>
+    <string name="onboarding_private_title">Privato.\nTuo. Per sempre.</string>
+    <string name="onboarding_private_body">Niente pubblicità, niente feed social, e il tuo diario non viene mai venduto. Inizia gratis e passa a Premium quando vuoi.</string>
+    <string name="onboarding_ready_title">Pronto a partire?</string>
+    <string name="onboarding_ready_body">Accedi per iniziare a catturare le tue avventure.</string>
+    <string name="onboarding_next">Avanti</string>
+    <string name="onboarding_get_started">Inizia</string>
+    <string name="onboarding_skip">Salta</string>
+    <string name="paywall_first_entry_heading">Ottimo inizio! Conserva ogni viaggio con Premium</string>
+    <string name="paywall_first_entry_sub">Provalo gratis per %1$d giorni. Puoi continuare a scrivere gratis in ogni caso.</string>
+    <string name="paywall_first_entry_sub_no_trial">Puoi continuare a scrivere gratis in ogni caso.</string>
+    <string name="premium_badge">Premium</string>
 </resources>

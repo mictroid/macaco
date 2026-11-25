@@ -532,4 +532,18 @@
         <item quantity="one">%d besök</item>
         <item quantity="other">%d besök</item>
     </plurals>
+    <string name="onboarding_tagline">Res fritt. Glöm ingenting.</string>
+    <string name="onboarding_sync_title">Din dagbok,\nalltid med dig</string>
+    <string name="onboarding_sync_body">Varje minne synkas direkt till molnet. Skriv i mobilen, återupplev var som helst.</string>
+    <string name="onboarding_private_title">Privat.\nDin. För alltid.</string>
+    <string name="onboarding_private_body">Inga annonser, inget socialt flöde, och din dagbok säljs aldrig. Börja gratis och lås upp Premium när du är redo.</string>
+    <string name="onboarding_ready_title">Redo att ge dig av?</string>
+    <string name="onboarding_ready_body">Logga in för att börja fånga dina äventyr.</string>
+    <string name="onboarding_next">Nästa</string>
+    <string name="onboarding_get_started">Kom igång</string>
+    <string name="onboarding_skip">Hoppa över</string>
+    <string name="paywall_first_entry_heading">Bra start! Behåll varje resa med Premium</string>
+    <string name="paywall_first_entry_sub">Testa gratis i %1$d dagar. Du kan fortsätta skriva gratis i vilket fall.</string>
+    <string name="paywall_first_entry_sub_no_trial">Du kan fortsätta skriva gratis i vilket fall.</string>
+    <string name="premium_badge">Premium</string>
 </resources>

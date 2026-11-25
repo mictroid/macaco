@@ -526,4 +526,18 @@
     <plurals name="photo_suggestion_visit_count">
         <item quantity="other">%d回の訪問</item>
     </plurals>
+    <string name="onboarding_tagline">自由に旅して、何も忘れない。</string>
+    <string name="onboarding_sync_title">あなたの日記を、\nいつもそばに</string>
+    <string name="onboarding_sync_body">すべての思い出がすぐにクラウドへ同期。スマホで書いて、どこでも振り返れます。</string>
+    <string name="onboarding_private_title">プライベート。\nあなただけのもの。ずっと。</string>
+    <string name="onboarding_private_body">広告なし、SNSフィードなし、日記が売られることもありません。まずは無料で始めて、準備ができたらプレミアムを解放しましょう。</string>
+    <string name="onboarding_ready_title">旅の準備はいいですか？</string>
+    <string name="onboarding_ready_body">サインインして、冒険を記録しましょう。</string>
+    <string name="onboarding_next">次へ</string>
+    <string name="onboarding_get_started">はじめる</string>
+    <string name="onboarding_skip">スキップ</string>
+    <string name="paywall_first_entry_heading">最高のスタート！プレミアムですべての旅を残そう</string>
+    <string name="paywall_first_entry_sub">%1$d日間無料でお試しいただけます。どちらでも無料で日記を続けられます。</string>
+    <string name="paywall_first_entry_sub_no_trial">どちらでも無料で日記を続けられます。</string>
+    <string name="premium_badge">プレミアム</string>
 </resources>

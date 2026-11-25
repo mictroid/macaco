@@ -34,11 +34,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,10 +62,13 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoLibrary
 import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
+import com.houseofmmminq.macaco.util.Analytics
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.models.Period
 
-private enum class PlanSelection { Monthly, Annual, Lifetime }
+private enum class PlanSelection(val analyticsName: String) {
+    Monthly("monthly"), Annual("annual"), Lifetime("lifetime")
+}
 
 /**
  * Days in this package's free-trial phase, read from RevenueCat's actual pricing-phase data
@@ -83,7 +89,8 @@ private fun Package.trialDays(): Int? {
 fun PurchaseScreen(
     viewModel: JournalViewModel,
     onBack: (() -> Unit)? = null,   // null = not dismissible (kept for any gated usage)
-    showFreeLimitNote: Boolean = false
+    showFreeLimitNote: Boolean = false,
+    source: String = "unknown"      // entry point, for the paywall funnel analytics events
 ) {
     val context = LocalContext.current
     val activity = remember(context) { context.findActivity() }
@@ -111,6 +118,27 @@ fun PurchaseScreen(
         PlanSelection.Monthly  -> offerings?.current?.monthly
         PlanSelection.Lifetime -> offerings?.current?.lifetime
     }
+
+    // Funnel analytics. rememberSaveable so a rotation doesn't log a second paywall_view.
+    var viewLogged by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!viewLogged) {
+            viewLogged = true
+            Analytics.log("paywall_view", "source" to source)
+        }
+    }
+    val selectPlan: (PlanSelection) -> Unit = { plan ->
+        selectedPlan = plan
+        Analytics.log("plan_selected", "plan" to plan.analyticsName)
+    }
+    // Close button and system back both dismiss without a purchase.
+    val dismiss: (() -> Unit)? = onBack?.let { back ->
+        {
+            Analytics.log("paywall_dismissed", "source" to source)
+            back()
+        }
+    }
+    if (dismiss != null) BackHandler(onBack = dismiss)
 
     val ctaLabel = when (selectedPlan) {
         PlanSelection.Monthly  -> monthlyTrialDays?.let { stringResource(R.string.purchase_cta_trial, it) }
@@ -164,7 +192,7 @@ fun PurchaseScreen(
                     letterSpacing = 7.sp
                 )
                 Text(
-                    text = "Roam Freely. Forget Nothing.",
+                    text = stringResource(R.string.onboarding_tagline),
                     color = SplashGold.copy(alpha = 0.82f),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Light,
@@ -187,6 +215,25 @@ fun PurchaseScreen(
                     stringResource(R.string.purchase_free_limit_reached),
                     style = MaterialTheme.typography.bodySmall,
                     color = SplashGoldBright,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            // One-time soft paywall after the first saved entry: a friendlier framing.
+            if (source == "first_entry") {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    stringResource(R.string.paywall_first_entry_heading),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = SplashGoldBright,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    annualTrialDays?.let { stringResource(R.string.paywall_first_entry_sub, it) }
+                        ?: stringResource(R.string.paywall_first_entry_sub_no_trial),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center
                 )
             }
@@ -222,7 +269,7 @@ fun PurchaseScreen(
                 note = annualTrialDays?.let { stringResource(R.string.purchase_trial_note) },
                 selected = selectedPlan == PlanSelection.Annual,
                 isRecommended = true,
-                onClick = { selectedPlan = PlanSelection.Annual }
+                onClick = { selectPlan(PlanSelection.Annual) }
             )
 
             Spacer(Modifier.height(6.dp))
@@ -236,7 +283,7 @@ fun PurchaseScreen(
                 badge = null,
                 note = monthlyTrialDays?.let { stringResource(R.string.purchase_trial_note) },
                 selected = selectedPlan == PlanSelection.Monthly,
-                onClick = { selectedPlan = PlanSelection.Monthly }
+                onClick = { selectPlan(PlanSelection.Monthly) }
             )
 
             Spacer(Modifier.height(6.dp))
@@ -250,7 +297,7 @@ fun PurchaseScreen(
                 note = if (selectedPlan == PlanSelection.Lifetime)
                     stringResource(R.string.purchase_one_time) else null,
                 selected = selectedPlan == PlanSelection.Lifetime,
-                onClick = { selectedPlan = PlanSelection.Lifetime }
+                onClick = { selectPlan(PlanSelection.Lifetime) }
             )
 
             Spacer(Modifier.height(12.dp))
@@ -279,11 +326,26 @@ fun PurchaseScreen(
                     if (pkg == null) { errorMessage = strUnableCheckout; return@Button }
                     isLoading = true
                     errorMessage = null
+                    val plan = selectedPlan.analyticsName
+                    Analytics.log("purchase_started", "plan" to plan, "source" to source)
                     viewModel.purchase(act, pkg) { result ->
                         isLoading = false
                         result.fold(
-                            onSuccess = { /* entitlement flip drives NavGraph */ },
-                            onFailure = { errorMessage = it.message }
+                            onSuccess = { purchased ->
+                                // false = RevenueCat userCancelled. Entitlement flip drives NavGraph.
+                                Analytics.log(
+                                    if (purchased) "purchase_completed" else "purchase_cancelled",
+                                    "plan" to plan, "source" to source
+                                )
+                            },
+                            onFailure = {
+                                Analytics.log(
+                                    "purchase_failed",
+                                    "plan" to plan, "source" to source,
+                                    "reason" to it.javaClass.simpleName
+                                )
+                                errorMessage = it.message
+                            }
                         )
                     }
                 },
@@ -365,7 +427,7 @@ fun PurchaseScreen(
         // Drawn last so it sits above the scrollable content Column and stays tappable.
         if (onBack != null) {
             IconButton(
-                onClick = onBack,
+                onClick = dismiss ?: onBack,
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .statusBarsPadding()

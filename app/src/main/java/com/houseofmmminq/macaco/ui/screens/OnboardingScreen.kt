@@ -45,6 +45,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -105,7 +106,7 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                         )
                         Spacer(Modifier.height(if (isLandscape) 6.dp else 12.dp))
                         Text(
-                            "Roam Freely. Forget Nothing.",
+                            stringResource(R.string.onboarding_tagline),
                             color = SplashGold.copy(alpha = 0.80f),
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Light,
@@ -116,20 +117,20 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                     }
                     1 -> OnboardingSlide(
                         icon = Icons.Outlined.Cloud,
-                        title = "Your journal,\nalways with you",
-                        body = "Every memory syncs to the cloud instantly. Write on your phone, relive anywhere.",
+                        title = stringResource(R.string.onboarding_sync_title),
+                        body = stringResource(R.string.onboarding_sync_body),
                         compact = isLandscape
                     )
                     2 -> OnboardingSlide(
                         icon = Icons.Outlined.Shield,
-                        title = "Private.\nYours. Forever.",
-                        body = "No ads. No social feed. One purchase — lifetime access, no subscription.",
+                        title = stringResource(R.string.onboarding_private_title),
+                        body = stringResource(R.string.onboarding_private_body),
                         compact = isLandscape
                     )
                     3 -> OnboardingSlide(
                         icon = Icons.Outlined.Explore,
-                        title = "Ready to roam?",
-                        body = "Sign in to start capturing your adventures.",
+                        title = stringResource(R.string.onboarding_ready_title),
+                        body = stringResource(R.string.onboarding_ready_body),
                         compact = isLandscape
                     )
                 }
@@ -183,7 +184,7 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                 )
             ) {
                 Text(
-                    if (isLastPage) "Get Started" else "Next",
+                    if (isLastPage) stringResource(R.string.onboarding_get_started) else stringResource(R.string.onboarding_next),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
                     fontFamily = MacacoFontFamily
@@ -202,7 +203,7 @@ fun OnboardingScreen(onComplete: () -> Unit) {
                     .padding(8.dp)
             ) {
                 Text(
-                    "Skip",
+                    stringResource(R.string.onboarding_skip),
                     color = SplashGold.copy(alpha = 0.7f),
                     fontSize = 14.sp,
                     fontFamily = MacacoFontFamily

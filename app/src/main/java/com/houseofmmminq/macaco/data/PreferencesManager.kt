@@ -28,6 +28,7 @@ class PreferencesManager(private val context: Context) {
     private val KEY_REMINDER_INTERVAL = intPreferencesKey("reminder_interval_days")
     private val KEY_APP_LOCK = booleanPreferencesKey("app_lock_enabled")
     private val KEY_ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
+    private val KEY_SOFT_PAYWALL_SHOWN = booleanPreferencesKey("soft_paywall_shown")
     private val KEY_CUSTOM_MOODS = stringPreferencesKey("custom_moods")
     private val KEY_COVER_HINT_COUNT = intPreferencesKey("cover_hint_count")
     private val KEY_DISMISSED_SUGGESTIONS = stringSetPreferencesKey("dismissed_photo_clusters")
@@ -160,6 +161,15 @@ class PreferencesManager(private val context: Context) {
 
     suspend fun setOnboardingComplete() {
         context.dataStore.edit { it[KEY_ONBOARDING_COMPLETE] = true }
+    }
+
+    // One-time soft paywall shown after a free user saves their very first entry.
+    val softPaywallShown: Flow<Boolean> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[KEY_SOFT_PAYWALL_SHOWN] ?: false }
+
+    suspend fun setSoftPaywallShown() {
+        context.dataStore.edit { it[KEY_SOFT_PAYWALL_SHOWN] = true }
     }
 
     // Camera-roll suggestion clusters the user has dismissed, keyed by their stable start time

@@ -13,7 +13,10 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile")
     object Settings : Screen("settings")
     object Subscription : Screen("subscription")
-    object Paywall : Screen("paywall")
+    // `source` names the entry point for the paywall funnel analytics events.
+    object Paywall : Screen("paywall?source={source}") {
+        fun createRoute(source: String) = "paywall?source=$source"
+    }
     object HelpAbout : Screen("help_about")
     object Onboarding : Screen("onboarding")
     object Adventures : Screen("adventures")

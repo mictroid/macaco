@@ -532,4 +532,18 @@
         <item quantity="one">%d bezoek</item>
         <item quantity="other">%d bezoeken</item>
     </plurals>
+    <string name="onboarding_tagline">Reis vrij. Vergeet niets.</string>
+    <string name="onboarding_sync_title">Je dagboek,\naltijd bij je</string>
+    <string name="onboarding_sync_body">Elke herinnering wordt direct met de cloud gesynchroniseerd. Schrijf op je telefoon, beleef het overal opnieuw.</string>
+    <string name="onboarding_private_title">Privé.\nVan jou. Voor altijd.</string>
+    <string name="onboarding_private_body">Geen advertenties, geen sociale feed, en je dagboek wordt nooit verkocht. Begin gratis en ontgrendel Premium wanneer je er klaar voor bent.</string>
+    <string name="onboarding_ready_title">Klaar om op reis te gaan?</string>
+    <string name="onboarding_ready_body">Log in om je avonturen vast te leggen.</string>
+    <string name="onboarding_next">Volgende</string>
+    <string name="onboarding_get_started">Aan de slag</string>
+    <string name="onboarding_skip">Overslaan</string>
+    <string name="paywall_first_entry_heading">Goede start! Bewaar elke reis met Premium</string>
+    <string name="paywall_first_entry_sub">Probeer het %1$d dagen gratis. Je kunt sowieso gratis blijven schrijven.</string>
+    <string name="paywall_first_entry_sub_no_trial">Je kunt sowieso gratis blijven schrijven.</string>
+    <string name="premium_badge">Premium</string>
 </resources>

@@ -103,7 +103,7 @@ fun ProfileScreen(
     onSignOut: () -> Unit,
     onLogin: () -> Unit,
     onSubscription: () -> Unit,
-    onNavigateToPaywall: () -> Unit,
+    onNavigateToPaywall: (source: String) -> Unit,
     onSettings: () -> Unit,
     onHelp: () -> Unit,
     onYearInTravel: () -> Unit,
@@ -599,7 +599,7 @@ fun ProfileScreen(
                             ProfileActionTile(
                                 Icons.Outlined.WorkspacePremium,
                                 stringResource(R.string.common_subscription),
-                                onClick = { if (isPurchased == true) onSubscription() else onNavigateToPaywall() }
+                                onClick = { if (isPurchased == true) onSubscription() else onNavigateToPaywall("profile") }
                             )
                             ProfileActionTile(
                                 Icons.AutoMirrored.Filled.Logout,
@@ -636,7 +636,7 @@ fun ProfileScreen(
                             ProfileActionTile(
                                 Icons.Outlined.WorkspacePremium,
                                 stringResource(R.string.common_subscription),
-                                onClick = { if (isPurchased == true) onSubscription() else onNavigateToPaywall() }
+                                onClick = { if (isPurchased == true) onSubscription() else onNavigateToPaywall("profile") }
                             )
                             ProfileActionTile(
                                 Icons.AutoMirrored.Filled.Logout,

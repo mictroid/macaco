@@ -11,6 +11,7 @@ import com.houseofmmminq.macaco.data.auth.FirebaseAuthRepository
 import com.houseofmmminq.macaco.data.billing.BillingManager
 import com.houseofmmminq.macaco.data.storage.CloudEntrySync
 import com.houseofmmminq.macaco.data.sync.DrivePhotoSync
+import com.houseofmmminq.macaco.util.Analytics
 
 class TravelJournalApp : Application() {
     val preferencesManager: PreferencesManager by lazy { PreferencesManager(this) }
@@ -21,6 +22,7 @@ class TravelJournalApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Analytics.init(this)
         // Attests that Firestore/Auth calls come from a genuine, unmodified install. Must run
         // before the first Firestore/Auth call (the lazy repos above are fine — they're not
         // touched until MainActivity starts).

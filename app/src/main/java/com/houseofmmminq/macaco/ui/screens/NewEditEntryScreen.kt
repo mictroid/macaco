@@ -96,7 +96,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.foundation.text.KeyboardActions
@@ -109,7 +111,9 @@ import com.houseofmmminq.macaco.R
 import com.houseofmmminq.macaco.data.model.TravelEntry
 import com.houseofmmminq.macaco.ui.components.MacacoWatermarkBackground
 import com.houseofmmminq.macaco.ui.components.VideoTrimDialog
+import com.houseofmmminq.macaco.util.Analytics
 import com.houseofmmminq.macaco.util.Cities
+import com.houseofmmminq.macaco.util.DictationText
 import com.houseofmmminq.macaco.ui.viewmodel.JournalViewModel
 import com.houseofmmminq.macaco.util.ImageStorage
 import com.houseofmmminq.macaco.util.SUGGESTED_TAGS
@@ -152,7 +156,7 @@ private val MOODS = listOf(
 @Composable
 fun NewEditEntryScreen(
     existingEntry: TravelEntry?,
-    onSave: (TravelEntry) -> Unit,
+    onSave: (entry: TravelEntry, usedDictation: Boolean) -> Unit,
     onBack: () -> Unit,
     locationSuggestions: List<String> = emptyList(),
     tagSuggestions: List<String> = emptyList(),
@@ -180,7 +184,12 @@ fun NewEditEntryScreen(
         mutableStateOf(existingEntry?.dateMillis ?: effectiveSeed?.dateMillis ?: System.currentTimeMillis())
     }
     var mood by rememberSaveable { mutableStateOf(existingEntry?.mood ?: "") }
-    var description by rememberSaveable { mutableStateOf(existingEntry?.description ?: "") }
+    // TextFieldValue (not String) so dictation can insert at the cursor position.
+    var description by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(existingEntry?.description ?: ""))
+    }
+    // Feeds entry_created.used_dictation (funnel analytics).
+    var usedDictation by rememberSaveable { mutableStateOf(false) }
     var photoUris by rememberSaveable(stateSaver = StringListSaver) {
         mutableStateOf(existingEntry?.photoUris ?: emptyList())
     }
@@ -409,18 +418,24 @@ fun NewEditEntryScreen(
         }
     }
 
-    // Speech-to-text: result is appended to the description with a space separator.
+    // Speech-to-text: result is inserted at the cursor with sentence-aware joining (DictationText).
     val speechLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val text = result.data
+        val text = if (result.resultCode == Activity.RESULT_OK) {
+            result.data
                 ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 ?.firstOrNull()
                 ?.trim()
-            if (!text.isNullOrEmpty()) {
-                description = if (description.isBlank()) text else "$description $text"
-            }
+        } else null
+        if (!text.isNullOrEmpty()) {
+            description = DictationText.insert(description, text)
+            usedDictation = true
+            Analytics.log("dictation_used", "result" to "ok")
+        } else if (result.resultCode == Activity.RESULT_OK) {
+            Analytics.log("dictation_used", "result" to "empty")
+        } else {
+            Analytics.log("dictation_used", "result" to "cancelled")
         }
     }
 
@@ -604,10 +619,11 @@ fun NewEditEntryScreen(
                                 onSave(
                                     TravelEntry(
                                         id = existingEntry?.id ?: UUID.randomUUID().toString(),
-                                        title = title.trim(),
+                                        // Capitalize the title's first letter; the story is left as typed.
+                                        title = title.trim().replaceFirstChar { it.titlecase() },
                                         location = location.trim(),
                                         dateMillis = dateMillis,
-                                        description = description.trim(),
+                                        description = description.text.trim(),
                                         mood = mood,
                                         photoUris = finalPhotos,
                                         tags = tags,
@@ -618,7 +634,8 @@ fun NewEditEntryScreen(
                                         videoFileIds = finalVideoIds,
                                         mediaOrder = if (finalVideos.isEmpty()) emptyList()
                                                      else order.map { it.first }
-                                    )
+                                    ),
+                                    usedDictation
                                 )
                             }
                         }
@@ -818,6 +835,7 @@ fun NewEditEntryScreen(
                         { Text(stringResource(R.string.new_entry_title_required)) }
                     } else null,
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -931,6 +949,7 @@ fun NewEditEntryScreen(
                         .fillMaxWidth()
                         .height(180.dp),
                     maxLines = Int.MAX_VALUE,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     trailingIcon = {
                         IconButton(onClick = {
                             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
@@ -940,6 +959,11 @@ fun NewEditEntryScreen(
                                 // AppCompatDelegate.setApplicationLocales), not just the system default.
                                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
                                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, Locale.getDefault().toLanguageTag())
+                                // API 33+: let the recognizer add punctuation + capitalization.
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                                    putExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING, RecognizerIntent.FORMATTING_OPTIMIZE_QUALITY)
+                                }
+                                putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
                             }
                             onSuppressAutoLock()
                             speechLauncher.launch(intent)
@@ -958,7 +982,7 @@ fun NewEditEntryScreen(
                         unfocusedContainerColor = MaterialTheme.colorScheme.background
                     )
                 )
-                if (description.isEmpty()) {
+                if (description.text.isEmpty()) {
                     HintRow(Icons.Filled.Mic, stringResource(R.string.new_entry_hint_story))
                 }
             }
@@ -1182,6 +1206,7 @@ private fun LocationField(
             placeholder = { Text(stringResource(R.string.new_entry_location_placeholder)) },
             leadingIcon = { Icon(Icons.Filled.LocationOn, contentDescription = null) },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -1256,6 +1281,7 @@ private fun TripField(
                 }
             },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
