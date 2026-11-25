@@ -179,7 +179,7 @@ fun LoginScreen(
                             letterSpacing = 7.sp
                         )
                         Text(
-                            text = "Roam Freely. Forget Nothing.",
+                            text = stringResource(R.string.onboarding_tagline),
                             color = SplashGold.copy(alpha = 0.82f),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Light,
